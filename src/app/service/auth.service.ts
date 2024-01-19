@@ -98,4 +98,10 @@ getIdUsuario():number{
   return this.idUsuario;
 }
 
+logout() {
+  localStorage.removeItem('userData');
+  this.router.navigate(['login']);
+  localStorage.removeItem('lastInsertedId'); // Aquí eliminas lastInsertedId al cerrar sesión
+}
+
 }

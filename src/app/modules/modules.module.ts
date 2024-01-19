@@ -10,6 +10,9 @@ import { MembresiasEditarComponent } from './membresias-editar/membresias-editar
 import { MensajeEmergentesComponent } from './mensaje-emergentes/mensaje-emergentes.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
 import { EntradasComponent } from './entradas/entradas.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
+import { HorariosComponent } from './horarios/horarios.component';
 
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -38,6 +41,9 @@ import { faPaypal } from '@fortawesome/free-brands-svg-icons';
 import { faCheckCircle, faCircleUser, faCreditCard } from '@fortawesome/free-regular-svg-icons';
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HeaderComponent } from './header/header.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 
 @NgModule({
   declarations: [
@@ -48,7 +54,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MembresiasEditarComponent,
     MensajeEmergentesComponent,
     ConfiguracionComponent,
-    EntradasComponent
+    EntradasComponent,
+    HeaderComponent,
+    AdminDashboardComponent,
+    VerConfiguracionComponent,
+    HorariosComponent
   ],
   imports: [
     CommonModule,
@@ -77,6 +87,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatMenuModule,
     MatDividerModule,
     MatListModule,
+    FlexLayoutModule
+    
   ]
 })
 export class ModulesModule {
