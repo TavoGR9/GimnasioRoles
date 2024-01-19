@@ -1,1 +1,32 @@
-<p>reports works!</p>
+<p>membresias-lista works!</p>
+
+<h2>Estadisticas - reportes, etc...</h2>
+<form [formGroup]="form">
+  <p>
+    <label for="sucursal">Sucursal:</label>
+    <mat-form-field appearance="outline">
+      <mat-label>Seleccionar</mat-label>
+      <mat-select id="sucursal" formControlName="sucursal">
+        <mat-option value="1">Mostrar todos...</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field>
+      <mat-label>Periodo</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Fecha inicial" formControlName="p_inicial">
+        <input matEndDate placeholder="Fecha final" formControlName="p_final">
+      </mat-date-range-input>
+      <mat-hint>YYYY/MM/DD – YYYY/MM/DD</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    
+    
+  </p>
+  <button (click)="consult()">Consultar información...</button>
+</form>
+<div>
+    <canvas id="myChart"></canvas>
+</div>

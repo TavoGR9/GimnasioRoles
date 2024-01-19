@@ -77,8 +77,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatMenuModule,
     MatDividerModule,
     MatListModule,
-    
-    
   ]
 })
 export class ModulesModule {
