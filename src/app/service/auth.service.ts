@@ -26,8 +26,9 @@ export class AuthService {
   }
   public idGym!: number;
   usuarioRegistrado: any[] = [];
+  public ubicacion!: string;
+  idUsuario:number =0;
   
-
 
   //Metodos de login usando BehaviourSubject
   loginBS(data: User): Observable<any> {
@@ -84,6 +85,17 @@ getIdGym():number{
   this.usuarioRegistrado = this.getUserData();
   this.idGym=this.usuarioRegistrado[0].idGym;
   return this.idGym;
+}
+
+getUbicacion(): string {
+  this.usuarioRegistrado = this.getUserData();
+  this.ubicacion = this.usuarioRegistrado[0].nombreGym;
+  return this.ubicacion;
+}
+getIdUsuario():number{
+  this.usuarioRegistrado = this.getUserData();
+  this.idUsuario = this.usuarioRegistrado[0].idUsuarios;
+  return this.idUsuario;
 }
 
 }
