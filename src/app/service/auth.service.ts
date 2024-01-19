@@ -21,7 +21,13 @@ export class AuthService {
    //para guardar los headers que manda el API
    httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private router: Router, private clienteHttp: HttpClient) {}
+  constructor(private router: Router, private clienteHttp: HttpClient) {
+  
+  }
+  public idGym!: number;
+  usuarioRegistrado: any[] = [];
+  
+
 
   //Metodos de login usando BehaviourSubject
   loginBS(data: User): Observable<any> {
@@ -62,5 +68,18 @@ isSupadmin():boolean {
   return this.role.getValue() === 'SuperAdmin';
 }
 
- 
+
+getUserData(): any | null {
+  const localData = localStorage.getItem('userData');
+  if (localData != null) {
+    return JSON.parse(localData);
+  }
+  return null;
+}
+getIdGym():number{
+  this.usuarioRegistrado = this.getUserData();
+  this.idGym=this.usuarioRegistrado[0].idGym;
+  return this.idGym;
+}
+
 }
