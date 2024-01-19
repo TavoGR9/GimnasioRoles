@@ -7,6 +7,7 @@ import { hasRoleGuard } from './guards/has-role.guard';
 import { LoginComponent } from './components/login/login.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 //Componentes
 
@@ -25,6 +26,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/modules.module').then((m) => m.ModulesModule),
   },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
