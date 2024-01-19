@@ -4,6 +4,11 @@ import { CommonModule } from '@angular/common';
 import { ModulesRoutingModule } from './modules-routing.module';
 import { HomeComponent } from './home/home.component';
 import { ReportsComponent } from './reports/reports.component';
+import { MembresiasComponent } from './membresias-lista/membresias.component';
+import { MembresiasAgregarComponent } from './membresias-agregar/membresias-agregar.component';
+import { MembresiasEditarComponent } from './membresias-editar/membresias-editar.component';
+import { MensajeEmergentesComponent } from './mensaje-emergentes/mensaje-emergentes.component';
+
 
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -36,7 +41,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     HomeComponent,
-    ReportsComponent
+    ReportsComponent,
+    MembresiasComponent,
+    MembresiasAgregarComponent,
+    MembresiasEditarComponent,
+    MensajeEmergentesComponent,
   ],
   imports: [
     CommonModule,
