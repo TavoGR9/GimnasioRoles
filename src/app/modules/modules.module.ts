@@ -64,8 +64,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatNativeDateModule,
     MatMenuModule,
     MatDividerModule,
-    MatListModule,
-    
+    MatListModule   
   ]
 })
 export class ModulesModule {
