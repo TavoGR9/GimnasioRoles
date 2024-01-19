@@ -8,7 +8,8 @@ import { MembresiasComponent } from './membresias-lista/membresias.component';
 import { MembresiasAgregarComponent } from './membresias-agregar/membresias-agregar.component';
 import { MembresiasEditarComponent } from './membresias-editar/membresias-editar.component';
 import { MensajeEmergentesComponent } from './mensaje-emergentes/mensaje-emergentes.component';
-
+import { ConfiguracionComponent } from './configuracion/configuracion.component';
+import { EntradasComponent } from './entradas/entradas.component';
 
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -46,6 +47,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MembresiasAgregarComponent,
     MembresiasEditarComponent,
     MensajeEmergentesComponent,
+    ConfiguracionComponent,
+    EntradasComponent
   ],
   imports: [
     CommonModule,
@@ -74,6 +77,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatMenuModule,
     MatDividerModule,
     MatListModule,
+    
     
   ]
 })
