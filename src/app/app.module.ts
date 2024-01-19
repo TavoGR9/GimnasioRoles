@@ -7,6 +7,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { LoginComponent } from './components/login/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { ListarCategoriaPipe } from './pipes/listar-categoria.pipe';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
     ForgotPasswordComponent,
     LoginComponent,
     NotFoundComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ListarCategoriaPipe
   ],
   imports: [
     BrowserModule,
