@@ -92,8 +92,7 @@ import { CrearProductoComponent } from './crear-producto/crear-producto.componen
     MatNativeDateModule,
     MatMenuModule,
     MatDividerModule,
-    MatListModule,
-    
+    MatListModule   
   ]
 })
 export class ModulesModule {
