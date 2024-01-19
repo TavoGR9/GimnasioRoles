@@ -62,5 +62,10 @@ isSupadmin():boolean {
   return this.role.getValue() === 'SuperAdmin';
 }
 
+//Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
+chart_sucursales(data: any):Observable<any> {
+  return this.clienteHttp.post(this.APIv2 + 'login.php', data, { headers: this.httpHeaders });
+}
+
  
 }
