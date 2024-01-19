@@ -44,7 +44,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FontAwesomeModule,
     ReactiveFormsModule,
     FormsModule,
-
     MatToolbarModule, //barra de navegacion
     MatDialogModule, // dialogos emergentes
     MatSlideToggleModule,
