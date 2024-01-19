@@ -32,7 +32,7 @@ import { NgIf } from '@angular/common';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
-    ListarCategoriaPipe
+    ListarCategoriaPipe,
   ],
   imports: [
     ModulesModule,
