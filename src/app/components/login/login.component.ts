@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
             this.auth.loggedIn.next(true);
             this.auth.role.next('Administrador');
             this.auth.userId.next(resultData.id);
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/home']);
           } else if (resultData.rolUser === 'Recepcionista') {
             this.auth.loggedIn.next(true);
             this.auth.role.next('Recepcionista');
