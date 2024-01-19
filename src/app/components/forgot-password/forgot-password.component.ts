@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { ResetPasswordService } from 'src/app/service/reset-password.service';
 
 @Component({
   selector: 'app-forgot-password',
