@@ -4,6 +4,15 @@ import { CommonModule } from '@angular/common';
 import { ModulesRoutingModule } from './modules-routing.module';
 import { HomeComponent } from './home/home.component';
 import { ReportsComponent } from './reports/reports.component';
+import { MembresiasComponent } from './membresias-lista/membresias.component';
+import { MembresiasAgregarComponent } from './membresias-agregar/membresias-agregar.component';
+import { MembresiasEditarComponent } from './membresias-editar/membresias-editar.component';
+import { MensajeEmergentesComponent } from './mensaje-emergentes/mensaje-emergentes.component';
+import { ConfiguracionComponent } from './configuracion/configuracion.component';
+import { EntradasComponent } from './entradas/entradas.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
+import { HorariosComponent } from './horarios/horarios.component';
 
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -32,11 +41,24 @@ import { faPaypal } from '@fortawesome/free-brands-svg-icons';
 import { faCheckCircle, faCircleUser, faCreditCard } from '@fortawesome/free-regular-svg-icons';
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HeaderComponent } from './header/header.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 
 @NgModule({
   declarations: [
     HomeComponent,
-    ReportsComponent
+    ReportsComponent,
+    MembresiasComponent,
+    MembresiasAgregarComponent,
+    MembresiasEditarComponent,
+    MensajeEmergentesComponent,
+    ConfiguracionComponent,
+    EntradasComponent,
+    HeaderComponent,
+    AdminDashboardComponent,
+    VerConfiguracionComponent,
+    HorariosComponent
   ],
   imports: [
     CommonModule,
@@ -64,7 +86,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatNativeDateModule,
     MatMenuModule,
     MatDividerModule,
-    MatListModule   
+    MatListModule,
+    FlexLayoutModule
+    
   ]
 })
 export class ModulesModule {

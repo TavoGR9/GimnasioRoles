@@ -9,6 +9,7 @@ import { LoginComponent } from './components/login/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
+
 //Pipes
 import { ListarCategoriaPipe } from './pipes/listar-categoria.pipe';
 
@@ -39,7 +40,12 @@ import { NgIf } from '@angular/common';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
     FontAwesomeModule,
+    ReactiveFormsModule,
     ToastrModule.forRoot({positionClass:'toast-bottom-left'}),
     MatInputModule,
     MatFormFieldModule,
