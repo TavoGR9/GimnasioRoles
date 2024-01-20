@@ -28,7 +28,6 @@ export class AuthService {
   usuarioRegistrado: any[] = [];
   public ubicacion!: string;
   idUsuario:number =0;
-  rol!: string;
   
 
   //Metodos de login usando BehaviourSubject
@@ -75,9 +74,6 @@ chart_sucursales(data: any):Observable<any> {
   return this.clienteHttp.post(this.APIv2 + 'login.php', data, { headers: this.httpHeaders });
 }
 
-setUserData(userData: string): void {
-  localStorage.setItem('userData', userData);
-}
 getUserData(): any | null {
   const localData = localStorage.getItem('userData');
   if (localData != null) {
@@ -85,11 +81,10 @@ getUserData(): any | null {
   }
   return null;
 }
-
-getRol(): string {
+getIdGym():number{
   this.usuarioRegistrado = this.getUserData();
-  this.rol = this.usuarioRegistrado[0].rol;
-  return this.rol;
+  this.idGym=this.usuarioRegistrado[0].idGym;
+  return this.idGym;
 }
 
 getUbicacion(): string {
@@ -97,21 +92,10 @@ getUbicacion(): string {
   this.ubicacion = this.usuarioRegistrado[0].nombreGym;
   return this.ubicacion;
 }
-
-getIdGym():number{
-  this.usuarioRegistrado = this.getUserData();
-  this.idGym=this.usuarioRegistrado[0].idGym;
-  return this.idGym;
-}
-
 getIdUsuario():number{
   this.usuarioRegistrado = this.getUserData();
   this.idUsuario = this.usuarioRegistrado[0].idUsuarios;
   return this.idUsuario;
-}
-
-isLoggedIn() {
-  return this.getUserData() !== null;
 }
 
 logout() {
@@ -120,23 +104,4 @@ logout() {
   localStorage.removeItem('lastInsertedId'); // Aquí eliminas lastInsertedId al cerrar sesión
 }
 
-login(credenciales: User): Observable<any> {
-  return this.clienteHttp
-    .post(this.API + '?credenciales', credenciales, {
-      headers: this.httpHeaders,
-    })
-    .pipe(
-      catchError((err: any) => {
-        if (err.status === 401) {
-          this.router.navigate(['/login']);
-          const errorMessage = err.error.message;
-          // this.toastr.error(errorMessage,'Error');
-          //  alert(`Error 401: ${errorMessage}`);
-          return throwError(() => errorMessage);
-        } else {
-          return throwError(() => 'Error desconocido');
-        }
-      })
-    );
-}
 }

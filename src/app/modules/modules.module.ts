@@ -13,13 +13,6 @@ import { EntradasComponent } from './entradas/entradas.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
 import { HorariosComponent } from './horarios/horarios.component';
-import { CategoriasComponent } from './categorias/categorias.component';
-import { EditarCategoriaComponent } from './editar-categoria/editar-categoria.component';
-import { AltaCategoriaComponent } from './alta-categoria/alta-categoria.component';
-import { InventarioComponent } from './inventario/inventario.component';
-import { ProductosComponent } from './productos/productos.component';
-import { CrearProductoComponent } from './crearProducto/crearProducto.component';
-import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -50,9 +43,6 @@ import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ToastModule } from 'primeng/toast';
-import { FileUploadModule } from 'primeng/fileupload';
-import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
 
 
 @NgModule({
@@ -68,15 +58,7 @@ import { ProductosVendidosComponent } from './productos-vendidos/productos-vendi
     HeaderComponent,
     AdminDashboardComponent,
     VerConfiguracionComponent,
-    HorariosComponent,
-    AltaCategoriaComponent,
-    EditarCategoriaComponent,
-    CategoriasComponent,
-    EditarProductoComponent,
-    CrearProductoComponent,
-    ProductosComponent,
-    InventarioComponent,
-    ProductosVendidosComponent
+    HorariosComponent
   ],
   imports: [
     CommonModule,
@@ -105,9 +87,7 @@ import { ProductosVendidosComponent } from './productos-vendidos/productos-vendi
     MatMenuModule,
     MatDividerModule,
     MatListModule,
-    FlexLayoutModule,
-    ToastModule,
-    FileUploadModule
+    FlexLayoutModule
     
   ]
 })
