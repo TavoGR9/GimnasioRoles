@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { proveedor } from '../models/proveedor';
+import { Categorias } from '../models/categorias';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +21,14 @@ export class CategoriaService {
     return this.clienteHttp.get(this.API)
   }
 
+  obternerCategorias(): Observable<Categorias[]>{
+    return this.clienteHttp.get<Categorias[]>(this.API)
+  }
+
   consultarCategoria(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultar="+id);
   }
+  
 
   borrarCategoria(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?borrar="+id)
@@ -30,7 +36,19 @@ export class CategoriaService {
 
   actualizarCategoria(id:any,datosCategoria:any):Observable<any>{
     return this.clienteHttp.post(this.API+"?actualizar="+id,datosCategoria);
+  }  
+
+  updateMembresiaStatus(id: number, estado: { estatus: number }): Observable<any> {
+    console.log("status",estado,"id",id);
+    return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
   }
 
-  
+  consultarCategoriaGym(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarGym="+id);
+  }
+
+  consultarListaCategoria(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarCategoriaId="+id);
+    
+  }
 }

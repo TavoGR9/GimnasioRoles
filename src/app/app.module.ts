@@ -13,15 +13,14 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrModule } from 'ngx-toastr';
-import { ModulesModule } from './modules/modules.module';;
+import { ModulesModule } from './modules/modules.module';
+import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule} from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-
+import { NgIf } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -36,16 +35,22 @@ import { FormsModule } from '@angular/forms';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    FontAwesomeModule,
-    ToastrModule.forRoot({positionClass:'toast-bottom-left'}),
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatButtonModule,
+    FontAwesomeModule,
     ReactiveFormsModule,
+    ToastrModule.forRoot({positionClass:'toast-bottom-left'}),
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
     MatButtonModule,
+    ReactiveFormsModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    NgIf,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

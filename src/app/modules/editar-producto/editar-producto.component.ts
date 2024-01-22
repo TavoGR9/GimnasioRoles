@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { ColaboradorService } from 'src/app/service/colaborador.service';
-import { ProductoService } from 'src/app/service/producto.service';
+//import { ToastrService } from 'ngx-toastr';
+//import { ColaboradorService } from 'src/app/service/colaborador.service';
+import { ProductosService } from 'src/app/service/productos.service';
+
 import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { CategoriaService } from 'src/app/service/categoria.service';
@@ -26,7 +27,7 @@ export class EditarProductoComponent {
   message: string = '';
   producto: any;
   elID:any;
-  idCategoria!: number;
+  idCategoria: number = 0;
   listaCategorias: any;
 
   constructor(public fb:FormBuilder,

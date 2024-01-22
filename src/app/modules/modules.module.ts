@@ -4,6 +4,22 @@ import { CommonModule } from '@angular/common';
 import { ModulesRoutingModule } from './modules-routing.module';
 import { HomeComponent } from './home/home.component';
 import { ReportsComponent } from './reports/reports.component';
+import { MembresiasComponent } from './membresias-lista/membresias.component';
+import { MembresiasAgregarComponent } from './membresias-agregar/membresias-agregar.component';
+import { MembresiasEditarComponent } from './membresias-editar/membresias-editar.component';
+import { MensajeEmergentesComponent } from './mensaje-emergentes/mensaje-emergentes.component';
+import { ConfiguracionComponent } from './configuracion/configuracion.component';
+import { EntradasComponent } from './entradas/entradas.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
+import { HorariosComponent } from './horarios/horarios.component';
+import { CategoriasComponent } from './categorias/categorias.component';
+import { EditarCategoriaComponent } from './editar-categoria/editar-categoria.component';
+import { AltaCategoriaComponent } from './alta-categoria/alta-categoria.component';
+//import { InventarioComponent } from './inventario/inventario.component';
+import { ProductosComponent } from './productos/productos.component';
+import { CrearProductoComponent } from './crearProducto/crearProducto.component';
+import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -56,6 +72,9 @@ import { NotificacionesComponent } from './notificaciones/notificaciones.compone
 import {ToastModule} from 'primeng/toast';
 import {FileUploadModule} from 'primeng/fileupload';
 import { ListaProveedorComponent } from './lista-proveedor/lista-proveedor.component';
+import { HeaderComponent } from './header/header.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -67,7 +86,6 @@ import { ListaProveedorComponent } from './lista-proveedor/lista-proveedor.compo
     SucursalAltaComponent,
     SucursalEditarComponent,
     ListaCategoriaComponent,
-    EditarCategoriaComponent,
     ListaProductoComponent,
     AltaProductoComponent,
     EditarProductoComponent,
@@ -83,7 +101,21 @@ import { ListaProveedorComponent } from './lista-proveedor/lista-proveedor.compo
     ListarProductoPipe,
     ListaProveedorPipe,
     ListaProveedorComponent,
-
+    MembresiasComponent,
+    MembresiasAgregarComponent,
+    MembresiasEditarComponent,
+    MensajeEmergentesComponent,
+    ConfiguracionComponent,
+    EntradasComponent,
+    HeaderComponent,
+    AdminDashboardComponent,
+    VerConfiguracionComponent,
+    HorariosComponent,
+    AltaCategoriaComponent,
+    EditarCategoriaComponent,
+    CategoriasComponent,
+    ProductosComponent,
+    //InventarioComponent
   ],
   imports: [
     CommonModule,
@@ -112,8 +144,9 @@ import { ListaProveedorComponent } from './lista-proveedor/lista-proveedor.compo
     MatMenuModule,
     MatDividerModule,
     MatListModule,
+   FlexLayoutModule,
     ToastModule,
-    FileUploadModule,
+    FileUploadModule
   ]
 })
 export class ModulesModule {
