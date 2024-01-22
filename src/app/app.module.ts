@@ -9,10 +9,6 @@ import { LoginComponent } from './components/login/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
-
-//Pipes
-import { ListarCategoriaPipe } from './pipes/listar-categoria.pipe';
-
 //Modulos
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -33,7 +29,6 @@ import { NgIf } from '@angular/common';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
-    ListarCategoriaPipe
   ],
   imports: [
     ModulesModule,

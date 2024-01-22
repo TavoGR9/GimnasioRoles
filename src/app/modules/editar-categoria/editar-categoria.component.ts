@@ -67,7 +67,7 @@ export class EditarCategoriaComponent {
   }
 
   cancelar() {
-    this.router.navigateByUrl('/admin/categorias');
+    this.router.navigateByUrl('/admin/gestion-productos');
   }
 
   actualizar(){
@@ -80,7 +80,7 @@ export class EditarCategoriaComponent {
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          this.router.navigateByUrl('/admin/categorias');
+          this.router.navigateByUrl('/admin/lista-categoria');
         } else {
           
         }
