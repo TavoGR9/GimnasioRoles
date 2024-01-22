@@ -13,9 +13,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -25,13 +25,12 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule, _MatSlideToggleRequiredValidatorModule} from '@angular/material/slide-toggle';
-
 //Modulos fontawesome
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaypal } from '@fortawesome/free-brands-svg-icons';
 import { faCheckCircle, faCircleUser, faCreditCard } from '@fortawesome/free-regular-svg-icons';
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditarColaboradorComponent } from './editar-colaborador/editar-colaborador.component';
 import { AltaColaboradoresComponent } from './alta-colaboradores/alta-colaboradores.component';
 import { SucursalListaComponent } from './sucursal-lista/sucursal-lista.component';
@@ -42,11 +41,21 @@ import { EditarCategoriaComponent } from './editar-categoria/editar-categoria.co
 import { ListaProductoComponent } from './lista-producto/lista-producto.component';
 import { AltaProductoComponent } from './alta-producto/alta-producto.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
-import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 import { ProductManagementComponent } from './product-management/product-management.component';
 import { CrearProductoComponent } from './crear-producto/crear-producto.component';
-
-
+import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
+import { SubirImagenesComponent } from './subir-imagenes/subir-imagenes.component';
+import { HorariosVistaComponent } from './horarios-vista/horarios-vista.component';
+import { MensajeEliminarComponent } from './mensaje-eliminar/mensaje-eliminar.component';
+import { ListarCategoriaPipe } from '../pipes/listar-categoria.pipe';
+import { ListarEmpleadosPipe } from '../pipes/listar-empleados.pipe';
+import { ListarSucursalesPipe } from '../pipes/listar-sucursales.pipe';
+import { ListarProductoPipe } from '../pipes/listar-producto.pipe';
+import { ListaProveedorPipe } from '../pipes/listar-proveedor.pipe';
+import { NotificacionesComponent } from './notificaciones/notificaciones.component';
+import {ToastModule} from 'primeng/toast';
+import {FileUploadModule} from 'primeng/fileupload';
+import { ListaProveedorComponent } from './lista-proveedor/lista-proveedor.component';
 @NgModule({
   declarations: [
     HomeComponent,
@@ -62,9 +71,19 @@ import { CrearProductoComponent } from './crear-producto/crear-producto.componen
     ListaProductoComponent,
     AltaProductoComponent,
     EditarProductoComponent,
-    NotificacionesComponent,
     ProductManagementComponent,
-    CrearProductoComponent
+    CrearProductoComponent,
+    SubirImagenesComponent,
+    HorariosVistaComponent,
+    MensajeEliminarComponent,
+    NotificacionesComponent,
+    ListarCategoriaPipe,
+    ListarEmpleadosPipe,
+    ListarSucursalesPipe,
+    ListarProductoPipe,
+    ListaProveedorPipe,
+    ListaProveedorComponent,
+
   ],
   imports: [
     CommonModule,
@@ -92,7 +111,9 @@ import { CrearProductoComponent } from './crear-producto/crear-producto.componen
     MatNativeDateModule,
     MatMenuModule,
     MatDividerModule,
-    MatListModule   
+    MatListModule,
+    ToastModule,
+    FileUploadModule,
   ]
 })
 export class ModulesModule {

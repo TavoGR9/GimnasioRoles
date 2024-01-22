@@ -9,14 +9,18 @@ import { LoginComponent } from './components/login/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
-//Pipes
-import { ListarCategoriaPipe } from './pipes/listar-categoria.pipe';
-
 //Modulos
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrModule } from 'ngx-toastr';
-import { ModulesModule } from './modules/modules.module';
+import { ModulesModule } from './modules/modules.module';;
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule} from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -26,7 +30,6 @@ import { ModulesModule } from './modules/modules.module';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
-    ListarCategoriaPipe
   ],
   imports: [
     ModulesModule,
@@ -35,6 +38,14 @@ import { ModulesModule } from './modules/modules.module';
     BrowserAnimationsModule,
     FontAwesomeModule,
     ToastrModule.forRoot({positionClass:'toast-bottom-left'}),
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
