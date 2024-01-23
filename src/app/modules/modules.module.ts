@@ -14,12 +14,11 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
 import { HorariosComponent } from './horarios/horarios.component';
 import { CategoriasComponent } from './categorias/categorias.component';
-import { EditarCategoriaComponent } from './editar-categoria/editar-categoria.component';
 import { AltaCategoriaComponent } from './alta-categoria/alta-categoria.component';
 //import { InventarioComponent } from './inventario/inventario.component';
 import { ProductosComponent } from './productos/productos.component';
-import { CrearProductoComponent } from './crearProducto/crearProducto.component';
-import { EditarProductoComponent } from './editar-producto/editar-producto.component';
+//import { CrearProductoComponent } from './crearProducto/crearProducto.component';
+//import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -58,7 +57,7 @@ import { ListaProductoComponent } from './lista-producto/lista-producto.componen
 import { AltaProductoComponent } from './alta-producto/alta-producto.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 import { ProductManagementComponent } from './product-management/product-management.component';
-import { CrearProductoComponent } from './crear-producto/crear-producto.component';
+import { CrearProductoV2Component } from './crear-producto/crear-producto.component';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
 import { SubirImagenesComponent } from './subir-imagenes/subir-imagenes.component';
 import { HorariosVistaComponent } from './horarios-vista/horarios-vista.component';
@@ -74,6 +73,8 @@ import {FileUploadModule} from 'primeng/fileupload';
 import { ListaProveedorComponent } from './lista-proveedor/lista-proveedor.component';
 import { HeaderComponent } from './header/header.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { RecepMaterialModule } from './recepMaterial';
+import { CrearProductoComponent } from './crearProducto/crearProducto.component';
 
 @NgModule({
   declarations: [
@@ -115,6 +116,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     EditarCategoriaComponent,
     CategoriasComponent,
     ProductosComponent,
+    CrearProductoV2Component,
     //InventarioComponent
   ],
   imports: [
@@ -146,7 +148,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatListModule,
    FlexLayoutModule,
     ToastModule,
-    FileUploadModule
+    FileUploadModule,
+    RecepMaterialModule,
   ]
 })
 export class ModulesModule {

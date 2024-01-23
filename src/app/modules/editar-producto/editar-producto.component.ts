@@ -32,7 +32,7 @@ export class EditarProductoComponent {
 
   constructor(public fb:FormBuilder,
     private activeRoute: ActivatedRoute, 
-    private productoService:ProductoService,
+    private productoService:ProductosService,
     private router:Router,
     public dialog: MatDialog,
     private categoriaService: CategoriaService,){

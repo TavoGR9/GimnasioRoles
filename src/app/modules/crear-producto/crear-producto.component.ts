@@ -36,7 +36,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe, MessageService],
 })
-export class CrearProductoComponent implements OnInit {
+export class CrearProductoV2Component implements OnInit {
   fechaCreacion: string;
   form: FormGroup;
   matcher = new MyErrorStateMatcher();
