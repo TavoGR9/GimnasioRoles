@@ -14,13 +14,18 @@ import { AltaCategoriaComponent } from './alta-categoria/alta-categoria.componen
 import { CrearProductoComponent } from './crearProducto/crearProducto.component';
 import { ProductosComponent } from './productos/productos.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
-
+import { ListaMembresiasPagoEfecComponent } from './lista-membresias-pago-efec/lista-membresias-pago-efec.component';
+import { InventariosComponent } from './inventarios/inventarios.component';
+import { RegistroComponent } from './registro/registro.component';
+import { VentasComponent } from './ventas/ventas.component';
+import { VerCorteComponent } from './ver-corte/ver-corte.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminDashboardComponent,
     children: [
+      //Rutas Admin
       { path: 'home', component: HomeComponent },
       { path: 'misMembresias', component: MembresiasComponent},
       { path: 'agregarMembresias', component: MembresiasAgregarComponent},
@@ -36,6 +41,13 @@ const routes: Routes = [
       { path: 'editar-producto/:id', component:EditarProductoComponent},
      // { path: 'inventario', component: InventarioComponent },
      // { path: 'verConfiguracion', component: VerConfiguracionComponent},
+
+     //Rutas Recepcionista
+     { path: 'listaMembresias', component: ListaMembresiasPagoEfecComponent},
+     { path: 'inventarios', component: InventariosComponent},
+     { path: 'registrar', component: RegistroComponent},
+     { path: 'Ventas', component: VentasComponent},
+     { path: 'verCorte', component: VerCorteComponent}
     ],
     },
 ];

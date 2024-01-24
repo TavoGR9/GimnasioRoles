@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, map } from 'rxjs';
+import { ProductoVenta } from '../models/productoVenta';
 import { producto } from '../models/producto';
 import { ListaProductos } from '../models/listaProductos';
 import { AuthService } from './auth.service';
@@ -13,10 +14,10 @@ import { HttpParams } from '@angular/common/http';
 export class ProductosService {
   //nos ayudara a compartir la lista de productos de la tabla emergente a otros componentes
   private productosSeleccionados = new BehaviorSubject<producto[]>([]);
-  
+  private productosSeleccionadosVenta = new BehaviorSubject<ProductoVenta[]>([]);
   // API: string = 'https://apimocha.com/productosgym/listar'
-  API: string ='http://localhost/plan/productosv2.php/';
- //API: string ='https://olympus.arvispace.com/puntoDeVenta/conf/productosv2.php/';
+ // API: string ='http://localhost/plan/productosv2.php/';
+ API: string ='https://olympus.arvispace.com/puntoDeVenta/conf/productosv2.php/';
  API2: string =  'https://olympus.arvispace.com/panelAdmin/conf/joinDetalleProducto.php';
 
   constructor(private clienteHttp: HttpClient, private auth: AuthService) {}
@@ -26,8 +27,8 @@ export class ProductosService {
    * para el recepcionista
    * @returns
    */
-  obternerProductos(): Observable<producto[]> {
-    return this.clienteHttp.get<producto[]>(
+  obternerProductos(): Observable<ProductoVenta[]> {
+    return this.clienteHttp.get<ProductoVenta[]>(
       this.API + '?listaProductosRecepcion'
     );
   }

@@ -21,6 +21,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf } from '@angular/common';
+import { FiltroNombreProductoPipe } from './pipes/filtro-concepto.pipe';
+import { FiltroFechaPipe } from './pipes/filtro-fecha.pipe';
+import { FilterByDatePipe } from './pipes/filtroFechas.pipe';
+import { ListarProductosPipe } from './pipes/lista-proveedor.pipe';
 
 @NgModule({
   declarations: [
@@ -29,6 +33,10 @@ import { NgIf } from '@angular/common';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
+    FiltroNombreProductoPipe,
+    FiltroFechaPipe,
+    FilterByDatePipe,
+    ListarProductosPipe,
   ],
   imports: [
     ModulesModule,

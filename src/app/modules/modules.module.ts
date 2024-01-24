@@ -75,6 +75,18 @@ import { HeaderComponent } from './header/header.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RecepMaterialModule } from './recepMaterial';
 import { CrearProductoComponent } from './crearProducto/crearProducto.component';
+import { EmergenteCargarFotoComponent } from './emergente-cargar-foto/emergente-cargar-foto.component';
+import { EmergenteHistorialProductosComponent } from './emergente-historial-productos/emergente-historial-productos.component';
+import { EmergenteInfoClienteComponent } from './emergente-info-cliente/emergente-info-cliente.component';
+import { FormPagoEmergenteComponent } from './form-pago-emergente/form-pago-emergente.component';
+import { InventariosComponent } from './inventarios/inventarios.component';
+import { ListaMembresiasPagoEfecComponent } from './lista-membresias-pago-efec/lista-membresias-pago-efec.component';
+import { MensajeListaComponent } from './ListaClientes/mensaje-cargando.component';
+import { MensajeEmergenteComponent } from './mensaje-emergente/mensaje-emergente.component';
+import { RegistroComponent } from './registro/registro.component';
+import { VentasComponent } from './ventas/ventas.component';
+import { VerCorteComponent } from './ver-corte/ver-corte.component';
+import { WebcamModule } from 'ngx-webcam';
 
 @NgModule({
   declarations: [
@@ -117,6 +129,18 @@ import { CrearProductoComponent } from './crearProducto/crearProducto.component'
     CategoriasComponent,
     ProductosComponent,
     CrearProductoV2Component,
+    EmergenteCargarFotoComponent,
+    EmergenteHistorialProductosComponent,
+    EmergenteInfoClienteComponent,
+    FormPagoEmergenteComponent,
+    InventariosComponent,
+    ListaMembresiasPagoEfecComponent,
+    MensajeListaComponent,
+    MensajeEmergenteComponent,
+    RegistroComponent,
+    VentasComponent,
+    VerCorteComponent,
+    
     //InventarioComponent
   ],
   imports: [
@@ -150,6 +174,7 @@ import { CrearProductoComponent } from './crearProducto/crearProducto.component'
     ToastModule,
     FileUploadModule,
     RecepMaterialModule,
+    WebcamModule
   ]
 })
 export class ModulesModule {
