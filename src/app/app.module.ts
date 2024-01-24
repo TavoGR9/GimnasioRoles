@@ -9,10 +9,6 @@ import { LoginComponent } from './components/login/login.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
-
-//Pipes
-import { ListarCategoriaPipe } from './pipes/listar-categoria.pipe';
-
 //Modulos
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -25,6 +21,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf } from '@angular/common';
+import { FiltroNombreProductoPipe } from './pipes/filtro-concepto.pipe';
+import { FiltroFechaPipe } from './pipes/filtro-fecha.pipe';
+import { FilterByDatePipe } from './pipes/filtroFechas.pipe';
+import { ListarProductosPipe } from './pipes/lista-proveedor.pipe';
 
 @NgModule({
   declarations: [
@@ -34,6 +34,10 @@ import { NgIf } from '@angular/common';
     NotFoundComponent,
     ResetPasswordComponent,
     ListarCategoriaPipe,
+    FiltroNombreProductoPipe,
+    FiltroFechaPipe,
+    FilterByDatePipe,
+    ListarProductosPipe,
   ],
   imports: [
     ModulesModule,

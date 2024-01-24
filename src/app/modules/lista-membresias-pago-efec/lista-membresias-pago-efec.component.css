@@ -1,0 +1,89 @@
+.grid-menu{
+    display: grid;
+    grid-template-columns: 90%;
+}
+
+.full-width {
+    font-size: 14px;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+}
+
+.button-pay{
+    width: 100px;
+    height: 40px;
+    font-weight: bold;
+    margin-left: 5px;
+    border-radius: 15px;
+    background-color: #F9A640;
+}
+
+.button-icon{
+    background-color: #F9A640;
+    color: #000000;
+    border: #ffffff;
+
+}
+
+.icon-size{
+    font-size: 25px;
+}
+
+.activo-icon {
+    color: rgb(13, 235, 13);
+  }
+  
+  .inactivo-icon {
+    color: red;
+  }
+
+
+.search-container {
+    display: flex;
+    position: relative;
+    cursor: pointer;
+    background-color: #fff;
+    overflow: hidden;
+    align-items: center;
+  }
+
+  .search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 4px 8px;
+    margin-right: 4px;
+    width: calc(100% - 30px); /* ajusta el tamaño del input */
+    pointer-events: none; /* evita la interacción con el input */
+  }
+
+  .search-icon {
+    width: 60px;
+    height: 70px;
+   margin-top: -30px;
+    pointer-events: none; /* evita la interacción con la imagen */
+    cursor: pointer;
+  }
+
+  .mat-button {
+    background-color: #F9A640;
+    color: #000000;
+}
+
+.grid-inputs{
+    display: grid;
+    grid-template-columns: 25% 5% 25% 5% 25%  
+}
+
+.table-container {
+    overflow-x: auto; /* Permite desplazamiento horizontal */
+    max-width: 100%;  /* Evita que la tabla sea más ancha que el contenedor */
+  }
+
+  .grid-input-date{
+    display: grid;
+    grid-template-columns: 25% 10% 25% 10% 30%   
+}
