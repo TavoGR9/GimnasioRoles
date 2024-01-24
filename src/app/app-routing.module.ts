@@ -21,7 +21,7 @@ const routes: Routes = [
     path: 'home',
     canActivate: [authGuard, hasRoleGuard],
     data: {
-      rol: 'Usuario',
+      rol: 'OlympusGym',
     },
     loadChildren: () =>
       import('./modules/modules.module').then((m) => m.ModulesModule),

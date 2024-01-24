@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 
 //para conectarse al api
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { User, dataLogin } from '../models/User';
+import { User, dataLogin, listaSucursal } from '../models/User';
 
 @Injectable({
   providedIn: 'root'
@@ -70,8 +70,14 @@ isSupadmin():boolean {
 }
 
 //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
+//Traer lista de sucursales
+list_sucursales():Observable<any> {
+  return this.clienteHttp.get<listaSucursal>(this.APIv2 + 'sucursales.php');
+}
+
+//Consultar informacion de sucursales
 chart_sucursales(data: any):Observable<any> {
-  return this.clienteHttp.post(this.APIv2 + 'login.php', data, { headers: this.httpHeaders });
+  return this.clienteHttp.post(this.APIv2 + 'chart_sucursales.php', data, { headers: this.httpHeaders });
 }
 
 getUserData(): any | null {

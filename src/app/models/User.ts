@@ -11,3 +11,8 @@ export class User {
     id!: string;
     rolUser!: string;
   }
+
+  export class listaSucursal {
+    id!: string;
+    sucursal!: string;
+  }
