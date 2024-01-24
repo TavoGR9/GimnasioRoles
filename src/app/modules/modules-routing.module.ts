@@ -20,6 +20,7 @@ import { InventariosComponent } from './inventarios/inventarios.component';
 import { RegistroComponent } from './registro/registro.component';
 import { VentasComponent } from './ventas/ventas.component';
 import { VerCorteComponent } from './ver-corte/ver-corte.component';
+import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
 
 const routes: Routes = [
   {
@@ -31,7 +32,7 @@ const routes: Routes = [
       { path: 'misMembresias', component: MembresiasComponent},
       { path: 'agregarMembresias', component: MembresiasAgregarComponent},
       { path: 'editarMembresias/:id', component: MembresiasEditarComponent},
-      { path: 'reportes', component: ReportsComponent }
+      { path: 'reportes', component: ReportsComponent },
       { path: 'verConfiguracion', component: VerConfiguracionComponent},
       { path: 'configuracion', component: ConfiguracionComponent},
       { path: 'entradas', component: EntradasComponent },
@@ -41,6 +42,7 @@ const routes: Routes = [
       { path: 'crearProducto', component:CrearProductoComponent},
       { path: 'productos', component: ProductosComponent },
       { path: 'editar-producto/:id', component:EditarProductoComponent},
+      { path: 'productosVendidos', component: ProductosVendidosComponent},
      // { path: 'inventario', component: InventarioComponent },
      // { path: 'verConfiguracion', component: VerConfiguracionComponent},
 
