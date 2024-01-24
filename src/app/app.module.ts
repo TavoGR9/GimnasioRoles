@@ -33,6 +33,7 @@ import { ListarProductosPipe } from './pipes/lista-proveedor.pipe';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
+    ListarCategoriaPipe,
     FiltroNombreProductoPipe,
     FiltroFechaPipe,
     FilterByDatePipe,
