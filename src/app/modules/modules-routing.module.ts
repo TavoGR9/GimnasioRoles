@@ -6,6 +6,7 @@ import { MembresiasAgregarComponent } from './membresias-agregar/membresias-agre
 import { MembresiasComponent } from './membresias-lista/membresias.component';
 import { MembresiasEditarComponent } from './membresias-editar/membresias-editar.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
+import { ReportsComponent } from './reports/reports.component';
 import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
 import { EntradasComponent } from './entradas/entradas.component';
 import { CategoriasComponent } from './categorias/categorias.component';
@@ -30,6 +31,7 @@ const routes: Routes = [
       { path: 'misMembresias', component: MembresiasComponent},
       { path: 'agregarMembresias', component: MembresiasAgregarComponent},
       { path: 'editarMembresias/:id', component: MembresiasEditarComponent},
+      { path: 'reportes', component: ReportsComponent }
       { path: 'verConfiguracion', component: VerConfiguracionComponent},
       { path: 'configuracion', component: ConfiguracionComponent},
       { path: 'entradas', component: EntradasComponent },

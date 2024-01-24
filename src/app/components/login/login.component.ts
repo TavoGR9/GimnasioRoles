@@ -44,23 +44,12 @@ export class LoginComponent implements OnInit {
     if(this.loginForm.valid){
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
-          if (resultData.rolUser === 'SuperAdmin') {
+          if (resultData.rolUser !== 'No_acceso') {
             this.auth.loggedIn.next(true);
-            this.auth.role.next('SuperAdmin');
-            this.auth.userId.next(resultData.id);
-            this.router.navigate(['/sup-admin']);
-            console.log('eres super admin');
-          } else if (resultData.rolUser === 'Administrador') {
-            this.auth.loggedIn.next(true);
-            this.auth.role.next('Administrador');
+            this.auth.role.next(resultData.rolUser);
             this.auth.userId.next(resultData.id);
             this.router.navigate(['/home']);
-          } else if (resultData.rolUser === 'Recepcionista') {
-            this.auth.loggedIn.next(true);
-            this.auth.role.next('Recepcionista');
-            this.auth.userId.next(resultData.id);
-            this.router.navigate(['/recepcion']);
-            console.log('soy recepcionista');
+            console.log('Tu rol es: ' + resultData.rolUser);
           } else {
             this.toastr.error('No cuentas con permisos...', 'Error', {
               positionClass: 'toast-bottom-left',
