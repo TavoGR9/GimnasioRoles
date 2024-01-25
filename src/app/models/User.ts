@@ -10,6 +10,9 @@ export class User {
     //Respuesta de login
     id!: string;
     rolUser!: string;
+    email!: string;
+    idGym!: string;
+    nombreGym!: string;
   }
 
   export class listaSucursal {

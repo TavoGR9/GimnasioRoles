@@ -14,6 +14,10 @@ export class AuthService {
   public loggedIn = new BehaviorSubject<boolean>(false);
   public role = new BehaviorSubject<string>('');
   public userId = new BehaviorSubject<number>(0);
+  public email = new BehaviorSubject<string>('');
+  public idGym = new BehaviorSubject<number>(0);
+  public nombreGym = new BehaviorSubject<string>('');
+
 
    //variable que guarda el endpoint en el srver API: string = 'conf/';
    API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/loginRolev2.php/';
@@ -24,7 +28,7 @@ export class AuthService {
   constructor(private router: Router, private clienteHttp: HttpClient) {
   
   }
-  public idGym!: number;
+  //public idGym!: number;
   usuarioRegistrado: any[] = [];
   public ubicacion!: string;
   idUsuario:number =0;
@@ -87,11 +91,12 @@ getUserData(): any | null {
   }
   return null;
 }
+/*
 getIdGym():number{
   this.usuarioRegistrado = this.getUserData();
   this.idGym=this.usuarioRegistrado[0].idGym;
   return this.idGym;
-}
+}*/
 
 getUbicacion(): string {
   this.usuarioRegistrado = this.getUserData();
