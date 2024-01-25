@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { ProductoVenta } from '../models/productoVenta';
-import { producto } from '../models/producto';
+import { Producto } from '../models/producto';
 import { ListaProductos } from '../models/listaProductos';
 import { AuthService } from './auth.service';
 import { Inventario } from '../models/inventario';
@@ -13,7 +13,7 @@ import { HttpParams } from '@angular/common/http';
 })
 export class ProductosService {
   //nos ayudara a compartir la lista de productos de la tabla emergente a otros componentes
-  private productosSeleccionados = new BehaviorSubject<producto[]>([]);
+  private productosSeleccionados = new BehaviorSubject<Producto[]>([]);
   private productosSeleccionadosVenta = new BehaviorSubject<ProductoVenta[]>([]);
   // API: string = 'https://apimocha.com/productosgym/listar'
  // API: string ='http://localhost/plan/productosv2.php/';
@@ -27,10 +27,8 @@ export class ProductosService {
    * para el recepcionista
    * @returns
    */
-  obternerProductos(): Observable<ProductoVenta[]> {
-    return this.clienteHttp.get<ProductoVenta[]>(
-      this.API + '?listaProductosRecepcion'
-    );
+  obternerProductos(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?listaProductosRecepcion="+id);
   }
 
   actualizarProducto(id: any, datosP: any): Observable<any> {
@@ -89,7 +87,7 @@ export class ProductosService {
     return this.productosSeleccionados.asObservable();
   }
 
-  setProductosSeleccionados(productos: producto[]) {
+  setProductosSeleccionados(productos: Producto[]) {
      // Crear una copia de la lista
     this.productosSeleccionados.next([...productos]);
   }

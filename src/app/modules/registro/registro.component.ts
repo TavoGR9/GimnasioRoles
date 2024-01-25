@@ -168,7 +168,7 @@ export class RegistroComponent implements OnInit {
       fotoUrl:['', Validators.required],
       peso:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(300)])],
       estatura:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(250)])],
-      Gimnasio_idGimnasio:[this.auth.getIdGym()],
+      Gimnasio_idGimnasio:[this.auth.idGym.getValue()],
       Membresia_idMem:['', Validators.required],
       nombreArchivo: [''],
       base64textString: [''],
@@ -176,11 +176,11 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.planService.consultarPlanId(this.auth.getIdGym()).subscribe((respuesta: plan[]) => {
+    this.planService.consultarPlanId(this.auth.idGym.getValue()).subscribe((respuesta: plan[]) => {
       this.planes = respuesta;
     });
 
-    this.planService.consultarPlanId(this.auth.getIdGym()).subscribe((respuesta) => {
+    this.planService.consultarPlanId(this.auth.idGym.getValue()).subscribe((respuesta) => {
       if (Array.isArray(respuesta)) {
         this.planes = respuesta.map((dato) => ({
           value: dato.idMem, // Valor que se enviará al seleccionar

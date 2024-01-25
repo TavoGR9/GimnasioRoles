@@ -18,6 +18,7 @@ export class AuthService {
   public idGym = new BehaviorSubject<number>(0);
   public nombreGym = new BehaviorSubject<string>('');
 
+  
 
    //variable que guarda el endpoint en el srver API: string = 'conf/';
    API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/loginRolev2.php/';
@@ -96,7 +97,7 @@ getIdGym():number{
   this.usuarioRegistrado = this.getUserData();
   this.idGym=this.usuarioRegistrado[0].idGym;
   return this.idGym;
-}*/
+}
 
 getUbicacion(): string {
   this.usuarioRegistrado = this.getUserData();
@@ -108,6 +109,7 @@ getIdUsuario():number{
   this.idUsuario = this.usuarioRegistrado[0].idUsuarios;
   return this.idUsuario;
 }
+*/
 
 logout() {
   localStorage.removeItem('userData');

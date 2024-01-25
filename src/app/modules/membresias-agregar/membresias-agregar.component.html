@@ -1,11 +1,12 @@
 
 <br/><br/>
-<mat-label class="large-text" style="font-family: Arial; font-size: 30px;margin-left: 150px;">Membresías:</mat-label>
+<mat-label class="large-text" style="font-family: Arial; font-size: 30px;margin-left: 50px;">Membresías:</mat-label>
 <br/>
 <br/>
 
 <form [formGroup]="formulariodePlan">
-    <div class="mi-div-con-borde responsive-div">
+    <div class="responsive-div">
+    <!--<div class="mi-div-con-borde responsive-div"></div>-->
     <div style="color:red">{{message}}</div>
         <br/>
         <div class="row">
@@ -91,7 +92,7 @@
         </div>
         <div style="display: flex; justify-content: center;">
             <button mat-stroked-button type="submit" (click)="enviar()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;">Aceptar</button>
-            <button mat-stroked-button (click)="cancelar()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white;">Cancelar</button>
+            <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white;">Cancelar</button>
           </div>          
     </div>
 </form>

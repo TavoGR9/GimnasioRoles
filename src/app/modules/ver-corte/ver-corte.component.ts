@@ -43,7 +43,7 @@ export class VerCorteComponent implements OnInit {
     private toastr: ToastrService
   ) {
 
-    const userId = this.auth.getIdUsuario(); // id del usuario
+    const userId = this.auth.userId.getValue(); // id del usuario
     const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
     const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
    
@@ -77,14 +77,14 @@ export class VerCorteComponent implements OnInit {
   DetallesCaja: any;
 
   ngOnInit(): void {
-    const idUsuario = this.auth.getIdUsuario();
+    const idUsuario = this.auth.userId.getValue();
     
     this.obtenerDetallesCaja(idUsuario);
     this.dataSource = new MatTableDataSource(this.detallesCaja);
     this.dataSource.paginator = this.paginator; // Paginador para dataSource
     console.log(this.paginator,"this.dataSource.paginator");
     //////////////////////////////////////////////////////////////////////////
-    const userId = this.auth.getIdUsuario(); // ID del usuario actual
+    const userId = this.auth.userId.getValue(); // ID del usuario actual
     const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`);
     const lastInsertedId = lastInsertedIdString ? parseInt(lastInsertedIdString, 10) : null;
     this.obtenerDetallesCajaaaa(idUsuario, lastInsertedId);
@@ -376,7 +376,7 @@ export class VerCorteComponent implements OnInit {
 
 
   obtenerDetallesCaja(Recepcionista_idRecepcionista: number | null) {
-    const idUsuario = this.auth.getIdUsuario();
+    const idUsuario = this.auth.userId.getValue();
     this.joinDetalleVentaService.consultarProductosVentas(idUsuario).subscribe(
       (data) => {
         this.detallesCaja = data;
@@ -407,7 +407,7 @@ export class VerCorteComponent implements OnInit {
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          const userId = this.auth.getIdUsuario(); //ID del usuario actual
+          const userId = this.auth.userId.getValue(); //ID del usuario actual
           const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
           const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
 

@@ -10,11 +10,16 @@ export class DetalleVentaService {
 
   //API: string = 'https://localhost/plan/detalle_venta.php'
  API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/detalle_venta.php'
+ API2: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/estatus.php'
   constructor(private clienteHttp:HttpClient) {
   }
 
   obternerVentaDetalle(){
     return this.clienteHttp.get(this.API)
+  }
+
+  obternerEstatus(){
+    return this.clienteHttp.get(this.API2)
   }
   // Angular service method
   agregarVentaDetalle(datosVentaDetalle: detalleVenta[]): Observable<any> {

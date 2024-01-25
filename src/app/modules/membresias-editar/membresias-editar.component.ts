@@ -55,7 +55,7 @@ export class MembresiasEditarComponent {
       gymAcc:['', Validators.required],
       canchaAcc:['', Validators.required],
       ofertas:['', Validators.required],
-      Gimnasio_idGimnasio:[this.auth.getIdGym(), Validators.required]
+      Gimnasio_idGimnasio:[this.auth.idGym.getValue(), Validators.required]
     })
   }
 

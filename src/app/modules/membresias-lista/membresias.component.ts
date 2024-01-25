@@ -10,6 +10,7 @@ import { MembresiaService } from 'src/app/service/membresia.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { MembresiasAgregarComponent } from '../membresias-agregar/membresias-agregar.component';
 
 @Component({
   selector: 'app-membresias',
@@ -29,7 +30,7 @@ export class MembresiasComponent implements OnInit {
   displayedColumns: string[] = ['title', 'details','price','duration', 'trainer','cancha','alberca','ofertas','gimnasio','status','actions'];
 
   ngOnInit(): void {
-    this.membresiaService.consultarPlanId(this.auth.getIdGym()).subscribe(respuesta => {
+    this.membresiaService.consultarPlanId(this.auth.idGym.getValue()).subscribe(respuesta => {
       console.log(respuesta);
       this.plan = respuesta;
       this.dataSource = new MatTableDataSource(this.plan);
@@ -158,4 +159,11 @@ export class MembresiasComponent implements OnInit {
     );
   }*/
   
+  agregarMembresias(): void {
+    const dialogRef = this.dialog.open(MembresiasAgregarComponent, {
+      width: '70%',
+      height: '90%',
+      
+    });
+  }
 }

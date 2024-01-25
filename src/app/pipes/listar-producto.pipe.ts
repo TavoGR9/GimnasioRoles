@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { producto } from 'src/app/models/producto';
+import { Producto } from 'src/app/models/producto';
 
 @Pipe({
   name: 'listarProducto'
 })
 export class ListarProductoPipe implements PipeTransform {
 
-  transform(productos: producto[] | undefined ,page: number = 0, search: string = ''): producto[] {
+  transform(productos: Producto[] | undefined ,page: number = 0, search: string = ''): Producto[] {
     if (!productos) {
       return [];
     }

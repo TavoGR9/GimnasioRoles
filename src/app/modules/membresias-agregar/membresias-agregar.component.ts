@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MembresiaService } from 'src/app/service/membresia.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 //import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { AuthService } from 'src/app/service/auth.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-membresias-agregar',
@@ -19,6 +20,8 @@ export class MembresiasAgregarComponent {
   gimnasio: any;
 
   constructor(
+    public dialogo: MatDialogRef<MembresiasAgregarComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
     public formulario: FormBuilder,
     private router: Router,
     private membresiaService: MembresiaService,
@@ -36,7 +39,7 @@ export class MembresiasAgregarComponent {
       albercaAcc: ['', Validators.required],
       gymAcc: ['', Validators.required],
       canchaAcc: ['', Validators.required],
-      Gimnasio_idGimnasio: [this.auth.getIdGym(), Validators.required],
+      Gimnasio_idGimnasio: [this.auth.idGym.getValue(), Validators.required],
     });
   }
 
@@ -71,6 +74,10 @@ export class MembresiasAgregarComponent {
       // El formulario no es válido, muestra un mensaje de error
       this.message = 'Por favor, complete todos los campos requeridos.';
     }
+  }
+
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
   }
 
 }

@@ -129,7 +129,7 @@ export class CrearProductoComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.categoriaService.consultarListaCategoria(this.auth.getIdGym()).subscribe({
+    this.categoriaService.consultarListaCategoria(this.auth.idGym.getValue()).subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
         console.log('lista de categorias:', this.listaCategorias);
