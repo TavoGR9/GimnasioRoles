@@ -1,0 +1,20 @@
+.grid-menu{
+    display: grid;
+    grid-template-columns: 90%;
+}
+
+.grid-input-date{
+    display: grid;
+    grid-template-columns: 25% 10% 25% 10% 30%   
+}
+
+.table-container {
+    overflow-x: auto; /* Permite desplazamiento horizontal */
+    max-width: 100%;  /* Evita que la tabla sea más ancha que el contenedor */
+  }
+
+.mat-button {
+    background-color: #F9A640;
+    color: #ffffff;
+}
+/*45% 10% 45%;*/

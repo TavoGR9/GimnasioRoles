@@ -87,6 +87,11 @@ import { RegistroComponent } from './registro/registro.component';
 import { VentasComponent } from './ventas/ventas.component';
 import { VerCorteComponent } from './ver-corte/ver-corte.component';
 import { WebcamModule } from 'ngx-webcam';
+import { FiltroNombreProductoPipe } from 'src/app/pipes/filtro-concepto.pipe';
+import { FiltroFechaPipe } from 'src/app//pipes/filtro-fecha.pipe';
+import { FilterByDatePipe } from 'src/app/pipes/filtroFechas.pipe';
+import { ListarProductosPipe } from 'src/app/pipes/lista-proveedor.pipe';
+import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
 
 @NgModule({
   declarations: [
@@ -140,6 +145,11 @@ import { WebcamModule } from 'ngx-webcam';
     RegistroComponent,
     VentasComponent,
     VerCorteComponent,
+    FiltroNombreProductoPipe,
+    FiltroFechaPipe,
+    FilterByDatePipe,
+    ListarProductosPipe,
+    ProductosVendidosComponent,
     
     //InventarioComponent
   ],
