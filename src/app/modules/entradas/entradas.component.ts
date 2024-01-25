@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common'; //para obtener fecha del sistema
 import { Component, OnInit, HostListener} from '@angular/core';
-import { producto } from 'src/app/models/producto';
+import { Producto } from 'src/app/models/producto';
 import {
   FormBuilder,
   FormControl,
@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/service/auth.service';
 import { EntradasService } from 'src/app/service/entradas.service';
 import { ProveedorService } from 'src/app/service/proveedor.service';
-import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
+import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { EntradaProducto } from 'src/app/models/entradas';
@@ -51,13 +51,13 @@ export class EntradasComponent implements OnInit {
   fechaRegistro: string; //fecha de ingreso del producto
   //Variables para guardar las lista de productos
   listaProductos: any;
-  listaProducto: producto[] = [];
-  idProducto: number= 0;
+  listaProducto: Producto[] = [];
+  idProducto: number = 0;
  
 
   //guardar lista proveedores y id
   listaProveedores: any;
-  idProveedor: number=0;
+  idProveedor: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -69,9 +69,9 @@ export class EntradasComponent implements OnInit {
     private dialog: MatDialog,
     private router:Router,
   ) {
-    this.ubicacion = this.auth.getUbicacion();
-    this.id = this.auth.getIdGym();
-    this.idUsuario = this.auth.getIdUsuario();
+    this.ubicacion = this.auth.nombreGym.getValue();
+    this.id = this.auth.idGym.getValue();
+    this.idUsuario = this.auth.userId.getValue();
     this.fechaRegistro = this.obtenerFechaActual();
 
     this.form = this.fb.group({
@@ -85,6 +85,12 @@ export class EntradasComponent implements OnInit {
         Validators.compose([
           Validators.required,
           Validators.pattern(/^[0-9]+$/), //solo numeros enteros
+        ]),
+      ],
+      precioVenta: [
+        '',
+        Validators.compose([
+          Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
         ]),
       ],
       precioCompra: [
@@ -120,7 +126,7 @@ export class EntradasComponent implements OnInit {
     });
 
     //lista de proveedores mat select
-   /* this.proveedor.listaProveedores().subscribe({
+    this.proveedor.listaProveedores().subscribe({
       next: (resulData) => {
         console.log(resulData);
         // Transformar los nombres de propiedades para poder mostrar en mat select (no acepta espacios)
@@ -136,7 +142,7 @@ export class EntradasComponent implements OnInit {
       error: (error) => {
         console.error(error);
       },
-    });*/
+    });
   }
 
   /**
@@ -176,10 +182,17 @@ export class EntradasComponent implements OnInit {
  }
 
   agregarATabla() {
+    console.log("hola");
     // Verificar si el formulario y sus controles no son nulos
     if (this.form && this.form.get('idProducto') && this.form.get('idProveedor') && this.form.get('cantidad')) {
+      console.log("hola2");
       const idProductoSeleccionado = this.form.get('idProducto')!.value;
       console.log('ID Producto Seleccionado:', idProductoSeleccionado);
+      const idPrecioVenta = this.form.get('precioVenta')!.value;
+      console.log('ID idPrecioVenta Seleccionado:', idPrecioVenta);
+      const idPrecioCompra = this.form.get('precioCompra')!.value;
+      
+      
       console.log('Lista de Productos:', this.listaProductos);
       const productoSeleccionado = this.listaProductos.find((producto: any) => producto.idProducto === idProductoSeleccionado);
   
@@ -209,7 +222,8 @@ export class EntradasComponent implements OnInit {
             fechaEntrada: fechaFormateada,
             Gimnasio_idGimnasio: this.id,
             Usuarios_idUsuarios: this.idUsuario,
-            precioCompra: 0
+            precioCompra: idPrecioCompra,
+            precioVenta: idPrecioVenta
             // Otras propiedades según tus campos
           };
     
@@ -241,7 +255,7 @@ export class EntradasComponent implements OnInit {
   
           if (respuesta.success) {
             this.dialog
-              .open(MensajeEmergentesComponent, {
+              .open(MensajeEmergenteComponent, {
                 data: `Entrada agregada exitosamente`,
               })
               .afterClosed()
@@ -272,10 +286,5 @@ export class EntradasComponent implements OnInit {
       });
     }
   }
-  
-  
-
-
- 
  
 }

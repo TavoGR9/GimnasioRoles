@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild , Inject} from "@angular/core";
+
 import { MatTableDataSource } from "@angular/material/table"; //para controlar los datos del api y ponerlos en una tabla
-import { ProductoVenta} from "src/app/models/productoVenta";
+import { Producto } from "src/app/models/producto";
 import { ProductosService } from "src/app/service/productos.service";
 import { AuthService } from "src/app/service/auth.service";
 
@@ -15,7 +16,6 @@ import {
 } from "@angular/forms";
 import { CajaService } from "src/app/service/caja.service";
 import { DetalleVentaService } from "src/app/service/detalle-venta.service";
-import { detalleVenta } from "src/app/models/detalleVenta";
 import { listarClientesService } from "src/app/service/listarClientes.service";
 import { Router } from "@angular/router";
 import { MensajeListaComponent } from "../ListaClientes/mensaje-cargando.component";
@@ -33,6 +33,11 @@ import { User } from "src/app/service/User";
 import { ChangeDetectorRef } from "@angular/core";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { interval, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { HomeComponent } from "../home/home.component";
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { detalleVenta } from "src/app/models/detalleVenta";
 
 
 interface Cliente {
@@ -43,7 +48,7 @@ interface Cliente {
 }
 
 @Component({
-  selector: "app-ventas",
+  selector: "app-home",
   templateUrl: "./ventas.component.html",
   styleUrls: ["./ventas.component.css"],
 })
@@ -51,11 +56,7 @@ export class VentasComponent implements OnInit {
   formularioCaja: FormGroup;
   productosArray: FormArray;
   formularioDetalleVenta: FormGroup;
-  datosParaGuardarVenta: Ventas = {Cliente_ID_Cliente: 0,
-                                  Caja_idCaja: null,
-                                  fechaVenta: Date(),
-                                  total: 0
-                                };
+  datosParaGuardarVenta: Ventas[] = [];
   numero: any;
   detalle: any;
   cliente: any;
@@ -63,16 +64,16 @@ export class VentasComponent implements OnInit {
   producto: any;
   productos: any;
   fechaFin: Date = new Date();
-  fechaInicio: Date = new Date();
+  fechaInicio: Date = new Date(); 
   ubicacion: string = "";
   fecha: string = "";
   hora: string = "";
-  ubicacionGym: string = ""; 
+  ubicacionGym: string=""; 
   fechaFiltro: string = "";
   fechaConHora: string = "";
   opcionSeleccionada: string = "diario";
-  idUsuarioo: number = 0;
-  lastInsertedId: number = 0;
+  idUsuarioo: number =0;
+  lastInsertedId: number =0;
   lastInsertedId3: number = 0;
   totalAPagar: number = 0;
   dineroRecibido: number = 0;
@@ -92,9 +93,9 @@ export class VentasComponent implements OnInit {
   detallesCaja: any[] = [];
   clientes: Cliente[] = [];
   listaClientes: any[] = [];
-  productData: ProductoVenta[] = []; 
+  productData: Producto[] = []; 
   listInventarioData: any[] = [];
-  selectedProducts: ProductoVenta[] = [];
+  selectedProducts: Producto[] = [];
   clientesFiltrados: Cliente[] = [];
   datosParaGuardarDetalleVenta: detalleVenta[] = [];
   columnas: string[] = [
@@ -113,10 +114,13 @@ export class VentasComponent implements OnInit {
     "acciones",
   ];
 
-  dataSource: MatTableDataSource<any>; 
+  
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
 
   constructor(
+    public dialogo: MatDialogRef<HomeComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
     private router: Router,
     public dialog: MatDialog,
     private auth: AuthService,
@@ -132,11 +136,9 @@ export class VentasComponent implements OnInit {
     private ListarClientesService: listarClientesService,
     private joinDetalleVentaService: JoinDetalleVentaService,
   ) {
-    const userId = this.auth.getIdUsuario(); // id del usuario
+    const userId = this.auth.userId.getValue(); // id del usuario
     const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
     const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
-
-    this.dataSource = new MatTableDataSource<any>([]);
    /* this.cajaService.consultarCaja(lastInsertedId).subscribe((respuesta) => {
       console.log(respuesta);
       this.formularioCaja.setValue({
@@ -175,18 +177,38 @@ export class VentasComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.productoService.obternerProductos().subscribe((respuesta) => {
+    console.log(this.auth.idGym.getValue(), "this.auth.getIdGym()");
+    this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
+      console.log("this.productData", this.productData);
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator; // Asignación del paginador aquí
       console.log(this.paginator,"this.paginator");
     });
+
+   
+  
+  }
+
+  ejecutarServicio(): void {
+    // Llama a tu servicio aquí
+    this.DetalleVenta.obternerEstatus().subscribe((result) => {
+      console.log('Resultado del servicio:', result);
+    });
   }
   
+  private destroy$: Subject<void> = new Subject<void>();
 
   ngOnInit(): void {
+
+    interval(1000)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(() => {
+      this.ejecutarServicio();
+    });
+
     //ubicacion
-    this.ubicacion = this.auth.getUbicacion();
+    this.ubicacion = this.auth.nombreGym.getValue();
     //datos de detalle venta
     this.DetalleVenta.obternerVentaDetalle().subscribe({
       next: (resultData) => {
@@ -195,7 +217,7 @@ export class VentasComponent implements OnInit {
     });
     this.clienteService;
     //////////////////////////////////////////////////////
-    const userId = this.auth.getIdUsuario(); // ID del usuario actual
+    const userId = this.auth.userId.getValue(); // ID del usuario actual
     const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
     const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
     //obtener datos de caja por id
@@ -358,7 +380,7 @@ export class VentasComponent implements OnInit {
             console.log("ID insertado caja:", this.lastInsertedId);
             this.mostrarProductos = true;
 
-            const userId = this.auth.getIdUsuario(); // Aquí debes obtener el ID del usuario actual
+            const userId = this.auth.userId.getValue(); // Aquí debes obtener el ID del usuario actual
             localStorage.setItem(
               `lastInsertedId_${userId}`,
               this.lastInsertedId.toString()
@@ -377,7 +399,7 @@ export class VentasComponent implements OnInit {
   enviarDatosYDetallesVenta() {
     console.log("total", this.totalAPagar <= this.dineroRecibido);
     if (this.totalAPagar <= this.dineroRecibido) {
-      const userId = this.auth.getIdUsuario(); //ID del usuario actual
+      const userId = this.auth.userId.getValue(); //ID del usuario actual
       const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
       const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
       const fechaActual = new Date();
@@ -390,7 +412,7 @@ export class VentasComponent implements OnInit {
       // Enviar datos de ventas
       const datosVentas = {
         Cliente_ID_Cliente: idCliente,
-        Caja_idCaja: lastInsertedId,
+        Caja_idCaja: 1,
         fechaVenta: fechaVenta,
         total: totalAPagar,
       };
@@ -404,7 +426,7 @@ export class VentasComponent implements OnInit {
             nombreProducto: producto.nombre,
             cantidadElegida: producto.cantidad,
             precioUnitario: producto.precio,
-            Gimnasio_idGimnasio: this.auth.getIdGym(),
+            Gimnasio_idGimnasio: this.auth.idGym.getValue(),
             importe: producto.cantidad * producto.precio,
           };
         });
@@ -457,7 +479,7 @@ export class VentasComponent implements OnInit {
       .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          const userId = this.auth.getIdUsuario(); //ID del usuario actual
+          const userId = this.auth.userId.getValue(); //ID del usuario actual
           const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
           const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
           this.cajaService.actualizarCaja(lastInsertedId, this.formularioCaja.value).subscribe((respuesta) => {
@@ -473,7 +495,7 @@ export class VentasComponent implements OnInit {
   //****** MOSTRAR TABLA DEL CORTE ******/
   mostrarVentas() {
     this.mostrarLasVentas = true;
-    const userId = this.auth.getIdUsuario(); //ID del usuario actual
+    const userId = this.auth.userId.getValue(); //ID del usuario actual
     const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`);// Obtener el último ID insertado para ese usuario
     const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
     //this.obtenerDetallesCaja(lastInsertedId);
@@ -482,7 +504,7 @@ export class VentasComponent implements OnInit {
   imprimirResumen() {
     console.log("total", this.totalAPagar <= this.dineroRecibido);
     if (this.totalAPagar <= this.dineroRecibido) {
-      const userId = this.auth.getIdUsuario(); //ID del usuario actual
+      const userId = this.auth.userId.getValue(); //ID del usuario actual
       const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
       const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
       const fechaActual = new Date();
@@ -495,10 +517,12 @@ export class VentasComponent implements OnInit {
       // Enviar datos de ventas
       const datosVentas = {
         Cliente_ID_Cliente: idCliente,
-        Caja_idCaja: lastInsertedId,
+        Caja_idCaja: 1,
         fechaVenta: fechaVenta,
         total: totalAPagar,
       };
+
+      console.log(datosVentas, "datosVentas");
       this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
         const lastInsertedId3 = response.lastInsertedId3;
         // Enviar detalles de ventas
@@ -509,13 +533,14 @@ export class VentasComponent implements OnInit {
             nombreProducto: producto.nombre,
             cantidadElegida: producto.cantidad,
             precioUnitario: producto.precio,
-            Gimnasio_idGimnasio: this.auth.getIdGym(),
+            Gimnasio_idGimnasio: this.auth.idGym.getValue(),
             importe: producto.cantidad * producto.precio,
           };
         });
         console.log("Detalles de venta", detallesVenta);
         this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
           (response) => {
+            console.log("response",response);
             console.log("Detalles de ventas guardados correctamente");
           }
         );
@@ -533,6 +558,12 @@ export class VentasComponent implements OnInit {
     } else {
       this.toastr.error("Ingresa el pago");
     }
+
+
+
+    //this.DetalleVenta.obternerEstatus().subscribe();
+
+
     ///////////////////////
     if (this.totalAPagar <= this.dineroRecibido) {
       const totalCantidad = this.selectedProducts.reduce(
@@ -943,7 +974,7 @@ export class VentasComponent implements OnInit {
     });
   }
   
-  agregaraBalance(producto: ProductoVenta) {
+  agregaraBalance(producto: Producto) {
     /*si el producto que se está intentando agregar existe en la lista de productos seleccionados*/
     const productoExistente = this.selectedProducts.find((p) => p.id === producto.id);
     /**
@@ -962,12 +993,12 @@ export class VentasComponent implements OnInit {
       0
     );
     this.cantidadSolicitada = producto.cantidad;
-    this.obtenerProducto(producto.id,this.auth.getIdGym(), producto.cantidad);
+    this.obtenerProducto(producto.id,this.auth.idGym.getValue(), producto.cantidad);
     producto.cantidad = 0;
   }
 
-  validarYAgregarProducto(producto: ProductoVenta) {
-    this.InventarioService.obtenerProductoPorId(producto.id, this.auth.getIdGym()).subscribe(
+  validarYAgregarProducto(producto: Producto) {
+    this.InventarioService.obtenerProductoPorId(producto.id, this.auth.idGym.getValue()).subscribe(
       (data) => {
         const productoObtenido = data[0];
         
@@ -1006,7 +1037,7 @@ export class VentasComponent implements OnInit {
         );
   
         producto.cantidad = 0;
-        this.obtenerProducto(producto.id,this.auth.getIdGym(),cantidadSolicitada);
+        this.obtenerProducto(producto.id,this.auth.idGym.getValue(),cantidadSolicitada);
       },
       (error) => {
         console.error("Error al obtener el producto:", error);

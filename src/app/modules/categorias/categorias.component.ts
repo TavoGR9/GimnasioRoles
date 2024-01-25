@@ -33,7 +33,7 @@ export class CategoriasComponent implements OnInit {
     public dialog: MatDialog) {}
   ngOnInit(): void {
 
-    this.categoriaService.consultarCategoriaGym(this.auth.getIdGym()).subscribe({
+    this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
       next: (resultData) => {
         console.log(resultData);
         this.categorias = resultData;

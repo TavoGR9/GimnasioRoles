@@ -31,7 +31,7 @@ export class AltaCategoriaComponent implements OnInit {
       descripcion: ['', Validators.required],
       estatus: ['', Validators.required],
       fechaCreacion: ['', Validators.required],
-      gimnasio_id:[this.auth.getIdGym()],
+      gimnasio_id:[this.auth.idGym.getValue()],
     });
   }
 

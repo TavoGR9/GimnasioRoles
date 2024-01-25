@@ -17,7 +17,6 @@ export class ProductosComponent implements OnInit {
     'codigo_de_barra',
     'nombre',
     'descripcion',
-    'precio de venta',
     'estatus',
     'categoria', 
 
@@ -42,7 +41,7 @@ export class ProductosComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
     });*/
     
-    this.productoService.consultarProductoId(this.auth.getIdGym()).subscribe({
+    this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
       next: (resultData) => {
         console.log('productos',resultData);
         this.productos = resultData;

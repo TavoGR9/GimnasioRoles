@@ -52,7 +52,7 @@ export class ConfiguracionComponent  implements OnInit{
   ) {
   
    {
-      this.idGimnasio = this.auth.getIdGym(); // Accede a idGimnasio desde los datos
+      this.idGimnasio = this.auth.idGym.getValue(); // Accede a idGimnasio desde los datos
       this.formularioHorarios = this.formularioHorario.group({
         horarios: this.formularioHorario.array([]),
       });
@@ -116,7 +116,7 @@ export class ConfiguracionComponent  implements OnInit{
   
   ngOnInit(): void {
     
-    this.gimnasioService.consultarPlan(this.auth.getIdGym()).subscribe(
+    this.gimnasioService.consultarPlan(this.auth.idGym.getValue()).subscribe(
       (respuesta) => {
         this.formularioSucursales.setValue({
           nombreGym: respuesta[0]['nombreGym'],
@@ -170,8 +170,8 @@ export class ConfiguracionComponent  implements OnInit{
   }*/
 
   actualizar() {
-    const actualizarPlan = this.gimnasioService.actualizarPlan(this.auth.getIdGym(), this.formularioSucursales.value);
-    const actualizarHorarios = this.HorarioService.actualizarHorario(this.auth.getIdGym(), this.formularioHorarios.value);
+    const actualizarPlan = this.gimnasioService.actualizarPlan(this.auth.idGym.getValue(), this.formularioSucursales.value);
+    const actualizarHorarios = this.HorarioService.actualizarHorario(this.auth.idGym.getValue(), this.formularioHorarios.value);
   
     forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
       next: ([planResponse, horariosResponse]) => {

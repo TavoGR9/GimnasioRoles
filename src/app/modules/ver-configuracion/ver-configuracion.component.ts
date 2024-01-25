@@ -27,16 +27,16 @@ export class VerConfiguracionComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.gimnasioService.consultarPlan(this.auth.getIdGym()).subscribe(respuesta => {
+    this.gimnasioService.consultarPlan(this.auth.idGym.getValue()).subscribe(respuesta => {
       this.gimnasio = respuesta;
     });
     this.consultarHorario();
 
-    this.id=this.auth.getIdGym();
+    this.id=this.auth.idGym.getValue();
   }
 
   consultarHorario() {
-    this.HorarioService.consultarHorario(this.auth.getIdGym()).subscribe(
+    this.HorarioService.consultarHorario(this.auth.idGym.getValue()).subscribe(
       (data) => {
         this.datosHorario = data;  // Asigna los datos a la propiedad
       },
