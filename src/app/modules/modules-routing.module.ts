@@ -31,7 +31,7 @@ const routes: Routes = [
       { path: 'misMembresias', component: MembresiasComponent},
       { path: 'agregarMembresias', component: MembresiasAgregarComponent},
       { path: 'editarMembresias/:id', component: MembresiasEditarComponent},
-      { path: 'reportes', component: ReportsComponent }
+      { path: 'reportes', component: ReportsComponent },
       { path: 'verConfiguracion', component: VerConfiguracionComponent},
       { path: 'configuracion', component: ConfiguracionComponent},
       { path: 'entradas', component: EntradasComponent },
