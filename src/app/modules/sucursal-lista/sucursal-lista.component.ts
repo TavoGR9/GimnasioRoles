@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HorarioService } from 'src/app/service/horario.service';
 import { forkJoin } from 'rxjs';
-//import { HorariosComponent } from '../horarios/horarios.component';
+import { HorariosComponent } from '../horarios/horarios.component';
 import { gimnasio } from 'src/app/models/gimnasio';
 import { HorariosVistaComponent } from '../horarios-vista/horarios-vista.component';
 import { ListarSucursalesPipe } from 'src/app/pipes/listar-sucursales.pipe';
+import { SucursalAltaComponent } from '../sucursal-alta/sucursal-alta.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { SucursalEditarComponent } from '../sucursal-editar/sucursal-editar.component';
 
 @Component({
   selector: 'app-sucursal-lista',
@@ -30,19 +34,222 @@ export class SucursalListaComponent implements OnInit {
     public dialog: MatDialog,
   ){}
 
-  displayedColumns: string[] = ['nombre','direccion','telefono', 'tipo',  'alberca', 'ofertas', 'gimnasio', 'IDgimnasio', 'actions', 'horario'];
+  dataSource = new MatTableDataSource<any>();
 
+  // Configuración del paginador
+  pageSize = 10;
+  pageSizeOptions: number[] = [5, 10, 25, 100];
 
-  ngOnInit(): void {
-    this.gimnasioService.obternerPlan().subscribe(respuesta => {
-      this.gimnasio = respuesta;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo',  'alberca', 'ofertas', 'gimnasio', 'IDgimnasio', 'actions', 'horario', 'ubicacion', 'activar'];
+
+  /*onToggle(event: Event, idGimnasio: any) {
+
+    let gimnasio = this.gimnasio.find((g: { idGimnasio: any }) => g.idGimnasio === idGimnasio);
+  // Verificar si encontramos la sucursal
+  if (!gimnasio) {
+    console.error('No se encontró la sucursal con id: ', idGimnasio);
+    return;
+  }
+
+    let mensaje = gimnasio.estatus === 1 ? '¿Deseas desactivar esta sucursal?' : '¿Deseas activar esta sucursal?';
+    console.log("ID de la sucursal: ", idGimnasio);
+    const dialogRef = this.dialog.open(MensajeEliminarComponent,{
+      data: {mensaje: mensaje, idGimnasio: idGimnasio},
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.gimnasioService.botonEstado.next({respuesta: true, idGimnasio: idGimnasio});
+      } else {
+        this.gimnasioService.botonEstado.next({respuesta: false, idGimnasio: idGimnasio});
+      }
+    });
+  }*/
+  /*onToggle(event: Event, idGimnasio: any) {
+    let gimnasio = this.gimnasio.find((g: { idGimnasio: any }) => g.idGimnasio === idGimnasio);
+    if (!gimnasio) {
+      console.error('No se encontró la sucursal con id: ', idGimnasio);
+      return;
+    }
+  
+    let mensaje = gimnasio.estatus === 1 ? '¿Deseas desactivar esta sucursal?' : '¿Deseas activar esta sucursal?';
+    console.log("ID de la sucursal: ", idGimnasio);
+    const dialogRef = this.dialog.open(MensajeEliminarComponent,{
+      data: {mensaje: mensaje, idGimnasio: idGimnasio},
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.gimnasioService.botonEstado.next({respuesta: true, idGimnasio: idGimnasio});
+        // Actualizar this.gimnasio
+        this.gimnasioService.obternerPlan().subscribe((data) => {
+          this.gimnasio = data;
+        });
+      } else {
+        this.gimnasioService.botonEstado.next({respuesta: false, idGimnasio: idGimnasio});
+      }
+    });
+  }*/
+  onToggle(event: Event, idGimnasio: any) {
+    let gimnasio = this.gimnasio.find((g: { idGimnasio: any }) => g.idGimnasio === idGimnasio);
+  
+    if (!gimnasio) {
+      console.error('No se encontró la sucursal con id: ', idGimnasio);
+      return;
+    }
+  
+    let mensaje = gimnasio.estatus == 1 ? '¿Deseas desactivar esta sucursal?' : '¿Deseas activar esta sucursal?';
+  
+    const dialogRef = this.dialog.open(MensajeEliminarComponent, {
+      data: { mensaje: mensaje, idGimnasio: idGimnasio },
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Invertir el valor del estatus
+        const nuevoEstatus = gimnasio.estatus == 1 ? 0 : 1;
+  
+        // Actualizar la base de datos y refrescar los datos
+        this.gimnasioService.actualizarEstatus(idGimnasio, nuevoEstatus).subscribe(
+          (response) => {
+            if (response && response.success === 1) {
+              console.log('Estatus actualizado correctamente');
+              gimnasio.estatus = nuevoEstatus;
+            } else if (response) {
+              console.error('Error al actualizar el estatus: ', response.error);
+            } else {
+              console.error('Error: la respuesta es null');
+            }
+          },
+          (error) => {
+            console.error('Error en la petición: ', error);
+          }
+        );
+  
+      } else {
+        console.log('Has cancelado la operación');
+      }
     });
   }
+
+ /* ngOnInit(): void {
+
+    this.gimnasioService.obternerPlan().subscribe((data) => {
+      this.gimnasio = data;
+    });
+
+    this.gimnasioService.botonEstado.subscribe((data) => {
+      if(data.respuesta){
+        console.log("HAS DADO EN ACEPTAR");
+        console.log("estatus actual:", this.gimnasio.estatus);
+
+        // Buscar la sucursal correcta
+    let gimnasio = this.gimnasio.find((g: { idGimnasio: any }) => g.idGimnasio === data.idGimnasio);
+
+    // Verificar si encontramos la sucursal
+    if (!gimnasio) {
+      console.error('No se encontró la sucursal con id: ', data.idGimnasio);
+      return;
+    }
+    console.log('Estatus actual: ', gimnasio.estatus);  // Agrega esta línea
+
+        let datosPlan = {
+         // estatus: 0
+         estatus: gimnasio.estatus === 1 ? 0 : 1
+
+        };
+        this.gimnasioService.actualizarEstatus(data.idGimnasio, datosPlan.estatus).subscribe(
+          (response) => {
+            if (response && response.success === 1) {
+              // ...
+              this.gimnasioService.obternerPlan().subscribe((data) => {
+                this.gimnasio = data;
+              });
+            } else if (response) {
+              console.error('Error al actualizar el estatus: ', response.error);
+            } else {
+              console.error('Error: la respuesta es null');
+            }
+          },
+          (error) => {
+            console.error('Error en la petición: ', error);
+          }
+        );
+      }else if(!data.respuesta){
+        console.log("HAS DADO EN CANCELAR");
+      }
+    });
+  }*/
+  ngOnInit(): void {
+    this.gimnasioService.obternerPlan().subscribe((data) => {
+      this.gimnasio = data;
+      
+      this.dataSource = new MatTableDataSource(this.gimnasio);
+      
+      this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+
+      
+    });
+
+    
+
+
+    this.gimnasioService.botonEstado.subscribe((data) => {
+      if(data.respuesta){
+        console.log("HAS DADO EN ACEPTAR");
+        // Buscar la sucursal correcta
+        let gimnasio = this.gimnasio.find((g: { idGimnasio: any }) => g.idGimnasio === data.idGimnasio);
+        // Verificar si encontramos la sucursal
+        if (!gimnasio) {
+          console.error('No se encontró la sucursal con id: ', data.idGimnasio);
+          return;
+        }
+        console.log('Estatus actual: ', gimnasio.estatus);  // Agrega esta línea
+        let datosPlan = {
+          estatus: gimnasio.estatus === 1 ? 0 : 1,
+        };
+        this.gimnasioService.actualizarEstatus(data.idGimnasio, datosPlan.estatus).subscribe(
+          (response) => {
+            if (response && response.success === 1) {
+              // Actualizar el estado de la sucursal en el cliente
+              gimnasio.estatus = datosPlan.estatus;
+              console.log('Estatus después de actualizar: ', gimnasio.estatus);
+              // Actualizar this.gimnasio
+              this.gimnasioService.obternerPlan().subscribe((data) => {
+                this.gimnasio = data;
+              });
+            } else if (response) {
+              console.error('Error al actualizar el estatus: ', response.error);
+            } else {
+              console.error('Error: la respuesta es null');
+            }
+          },
+          (error) => {
+            console.error('Error en la petición: ', error);
+          }
+        );
+      }else if(!data.respuesta){
+        console.log("HAS DADO EN CANCELAR");
+      }
+    });
+  }
+
+
+  editarSucursal(idGimnasio: string): void {
+    const dialogRef = this.dialog.open(SucursalEditarComponent, {
+      width: '75%',
+      height: '90%',
+      data: { idGimnasio: idGimnasio },
+    });
+  }
+
 
   borrarSucursal(idGimnasio: any) {
     console.log(idGimnasio);
     this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar esta membresía?`,
+      data: `¿Deseas desactivar esta sucursal?`,
     })
     .afterClosed()
     .subscribe((confirmado: boolean) => {
@@ -71,13 +278,13 @@ export class SucursalListaComponent implements OnInit {
     });
   }
 
-  /*agregarHorario(idGimnasio: string): void {
+  agregarHorario(idGimnasio: string): void {
     const dialogRef = this.dialog.open(HorariosComponent, {
       width: '60%',
       height: '90%',
       data: { idGimnasio: idGimnasio },
     });
-  }*/
+  }
 
   nextPage() {
     this.page += 5;
@@ -105,4 +312,28 @@ changePage(newPage: number) {
 changeSearchString(newSearchString: string) {
   this.searchString = newSearchString;
 }
+
+verUbicacion(item: any) {
+  const direccion = `${item.calle}+${item.numExt}+${item.colonia}+${item.codigoPostal}+${item.ciudad}+${item.estado}`;
+  window.open(`https://www.google.com/maps/search/?api=1&query=${direccion}`, '_blank');
+}
+
+/*onToggle(event: Event, idGimnasio: any) {
+  console.log("ID de la sucursal: ", idGimnasio);
+  this.dialog.open(MensajeEliminarComponent,{
+    data: `¿Deseas desactivar esta sucursal?`,
+  })
+  // Aquí puedes agregar el código para actualizar el estado en tu base de datos
+}*/
+
+
+sucursalesD(): void {
+  const dialogRef = this.dialog.open(SucursalAltaComponent, {
+    width: '80%',
+    height: '90%',
+    
+  });
+}
+
+
 }

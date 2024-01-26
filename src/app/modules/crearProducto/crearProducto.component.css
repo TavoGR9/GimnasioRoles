@@ -40,15 +40,24 @@ table {
 /**propiedades contenedor formulario**/
 .form_data {
   margin: auto;
-  text-align: left;
+  
   padding-bottom: 15px;
 }
 
 /**propiedades contendor margen**/
 .content_margin {
-  width: 100%;
+  width: 90%;
   margin: auto;
-  /* background-color: aqua; */
+}
+
+.responsive-div {
+  width: 100%; /* El div ocupa todo el ancho disponible */
+  height: 100%;
+  max-width: 1000px; /* Ancho máximo para evitar que se extienda demasiado en pantallas grandes */
+  max-height: 9000px;
+  margin: 0 auto; /* Centra el div horizontalmente en la pantalla */
+  padding: 20px; /* Agrega espaciado interno si es necesario */
+  /* Otros estilos personalizados para tu div */
 }
 
 .large-text {

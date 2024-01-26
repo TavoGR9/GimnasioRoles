@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArray , FormControl} from "@angular/forms";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
@@ -10,6 +10,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { gimnasio } from 'src/app/models/gimnasio';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { AbstractControl } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 class Horario {
   constructor(
@@ -39,6 +40,8 @@ export class SucursalAltaComponent implements OnInit {
   idSucursal!: string;
 
   constructor(
+    public dialogo: MatDialogRef<SucursalAltaComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
     public formulario: FormBuilder,
     public formularioHorario: FormBuilder,
     private router: Router,
@@ -91,7 +94,7 @@ export class SucursalAltaComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigateByUrl("/admin/lista-sucursales");
+     this.dialogo.close(true);
   }
 
   enviarForm(): void {
