@@ -360,3 +360,17 @@ option {
   margin-top: 20px;
   /* Agrega cualquier otro estilo que desees para que se vea como quieres */
 }
+
+/* Agrega estos estilos en tu archivo CSS o SCSS */
+
+.total-ventas {
+  text-align: right; /* Alinea el contenido a la izquierda */
+  margin-top: 20px;
+}
+
+.total-label {
+  font-size: 18px;
+  color: #333; /* Color del texto */
+  margin-bottom: 5px;
+}
+

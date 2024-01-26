@@ -14,8 +14,8 @@ export class JoinDetalleVentaService {
   constructor(private clienteHttp:HttpClient) {
   }
 
-  consultarProductosVentas(Recepcionista_idRecepcionista: number | null):Observable<any[]>{
-    const url = `${this.API}?Recepcionista_idRecepcionista=${Recepcionista_idRecepcionista}`;
+  consultarProductosVentas(Gimnasio_idGimnasio: number | null):Observable<any[]>{
+    const url = `${this.API}?Gimnasio_idGimnasio=${Gimnasio_idGimnasio}`;
     return this.clienteHttp.get<any[]>(url);
   }
 

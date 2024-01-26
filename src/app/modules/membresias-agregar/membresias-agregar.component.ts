@@ -22,6 +22,7 @@ export class MembresiasAgregarComponent {
   constructor(
     public dialogo: MatDialogRef<MembresiasAgregarComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
+    
     public formulario: FormBuilder,
     private router: Router,
     private membresiaService: MembresiaService,

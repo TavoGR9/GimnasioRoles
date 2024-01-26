@@ -57,7 +57,6 @@ import { ListaProductoComponent } from './lista-producto/lista-producto.componen
 import { AltaProductoComponent } from './alta-producto/alta-producto.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 import { ProductManagementComponent } from './product-management/product-management.component';
-import { CrearProductoV2Component } from './crear-producto/crear-producto.component';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
 import { SubirImagenesComponent } from './subir-imagenes/subir-imagenes.component';
 import { HorariosVistaComponent } from './horarios-vista/horarios-vista.component';
@@ -133,7 +132,6 @@ import { ProductosVendidosComponent } from './productos-vendidos/productos-vendi
     EditarCategoriaComponent,
     CategoriasComponent,
     ProductosComponent,
-    CrearProductoV2Component,
     EmergenteCargarFotoComponent,
     EmergenteHistorialProductosComponent,
     EmergenteInfoClienteComponent,

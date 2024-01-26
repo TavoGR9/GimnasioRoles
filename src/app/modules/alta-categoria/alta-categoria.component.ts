@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-alta-categoria',
@@ -19,6 +21,9 @@ export class AltaCategoriaComponent implements OnInit {
   gimnasio: any;
 
   constructor(
+    public dialogo: MatDialogRef<AltaCategoriaComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
+    
     public formulario: FormBuilder,
     private router: Router,
     private categoriaService: CategoriaService,
@@ -66,5 +71,8 @@ export class AltaCategoriaComponent implements OnInit {
       // El formulario no es válido, muestra un mensaje de error
       this.message = 'Por favor, complete todos los campos requeridos.';
     }
+  }
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
   }
 }

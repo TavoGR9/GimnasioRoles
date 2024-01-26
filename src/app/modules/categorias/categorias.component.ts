@@ -6,6 +6,9 @@ import { Categorias } from 'src/app/models/categorias';
 //import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from 'src/app/service/auth.service';
+import { AltaCategoriaComponent } from '../alta-categoria/alta-categoria.component';
+import { EditarCategoriaComponent } from '../editar-categoria/editar-categoria.component';
+import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 @Component({
   selector: 'app-categorias',
   templateUrl: './categorias.component.html',
@@ -59,6 +62,14 @@ export class CategoriasComponent implements OnInit {
     });*/
   }
 
+  editarCategoria(idCategoria: string): void {
+    const dialogRef = this.dialog.open(EditarCategoriaComponent, {
+      width: '60%',
+      height: '90%',
+      data: { idCategoria: idCategoria },
+    });
+  }
+
   /**
    * metodo para filtrar la informacion que escribe el usaurio
    */
@@ -71,7 +82,7 @@ export class CategoriasComponent implements OnInit {
 
   toggleCheckbox(id: number, estatus: number) {
     // Guarda el estado actual en una variable temporal
-    /*const estadoOriginal = estatus;
+    const estadoOriginal = estatus;
     console.log('Estatus actual:', estadoOriginal);
   
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
@@ -108,6 +119,14 @@ export class CategoriasComponent implements OnInit {
         console.error('Error al actualizar la membresía:', error);
         // Maneja el error de alguna manera si es necesario.
       }
-    );*/
+    );
+  }
+
+  altaCategoria(): void {
+    const dialogRef = this.dialog.open(AltaCategoriaComponent, {
+      width: '70%',
+      height: '90%',
+      
+    });
   }
 }

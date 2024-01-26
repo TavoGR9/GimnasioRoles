@@ -1,38 +1,23 @@
 import { MatTableDataSource } from "@angular/material/table";
 import { AuthService } from "src/app/service/auth.service";
 import { JoinDetalleVentaService } from "src/app/service/JoinDetalleVenta";
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit  } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { CajaService } from "src/app/service/caja.service";
 import { MatPaginator } from '@angular/material/paginator';
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormArray,
-  FormControl,
-  FormGroupDirective,
-  NgForm,
-} from "@angular/forms";
+import { FormGroup, FormBuilder, Validators} from "@angular/forms";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
-//import * as jsPDF from 'jspdf';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import { ProductoVenta } from "src/app/models/productoVenta";
 
 @Component({
   selector: 'app-ver-corte',
   templateUrl: './ver-corte.component.html',
   styleUrls: ['./ver-corte.component.css']
 })
-export class VerCorteComponent implements OnInit {
-
-  @ViewChild('paginatorCaja', { static: true }) paginator!: MatPaginator;
-  @ViewChild('paginatorHistorial', { static: true }) paginatorActivos!: MatPaginator;
-  
+export class VerCorteComponent implements OnInit  {
 
   constructor( 
     public dialog: MatDialog,
@@ -42,26 +27,17 @@ export class VerCorteComponent implements OnInit {
     private joinDetalleVentaService: JoinDetalleVentaService,
     private toastr: ToastrService
   ) {
-
     const userId = this.auth.userId.getValue(); // id del usuario
-    const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
-    const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
-   
-    this.formularioCaja = this.formulario.group({
-      fechaApertura: [{ value: "", disabled: true }],
-      fechaCierre: ["0000-00-00"],
-      cantidadDineroAcumuladoTeoria: ["0"],
-      cantidadDineroExistente: ["", Validators.required],
-      Recepcionista_idRecepcionista: [userId],
-    });
   }
-  formularioCaja: FormGroup;
+
+  totalVentas: number = 0;
+  total = 0;
   fechaFin: Date = new Date();
+
   fechaInicio: Date = new Date();
   fechaFiltro: string = "";
   opcionSeleccionada: string = "diario";
   totalAPagarCorte: number = 0;
-  cerrarCaja: boolean = true;
   botonProductos: boolean = false;
   mostrarInputFlag: boolean = false;
   detallesCaja: any[] = [];
@@ -72,38 +48,47 @@ export class VerCorteComponent implements OnInit {
     "precioUnitario",
     "fechaVenta",
   ];
+  
   dataSource = new MatTableDataSource<any>();
-  dataSource2 = new MatTableDataSource<any>();
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+
+  
   DetallesCaja: any;
 
   ngOnInit(): void {
     const idUsuario = this.auth.userId.getValue();
-    
-    this.obtenerDetallesCaja(idUsuario);
-    this.dataSource = new MatTableDataSource(this.detallesCaja);
-    this.dataSource.paginator = this.paginator; // Paginador para dataSource
-    console.log(this.paginator,"this.dataSource.paginator");
-    //////////////////////////////////////////////////////////////////////////
-    const userId = this.auth.userId.getValue(); // ID del usuario actual
-    const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`);
-    const lastInsertedId = lastInsertedIdString ? parseInt(lastInsertedIdString, 10) : null;
-    this.obtenerDetallesCajaaaa(idUsuario, lastInsertedId);
-    this.dataSource2 = new MatTableDataSource(this.detallesCajaaaa);
-    this.dataSource2.paginator = this.paginatorActivos; // Paginador para dataSource2
+  
+    this.joinDetalleVentaService.consultarProductosVentas(1).subscribe(
+      (data) => {
+        this.detallesCaja = data;
+        this.dataSource = new MatTableDataSource(this.detallesCaja);
+        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+        this.dataSource.data = this.detallesCaja;
+       // this.actualizarTotalVentas();
+         //fecha
+        const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
+        this.fechaFiltro = fechaActual;
+        this.aplicarFiltro();
+      },
+      (error) => {
+        console.error("Error al obtener detalles de la caja:", error);
+      }
+    );
+  
+  }  
+
+  private obtenerFechaActual(): Date {
+    return new Date();
   }
   
-
+  // Función para aplicar el filtro
   aplicarFiltro() {
-    const fechaFiltrar = new Date(this.fechaFiltro);
-    this.dataSource.filter = fechaFiltrar.toISOString().slice(0, 10); // Ajusta el formato a 'YYYY-MM-DD'
+    this.dataSource.filter = this.fechaFiltro; // Aplica el filtro con la fecha actual
     this.dataSource.filterPredicate = (data: any, filter: string) => {
       return data.fechaVenta.includes(filter); // Compara la fecha con el filtro
     };
-
-    this.dataSource2.filter = fechaFiltrar.toISOString().slice(0, 10); // Ajusta el formato a 'YYYY-MM-DD'
-    this.dataSource2.filterPredicate = (data: any, filter: string) => {
-      return data.fechaVenta.includes(filter); // Compara la fecha con el filtro
-    };
+    this.actualizarTotalVentas();
   }
 
   aplicarFiltross() {
@@ -116,21 +101,11 @@ export class VerCorteComponent implements OnInit {
     // Concatenar las fechas con un carácter que no se espera en las fechas
     const filtro = `${fechaInicioFiltrar.toISOString().slice(0, 10)}_${fechaFinFiltrar.toISOString().slice(0, 10)}`;
     this.dataSource.filter = filtro;
-
-
-    this.dataSource2.filterPredicate = (data: any, filter: string) => {
-      const fechaItem = new Date(data.fechaVenta); // Ajusta 'fechaVenta' a tu propiedad de fecha
-      return fechaItem >= fechaInicioFiltrar && fechaItem <= fechaFinFiltrar;
-    };
-    // Concatenar las fechas con un carácter que no se espera en las fechas
-    const filtros = `${fechaInicioFiltrar.toISOString().slice(0, 10)}_${fechaFinFiltrar.toISOString().slice(0, 10)}`;
-    this.dataSource2.filter = filtros;
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-    this.dataSource2.filter = filterValue.trim().toLowerCase();
     console.log("this.dataSource.filter", this.dataSource.filter);
   }
 
@@ -373,167 +348,44 @@ export class VerCorteComponent implements OnInit {
     return palabras;
   }
 
-
-
-  obtenerDetallesCaja(Recepcionista_idRecepcionista: number | null) {
-    const idUsuario = this.auth.userId.getValue();
-    this.joinDetalleVentaService.consultarProductosVentas(idUsuario).subscribe(
-      (data) => {
-        this.detallesCaja = data;
-        // this.dataSource2 = new MatTableDataSource(this.detallesCaja); // Inicializar dataSource2 como MatTableDataSource
-        //this.dataSource2.paginator = this.paginator2; // Vincular el paginador con el dataSource2
-        // console.log("this.dataSource2.paginator", this.dataSource2.paginator);
-        this.dataSource.data = this.detallesCaja; // Asignar los datos al dataSource2
-       
-      },
-      (error) => {
-        console.error("Error al obtener detalles de la caja:", error);
-      }
-    );
+  obtenerDetallesCaja(usuario: number | null) {
+    
   }
 
-  actualizarCaja() {
-    const fechaActual1 = new Date();
-    const year = fechaActual1.getFullYear();
-    const month = (fechaActual1.getMonth() + 1).toString().padStart(2, "0"); // Agrega un 0 si el mes tiene un solo dígito
-    const day = fechaActual1.getDate().toString().padStart(2, "0"); // Agrega un 0 si el día tiene un solo dígito
-    const hours = fechaActual1.getHours().toString().padStart(2, "0"); // Agrega un 0 si la hora tiene un solo dígito
-    const minutes = fechaActual1.getMinutes().toString().padStart(2, "0"); // Agrega un 0 si los minutos tienen un solo dígito
-    const seconds = fechaActual1.getSeconds().toString().padStart(2, "0"); // Agrega un 0 si los segundos tienen un solo dígito
-    const fechaConHoraPersonalizada1 = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    this.formularioCaja.get("fechaCierre")?.setValue(fechaConHoraPersonalizada1);
-    console.log("this.formularioCaja",this.formularioCaja);
-    this.dialog.open(MensajeEliminarComponent, {data: `¿Deseas cerrar la caja?`,})
-      .afterClosed()
-      .subscribe((confirmado: Boolean) => {
-        if (confirmado) {
-          const userId = this.auth.userId.getValue(); //ID del usuario actual
-          const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
-          const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
-
-          this.cajaService.actualizarCaja(lastInsertedId, this.formularioCaja.value).subscribe((respuesta) => {
-              console.log("Caja actualizada");
-              this.mostrarInputFlag = true;
-              this.cerrarCaja = false;
-              this.botonProductos = false;
-            });
-        } else {
-        }
-      });
-  }
-
-  obtenerDetallesCajaaaa(Recepcionista_idRecepcionista: number | null, idCaja: number | null) {
-    if (Recepcionista_idRecepcionista !== null && idCaja !== null) {
-      const recepcionistaId = Recepcionista_idRecepcionista.toString(); // Convertir a string
-      const cajaId = idCaja.toString(); // Convertir a string
-      this.joinDetalleVentaService.obtenerDetallesCaja(recepcionistaId, cajaId).subscribe(
-        (data) => {
-          this.detallesCajaaaa = data;
-          this.dataSource2.data = this.detallesCajaaaa; 
-          console.log('Detalles de la caja:', this.detallesCaja);
-        },
-        (error) => {
-          console.error('Error al obtener detalles de la caja:', error);
-        }
-      );
+  /*actualizarTotalVentas() {
+    // Verifica si this.paginator está definido
+    if (this.paginator) {
+      this.totalVentas = this.calcularTotalVentas(this.detallesCaja);
     } else {
-      console.error('Recepcionista_idRecepcionista o idCaja es nulo');
+      console.warn('El paginador no está definido. No se puede calcular el total de ventas.');
     }
-  }
+  }*/
 
-  descargarPDF(): void {
-    // Verifica si hay datos para exportar
-    if (!this.dataSource2 || !this.dataSource2.filteredData || this.dataSource2.filteredData.length === 0) {
-      this.toastr.error('No hay información para exportar.', 'Error!!!');
-      console.warn('No hay datos filtrados para exportar a PDF.');
-      return;
-    }
-  
-    // Crear un objeto jsPDF
-    const pdf = new (jsPDF as any)();  // Utilizar 'as any' para evitar problemas de tipo
-  
-    // Encabezado del PDF
-    pdf.setFontSize(20);
-    pdf.text('Corte de Caja', 105, 15, null, null, 'center');
-  
-    // Obtener datos filtrados según el filtro actual de la tabla
-    const datosFiltrados = this.dataSource2.filteredData.map((detalle: any) => [
-      detalle.nombreProducto,
-      detalle.cantidadElegida,
-      detalle.precioUnitario,
-      detalle.fechaVenta
-    ]);
-  
-    // Agregar estilos al PDF
-    const styles = {
-      theme: 'striped',
-      headStyles: {
-        fillColor: [249, 166, 64],
-        textColor: [255, 255, 255]
-      },
-      bodyStyles: {
-        textColor: [0, 0, 0]
-      },
-      alternateRowStyles: {
-        fillColor: [245, 245, 245]
-      },
-      columnStyles: {
-        0: { fontStyle: 'bold' },
-        2: { cellWidth: 'wrap' }
-      },
-      margin: { top: 30 }
-    };
-  
-    // Añadir filas al PDF con autoTable
-    pdf.autoTable({
-      head: [['Nombre Producto', 'Cantidad', 'Precio Unitario', 'Fecha']],
-      body: datosFiltrados,
-      startY: 35,
-      styles,
-      headStyles: styles.headStyles,
-      bodyStyles: styles.bodyStyles,
-      alternateRowStyles: styles.alternateRowStyles,
-      columnStyles: styles.columnStyles
-    });
-  
-    // Descargar el archivo PDF
-    pdf.save('CorteDeCaja.pdf');
+  actualizarTotalVentas(): void {
+    this.totalVentas = this.calcularTotalVentas();
   }
   
 
-  descargarExcel(): void {
-    // Verificar si hay datos para exportar
-    if (!this.dataSource2 || !this.dataSource2.filteredData || this.dataSource2.filteredData.length === 0) {
-      this.toastr.error('No hay información para exportar.', 'Error!!!');
-      console.warn('No hay datos filtrados para exportar a Excel.');
-      return;
-    }
+  calcularTotalVentas(): number {
+    // Obtén los datos visibles después de aplicar filtros
+    const datosVisibles = this.dataSource.filteredData || this.dataSource.data;
+    console.log(datosVisibles, "los datos")
   
-    const datosFiltrados = this.dataSource2.filteredData.map((detalle: any) => ({
-      'Nombre Producto': detalle.nombreProducto,
-      'Cantidad': detalle.cantidadElegida,
-      'Precio Unitario': detalle.precioUnitario,
-      'Fecha': detalle.fechaVenta
-    }));
+    // Realiza el cálculo del total
+    return datosVisibles.reduce((total, detalle) => {
+      const cantidad = parseFloat(detalle.cantidadElegida);
+      const precioUnitario = parseFloat(detalle.precioUnitario);
   
-    // Crear un objeto de trabajo de Excel
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosFiltrados);
-    const workbook: XLSX.WorkBook = { Sheets: { 'Datos': worksheet }, SheetNames: ['Datos'] };
-  
-    // Convertir el libro de trabajo a un archivo de Excel binario
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  
-    // Crear un Blob y descargar el archivo Excel
-    const data: Blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
-    const fecha = new Date().toISOString().split('T')[0]; // Obtener la fecha actual para el nombre del archivo
-    const nombreArchivo = `CorteDeCaja_${fecha}.xlsx`;
-    saveAs(data, nombreArchivo); // Utiliza la función saveAs para descargar el archivo
-  
-    this.toastr.success('Archivo Excel generado correctamente.', '¡Éxito!');
+      if (!isNaN(cantidad) && !isNaN(precioUnitario)) {
+        return total + (cantidad * precioUnitario);
+      } else {
+        return total;
+      }
+    }, 0);
   }
+  
 
-
-
+  
   descargarPDF2(): void {
     // Verifica si hay datos para exportar
     if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
@@ -593,7 +445,6 @@ export class VerCorteComponent implements OnInit {
     pdf.save('CorteDeCaja.pdf');
   }
   
-
   descargarExcel2(): void {
     // Verificar si hay datos para exportar
     if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
@@ -602,12 +453,17 @@ export class VerCorteComponent implements OnInit {
       return;
     }
   
-    const datosFiltrados = this.dataSource.filteredData.map((detalle: any) => ({
-      'Nombre Producto': detalle.nombreProducto,
-      'Cantidad': detalle.cantidadElegida,
-      'Precio Unitario': detalle.precioUnitario,
-      'Fecha': detalle.fechaVenta
-    }));
+    // Copiar los datos filtrados
+    const datosFiltrados = [...this.dataSource.filteredData];
+  
+    // Agregar una fila al final con el total
+    datosFiltrados.push({
+      'Nombre Producto': 'Total Ventas',
+      'Cantidad': '',
+      'Precio Unitario': '',
+      'Fecha': '',
+      'Total Ventas': this.totalVentas  // Ajusta la clave según tu estructura de datos
+    });
   
     // Crear un objeto de trabajo de Excel
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosFiltrados);
@@ -617,13 +473,15 @@ export class VerCorteComponent implements OnInit {
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
   
     // Crear un Blob y descargar el archivo Excel
-    const data: Blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
     const fecha = new Date().toISOString().split('T')[0]; // Obtener la fecha actual para el nombre del archivo
     const nombreArchivo = `CorteDeCaja_${fecha}.xlsx`;
+  
+    const data: Blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
     saveAs(data, nombreArchivo); // Utiliza la función saveAs para descargar el archivo
   
     this.toastr.success('Archivo Excel generado correctamente.', '¡Éxito!');
   }
+  
 
   cargarArchivo(event: any): void {
     const file = event.target.files[0];

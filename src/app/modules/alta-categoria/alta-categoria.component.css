@@ -15,6 +15,10 @@
     width: 230px;
     padding-left: 15px;
   }
+
+  .custom-tab-group .mat-tab-labels {
+    justify-content: flex-end;
+}
   
   /* Estilos para .label-with-margin */
   .label-with-margin {
