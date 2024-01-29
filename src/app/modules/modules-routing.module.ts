@@ -21,7 +21,9 @@ import { RegistroComponent } from './registro/registro.component';
 import { VentasComponent } from './ventas/ventas.component';
 import { VerCorteComponent } from './ver-corte/ver-corte.component';
 import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
-
+import { SucursalListaComponent } from './sucursal-lista/sucursal-lista.component';
+import { SucursalEditarComponent } from './sucursal-editar/sucursal-editar.component';
+import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
 const routes: Routes = [
   {
     path: '',
@@ -43,6 +45,9 @@ const routes: Routes = [
       { path: 'productos', component: ProductosComponent },
       { path: 'editar-producto/:id', component:EditarProductoComponent},
       { path: 'productosVendidos', component: ProductosVendidosComponent},
+      { path: 'listaSucursales', component:SucursalListaComponent},
+      { path: 'alta-sucursal', component:SucursalAltaComponent},
+      { path: 'editar-sucursal', component:SucursalEditarComponent},
      // { path: 'inventario', component: InventarioComponent },
      // { path: 'verConfiguracion', component: VerConfiguracionComponent},
 

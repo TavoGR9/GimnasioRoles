@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common'; //para obtener fecha del sistema
-import { Component, OnInit, HostListener} from '@angular/core';
+import { Component, OnInit, HostListener, Inject} from '@angular/core';
 import { Producto } from 'src/app/models/producto';
 import {
   FormBuilder,
@@ -18,6 +18,8 @@ import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergent
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { EntradaProducto } from 'src/app/models/entradas';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -60,6 +62,10 @@ export class EntradasComponent implements OnInit {
   idProveedor: number = 0;
 
   constructor(
+
+    public dialogo: MatDialogRef<EntradasComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
+
     private fb: FormBuilder,
     private auth: AuthService,
     private toastr: ToastrService,
@@ -90,13 +96,13 @@ export class EntradasComponent implements OnInit {
       precioVenta: [
         '',
         Validators.compose([
-          Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
+          Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
         ]),
       ],
       precioCompra: [
         '',
         Validators.compose([
-          Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
+          Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
         ]),
       ],
     });
@@ -104,11 +110,12 @@ export class EntradasComponent implements OnInit {
 
   @HostListener('document:keydown.enter', ['$event'])
   handleEnterKey(event: KeyboardEvent): void {
+    if (this.form.valid) {
     // Verifica que el evento se produzca dentro del formulario antes de agregar a la tabla
     if (event.target && (event.target as HTMLElement).closest('form')) {
       this.agregarATabla();
       event.preventDefault(); // Evita la acción predeterminada del Enter
-    }
+    }}
   }
   /**
    * Llenar los mat select
@@ -176,12 +183,10 @@ export class EntradasComponent implements OnInit {
 
 
   tablaDatos: any[] = [];
-  agregarATablas(event: Event) {
-    event.preventDefault();
-    // Lógica para agregar a la tabla
- }
+  
 
   agregarATabla() {
+    if (this.form.valid) {
     console.log("hola");
     // Verificar si el formulario y sus controles no son nulos
     if (this.form && this.form.get('idProducto') && this.form.get('idProveedor') && this.form.get('cantidad')) {
@@ -234,7 +239,7 @@ export class EntradasComponent implements OnInit {
       } else {
         console.warn('Producto no encontrado en listaProductos');
       }
-    }
+    }}
   }
   
 
@@ -285,6 +290,11 @@ export class EntradasComponent implements OnInit {
         positionClass: 'toast-bottom-left',
       });
     }
+  }
+
+
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
   }
  
 }

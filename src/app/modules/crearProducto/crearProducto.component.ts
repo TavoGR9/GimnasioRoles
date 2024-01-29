@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Inject } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -15,6 +15,7 @@ import { CategoriaService } from 'src/app/service/categoria.service';
 import { UploadService } from 'src/app/service/upload.service';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from 'src/app/service/auth.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -46,6 +47,8 @@ export class CrearProductoComponent implements OnInit {
   uploadedFiles: File[] = [];
 
   constructor(
+    public dialogo: MatDialogRef<CrearProductoComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
     private toastr: ToastrService,
     private datePipe: DatePipe,
     private fb: FormBuilder,
@@ -165,6 +168,11 @@ export class CrearProductoComponent implements OnInit {
     console.log('valor idCategoria:', this.idCategoria);
   }
 
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
+  }
+ 
+  
   onFileSelect(event: any) {
     for (let file of event.files) {
       this.uploadedFiles.push(file);

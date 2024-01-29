@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { FranquiciaService } from 'src/app/service/franquicia.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-sucursal-editar',
@@ -16,10 +17,12 @@ export class SucursalEditarComponent implements OnInit {
   formularioSucursales: FormGroup;
   gimnasio: any;
   franquicia: any;
-  elID: any;
   message: string = '';
+  idGimnasio: any;
 
   constructor(
+    public dialogo: MatDialogRef<SucursalEditarComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private formulario: FormBuilder,
     private activeRoute: ActivatedRoute,
     private router: Router,
@@ -28,8 +31,7 @@ export class SucursalEditarComponent implements OnInit {
     private franquiciaService: FranquiciaService,
   ) {
   
-    this.elID = this.activeRoute.snapshot.paramMap.get('id');
-    console.log(this.elID);
+    this.idGimnasio = data.idGimnasio;
    
     this.formularioSucursales = this.formulario.group({
      nombreGym: ["", Validators.required],
@@ -65,7 +67,7 @@ export class SucursalEditarComponent implements OnInit {
     });
     
 
-    this.gimnasioService.consultarPlan(this.elID).subscribe(
+    this.gimnasioService.consultarPlan(this.idGimnasio).subscribe(
       (respuesta) => {
         this.formularioSucursales.setValue({
           nombreGym: respuesta[0]['nombreGym'],
@@ -90,7 +92,7 @@ export class SucursalEditarComponent implements OnInit {
 
   actualizar() {
     console.log(this.formularioSucursales.value);
-    this.gimnasioService.actualizarPlan(this.elID, this.formularioSucursales.value).subscribe(() => {
+    this.gimnasioService.actualizarPlan(this.idGimnasio, this.formularioSucursales.value).subscribe(() => {
       this.dialog.open(MensajeEmergentesComponent, {
         data: 'Membresía actualizada exitosamente',
       })
@@ -102,6 +104,10 @@ export class SucursalEditarComponent implements OnInit {
           }
         });
     });
+  }
+
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
   }
 }
 

@@ -6,6 +6,8 @@ import { MatPaginator } from '@angular/material/paginator'; //para paginacion en
 //import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from 'src/app/service/auth.service';
+import { CrearProductoComponent } from '../crearProducto/crearProducto.component';
+
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
@@ -28,7 +30,10 @@ export class ProductosComponent implements OnInit {
     //paginator es una variable de la clase MatPaginator
     @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
-  constructor(private productoService: ProductosService,
+  constructor(
+    
+
+    private productoService: ProductosService,
     private auth: AuthService,
     public dialog: MatDialog,
     ) {}
@@ -103,5 +108,14 @@ export class ProductosComponent implements OnInit {
         // Maneja el error de alguna manera si es necesario.
       }
     );*/
+  }
+
+
+  crearProducto(): void {
+    const dialogRef = this.dialog.open(CrearProductoComponent, {
+      width: '70%',
+      height: '90%',
+      
+    });
   }
 }

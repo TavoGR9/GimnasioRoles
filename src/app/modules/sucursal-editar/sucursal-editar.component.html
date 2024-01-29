@@ -3,7 +3,7 @@
 <br/>
 <br/>
 <form [formGroup]="formularioSucursales" class="responsive-form">
-	<div class="mi-div-con-borde responsive-div">
+	<div class="responsive-div">
 		<div style="color:red">{{message}}</div>
 		<br/>
 		<div class="row">
@@ -124,7 +124,7 @@
 
 		<div style="margin: auto; display: block; text-align: center;">
 			<button mat-raised-button type="submit" (click)="actualizar()" style="background-color: #fd9727; font-size: 20px; margin-top: 50px;;height: 40px; width: 120px;">Aceptar</button>
-			<button mat-raised-button routerLink="/admin/lista-sucursales" style="background-color: #000000; font-size: 20px;margin-left: 100px; margin-top: 50px;;height: 40px; width: 120px;color:white">Cancelar</button>
+			<button mat-raised-button  (click)="cerrarDialogo()"   style="background-color: #000000; font-size: 20px;margin-left: 100px; margin-top: 50px;;height: 40px; width: 120px;color:white">Cancelar</button>
 		</div>
 	</div>
 	<br/><br/><br/>
