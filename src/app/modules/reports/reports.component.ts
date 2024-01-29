@@ -37,6 +37,8 @@ export class ReportsComponent implements OnInit {
       }, error: (error) => { console.log(error); }
     });
 
+    //this.openSerialPort();
+
   }
 
   //Dar formato a fecha
@@ -119,8 +121,10 @@ export class ReportsComponent implements OnInit {
     await this.serialService.connectAndSendData();
   }
 
-  private selectedPort: any;
-  private selectedPort2: SerialPort | null = null;
+  //private selectedPort: any;
+  selectedPort: any = null;
+  writer: any = null;
+  reader: any = null;
   async requestSerialPort() {
     if ('serial' in navigator) {
       try {
@@ -140,6 +144,7 @@ export class ReportsComponent implements OnInit {
           async function enviarDatos(texto: string) {
             const encoder = new TextEncoder();
             await writer.write(encoder.encode(texto));
+            console.log("dato enviado");
           }
   
           // Enviar un texto a través del puerto serie
@@ -175,7 +180,60 @@ export class ReportsComponent implements OnInit {
       }
     }
   }
+
   
+  async openSerialPort() {
+    if ('serial' in navigator) {
+      try {
+        if (!this.selectedPort) {
+          const port = await (navigator as any).serial.requestPort();
+          await port.open({ baudRate: 9600 });
+
+          this.selectedPort = port;
+          this.writer = port.writable.getWriter();
+          this.reader = port.readable.getReader();
+        }
+      } catch (error) {
+        console.error('Error al interactuar con el puerto serie:', error);
+      }
+    }
+  }
+
+  async enviarDatos(texto: string) {
+    const encoder = new TextEncoder();
+    await this.writer.write(encoder.encode(texto));
+    console.log("enviado");
+  }
+
+  async leerDatos() {
+    try {
+      while (true) {
+        const { value, done } = await this.reader.read();
+        if (done) {
+          console.log('Lector finalizado');
+          break;
+        }
+        console.log('Datos recibidos:', new TextDecoder().decode(value));
+      }
+    } catch (error) {
+      console.error('Error al leer los datos:', error);
+    } finally {
+      this.reader.releaseLock();
+    }
+  }
+
+  enviarDatosPorPuertoSerial() {
+    //this.openSerialPort();
+    if (this.selectedPort) {
+      this.enviarDatos("1");
+    } else {
+      console.error('El puerto serie no está abierto');
+    }
+  }
+
+  eventoX(){
+    this.openSerialPort();
+  }
 
 
 }
