@@ -12,6 +12,7 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { AbstractControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+
 class Horario {
   constructor(
     public diaSemana: string,

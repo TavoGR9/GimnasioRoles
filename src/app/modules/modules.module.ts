@@ -54,7 +54,6 @@ import { SucursalEditarComponent } from './sucursal-editar/sucursal-editar.compo
 import { ListaCategoriaComponent } from './lista-categoria/lista-categoria.component';
 import { EditarCategoriaComponent } from './editar-categoria/editar-categoria.component';
 import { ListaProductoComponent } from './lista-producto/lista-producto.component';
-import { AltaProductoComponent } from './alta-producto/alta-producto.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 import { ProductManagementComponent } from './product-management/product-management.component';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
@@ -91,6 +90,8 @@ import { FiltroFechaPipe } from 'src/app//pipes/filtro-fecha.pipe';
 import { FilterByDatePipe } from 'src/app/pipes/filtroFechas.pipe';
 import { ListarProductosPipe } from 'src/app/pipes/lista-proveedor.pipe';
 import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
+import { ListaProductoLineaComponent } from './lista-producto-linea/lista-producto.component';
+import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,6 @@ import { ProductosVendidosComponent } from './productos-vendidos/productos-vendi
     SucursalEditarComponent,
     ListaCategoriaComponent,
     ListaProductoComponent,
-    AltaProductoComponent,
     EditarProductoComponent,
     ProductManagementComponent,
     CrearProductoComponent,
@@ -148,7 +148,8 @@ import { ProductosVendidosComponent } from './productos-vendidos/productos-vendi
     FilterByDatePipe,
     ListarProductosPipe,
     ProductosVendidosComponent,
-    
+    ListaProductoLineaComponent,
+    CrearProductoLineaComponent
     //InventarioComponent
   ],
   imports: [

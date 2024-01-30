@@ -1,11 +1,19 @@
 import { Component, OnInit, Inject} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArray , FormControl} from "@angular/forms";
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { FranquiciaService } from 'src/app/service/franquicia.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ErrorStateMatcher} from '@angular/material/core';
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = formulario && formulario.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 
 @Component({
   selector: 'app-sucursal-editar',
@@ -52,6 +60,8 @@ export class SucursalEditarComponent implements OnInit {
       
     });
   }
+
+  matcher = new MyErrorStateMatcher();
 
   ngOnInit(): void {
     this.franquiciaService.obternerFran().subscribe((respuesta) => {

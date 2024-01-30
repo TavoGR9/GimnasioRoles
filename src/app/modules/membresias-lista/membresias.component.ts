@@ -30,7 +30,7 @@ export class MembresiasComponent implements OnInit {
   displayedColumns: string[] = ['title', 'details','price','duration', 'trainer','cancha','alberca','ofertas','gimnasio','status','actions'];
 
   ngOnInit(): void {
-    this.membresiaService.consultarPlanId(this.auth.idGym.getValue()).subscribe(respuesta => {
+    this.membresiaService.consultarPlanId(1).subscribe(respuesta => {
       console.log(respuesta);
       this.plan = respuesta;
       this.dataSource = new MatTableDataSource(this.plan);
@@ -38,6 +38,7 @@ export class MembresiasComponent implements OnInit {
     });
   }
   
+
 
   public membresiaActiva: boolean = false; // Inicializa según el estado de la membresía
 

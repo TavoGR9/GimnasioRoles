@@ -24,7 +24,6 @@ export class InventariosComponent implements OnInit {
     'Categoría',
     'Nombre',
     'Descripción',
-    'Precio De Venta',
     'Cantidad Disponible',
     'Sucursal'
   ];

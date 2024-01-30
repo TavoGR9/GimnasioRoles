@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 //Guards
 import { authGuard } from './guards/auth.guard';
 import { hasRoleGuard } from './guards/has-role.guard';
@@ -13,7 +14,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: './login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },

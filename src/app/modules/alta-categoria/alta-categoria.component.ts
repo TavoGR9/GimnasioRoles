@@ -7,8 +7,6 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
-
 @Component({
   selector: 'app-alta-categoria',
   templateUrl: './alta-categoria.component.html',
@@ -19,11 +17,9 @@ export class AltaCategoriaComponent implements OnInit {
   message: string = '';
   hide = true;
   gimnasio: any;
-
   constructor(
     public dialogo: MatDialogRef<AltaCategoriaComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
-    
     public formulario: FormBuilder,
     private router: Router,
     private categoriaService: CategoriaService,
@@ -41,37 +37,27 @@ export class AltaCategoriaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
-  }
-
-  cancelar() {
-    this.router.navigateByUrl('/admin/categorias');
   }
 
   enviar(): any {
-    console.log(this.formularioCategoria.value);
-    // Verifica si el formulario es válido
     if (this.formularioCategoria.valid) {
-      this.categoriaService
-        .agregarCategoria(this.formularioCategoria.value)
-        .subscribe((respuesta) => {
-          this.dialog
-            .open(MensajeEmergentesComponent, {
+      this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
+          this.dialog.open(MensajeEmergentesComponent, {
               data: `Categoria agregada exitosamente`,
             })
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
-                this.router.navigateByUrl('/admin/categorias');
+                this.dialogo.close(true);
               } else {
               }
             });
         });
     } else {
-      // El formulario no es válido, muestra un mensaje de error
       this.message = 'Por favor, complete todos los campos requeridos.';
     }
   }
+
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
