@@ -11,8 +11,6 @@ import { ResetPasswordComponent } from './components/reset-password/reset-passwo
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
 //Componentes
-
-
 const routes: Routes = [
   { path: '', redirectTo: './login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },

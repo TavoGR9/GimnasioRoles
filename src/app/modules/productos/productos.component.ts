@@ -26,47 +26,31 @@ export class ProductosComponent implements OnInit {
   ];
   public productos: any;
   listProductData: ListaProductos[] = [];
-  dataSource: any; // instancia para matTableDatasource
+  dataSource: any; 
+  productoActiva: boolean = true;
 
-    //paginator es una variable de la clase MatPaginator
-    @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(
-    
-
     private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog,
-    ) {}
-  ngOnInit(): void {
+  ) {}
 
-    /*this.productoService.getProductosAdmin().subscribe((respuesta)=>{
-      console.log(respuesta);
-      this.listProductData=respuesta;
-      this.dataSource= new MatTableDataSource(this.listProductData);
-      this.dataSource.paginator = this.paginator;
-    });*/
-    
+  ngOnInit(): void {
     this.productoService.consultarProductoId(1).subscribe({
       next: (resultData) => {
-        console.log('productos',resultData);
         this.productos = resultData;
         this.dataSource = new MatTableDataSource(this.productos);
         this.dataSource.paginator = this.paginator;
-        console.log("this.paginator", this.dataSource.paginator);
       }
     })
   }
 
-  /**
-   * metodo para filtrar la informacion que escribe el usaurio
-   */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
-  productoActiva: boolean = true;
  
   toggleCheckbox(id: number, estatus: number) {
     // Guarda el estado actual en una variable temporal
@@ -94,8 +78,6 @@ export class ProductosComponent implements OnInit {
       }
     });
   }
-  
-  
 
   actualizarEstatus(id: number, estado: { estatus: number }) {
     console.log(estado.estatus, "nuevo");
@@ -111,12 +93,10 @@ export class ProductosComponent implements OnInit {
     );*/
   }
 
-
   crearProducto(): void {
     const dialogRef = this.dialog.open(CrearProductoComponent, {
       width: '70%',
-      height: '90%',
-      
+      height: '90%',   
     });
   }
 

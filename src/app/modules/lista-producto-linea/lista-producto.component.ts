@@ -14,12 +14,6 @@ export class ListaProductoLineaComponent implements OnInit {
   constructor(private productoService: ProductoService, private categoriaService: CategoriaService){}
 
   ngOnInit():void{
-    this.productoService.obternerProducto().subscribe({
-      next: (resultData) => {
-        console.log('productos',resultData);
-        this.productos = resultData;
-      }
-    })
   }
   
   getCategoria(idCategoria: number) {

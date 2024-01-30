@@ -9,7 +9,7 @@ import { Categorias } from '../models/categorias';
 })
 export class CategoriaService {
 
-  API: string = 'https://olympus.arvispace.com/conPrincipal/categoria.php';
+  API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/categoria.php'
   constructor(private clienteHttp:HttpClient) {
   }
 
@@ -44,6 +44,7 @@ export class CategoriaService {
   }
 
   consultarCategoriaGym(id:any):Observable<any>{
+    console.log("this.API+",this.API+"?consultarGym="+id);
     return this.clienteHttp.get(this.API+"?consultarGym="+id);
   }
 

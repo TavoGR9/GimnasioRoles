@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild , Inject} from "@angular/core";
 
 import { MatTableDataSource } from "@angular/material/table"; //para controlar los datos del api y ponerlos en una tabla
 import { Producto } from "src/app/models/producto";
-import { ProductosService } from "src/app/service/productos.service";
+import { ProductoService } from "src/app/service/producto.service";
 import { AuthService } from "src/app/service/auth.service";
 
 import {
@@ -130,7 +130,7 @@ export class VentasComponent implements OnInit {
     private DetalleVenta: DetalleVentaService,
     private ventasService: VentasService,
     private clienteService: ClienteService,
-    private productoService: ProductosService,
+    private productoService: ProductoService,
     private InventarioService: inventarioService,
     private changeDetectorRef: ChangeDetectorRef,
     private ListarClientesService: listarClientesService,
@@ -178,7 +178,9 @@ export class VentasComponent implements OnInit {
 
   ngAfterViewInit(): void {
     console.log(this.auth.idGym.getValue(), "this.auth.getIdGym()");
-    this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
+   // this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
+    this.productoService.obternerProductos(1).subscribe((respuesta) => {
+      console.log("respuesta", respuesta)
       this.productData = respuesta;
       console.log("this.productData", this.productData);
       this.dataSource = new MatTableDataSource(this.productData);
@@ -193,7 +195,6 @@ export class VentasComponent implements OnInit {
   ejecutarServicio(): void {
     // Llama a tu servicio aquí
     this.DetalleVenta.obternerEstatus().subscribe((result) => {
-      console.log('Resultado del servicio:', result);
     });
   }
   
@@ -218,18 +219,6 @@ export class VentasComponent implements OnInit {
     this.clienteService;
     //////////////////////////////////////////////////////
     const userId = this.auth.userId.getValue(); // ID del usuario actual
-    const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
-    const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
-    //obtener datos de caja por id
-    this.cajaService.consultarCaja(lastInsertedId).subscribe(
-      (resultados) => {
-        const fechaCierre = resultados[0].fechaCierre;
-        this.mostrarOcultarBoton(fechaCierre); // Llamada al método para mostrar u ocultar el botón
-      },
-      (error) => {
-        console.error("Error al consultar la fecha de cierre:", error);
-      }
-    );   
   }
 
   mostrarP(){
@@ -263,27 +252,6 @@ export class VentasComponent implements OnInit {
       this.mostrarDiario = false; // Oculta los elementos de diario
     }
   }
-
- /* aplicarFiltro() {
-    const fechaFiltrar = new Date(this.fechaFiltro);
-    this.dataSource2.filter = fechaFiltrar.toISOString().slice(0, 10); // Ajusta el formato a 'YYYY-MM-DD'
-    this.dataSource2.filterPredicate = (data: any, filter: string) => {
-      return data.fechaVenta.includes(filter); // Compara la fecha con el filtro
-    };
-  }
-
-  aplicarFiltross() {
-    const fechaInicioFiltrar = new Date(this.fechaInicio);
-    const fechaFinFiltrar = new Date(this.fechaFin);
-    this.dataSource2.filterPredicate = (data: any, filter: string) => {
-      const fechaItem = new Date(data.fechaVenta); // Ajusta 'fechaVenta' a tu propiedad de fecha
-      return fechaItem >= fechaInicioFiltrar && fechaItem <= fechaFinFiltrar;
-    };
-    // Concatenar las fechas con un carácter que no se espera en las fechas
-    const filtro = `${fechaInicioFiltrar.toISOString().slice(0, 10)}_${fechaFinFiltrar.toISOString().slice(0, 10)}`;
-    this.dataSource2.filter = filtro;
-  }*/
-
 
   obtenerCliente(idCliente: number) {
     this.ListarClientesService.consultarCliente(idCliente).subscribe(
@@ -998,7 +966,8 @@ export class VentasComponent implements OnInit {
   }
 
   validarYAgregarProducto(producto: Producto) {
-    this.InventarioService.obtenerProductoPorId(producto.id, this.auth.idGym.getValue()).subscribe(
+   // this.InventarioService.obtenerProductoPorId(producto.id, this.auth.idGym.getValue()).subscribe(
+    this.InventarioService.obtenerProductoPorId(producto.id, 1).subscribe(
       (data) => {
         const productoObtenido = data[0];
         

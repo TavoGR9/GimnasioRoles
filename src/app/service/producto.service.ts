@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
+import { Producto } from '../models/producto';
+import { HttpParams } from '@angular/common/http';
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,22 +13,33 @@ export class ProductoService {
 
    API2: string =  'https://olympus.arvispace.com/panelAdmin/conf/joinDetalleProducto.php';
    API: string ='https://olympus.arvispace.com/puntoDeVenta/conf/productoSucursal.php';
+
+   private productosSeleccionados = new BehaviorSubject<Producto[]>([]);
    //API2: string = 'http://localhost/plan/joinDetalleProducto.php'
 
+    constructor(private clienteHttp:HttpClient) {}
+  
+    creaProducto(datosFormulario: any): Observable<any> {
+      return this.clienteHttp.post(this.API+'?creaProducto',datosFormulario);
+    }
 
-    constructor(private clienteHttp:HttpClient) {
+    consultarProductoId(id:any):Observable<any>{
+      return this.clienteHttp.get(this.API+"?listaProductoGym="+id);
     }
-  
-    consultarProductosJ(idProducto: number | null): Observable<any[]> {
-      const url = `${this.API2}?idProducto=${idProducto}`;
-      return this.clienteHttp.get<any[]>(url);
-    }
-  
+
     actualizarProducto(id: any, datosP: any): Observable<any> {
       const url = `${this.API}?actualizar=${id}`;
       return this.clienteHttp.post(url, datosP);
     }
+
+    obternerProductos(id:any):Observable<any>{
+      return this.clienteHttp.get(this.API+"?listaProductosRecepcion="+id);
+    }
   
+    obternerInventario(id:any): Observable<any[]> {
+      return this.clienteHttp.get<any[]>(this.API +'?listaInventario='+id);
+    }
+
     obternerProducto(){
       return this.clienteHttp.get(this.API)
     }
@@ -36,17 +50,6 @@ export class ProductoService {
   
     borrarProducto(id:any):Observable<any>{
       return this.clienteHttp.get(this.API+"?borrar="+id)
-    }
-  
-
-    consultarProductoId(id:any):Observable<any>{
-      return this.clienteHttp.get(this.API+"?listaProductoGym="+id);
-    }
-    
-    creaProducto(datosFormulario: any): Observable<any> {
-      console.log("los datos", datosFormulario);
-      console.error(datosFormulario.error);
-      return this.clienteHttp.post(this.API+'?creaProducto',datosFormulario);
     }
 
     subirImagenes(imagenes: File[]): Observable<any> {
@@ -60,7 +63,43 @@ export class ProductoService {
       formData.forEach((value, key) => {
         console.log(key, value);
       });
-  
       return this.clienteHttp.post(this.API + '?subirImagenes', formData);
     }
+  
+    getProductosAdmin(): Observable<any[]> {
+      return this.clienteHttp.get<any[]>(this.API + '?listaProductosAdmin');
+    }
+  
+    inventarioGlobal(): Observable<any> {
+      return this.clienteHttp.get(this.API + '?inventarioGlobal');
+    }
+  
+    getProductosSeleccionados() {
+      return this.productosSeleccionados.asObservable();
+    }
+  
+    setProductosSeleccionados(productos: Producto[]) {
+       // Crear una copia de la lista
+      this.productosSeleccionados.next([...productos]);
+    }
+  
+    clearProductosSeleccionados() {
+      this.productosSeleccionados.next([]);
+    }
+
+    borrarProductoInventario(idInv: any, usuaId: any): Observable<any>{
+      const params = new HttpParams().set('invenID',idInv).set('userID',usuaId);
+      return this.clienteHttp.get(this.API, {params});
+    }
+
+    updateProductoStatus(id: number, estado: { estatus: number }): Observable<any> {
+      console.log("status",estado,"id",id);
+      return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
+    }
+
+    consultarProductosJ(idProducto: number | null): Observable<any[]> {
+      const url = `${this.API2}?idProducto=${idProducto}`;
+      return this.clienteHttp.get<any[]>(url);
+    }
+
 }
