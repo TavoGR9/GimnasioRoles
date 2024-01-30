@@ -92,24 +92,6 @@ getUserData(): any | null {
   }
   return null;
 }
-/*
-getIdGym():number{
-  this.usuarioRegistrado = this.getUserData();
-  this.idGym=this.usuarioRegistrado[0].idGym;
-  return this.idGym;
-}
-
-getUbicacion(): string {
-  this.usuarioRegistrado = this.getUserData();
-  this.ubicacion = this.usuarioRegistrado[0].nombreGym;
-  return this.ubicacion;
-}
-getIdUsuario():number{
-  this.usuarioRegistrado = this.getUserData();
-  this.idUsuario = this.usuarioRegistrado[0].idUsuarios;
-  return this.idUsuario;
-}
-*/
 
 logout() {
   localStorage.removeItem('userData');

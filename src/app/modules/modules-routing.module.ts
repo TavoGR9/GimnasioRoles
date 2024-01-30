@@ -27,6 +27,7 @@ import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
 import { ListaProductoLineaComponent } from './lista-producto-linea/lista-producto.component';
 import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
+
 const routes: Routes = [
   {
     path: '',

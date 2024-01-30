@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ProductosService } from 'src/app/service/productos.service';
+import { ProductoService } from 'src/app/service/producto.service';
 import { EmergenteHistorialProductosComponent } from '../emergente-historial-productos/emergente-historial-productos.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -24,8 +24,7 @@ export class InventariosComponent implements OnInit {
     'Categoría',
     'Nombre',
     'Descripción',
-    'Cantidad Disponible',
-    'Sucursal'
+    'Cantidad Disponible'
   ];
 
   listInventarioData: any[] = [];
@@ -34,10 +33,10 @@ export class InventariosComponent implements OnInit {
   //paginator es una variable de la clase MatPaginator
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
-  constructor(private productoService: ProductosService, public dialog: MatDialog,private toastr: ToastrService,) {}
+  constructor(private productoService: ProductoService, public dialog: MatDialog,private toastr: ToastrService,) {}
 
   ngOnInit(): void {
-    this.productoService.inventarioGlobal().subscribe((respuesta) => {
+    this.productoService.obternerInventario(1).subscribe((respuesta) => {
       console.log(respuesta);
       this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);

@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api'; /**siempre debes importarlo */
 //import { ToastrService } from 'ngx-toastr';
 //import { ColaboradorService } from 'src/app/service/colaborador.service';
-import { ProductosService } from 'src/app/service/productos.service';
+import { ProductoService } from 'src/app/service/producto.service';
 
 import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -40,7 +40,7 @@ export class EditarProductoComponent implements OnInit{
     @Inject(MAT_DIALOG_DATA) public data: any,
     public fb:FormBuilder,
     private activeRoute: ActivatedRoute, 
-    private productoService:ProductosService,
+    private productoService:ProductoService,
     private datePipe: DatePipe,
     private router:Router,
     public dialog: MatDialog,
