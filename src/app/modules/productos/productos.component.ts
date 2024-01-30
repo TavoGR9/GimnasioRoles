@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ListaProductos } from 'src/app/models/listaProductos';
-import { ProductosService } from 'src/app/service/productos.service';
+import { ProductoService } from 'src/app/service/producto.service';
 import { MatTableDataSource } from '@angular/material/table'; 
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
 //import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from 'src/app/service/auth.service';
 import { CrearProductoComponent } from '../crearProducto/crearProducto.component';
+import { EditarProductoComponent } from '../editar-producto/editar-producto.component';
 
 @Component({
   selector: 'app-productos',
@@ -33,7 +34,7 @@ export class ProductosComponent implements OnInit {
   constructor(
     
 
-    private productoService: ProductosService,
+    private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog,
     ) {}
@@ -46,7 +47,7 @@ export class ProductosComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
     });*/
     
-    this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
+    this.productoService.consultarProductoId(1).subscribe({
       next: (resultData) => {
         console.log('productos',resultData);
         this.productos = resultData;
@@ -116,6 +117,14 @@ export class ProductosComponent implements OnInit {
       width: '70%',
       height: '90%',
       
+    });
+  }
+
+  editarProducto(idProducto: string): void {
+    const dialogRef = this.dialog.open(EditarProductoComponent, {
+      width: '75%',
+      height: '90%',
+      data: { idProducto: idProducto },
     });
   }
 }

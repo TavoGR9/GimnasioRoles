@@ -28,7 +28,7 @@
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Sucursales</h4>
-                  <p class="card-text">Consulta las categorias de producto de la Franquicia</p>
+                  <p class="card-text">Consulta la información acerca de tus sucursales</p>
                   <a class="btn btn-gym" routerLink="../listaSucursales">Consultar</a>
                </div>
             </div>
@@ -36,29 +36,61 @@
          <div class="col-md-6" >
             <div class="card">
                <div class="card-body">
-                  <h4 class="card-title">Sucursales</h4>
-                  <p class="card-text">Consulta las categorias de producto de la Franquicia</p>
-                  <a class="btn btn-gym" routerLink="../listaSucursales">Consultar</a>
+                  <h4 class="card-title">Productos</h4>
+                  <p class="card-text">Agregar productos correspondientes a tu carrito</p>
+                  <a class="btn btn-gym" routerLink="../lista-productoLinea">Consultar</a>
                </div>
             </div>
          </div>
       </div>
       <div class="row mt-4">
-         <!--<div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Proveedores</h4>
-                <p class="card-text">1° Consulta los proveedores disponibles de la Franquicia</p>
-                <a class="btn btn-gym" routerLink="../proveedores">Consultar</a>
-              </div>
-            </div>
-            </div>-->
          <div class="col-md-6" >
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Mis membresias</h4>
-                  <p class="card-text">Consulta las categorias de producto de la Franquicia</p>
+                  <p class="card-text">Consulta la información acerca de las membresías de tu gimnasio</p>
                   <a class="btn btn-gym" routerLink="../misMembresias">Consultar</a>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Categorias</h4>
+                  <p class="card-text"> Consulta las categorias de producto de la Franquicia</p>
+                  <a class="btn btn-gym" routerLink="../categorias">Consultar</a>
+               </div>
+            </div>
+         </div>
+         
+      </div>
+      <div class="row mt-4">
+         <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Productos</h4>
+                  <p class="card-text"> Consulta el catalogo de productos de tu gimnasio</p>
+                  <a class="btn btn-gym" routerLink="../productos">Consultar</a>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Entradas</h4>
+                  <p class="card-text"> Configura las entradas de producto para tu gimnasio</p>
+                  <a class="btn btn-gym" (click)="entradas()">Configurar</a>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="row mt-4">
+         <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Listado de productos vendidos</h4>
+                  <p class="card-text">Consulta los productos vendidos</p>
+                  <a class="btn btn-gym" routerLink="../productosVendidos">Consultar</a>
                </div>
             </div>
          </div>
@@ -72,78 +104,29 @@
             </div>
          </div>
       </div>
-      <div class="row mt-4">
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Productos</h4>
-                  <p class="card-text"> Consulta el catalogo de productos de la Franquicia</p>
-                  <a class="btn btn-gym" routerLink="../productos">Consultar</a>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Entradas</h4>
-                  <p class="card-text"> Configura las entradas de producto para tu sucursal</p>
-                  <a class="btn btn-gym" (click)="entradas()">Configurar</a>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="row mt-4">
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Categorias</h4>
-                  <p class="card-text"> Consulta las categorias de producto de la Franquicia</p>
-                  <a class="btn btn-gym" routerLink="../categorias">Consultar</a>
-               </div>
-            </div>
-         </div>
-         <!-- <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Transferencias</h4>
-                <p class="card-text">Aqui podras verificar los productos que te envia otra sucursal</p>
-                <a class="btn btn-gym" routerLink="../validarTransferencia">Ir</a>
-              </div>
-            </div>
-            </div>-->
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Listado de productos vendidos</h4>
-                  <p class="card-text">Consulta los productos vendidos</p>
-                  <a class="btn btn-gym" routerLink="../productosVendidos">Consultar</a>
-               </div>
-            </div>
-         </div>
-      </div>
       <!--Apartados de RECEPCIONISTA--->
       <div class="row mt-4">
-         <!--<div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Ventas</h4>
-                <p class="card-text">Configura las ventas de tu gimansio</p>
-                <a class="btn btn-gym" routerLink="../productos">Configurar</a>
-              </div>
-            </div>
-            </div>-->
          <div class="col-md-6">
             <div class="card">
                <div class="card-body">
-                  <h4 class="card-title">Membresias</h4>
-                  <p class="card-text">Configura las membresias de tu gimanasio</p>
-                  <a class="btn btn-gym" routerLink="../listaMembresias">Configurar</a>
+                  <h4 class="card-title">Ventas</h4>
+                  <p class="card-text">Consultar las ventas de tu gimnasio</p>
+                  <a class="btn btn-gym" (click)="ventas()">Consultar</a>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Renovación de Membresías</h4>
+                  <p class="card-text">Configura la renovación de las membresías de tu gimnasio.</p>
+                  <a class="btn btn-gym" routerLink="../listaMembresias">Consultar</a>
                </div>
             </div>
          </div>
       </div>
       <div class="row mt-4">
-         <div class="col-md-6">
+        <!-- <div class="col-md-6">
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Inventarios</h4>
@@ -151,24 +134,13 @@
                   <a class="btn btn-gym" routerLink="../inventarios">Configurar</a>
                </div>
             </div>
-         </div>
+         </div>-->
          <div class="col-md-6">
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Registro</h4>
                   <p class="card-text">Registrar a un cliente</p>
                   <a class="btn btn-gym" routerLink="../registrar">Registrar Ahora</a>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="row mt-4">
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Ventas</h4>
-                  <p class="card-text">Consultar las ventas</p>
-                  <a class="btn btn-gym" (click)="ventas()">Configurar</a>
                </div>
             </div>
          </div>
@@ -181,26 +153,6 @@
                </div>
             </div>
          </div>
-      </div>
-      <div class="row mt-4">
-         <!-- <div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Productos vendidos</h4>
-                <p class="card-text">Consultar los productos vendidos</p>
-                <a class="btn btn-gym" routerLink="../productosVendidos">Consultar</a>
-              </div>
-            </div>
-            </div>-->
-         <!--<div class="col-md-6">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="card-title">Ver corte</h4>
-                <p class="card-text">Consultar el corte de caja</p>
-                <a class="btn btn-gym" routerLink="../verCorte">Ver Ahora</a>
-              </div>
-            </div>
-            </div>-->
-      </div>
+      </div> 
    </div>
 </body>

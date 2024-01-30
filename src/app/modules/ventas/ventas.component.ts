@@ -201,7 +201,7 @@ export class VentasComponent implements OnInit {
 
   ngOnInit(): void {
 
-    interval(1000)
+    interval(10000)
     .pipe(takeUntil(this.destroy$))
     .subscribe(() => {
       this.ejecutarServicio();

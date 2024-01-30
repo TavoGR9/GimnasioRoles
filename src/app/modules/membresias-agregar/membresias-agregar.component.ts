@@ -52,6 +52,7 @@ export class MembresiasAgregarComponent {
     this.router.navigateByUrl('admin/misMembresias');
   }
 
+  
   enviar(): any {
     console.log(this.formulariodePlan.value);
     // Verifica si el formulario es válido

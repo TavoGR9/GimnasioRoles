@@ -57,9 +57,10 @@ export class VerCorteComponent implements OnInit  {
   DetallesCaja: any;
 
   ngOnInit(): void {
-    const idUsuario = this.auth.userId.getValue();
+    const idGym = this.auth.idGym.getValue();
+    console.log(idGym, "idUsuario");
   
-    this.joinDetalleVentaService.consultarProductosVentas(1).subscribe(
+    this.joinDetalleVentaService.consultarProductosVentas(idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
         this.dataSource = new MatTableDataSource(this.detallesCaja);

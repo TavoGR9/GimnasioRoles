@@ -24,6 +24,9 @@ import { ProductosVendidosComponent } from './productos-vendidos/productos-vendi
 import { SucursalListaComponent } from './sucursal-lista/sucursal-lista.component';
 import { SucursalEditarComponent } from './sucursal-editar/sucursal-editar.component';
 import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
+import { ListaProductoLineaComponent } from './lista-producto-linea/lista-producto.component';
+import { NotificacionesComponent } from './notificaciones/notificaciones.component';
+import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
 const routes: Routes = [
   {
     path: '',
@@ -31,6 +34,7 @@ const routes: Routes = [
     children: [
       //Rutas Admin
       { path: 'home', component: HomeComponent },
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'misMembresias', component: MembresiasComponent},
       { path: 'agregarMembresias', component: MembresiasAgregarComponent},
       { path: 'editarMembresias/:id', component: MembresiasEditarComponent},
@@ -48,6 +52,9 @@ const routes: Routes = [
       { path: 'listaSucursales', component:SucursalListaComponent},
       { path: 'alta-sucursal', component:SucursalAltaComponent},
       { path: 'editar-sucursal', component:SucursalEditarComponent},
+      { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
+      { path: 'notificacion', component:NotificacionesComponent},
+      { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
      // { path: 'inventario', component: InventarioComponent },
      // { path: 'verConfiguracion', component: VerConfiguracionComponent},
 

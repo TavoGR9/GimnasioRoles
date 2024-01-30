@@ -82,7 +82,6 @@ export class ProductosService {
     return this.clienteHttp.get(this.API + '?inventarioGlobal');
   }
 
-
   getProductosSeleccionados() {
     return this.productosSeleccionados.asObservable();
   }
@@ -104,6 +103,7 @@ export class ProductosService {
     const params = new HttpParams().set('invenID',idInv).set('userID',usuaId);
     return this.clienteHttp.get(this.API, {params});
   }
+
   consultarProductosJ(idProducto: number | null): Observable<any[]> {
     const url = `${this.API2}?idProducto=${idProducto}`;
     return this.clienteHttp.get<any[]>(url);
