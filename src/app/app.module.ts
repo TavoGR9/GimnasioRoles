@@ -21,8 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf } from '@angular/common';
-
-
+import { AddPasswordComponent } from './components/add-password/reset-password.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +29,7 @@ import { NgIf } from '@angular/common';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
+    AddPasswordComponent
   ],
   imports: [
     ModulesModule,

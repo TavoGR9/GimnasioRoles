@@ -93,6 +93,7 @@ import { ProductosVendidosComponent } from './productos-vendidos/productos-vendi
 import { ListaProductoLineaComponent } from './lista-producto-linea/lista-producto.component';
 import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
 
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -149,7 +150,7 @@ import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.
     ListarProductosPipe,
     ProductosVendidosComponent,
     ListaProductoLineaComponent,
-    CrearProductoLineaComponent
+    CrearProductoLineaComponent,
     //InventarioComponent
   ],
   imports: [
