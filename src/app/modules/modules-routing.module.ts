@@ -28,6 +28,7 @@ import { ListaProductoLineaComponent } from './lista-producto-linea/lista-produc
 import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
 
+
 const routes: Routes = [
   {
     path: '',
@@ -56,6 +57,7 @@ const routes: Routes = [
       { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
       { path: 'notificacion', component:NotificacionesComponent},
       { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
+     
      // { path: 'inventario', component: InventarioComponent },
      // { path: 'verConfiguracion', component: VerConfiguracionComponent},
 
