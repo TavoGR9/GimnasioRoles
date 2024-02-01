@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FileUploadService } from 'src/app/service/file-upload.service';
+
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -15,7 +15,7 @@ export class SubirImagenesComponent {
 
   constructor(
     //private messageService: MessageService,
-    private uploadService: FileUploadService,
+  
     private toastr: ToastrService
   ) {}
 

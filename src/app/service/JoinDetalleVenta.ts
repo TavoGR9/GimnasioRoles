@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 export class JoinDetalleVentaService {
   //API: string = 'https://localhost/plan/JoinDetalleVenta.php'
   //API2: string = 'http://localhost/plan/JoinDetalleCaja.php'
- API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/JoinDetalleVenta.php'
- API2: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/JoinDetalleCaja.php'
+ API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/JoinDetalleVenta.php'
+ API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/JoinDetalleCaja.php'
   
   constructor(private clienteHttp:HttpClient) {
   }
@@ -28,7 +28,5 @@ export class JoinDetalleVentaService {
     const url = `${this.API}?consultar=true&Gimnasio_idGimnasio=${idGimnasio}`;
     return this.clienteHttp.get<any[]>(url);
   }
-  
-
 
 }

@@ -322,3 +322,22 @@ option {
 }
 
 
+
+.custom-mat-form-field {
+  width: 50%;
+  height: 50%;
+}
+
+.custom-input {
+  border: 1px solid #FD9727; /* Borde naranja */
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box;
+  transition: border 0.3s ease;
+}
+
+.custom-input:focus {
+  outline: none;
+  border-color: #4CAF50; /* Cambia el color del borde al enfocar el input */
+}
+

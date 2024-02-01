@@ -8,9 +8,7 @@ import { Ventas } from '../models/ventas';
 })
 export class VentasService {
 
-  // API: string = 'http://localhost/productos/categorias.php'
- //API: string = 'https://localhost/plan/ventas.php'
-API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/ventas.php' 
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/ventas.php' 
   
   constructor(private clienteHttp:HttpClient) {
   }

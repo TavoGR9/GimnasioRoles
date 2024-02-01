@@ -2,28 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { ProductoService } from 'src/app/service/producto.service';
 import { CategoriaService } from 'src/app/service/categoria.service';
 
-
 @Component({
   selector: 'app-lista-producto',
   templateUrl: './lista-producto.component.html',
   styleUrls: ['./lista-producto.component.css']
 })
-export class ListaProductoComponent implements OnInit {
+export class ListaProductoLineaComponent implements OnInit {
   public productos: any;
   public page: number = 0;
   public search: string = '';
   constructor(private productoService: ProductoService, private categoriaService: CategoriaService){}
 
   ngOnInit():void{
-    this.productoService.consultarProductoId(2).subscribe({
-      next: (resultData) => {
-        console.log('productos',resultData);
-        this.productos = resultData;
-      }
-    })
   }
   
-
   getCategoria(idCategoria: number) {
     this.categoriaService.consultarCategoria(idCategoria).subscribe((categoria) => {
       return categoria.nombre; // Retorna el nombre de la categoría

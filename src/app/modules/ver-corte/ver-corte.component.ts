@@ -11,7 +11,7 @@ import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-
+import { VentasComponent } from "../ventas/ventas.component";
 @Component({
   selector: 'app-ver-corte',
   templateUrl: './ver-corte.component.html',
@@ -57,7 +57,8 @@ export class VerCorteComponent implements OnInit  {
   DetallesCaja: any;
 
   ngOnInit(): void {
-    const idUsuario = this.auth.userId.getValue();
+    const idGym = this.auth.idGym.getValue();
+    console.log(idGym, "idUsuario");
   
     this.joinDetalleVentaService.consultarProductosVentas(1).subscribe(
       (data) => {
@@ -101,6 +102,7 @@ export class VerCorteComponent implements OnInit  {
     // Concatenar las fechas con un carácter que no se espera en las fechas
     const filtro = `${fechaInicioFiltrar.toISOString().slice(0, 10)}_${fechaFinFiltrar.toISOString().slice(0, 10)}`;
     this.dataSource.filter = filtro;
+    this.actualizarTotalVentas();
   }
 
   applyFilter(event: Event) {
@@ -348,9 +350,7 @@ export class VerCorteComponent implements OnInit  {
     return palabras;
   }
 
-  obtenerDetallesCaja(usuario: number | null) {
-    
-  }
+
 
   /*actualizarTotalVentas() {
     // Verifica si this.paginator está definido
@@ -499,4 +499,13 @@ export class VerCorteComponent implements OnInit  {
     };
     reader.readAsArrayBuffer(file);
   }
+
+  ventas(): void {
+    const dialogRef = this.dialog.open(VentasComponent, {
+      width: '80%',
+      height: '90%',
+      
+    });
+  }
+
 }

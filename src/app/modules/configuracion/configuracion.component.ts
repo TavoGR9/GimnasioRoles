@@ -18,21 +18,15 @@ class Horario {
     public Gimnasio_idGimnasio: string
   ) {}
 }
-
-
 @Component({
   selector: 'app-configuracion',
   templateUrl: './configuracion.component.html',
   styleUrls: ['./configuracion.component.css'] 
 })
 export class ConfiguracionComponent  implements OnInit{
+  diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
   formularioHorarios: FormGroup;
   idGimnasio: any;
-
-  // Días de la semana disponibles
-  diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
-
-  
   formularioSucursales: FormGroup;
   gimnasio: any;
   franquicia: any;
@@ -48,15 +42,12 @@ export class ConfiguracionComponent  implements OnInit{
     public dialog: MatDialog,
     private HorarioService: HorarioService,
     private auth: AuthService,
- 
   ) {
-  
    {
       this.idGimnasio = this.auth.idGym.getValue(); // Accede a idGimnasio desde los datos
       this.formularioHorarios = this.formularioHorario.group({
         horarios: this.formularioHorario.array([]),
       });
-  
       // Consulta los horarios según el ID y estructura los datos para el formulario
       this.HorarioService.consultarHorario(this.idGimnasio).subscribe(
         respuesta => {
@@ -64,14 +55,11 @@ export class ConfiguracionComponent  implements OnInit{
             this.agregarHorarioExistente(dia, respuesta);
           });
         }
-      );
-  
-      
+      );    
     }
 
     this.elID = this.activeRoute.snapshot.paramMap.get('id');
     console.log(this.elID);
-   
     this.formularioSucursales = this.formulario.group({
      nombreGym: ["", Validators.required],
      codigoPostal: ["", Validators.required],
@@ -88,34 +76,27 @@ export class ConfiguracionComponent  implements OnInit{
       estacionamiento: ["", Validators.required],
       regaderas: ["", Validators.required],
       bicicletero: ["", Validators.required],
-      
     });
   }
 
 
   agregarHorarioExistente(diaSemana: string, respuesta: any): void {
-    const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
-  
+  const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
     // Si existe un horario para este día, usa esos valores, de lo contrario, usa valores por defecto
     const horaEntrada = horarioExistente ? horarioExistente.horaEntrada : '';
     const horaSalida = horarioExistente ? horarioExistente.horaSalida : '';
-   console.log("aca si");
     const horarioFormGroup = this.formularioHorario.group({
       diaSemana: [diaSemana, Validators.required],
       horaEntrada: [horaEntrada, Validators.required],
       horaSalida: [horaSalida, Validators.required],
     });
-    console.log("esto",horarioFormGroup);
-  
     const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
     if (horariosArray) {
       horariosArray.push(horarioFormGroup);
     }
-    console.log("esto",horariosArray);
   }
   
   ngOnInit(): void {
-    
     this.gimnasioService.consultarPlan(this.auth.idGym.getValue()).subscribe(
       (respuesta) => {
         this.formularioSucursales.setValue({
@@ -139,45 +120,11 @@ export class ConfiguracionComponent  implements OnInit{
     );
   }
 
- /* actualizar() {
-    console.log(this.formularioSucursales.value);
-    this.gimnasioService.actualizarPlan(1, this.formularioSucursales.value).subscribe(() => {
-      console.log("aca pasa");
-      this.dialog.open(MensajeEmergentesComponent, {
-        data: 'Membresía actualizada exitosamente',
-      })
-        .afterClosed()
-        .subscribe((cerrarDialogo: Boolean) => {
-          if (cerrarDialogo) {
-            this.router.navigateByUrl("/admin/lista-sucursales");
-          } else {
-          }
-        });
-    });
-
-    const horarios: Horario[] = this.formularioHorarios.value.horarios;
-    // Obtén los datos del formulario y envía la solicitud de actualización
-    this.HorarioService.actualizarHorario(1, this.formularioHorarios.value).subscribe({
-      next: (response) => {
-       console.log("si");
-      },
-      error: (error) => {
-        console.error('Error al actualizar:', error);
-      },
-      complete: () => {
-      }
-    });
-  }*/
-
   actualizar() {
     const actualizarPlan = this.gimnasioService.actualizarPlan(this.auth.idGym.getValue(), this.formularioSucursales.value);
     const actualizarHorarios = this.HorarioService.actualizarHorario(this.auth.idGym.getValue(), this.formularioHorarios.value);
-  
     forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
       next: ([planResponse, horariosResponse]) => {
-        console.log('Actualización del plan:', planResponse);
-        console.log('Actualización de horarios:', horariosResponse);
-  
         // Acciones posteriores si ambas actualizaciones son exitosas
         this.dialog.open(MensajeEmergentesComponent, {
           data: 'Gimnasio actualizado exitosamente',
@@ -188,8 +135,6 @@ export class ConfiguracionComponent  implements OnInit{
         });
       },
       error: (error) => {
-        console.error('Error en alguna de las actualizaciones:', error);
-        // Aquí podrías manejar el error de manera conjunta si es necesario
       }
     });
   }

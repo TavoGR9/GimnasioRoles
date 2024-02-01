@@ -5,14 +5,12 @@ import { ToastrService } from 'ngx-toastr';
 import {ErrorStateMatcher} from '@angular/material/core';
 import { ColaboradorService } from 'src/app/service/colaborador.service';
 
-/** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = formulario && formulario.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
-
 @Component({
   selector: 'app-alta-colaboradores',
   templateUrl: './alta-colaboradores.component.html',
@@ -27,7 +25,6 @@ export class AltaColaboradoresComponent {
     private router: Router,
     private http: ColaboradorService,
     private toastr: ToastrService ){
-
     this.form = this.fb.group({
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
@@ -53,8 +50,6 @@ export class AltaColaboradoresComponent {
   }
 
   registrar():any{
-    console.log(this.form.value);
-
     this.http.agregarEmpleado(this.form.value).subscribe({
       next: (resultData) => {
         console.log(resultData.msg);
@@ -69,9 +64,6 @@ export class AltaColaboradoresComponent {
         //mensaje de insersion correcta
         if(resultData.msg == 'Success'){
           this.toastr.success('Empleado agregado correctamente.', 'Exíto!!!');
-          //redireccionar despues de insertar
-          //this.router.navigateByUrl('/lista-colaboradores');
-          //marcar un formulario como no modificado o en su estado inicial.
           this.form.markAsPristine(); 
           //  marcar un control de formulario como no tocado, indicando que el usuario no ha interactuado con él.
           this.form.markAsUntouched();

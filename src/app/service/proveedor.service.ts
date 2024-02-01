@@ -8,15 +8,14 @@ import { proveedor } from '../models/proveedor';
 })
 export class ProveedorService {
 
-  API: string = 'https://olympus.arvispace.com/conPrincipal/proveedor.php'
-  API2: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/proveedores.php'
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/proveedor.php'
+
   constructor(private clienteHttp:HttpClient) {
   }
 
   listaProveedores():Observable<any>{
-    return this.clienteHttp.get(this.API2);
+    return this.clienteHttp.get(this.API);
   }
-
 
   agregarProveedor(datosProveedor:proveedor):Observable<any>{
     return this.clienteHttp.post(this.API+"?insertar=1",datosProveedor);
