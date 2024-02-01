@@ -21,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,7 @@ import { NgIf } from '@angular/common';
     HttpClientModule,
     FormsModule,
     NgIf,
-    
+    RouterModule
   ],
   providers: [],
   bootstrap: [AppComponent]

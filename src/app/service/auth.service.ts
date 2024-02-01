@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 
 //para conectarse al api
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { User, dataLogin, listaSucursal } from '../models/User';
+import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +59,7 @@ export class AuthService {
 }
 
 isLoggedInBS(): boolean {
-  return this.loggedIn.getValue()
+  return this.loggedIn.getValue();
 }
 
 isAdmin(): boolean {
@@ -82,7 +82,7 @@ list_sucursales():Observable<any> {
 
 //Consultar informacion de sucursales
 chart_sucursales(data: any):Observable<any> {
-  return this.clienteHttp.post(this.APIv2 + 'chart_sucursales.php', data, { headers: this.httpHeaders });
+  return this.clienteHttp.post<dataChart>(this.APIv2 + 'chart_sucursales.php', data, { headers: this.httpHeaders });
 }
 
 getUserData(): any | null {

@@ -19,3 +19,8 @@ export class User {
     id!: string;
     sucursal!: string;
   }
+
+  export class dataChart {
+    nombre!: string;
+    ventas!:string;
+  }

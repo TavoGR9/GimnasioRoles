@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import Chart from 'chart.js/auto';
 import { format } from 'date-fns';
 import { AuthService } from 'src/app/service/auth.service';
 import { SerialService } from 'src/app/service/serial.service';
 import * as SerialPort from 'serialport';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-reports',
@@ -15,13 +16,18 @@ export class ReportsComponent implements OnInit {
   form: FormGroup;
   listaSucursales: any;
   existe_grtafica!: Chart;
+  esSupAdmin: boolean = false;
+  contenedorChart: boolean = false;
 
-  constructor(private fb: FormBuilder, private service: AuthService, private serialService: SerialService) {
+  constructor(private fb: FormBuilder, private service: AuthService, 
+    private serialService: SerialService, private toastr: ToastrService) {
     this.form = this.fb.group({
       sucursal: [""],
       p_inicial: ["", Validators.required],
-      p_final: ["", Validators.required]
+      p_final: ["", Validators.required],
+      tipo: ["", Validators.required]
     });
+
   }
 
   ngOnInit(): void {
@@ -37,7 +43,8 @@ export class ReportsComponent implements OnInit {
       }, error: (error) => { console.log(error); }
     });
 
-    //this.openSerialPort();
+    // Validar el tipo de rol p/ mostrar contenido
+    this.esSupAdmin = this.service.isSupadmin();
 
   }
 
@@ -53,17 +60,32 @@ export class ReportsComponent implements OnInit {
 
   //Consultar reporte
   consult(): void {
-    //Llamar funcion para dar formato a fecha
+    // Llamar funcion para dar formato a fecha
     let inicial = this.formatearFecha(this.form.value.p_inicial);
     let final = this.formatearFecha(this.form.value.p_final);
+
+    // Asignar la respuesta a las propiedades de rango de fecha
     this.form.value.p_inicial = inicial;
     this.form.value.p_final = final;
+
+    // Validar que tipo de rol y asignar un valor al campo sucursal
+    if(!this.esSupAdmin){
+      this.form.value.sucursal = this.service.idGym.getValue();
+    }
+
     console.log(this.form.value);
     this.service.chart_sucursales(this.form.value).subscribe({
       next: (resultData) => {
         console.log(resultData);
+        //Validar que se obtenga algun resultado valido de la BD
+        if(resultData.nombre == 'No_result'){
+          this.toastr.error('No hay resultados disponibles...', 'No hay resultados', {
+            positionClass: 'toast-bottom-left',
+          });
+          return;
+        }
         // Extraer los nombres de gimnasios y las ventas
-        const sucursalesResult = resultData.map((item: any) => item.nombreGym);
+        const sucursalesResult = resultData.map((item: any) => item.nombre);
         const ventasResult = resultData.map((item: any) => item.ventas);
         this.showChart(sucursalesResult, ventasResult);
       }, error: (error) => { console.log(error); }
@@ -72,7 +94,7 @@ export class ReportsComponent implements OnInit {
 
   //Graficar datos
   showChart(sucursales: any, ventas: any): void {
-
+    this.contenedorChart = true;
     if (this.existe_grtafica) {
       this.existe_grtafica.destroy();
     }
@@ -115,16 +137,17 @@ export class ReportsComponent implements OnInit {
     });
   }
 
+  // Puerto SERIAL - eventos .... Puerto SERIAL - eventos .... Puerto SERIAL - eventos .... Puerto SERIAL
 
-  //Pruebas para manejar el puerto serial
+  //Pruebas para manejar el puerto serial - version 3.2 - es de chocolate.
   async onConnectButtonClick(): Promise<void> {
     await this.serialService.connectAndSendData();
   }
 
-  //private selectedPort: any;
   selectedPort: any = null;
   writer: any = null;
   reader: any = null;
+  // Apertura del puerto 
   async requestSerialPort() {
     if ('serial' in navigator) {
       try {
@@ -181,7 +204,7 @@ export class ReportsComponent implements OnInit {
     }
   }
 
-  
+  // Apeertura del puerto
   async openSerialPort() {
     if ('serial' in navigator) {
       try {
@@ -199,12 +222,14 @@ export class ReportsComponent implements OnInit {
     }
   }
 
+  // Enviar datos al puerto abierto
   async enviarDatos(texto: string) {
     const encoder = new TextEncoder();
     await this.writer.write(encoder.encode(texto));
     console.log("enviado");
   }
 
+  // Leer respuesta de dispositivo conectado al puerto serial
   async leerDatos() {
     try {
       while (true) {
@@ -222,6 +247,7 @@ export class ReportsComponent implements OnInit {
     }
   }
 
+  // Enviar informacion al puerto serial
   enviarDatosPorPuertoSerial() {
     //this.openSerialPort();
     if (this.selectedPort) {
