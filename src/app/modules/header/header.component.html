@@ -10,9 +10,9 @@
     <!-- Utiliza los elementos del menú como botones en pantallas grandes -->
     <div class="d-none d-lg-flex">
       <button class="btn" id="ops" routerLink="./home">Inicio</button>
-      <button class="btn" id="ops" routerLink="./misMembresias">Membresías</button>
-      <button class="btn" id="ops" routerLink="./verConfiguracion">Configuración</button>
-      <button class="btn" id="ops" routerLink="./notificacion">Notificación</button>
+      <button class="btn" id="ops" routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>
+      <button class="btn" id="ops" routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
+      <button class="btn" id="ops" routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
       <button class="btn" id="op" (click)="logout()">
         <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
       </button>
@@ -21,9 +21,9 @@
     <!-- Define el menú desplegable con matMenu -->
     <mat-menu #menu="matMenu" class="d-lg-none">
       <button mat-menu-item routerLink="./home">Inicio</button>
-      <button mat-menu-item routerLink="./misMembresias">Membresías</button>
-      <button mat-menu-item routerLink="./verConfiguracion">Configuración</button>
-      <button mat-menu-item routerLink="./notificacion">Notificación</button>
+      <button mat-menu-item routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
+      <button mat-menu-item routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
+      <button mat-menu-item routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>
       <button mat-menu-item (click)="logout()">
         <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
       </button>

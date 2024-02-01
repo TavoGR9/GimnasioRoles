@@ -22,13 +22,12 @@ export class ProductosComponent implements OnInit {
     'descripcion',
     'estatus',
     'categoria', 
-
   ];
+
   public productos: any;
   listProductData: ListaProductos[] = [];
   dataSource: any; 
   productoActiva: boolean = true;
-
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(
@@ -38,7 +37,7 @@ export class ProductosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.productoService.consultarProductoId(1).subscribe({
+    this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
       next: (resultData) => {
         this.productos = resultData;
         this.dataSource = new MatTableDataSource(this.productos);

@@ -20,6 +20,14 @@ export class HomeComponent implements OnInit{
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
+  
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
+  }
+
+  isRecep(): boolean {
+    return this.auth.isRecepcion();
+  }
 
   ventas(): void {
     const dialogRef = this.dialog.open(VentasComponent, {

@@ -1,17 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
 import { membresia } from 'src/app/models/membresia';
 import { MembresiaService } from 'src/app/service/membresia.service';
-//import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
-//import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MembresiasAgregarComponent } from '../membresias-agregar/membresias-agregar.component';
-
 @Component({
   selector: 'app-membresias',
   templateUrl: './membresias.component.html',
@@ -20,7 +16,6 @@ import { MembresiasAgregarComponent } from '../membresias-agregar/membresias-agr
 export class MembresiasComponent implements OnInit {
   constructor(
     private membresiaService:MembresiaService,
-   // private gimnasioService:GimnasioService,
     private auth: AuthService,
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef,
@@ -29,20 +24,7 @@ export class MembresiasComponent implements OnInit {
 
   displayedColumns: string[] = ['title', 'details','price','duration', 'trainer','cancha','alberca','ofertas','gimnasio','status','actions'];
 
-  ngOnInit(): void {
-    this.membresiaService.consultarPlanId(1).subscribe(respuesta => {
-      console.log(respuesta);
-      this.plan = respuesta;
-      this.dataSource = new MatTableDataSource(this.plan);
-      this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
-    });
-  }
-  
-
-
-  public membresiaActiva: boolean = false; // Inicializa según el estado de la membresía
-
-// membresiaActiva: boolean
+  public membresiaActiva: boolean = false; 
   membresias: membresia[] = [];
   plan: membresia[] = [];
   message: string = "";
@@ -50,64 +32,25 @@ export class MembresiasComponent implements OnInit {
   public page: number = 0;
   public search: string = '';
   dataSource: any; 
-  
   public paginator!: MatPaginator;
 
-  //@ViewChild(MatPaginator) paginator: MatPaginator;
-
-  /*borrarPlan(idMem: any) {
-    console.log(idMem);
-    this.dialog.open(MensajeEliminarComponent, {
-      data: `¿Desea eliminar esta membresía?`,
-    })
-    .afterClosed()
-      .subscribe((confirmado: Boolean) => {
-        if (confirmado) {
-          this.membresiaService.borrarPlan(idMem).subscribe((respuesta) => {
-            console.log("si entro") 
-            //window.location.reload();    
-            this.ngOnInit();
-          },
-          (error) => {
-            console.log("Error al eliminar:", error);
-            this.message = "¡Error al eliminar! Hay clientes inscritos en esta membresía";
-            setTimeout(() => {
-              this.message = ''; // Ocultar el mensaje de error después de 20 segundos
-            }, 7000); // 20000 milisegundos = 20 segundos
-          });
-        } else {
-          
-        }
-      });
-   }*/
+  ngOnInit(): void {
+    this.membresiaService.consultarPlanId(this.auth.idGym.getValue()).subscribe(respuesta => {
+      console.log(respuesta);
+      this.plan = respuesta;
+      this.dataSource = new MatTableDataSource(this.plan);
+      this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+    });
+  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-
-  /*toggleCheckbox(idMem: number, status: number) {
-    const dialogRef = this.dialog.open(MensajeEliminarComponent, {
-      data: `¿Desea cambiar el estatus de la membresía?`, 
-    });
-
-    dialogRef.afterClosed().subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        console.log("membresiaActiva",status);
-        // Invierte el estado actual de la membresía
-        const nuevoEstado = status ? { status: 0 } : { status: 1 };
-  
-        this.actualizarEstatusMembresia(idMem, nuevoEstado);
-      }
-    });
-  }*/
-
   toggleCheckbox(idMem: number, status: number) {
-    // Guarda el estado actual en una variable temporal
     const estadoOriginal = status;
     console.log('Estatus actual:', estadoOriginal);
-  
    /* const dialogRef = this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea cambiar el estatus de la categoría?`, 
     });
@@ -116,10 +59,8 @@ export class MembresiasComponent implements OnInit {
         // Invierte el estado actual de la categoría
         const nuevoEstado = status == 1 ? { status: 0 } : { status: 1 };
         console.log('Nuevo estado:', nuevoEstado);
-  
         // Actualiza el estado solo si el usuario confirma en el diálogo
         this.actualizarEstatusMembresia(idMem, nuevoEstado);
-        
       } else {
         // Si el usuario cancela, vuelve al estado original
         console.log('Acción cancelada, volviendo al estado original:', estadoOriginal);
@@ -164,7 +105,6 @@ export class MembresiasComponent implements OnInit {
     const dialogRef = this.dialog.open(MembresiasAgregarComponent, {
       width: '70%',
       height: '90%',
-      
     });
   }
 }
