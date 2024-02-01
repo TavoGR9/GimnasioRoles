@@ -9,7 +9,7 @@ import { listaEmpleados, msgResult, registrarEmpleado } from '../models/empleado
 
 export class ColaboradorService {
 
-    API: string = 'https://olympus.arvispace.com/conPrincipal/empleado.php';
+    API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/empleado.php';
     constructor(private clienteHttp:HttpClient) {
     }
     

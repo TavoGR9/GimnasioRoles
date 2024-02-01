@@ -11,13 +11,9 @@ import { Cliente } from '../models/Cliente';
 export class ClienteService {
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
-  API: string = 'https://localhost/plan/usuarios.php'
- URLServices: String = "https://olympus.arvispace.com/puntoDeVenta/conf/registros.php"; //http://localhost/plan/registro.php/ https://olympus.arvispace.com/conPrincipal/registro.php
-  //URLServices: string = 'https://localhost/plan/registros.php'
-  //apiUrl: string = 'https://localhost/plan/registros.php?insertar=1'
-  apiUrl: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/registros.php?insertar=1'
-  URL: string = "https://olympus.arvispace.com/conPrincipal/formaPago.php/";
-  apiFoto: string = "https://olympus.arvispace.com/puntoDeVenta/conf/update_image.php";
+  URLServices: String = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/registros.php"; 
+  URL: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/formaPago.php/";
+  apiFoto: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/update_image.php";
 
   constructor(private clienteHttp:HttpClient) {
   }
@@ -25,7 +21,7 @@ export class ClienteService {
   data$ = this.dataSubject.asObservable();
 
   guardarCliente(data: any): Observable<any> {
-    return this.clienteHttp.post<any>(this.apiUrl, data);
+    return this.clienteHttp.post<any>(this.URLServices+"?insertar=1", data);
   }
 
   updatePhoto(archivo: any): Observable<any> {
@@ -42,15 +38,6 @@ export class ClienteService {
 
   sendData(data: any) {
     this.dataSubject.next(data);
-  }
-
-  obtenerUsuariosPorId(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultar="+id);
-  }
-
-  agregarCliente(datosCliente:Cliente):Observable<any>{
-    console.log("aca llega");
-    return this.clienteHttp.post(this.URLServices+"?insertar=1",datosCliente);
   }
   
   //validaciones correo

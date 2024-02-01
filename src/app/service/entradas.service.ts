@@ -8,7 +8,7 @@ import { ListaProductos } from '../models/listaProductos';
   providedIn: 'root',
 })
 export class EntradasService {
-  API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/entradas.php';
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/entradas.php';
   constructor(private clienteHttp: HttpClient) {}
 
   /**

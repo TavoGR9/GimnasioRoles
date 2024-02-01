@@ -9,7 +9,7 @@ import { Categorias } from '../models/categorias';
 })
 export class CategoriaService {
 
-  API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/categoria.php'
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/categoria.php'
   constructor(private clienteHttp:HttpClient) {
   }
 

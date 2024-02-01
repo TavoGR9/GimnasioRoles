@@ -11,8 +11,8 @@ import { HttpParams } from '@angular/common/http';
 export class ProductoService {
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-   API2: string =  'https://olympus.arvispace.com/panelAdmin/conf/joinDetalleProducto.php';
-   API: string ='https://olympus.arvispace.com/puntoDeVenta/conf/productoSucursal.php';
+   API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/joinDetalleProducto.php';
+   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/productoSucursal.php';
 
    private productosSeleccionados = new BehaviorSubject<Producto[]>([]);
    //API2: string = 'http://localhost/plan/joinDetalleProducto.php'
