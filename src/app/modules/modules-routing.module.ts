@@ -38,7 +38,6 @@ const routes: Routes = [
       //Rutas Admin
       { path: 'home', component: HomeComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-
       {
         path: '',
         canActivate: [RoleGuard], 
