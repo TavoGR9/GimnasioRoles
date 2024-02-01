@@ -9,8 +9,9 @@ import { detalleVenta } from '../models/detalleVenta';
 export class DetalleVentaService {
 
   //API: string = 'https://localhost/plan/detalle_venta.php'
- API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/detalle_venta.php'
- API2: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/estatus.php'
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/detalle_venta.php'
+  API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/estatus.php'
+
   constructor(private clienteHttp:HttpClient) {
   }
 

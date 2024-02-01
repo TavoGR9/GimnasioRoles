@@ -8,7 +8,7 @@ import { horario } from '../models/horario';
 })
 export class HorarioService {
 
-  APIHorario: string = 'https://olympus.arvispace.com/conPrincipal/horario.php' // Cambia la URL a la de tu servicio PHP
+  APIHorario: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/horario.php' // Cambia la URL a la de tu servicio PHP
   constructor(private clienteHttp:HttpClient) {
   }
 

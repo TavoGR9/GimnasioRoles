@@ -6,12 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class notificaciones {
-  // API: string = 'http://localhost/EnviarMail/nuevaContra.php/';
+ 
   API: string ='http://localhost/pruebamail/EnviarMail/enviarNotificacion.php';
   APITra: string ='http://localhost/pruebamail/EnviarMail/enviarNotificacionTrabajador.php';
-  //para guardar los headers que manda el API
-  /*API: string = 'https://olympus.arvispace.com/puntoDeVenta/EnviarMail/enviarNotificacion.php/';
-  APITra: string = 'https://olympus.arvispace.com/puntoDeVenta/EnviarMail/enviarNotificacionTrabajador.php';*/ 
+  
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private clienteHttp: HttpClient) {}

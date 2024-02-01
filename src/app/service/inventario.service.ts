@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class inventarioService {
 
 //API: string = 'http://localhost/plan/inventario.php/'
-  API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/inventario.php'
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/inventario.php'
   
   constructor(private clienteHttp:HttpClient) {
   }

@@ -133,18 +133,21 @@ export class EntradasComponent implements OnInit {
     });
 
     //lista de proveedores mat select
-    this.proveedor.listaProveedores().subscribe({
+    this.proveedor.obternerProveedor().subscribe({
       next: (resulData) => {
         console.log(resulData);
         // Transformar los nombres de propiedades para poder mostrar en mat select (no acepta espacios)
-        this.listaProveedores = resulData.map(
-          (proveedor: { [x: string]: any }) => {
+        if (Array.isArray(resulData)) {
+          this.listaProveedores = resulData.map((proveedor: { [x: string]: any }) => {
             return {
               ...proveedor,
               nombreEmpresa: proveedor['razon social'],
             };
-          }
-        );
+          });
+        } else {
+          console.error('resulData is not an array.');
+        }
+        
       },
       error: (error) => {
         console.error(error);
