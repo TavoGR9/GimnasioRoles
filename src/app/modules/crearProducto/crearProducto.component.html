@@ -111,7 +111,7 @@
                                    id="idCategoria"
                                    name="idCategoria"
                                    formControlName="idCategoria"
-                                   (ngModelChange)="infoCategoria(showCategoria.value)"
+                                   (ngModelChange)="infoCategoria(+showCategoria.value)"
                                    #showCategoria
                                    >
                                    <mat-option
@@ -199,49 +199,6 @@
                                       >
                                 </mat-form-field>
                              </fieldset>
-                             <fieldset *ngIf="idCategoria === 4">
-                                <strong>Caracteristicas ropa</strong>
-                                <br>
-                                <mat-form-field appearance="outline" class="inputs_properties">
-                                   <mat-label>Color</mat-label>
-                                   <input
-                                      type="text"
-                                      matInput
-                                      placeholder="Marca comercial"
-                                      autocomplete="off"
-                                      formControlName="color"
-                                      id="color"
-                                      [errorStateMatcher]="matcher"
-                                      />
-                                   <mat-error
-                                      *ngIf="
-                                      form.get('color')?.hasError('pattern') &&
-                                      !form.get('color')?.hasError('required')
-                                      "
-                                      >
-                                      <strong class="txt_msg">**Solo se admiten letras</strong>
-                                   </mat-error>
-                                   <mat-error *ngIf="form.get('color')?.hasError('required')"
-                                      ><strong class="txt_msg">**Campo requerido</strong></mat-error
-                                      >
-                                </mat-form-field>
-                                <mat-form-field appearance="outline" class="inputs_properties">
-                                   <mat-label>Talla</mat-label>
-                                   <mat-select
-                                      id="talla"
-                                      formControlName="talla"
-                                      [errorStateMatcher]="matcher"
-                                      >
-                                      <mat-option value="CH">Chica</mat-option>
-                                      <mat-option value="M">Mediana</mat-option>
-                                      <mat-option value="G">Grande</mat-option>
-                                      <mat-option value="EG">Extra grande</mat-option>
-                                   </mat-select>
-                                   <mat-error *ngIf="form.get('talla')?.hasError('required')">
-                                      <strong class="txt_msg">**Campo requerido</strong>
-                                   </mat-error>
-                                </mat-form-field>
-                             </fieldset>
                           </div>
                           <div class="col-sm-6">
                              <p>
@@ -269,7 +226,7 @@
                           </div>
                        </div>
                     </fieldset>
-                    <fieldset>
+                    <!--<fieldset>
                        <legend>Imagenes</legend>
                        <div class="card flex justify-content-center">
                           <p-toast></p-toast>
@@ -292,7 +249,7 @@
                           </ng-template>
                           </p-fileUpload>
                        </div>
-                    </fieldset>
+                    </fieldset>-->
                     <br />
                     <div style="display: flex; justify-content: center;">
                        <button mat-raised-button type="submit"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;">Aceptar</button>

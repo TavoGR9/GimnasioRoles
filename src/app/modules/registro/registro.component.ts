@@ -14,11 +14,10 @@ import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emerge
 import { ErrorStateMatcher } from "@angular/material/core";
 import { ToastrService } from "ngx-toastr";
 import { TestService } from "src/app/service/test.service";
-import { PlanService } from "src/app/service/plan.service";
+import { MembresiaService } from "src/app/service/membresia.service";
 import { AuthService } from "src/app/service/auth.service";
 import { autoTable } from "jspdf-autotable";
 import { plan } from "src/app/models/plan";
-import { RegistroService } from "src/app/service/registro.service";
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 
@@ -133,7 +132,7 @@ export class RegistroComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     public dialog: MatDialog,
     private toastr: ToastrService,
-    private planService: PlanService,
+    private planService: MembresiaService,
     private auth: AuthService,
 
 

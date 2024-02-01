@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ProductosService } from "src/app/service/productos.service";
+import { ProductoService } from 'src/app/service/producto.service';
 import { listarClientesService } from "src/app/service/listarClientes.service";
 import { DetalleVentaService } from 'src/app/service/detalle-venta.service';
 //import { detalleVenta } from "../models/detalleVenta";
@@ -22,7 +22,7 @@ export class MensajeListaComponent implements OnInit {
   constructor(
     public dialogo: MatDialogRef<MensajeListaComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
-    private productoService: ProductosService,
+    private productoService: ProductoService,
     private ListarClientesService:listarClientesService,
     private DetalleVenta: DetalleVentaService,
     private clienteService: ClienteService,

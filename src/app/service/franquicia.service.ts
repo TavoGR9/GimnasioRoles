@@ -8,7 +8,7 @@ export class FranquiciaService {
   //para guardar los headers que manda el API
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  API: string = 'https://olympus.arvispace.com/conPrincipal/franquicia.php'
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/franquicia.php'
   constructor( private clienteHttp:HttpClient){}
 
   obternerFran(){

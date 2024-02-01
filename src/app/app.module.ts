@@ -22,7 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
+import { AddPasswordComponent } from './components/add-password/reset-password.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,12 +30,18 @@ import { RouterModule } from '@angular/router';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
+    AddPasswordComponent
   ],
   imports: [
-    ModulesModule,
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
+    FormsModule,
+    HttpClientModule,
+    NgIf,
+    ToastrModule.forRoot({positionClass:'toast-bottom-left'}),
+    FontAwesomeModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -51,7 +57,7 @@ import { RouterModule } from '@angular/router';
     HttpClientModule,
     FormsModule,
     NgIf,
-    RouterModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

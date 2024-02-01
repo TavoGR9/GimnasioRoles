@@ -133,18 +133,21 @@ export class EntradasComponent implements OnInit {
     });
 
     //lista de proveedores mat select
-    this.proveedor.listaProveedores().subscribe({
+    this.proveedor.obternerProveedor().subscribe({
       next: (resulData) => {
         console.log(resulData);
         // Transformar los nombres de propiedades para poder mostrar en mat select (no acepta espacios)
-        this.listaProveedores = resulData.map(
-          (proveedor: { [x: string]: any }) => {
+        if (Array.isArray(resulData)) {
+          this.listaProveedores = resulData.map((proveedor: { [x: string]: any }) => {
             return {
               ...proveedor,
               nombreEmpresa: proveedor['razon social'],
             };
-          }
-        );
+          });
+        } else {
+          console.error('resulData is not an array.');
+        }
+        
       },
       error: (error) => {
         console.error(error);
@@ -186,7 +189,7 @@ export class EntradasComponent implements OnInit {
   
 
   agregarATabla() {
-    if (this.form.valid) {
+
     console.log("hola");
     // Verificar si el formulario y sus controles no son nulos
     if (this.form && this.form.get('idProducto') && this.form.get('idProveedor') && this.form.get('cantidad')) {
@@ -225,8 +228,10 @@ export class EntradasComponent implements OnInit {
             Proveedor_idProveedor: 1,
             cantidad: this.form.get('cantidad')!.value,
             fechaEntrada: fechaFormateada,
-            Gimnasio_idGimnasio: this.id,
-            Usuarios_idUsuarios: this.idUsuario,
+            //Gimnasio_idGimnasio: this.id,
+            Gimnasio_idGimnasio: 1,
+            Usuarios_idUsuarios: 1,
+            //Usuarios_idUsuarios: this.idUsuario,
             precioCompra: idPrecioCompra,
             precioVenta: idPrecioVenta
             // Otras propiedades según tus campos
@@ -239,7 +244,7 @@ export class EntradasComponent implements OnInit {
       } else {
         console.warn('Producto no encontrado en listaProductos');
       }
-    }}
+    }
   }
   
 

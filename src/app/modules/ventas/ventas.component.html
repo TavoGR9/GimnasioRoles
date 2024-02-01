@@ -101,21 +101,22 @@
                      {{ prod[column] }}
                    </ng-container>
                    <ng-container *ngIf="column === 'cantidad'">
-                     <mat-form-field>
-                       <input matInput [(ngModel)]="prod.cantidad" type="number" min="0" />
+                     <mat-form-field class="custom-mat-form-field">
+                       <input matInput [(ngModel)]="prod.cantidad" type="number" min="0" class="custom-input" (keyup.enter)="validarYAgregarProducto(prod)" />
                      </mat-form-field>
-                   </ng-container>
+                   </ng-container>                   
                    <ng-container *ngIf="column === 'acciones'">
-                     <button (click)="validarYAgregarProducto(prod)">Agregar<mat-icon class="add-box-icon" >add_box</mat-icon></button>
+                     <button (click)="validarYAgregarProducto(prod)" style="background-color: #000000; color: #ffffff; border: none; padding: 10px; height: 40px; border-radius: 5px; cursor: pointer; display: flex; align-items: center;">
+                        Agregar
+                        <mat-icon class="add-box-icon" style="margin-left: 5px; font-size: 18px;">add_box</mat-icon>
+                      </button>                      
                    </ng-container>
                  </td>
                </ng-container>
                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                <tr mat-row *matRowDef="let productofila; columns: displayedColumns"></tr>
              </table>
-             <mat-paginator #paginator [pageSizeOptions]="[4, 8, 12, 16,20,24,28,32,36,40]" showFirstLastButtons></mat-paginator>
-
-
+             <mat-paginator #paginator [pageSizeOptions]="[3, 10, 20, 30,40,50,100,200,300,4000]" showFirstLastButtons></mat-paginator>
          </div>
          <div class="resumen">
             <h1>Resumen de Compra</h1>

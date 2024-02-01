@@ -1,15 +1,18 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectionStrategy} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api'; /**siempre debes importarlo */
 //import { ToastrService } from 'ngx-toastr';
 //import { ColaboradorService } from 'src/app/service/colaborador.service';
-import { ProductosService } from 'src/app/service/productos.service';
+import { ProductoService } from 'src/app/service/producto.service';
 
 import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { CategoriaService } from 'src/app/service/categoria.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DatePipe } from '@angular/common';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = formulario && formulario.submitted;
@@ -19,116 +22,68 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-editar-producto',
   templateUrl: './editar-producto.component.html',
-  styleUrls: ['./editar-producto.component.css']
+  styleUrls: ['./editar-producto.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DatePipe, MessageService],
 })
-export class EditarProductoComponent {
+export class EditarProductoComponent implements OnInit{
   form: FormGroup;
   gimnasio: any;
   message: string = '';
   producto: any;
-  elID:any;
   idCategoria: number = 0;
   listaCategorias: any;
+  idProducto: any;
+  fechaCreacion: string;
 
-  constructor(public fb:FormBuilder,
+  constructor( public dialogo: MatDialogRef<EditarProductoComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public fb:FormBuilder,
     private activeRoute: ActivatedRoute, 
-    private productoService:ProductosService,
+    private productoService:ProductoService,
+    private datePipe: DatePipe,
     private router:Router,
     public dialog: MatDialog,
     private categoriaService: CategoriaService,){
-    this.elID=this.activeRoute.snapshot.paramMap.get('id');
-    console.log(this.elID);
 
+    this.idProducto = data.idProducto;
+    console.log(this.idProducto, "this.idProducto");
     //llamar al servicio datos empleado - pasando el parametro capturado por url
-    this.productoService.consultarProductosJ(this.elID).subscribe(
-      
+    this.productoService.consultarProductosJ(this.idProducto).subscribe(
       respuesta=>{
         //asignar valor a los campos correspondientes al fomulario
         console.log(respuesta, "respuesta");
         this.form.setValue({
           nombre:respuesta [0]['nombre'],
           descripcion:respuesta [0]['descripcion'],
-          Categoria_idCategoria:respuesta [0]['Categoria_idCategoria'],
-          precio:respuesta [0]['precio'],
-          precioCompra:respuesta [0]['precioCompra'],
-          descuento:respuesta [0]['descuento'],
-          porcentaje:respuesta [0]['porcentaje'],
-          fechaCreacion:respuesta [0]['fechaCreacion'],
           codigoBarra:respuesta [0]['codigoBarra'],
+          idCategoria:respuesta [0]['Categoria_idCategoria'],
+          fechaCreacion:respuesta [0]['fechaCreacion'],
           unidadMedicion:respuesta [0]['unidadMedicion'],
           cantidadUnidades:respuesta [0]['cantidadUnidades'],
-          talla:respuesta [0]['talla'],
           color:respuesta [0]['color'],
           longitud:respuesta [0]['longitud'],
           sabor:respuesta [0]['sabor'],
-          genero:respuesta [0]['genero'],
           marca:respuesta [0]['marca'],
-        //  files:respuesta [0]['files'],
         });
       }
       
     );
 
-    console.log( this.fb,"this.formularioProducto.setValue");
+    this.fechaCreacion = this.obtenerFechaActual();
+   
     this.form = this.fb.group({
-      nombre: ['',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),]),],
+      nombre: [ '',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),]),],
       descripcion: ['', Validators.required],
-      Categoria_idCategoria: ['', Validators.compose([Validators.required])],
-      precio: [
-        '',
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
-        ]),
-      ],
-      precioCompra: [
-        '',
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
-        ]),
-      ],
-
-      descuento: ['', Validators.required],
-      porcentaje: [0,Validators.compose([Validators.required,
-          Validators.pattern(/^[0-9]+$/), //solo numeros enteros
-        ]),
-      ],
-      fechaCreacion: [''],
+      fechaCreacion: [this.fechaCreacion],
       codigoBarra: [''],
+      idCategoria: ['', Validators.compose([Validators.required])],
       unidadMedicion: ['NA', Validators.compose([Validators.required])],
-      cantidadUnidades: [
-        0,
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^[0-9]+$/), //solo numeros enteros
-        ]),
-      ],
-      talla: ['NA', Validators.compose([Validators.required])],
-      color: [
-        'NA',
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u), //solo letras
-        ]),
-      ],
+      cantidadUnidades: [0,Validators.compose([Validators.required,Validators.pattern(/^[0-9]+$/)])],
+      color: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
       longitud: ['NA'],
-      sabor: [
-        'NA',
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),
-        ]),
-      ],
-      genero: ['NA', Validators.compose([Validators.required])],
-      marca: [
-        '',
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),
-        ]),
-      ],
-     // files: [[]], // Inicializa el control de archivos como un array vacío
+      sabor: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
+      marca: ['',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])]
     });
   }
 
@@ -148,12 +103,17 @@ export class EditarProductoComponent {
     });
   }
 
+  obtenerFechaActual(): string {
+    const fechaActual = new Date();
+    return this.datePipe.transform(fechaActual, 'yyyy-MM-dd HH:mm:ss') || '';
+  }
+
   cancelar() {
     this.router.navigateByUrl('/admin/gestion-productos');
   }
 
   actualizar(){
-    this.productoService.actualizarProducto(this.elID,this.form.value).subscribe(
+    this.productoService.actualizarProducto(this.idProducto,this.form.value).subscribe(
       (response) => {
         console.log('Producto actualizado correctamente:', response);
         this.dialog.open(MensajeEmergentesComponent, {
@@ -179,6 +139,10 @@ infoCategoria(event: number) {
   console.log('Opción seleccionada:', event);
   this.idCategoria = event;
   console.log('valor idCategoria:', this.idCategoria);
+}
+
+cerrarDialogo(): void {
+  this.dialogo.close(true);
 }
 
 }
