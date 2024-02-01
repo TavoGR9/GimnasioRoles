@@ -33,7 +33,6 @@ export class VerCorteComponent implements OnInit  {
   totalVentas: number = 0;
   total = 0;
   fechaFin: Date = new Date();
-
   fechaInicio: Date = new Date();
   fechaFiltro: string = "";
   opcionSeleccionada: string = "diario";
@@ -51,23 +50,16 @@ export class VerCorteComponent implements OnInit  {
   
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-
-  
   DetallesCaja: any;
 
   ngOnInit(): void {
-    const idGym = this.auth.idGym.getValue();
-    console.log(idGym, "idUsuario");
-  
-    this.joinDetalleVentaService.consultarProductosVentas(1).subscribe(
+    this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
       (data) => {
         this.detallesCaja = data;
         this.dataSource = new MatTableDataSource(this.detallesCaja);
-        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+        this.dataSource.paginator = this.paginator; 
         this.dataSource.data = this.detallesCaja;
-       // this.actualizarTotalVentas();
-         //fecha
+
         const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
         this.fechaFiltro = fechaActual;
         this.aplicarFiltro();
@@ -125,9 +117,6 @@ export class VerCorteComponent implements OnInit  {
       this.totalAPagarCorte
     );
 
-    /*const cantidadDinero = this.formularioCaja.get(
-      "cantidadDineroExistente"
-    )?.value;*/
 
     const ventanaImpresion = window.open("", "_blank");
     const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
@@ -350,16 +339,6 @@ export class VerCorteComponent implements OnInit  {
     return palabras;
   }
 
-
-
-  /*actualizarTotalVentas() {
-    // Verifica si this.paginator está definido
-    if (this.paginator) {
-      this.totalVentas = this.calcularTotalVentas(this.detallesCaja);
-    } else {
-      console.warn('El paginador no está definido. No se puede calcular el total de ventas.');
-    }
-  }*/
 
   actualizarTotalVentas(): void {
     this.totalVentas = this.calcularTotalVentas();

@@ -3,10 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { FormGroup,FormBuilder,Validators  } from '@angular/forms';
 import { MembresiaService } from 'src/app/service/membresia.service';
-//import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from 'src/app/service/auth.service';
-
 @Component({
   selector: 'app-membresias-editar',
   templateUrl: './membresias-editar.component.html',
@@ -15,18 +13,17 @@ import { AuthService } from 'src/app/service/auth.service';
 export class MembresiasEditarComponent {
   formularioPlan: FormGroup;
   gimnasio: any;
-  
   elID:any;
+
   constructor(public formulario:FormBuilder,
     private activeRoute: ActivatedRoute, 
     private membresiaService:MembresiaService,
     private router:Router,
-   // private gimnasioService: GimnasioService,
     private auth: AuthService,
     public dialog: MatDialog){
+
     this.elID=this.activeRoute.snapshot.paramMap.get('id');
     console.log(this.elID);
-
     this.membresiaService.consultarPlan(this.elID).subscribe(
       respuesta=>{
         console.log(respuesta);
@@ -44,7 +41,6 @@ export class MembresiasEditarComponent {
         })
       }
     );
-
     this.formularioPlan=this.formulario.group({
       titulo: ['', Validators.required],
       detalles:['', Validators.required],
@@ -61,11 +57,9 @@ export class MembresiasEditarComponent {
 
   ngOnInit(): void {
   }
-
     
   actualizar(){
     this.membresiaService.actualizarPlan(this.elID,this.formularioPlan.value).subscribe(()=>{
-
       this.dialog.open(MensajeEmergentesComponent, {
         data: `Membresía actualizada exitosamente`,
       })
@@ -74,7 +68,6 @@ export class MembresiasEditarComponent {
         if (cerrarDialogo) {
           this.router.navigateByUrl("/admin/misMembresias");
         } else {
-          
         }
       });
     })

@@ -177,23 +177,14 @@ export class VentasComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    console.log(this.auth.idGym.getValue(), "this.auth.getIdGym()");
-   // this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
-    this.productoService.obternerProductos(1).subscribe((respuesta) => {
-      console.log("respuesta", respuesta)
+   this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      console.log("this.productData", this.productData);
       this.dataSource = new MatTableDataSource(this.productData);
-      this.dataSource.paginator = this.paginator; // Asignación del paginador aquí
-      console.log(this.paginator,"this.paginator");
+      this.dataSource.paginator = this.paginator; 
     });
-
-   
-  
   }
 
   ejecutarServicio(): void {
-    // Llama a tu servicio aquí
     this.DetalleVenta.obternerEstatus().subscribe((result) => {
     });
   }
@@ -201,7 +192,6 @@ export class VentasComponent implements OnInit {
   private destroy$: Subject<void> = new Subject<void>();
 
   ngOnInit(): void {
-
     interval(10000)
     .pipe(takeUntil(this.destroy$))
     .subscribe(() => {

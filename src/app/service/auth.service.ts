@@ -74,6 +74,10 @@ isSupadmin():boolean {
   return this.role.getValue() === 'SuperAdmin';
 }
 
+getRole(): string {
+  return this.role.getValue();
+}
+
 //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
 //Traer lista de sucursales
 list_sucursales():Observable<any> {

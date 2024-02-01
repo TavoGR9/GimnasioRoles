@@ -23,7 +23,7 @@
             </div>
           </div>
          </div>-->
-      <div class="row mt-4">
+      <div class="row mt-4" *ngIf="isSupadmin()">
          <div class="col-md-6" >
             <div class="card">
                <div class="card-body">
@@ -43,7 +43,7 @@
             </div>
          </div>
       </div>
-      <div class="row mt-4">
+      <div class="row mt-4" *ngIf="isAdmin()">
          <div class="col-md-6" >
             <div class="card">
                <div class="card-body">
@@ -64,7 +64,7 @@
          </div>
          
       </div>
-      <div class="row mt-4">
+      <div class="row mt-4" *ngIf="isAdmin()">
          <div class="col-md-6">
             <div class="card">
                <div class="card-body">
@@ -84,8 +84,8 @@
             </div>
          </div>
       </div>
-      <div class="row mt-4">
-         <div class="col-md-6">
+      <div class="row mt-4" >
+         <div class="col-md-6" *ngIf="isAdmin()">
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Listado de productos vendidos</h4>
@@ -94,7 +94,22 @@
                </div>
             </div>
          </div>
-         <div class="col-md-6" >
+
+         <div class="col-md-6" *ngIf="isAdmin()">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Listado de productos vendidos</h4>
+                  <p class="card-text">Consulta los productos vendidos</p>
+                  <a class="btn btn-gym" routerLink="../colaboradores">Alta colaboradores</a>
+               </div>
+            </div>
+         </div>
+
+         
+      </div>
+      <!--Apartados de RECEPCIONISTA--->
+      <div class="row mt-4" >
+         <div class="col-md-6" *ngIf="isAdmin() || isRecep()">
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Inventario</h4>
@@ -103,10 +118,8 @@
                </div>
             </div>
          </div>
-      </div>
-      <!--Apartados de RECEPCIONISTA--->
-      <div class="row mt-4">
-         <div class="col-md-6">
+
+         <div class="col-md-6" *ngIf="isRecep()">
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Ventas</h4>
@@ -124,6 +137,10 @@
                </div>
             </div>
          </div>-->
+         
+      </div>
+      
+      <div class="row mt-4" *ngIf="isRecep()">
          <div class="col-md-6">
             <div class="card">
                <div class="card-body">
@@ -133,8 +150,6 @@
                </div>
             </div>
          </div>
-      </div>
-      <div class="row mt-4">
         <!-- <div class="col-md-6">
             <div class="card">
                <div class="card-body">
