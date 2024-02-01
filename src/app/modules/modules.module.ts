@@ -92,6 +92,9 @@ import { ListarProductosPipe } from 'src/app/pipes/lista-proveedor.pipe';
 import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
 import { ListaProductoLineaComponent } from './lista-producto-linea/lista-producto.component';
 import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
+import { HorarioEditarComponent } from './horario-editar/horario-editar.component';
+import { MensajeDesactivarComponent } from './mensaje-desactivar/mensaje-desactivar.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -149,10 +152,13 @@ import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.
     ListarProductosPipe,
     ProductosVendidosComponent,
     ListaProductoLineaComponent,
-    CrearProductoLineaComponent
+    CrearProductoLineaComponent,
+    HorarioEditarComponent,
+    MensajeDesactivarComponent
     //InventarioComponent
   ],
   imports: [
+    RouterModule,
     CommonModule,
     ModulesRoutingModule,
     FontAwesomeModule,

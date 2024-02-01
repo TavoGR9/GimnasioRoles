@@ -52,7 +52,7 @@ const routes: Routes = [
       { path: 'productosVendidos', component: ProductosVendidosComponent},
       { path: 'listaSucursales', component:SucursalListaComponent},
       { path: 'alta-sucursal', component:SucursalAltaComponent},
-      { path: 'editar-sucursal', component:SucursalEditarComponent},
+      { path: 'editar-sucursal/:id', component:SucursalEditarComponent},
       { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
       { path: 'notificacion', component:NotificacionesComponent},
       { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
@@ -64,7 +64,8 @@ const routes: Routes = [
      { path: 'inventarios', component: InventariosComponent},
      { path: 'registrar', component: RegistroComponent},
      { path: 'Ventas', component: VentasComponent},
-     { path: 'verCorte', component: VerCorteComponent}
+     { path: 'verCorte', component: VerCorteComponent},
+     { path: '', redirectTo: '/olympus/home', pathMatch: 'full' },
     ],
     },
 ];

@@ -17,11 +17,8 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   {
-    path: 'home',
+    path: 'olympus',
     canActivate: [authGuard, hasRoleGuard],
-    data: {
-      rol: 'OlympusGym',
-    },
     loadChildren: () =>
       import('./modules/modules.module').then((m) => m.ModulesModule),
   },
