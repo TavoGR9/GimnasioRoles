@@ -13,7 +13,7 @@ import { AddPasswordComponent } from './components/add-password/reset-password.c
 
 //Componentes
 const routes: Routes = [
-  { path: '', redirectTo: './login', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
