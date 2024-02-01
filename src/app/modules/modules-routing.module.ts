@@ -27,6 +27,8 @@ import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
 import { ListaProductoLineaComponent } from './lista-producto-linea/lista-producto.component';
 import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
+import { RoleGuard } from '../guards/role.guard';
+import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
 
 const routes: Routes = [
   {
@@ -36,36 +38,55 @@ const routes: Routes = [
       //Rutas Admin
       { path: 'home', component: HomeComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'misMembresias', component: MembresiasComponent},
-      { path: 'agregarMembresias', component: MembresiasAgregarComponent},
-      { path: 'editarMembresias/:id', component: MembresiasEditarComponent},
-      { path: 'reportes', component: ReportsComponent },
-      { path: 'verConfiguracion', component: VerConfiguracionComponent},
-      { path: 'configuracion', component: ConfiguracionComponent},
-      { path: 'entradas', component: EntradasComponent },
-      { path: 'categorias', component: CategoriasComponent },
-      { path: 'alta-categoria', component:AltaCategoriaComponent},
-      { path: 'editar-categoria/:id', component:EditarCategoriaComponent},
-      { path: 'crearProducto', component:CrearProductoComponent},
-      { path: 'productos', component: ProductosComponent },
-      { path: 'editar-producto/:id', component:EditarProductoComponent},
-      { path: 'productosVendidos', component: ProductosVendidosComponent},
-      { path: 'listaSucursales', component:SucursalListaComponent},
-      { path: 'alta-sucursal', component:SucursalAltaComponent},
-      { path: 'editar-sucursal/:id', component:SucursalEditarComponent},
-      { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
-      { path: 'notificacion', component:NotificacionesComponent},
-      { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
-     // { path: 'inventario', component: InventarioComponent },
-     // { path: 'verConfiguracion', component: VerConfiguracionComponent},
-
-     //Rutas Recepcionista
-     { path: 'listaMembresias', component: ListaMembresiasPagoEfecComponent},
-     { path: 'inventarios', component: InventariosComponent},
-     { path: 'registrar', component: RegistroComponent},
-     { path: 'Ventas', component: VentasComponent},
-     { path: 'verCorte', component: VerCorteComponent},
-     { path: '', redirectTo: '/olympus/home', pathMatch: 'full' },
+      {
+        path: '',
+        canActivate: [RoleGuard], 
+        data: { expectedRole: 'SuperAdmin' },
+        children: [
+          { path: 'listaSucursales', component:SucursalListaComponent},
+          { path: 'alta-sucursal', component:SucursalAltaComponent},
+          { path: 'editar-sucursal', component:SucursalEditarComponent},
+          { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
+          { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
+          { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
+        ]
+      },
+      {
+        path: '',
+        canActivate: [RoleGuard], 
+        data: { expectedRole: 'Administrador' },
+        children: [
+          { path: 'misMembresias', component: MembresiasComponent },
+          { path: 'agregarMembresias', component: MembresiasAgregarComponent },
+          { path: 'editarMembresias/:id', component: MembresiasEditarComponent },
+          { path: 'categorias', component: CategoriasComponent },
+          { path: 'alta-categoria', component:AltaCategoriaComponent},
+          { path: 'editar-categoria/:id', component:EditarCategoriaComponent},
+          { path: 'entradas', component: EntradasComponent },
+          { path: 'crearProducto', component:CrearProductoComponent},
+          { path: 'productos', component: ProductosComponent },
+          { path: 'editar-producto/:id', component:EditarProductoComponent},
+          { path: 'productosVendidos', component: ProductosVendidosComponent},
+          { path: 'notificacion', component:NotificacionesComponent},
+          { path: 'reportes', component: ReportsComponent },
+          { path: 'verConfiguracion', component: VerConfiguracionComponent},
+          { path: 'configuracion', component: ConfiguracionComponent},
+          { path: 'inventarios', component: InventariosComponent},
+          { path: 'colaboradores', component: ColaboradoresComponent},
+        ]
+      },
+      {
+        path: '',
+        canActivate: [RoleGuard], 
+        data: { expectedRole: 'Recepcionista' },
+        children: [
+          { path: 'listaMembresias', component: ListaMembresiasPagoEfecComponent},
+          { path: 'inventarios', component: InventariosComponent},
+          { path: 'registrar', component: RegistroComponent},
+          { path: 'Ventas', component: VentasComponent},
+          { path: 'verCorte', component: VerCorteComponent}
+        ]
+      },
     ],
     },
 ];

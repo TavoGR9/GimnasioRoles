@@ -21,8 +21,8 @@ export class AuthService {
   
 
    //variable que guarda el endpoint en el srver API: string = 'conf/';
-   API: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/loginRolev2.php/';
-   APIv2: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/api/';
+   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
+   APIv2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/api/';
    //para guardar los headers que manda el API
    httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -72,6 +72,10 @@ isRecepcion(): boolean {
 
 isSupadmin():boolean {
   return this.role.getValue() === 'SuperAdmin';
+}
+
+getRole(): string {
+  return this.role.getValue();
 }
 
 //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***

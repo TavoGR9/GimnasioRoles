@@ -17,6 +17,7 @@ export class AltaCategoriaComponent implements OnInit {
   message: string = '';
   hide = true;
   gimnasio: any;
+
   constructor(
     public dialogo: MatDialogRef<AltaCategoriaComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
@@ -61,4 +62,5 @@ export class AltaCategoriaComponent implements OnInit {
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
+  
 }

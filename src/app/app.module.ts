@@ -21,8 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgIf } from '@angular/common';
-
-
+import { AddPasswordComponent } from './components/add-password/reset-password.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,28 +29,22 @@ import { NgIf } from '@angular/common';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
+    AddPasswordComponent
   ],
   imports: [
-    ModulesModule,
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    FontAwesomeModule,
-    ReactiveFormsModule,
-    ToastrModule.forRoot({positionClass:'toast-bottom-left'}),
-    MatInputModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    ReactiveFormsModule,
-    HttpClientModule,
     FormsModule,
+    HttpClientModule,
     NgIf,
-    
+    ToastrModule.forRoot({positionClass:'toast-bottom-left'}),
+    FontAwesomeModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

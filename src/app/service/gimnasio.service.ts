@@ -13,8 +13,8 @@ export class GimnasioService {
   botonEstado = new Subject<{respuesta: boolean, idGimnasio: any}>();
   optionSelected = new BehaviorSubject<number>(0);
   Api_home: string =
-    'https://olympus.arvispace.com/conPrincipal/espacioCliente.php';
-  API: string = 'https://olympus.arvispace.com/conPrincipal/gimnasio.php'
+    'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
   //para guardar los headers que manda el API
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 

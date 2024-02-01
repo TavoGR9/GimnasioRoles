@@ -96,6 +96,7 @@ import { HorarioEditarComponent } from './horario-editar/horario-editar.componen
 import { MensajeDesactivarComponent } from './mensaje-desactivar/mensaje-desactivar.component';
 import { RouterModule } from '@angular/router';
 
+
 @NgModule({
   declarations: [
     HomeComponent,
