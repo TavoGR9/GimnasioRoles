@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'pass', component: AddPasswordComponent},
   {
-    path: 'olympus',
+    path: 'home',
     canActivate: [authGuard, hasRoleGuard],
     loadChildren: () =>
       import('./modules/modules.module').then((m) => m.ModulesModule),
