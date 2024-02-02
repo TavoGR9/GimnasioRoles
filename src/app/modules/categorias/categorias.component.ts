@@ -37,7 +37,6 @@ export class CategoriasComponent implements OnInit {
   ngOnInit(): void {
     this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
       next: (resultData) => {
-        console.log(resultData);
         this.categorias = resultData;
         this.dataSource = new MatTableDataSource(this.categorias);
         this.dataSource.paginator = this.paginator;
@@ -60,7 +59,6 @@ export class CategoriasComponent implements OnInit {
   
   toggleCheckbox(id: number, estatus: number) {
     const estadoOriginal = estatus;
-    console.log('Estatus actual:', estadoOriginal);
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea cambiar el estatus de la categoría?`, 
     });
@@ -76,7 +74,6 @@ export class CategoriasComponent implements OnInit {
   }
   
   actualizarEstatus(idMem: number, estado: { estatus: number }) {
-    console.log(estado.estatus, "nuevo");
     this.categoriaService.updateMembresiaStatus(idMem, estado).subscribe(
       (respuesta) => {
         this.categoriaActiva = estado.estatus == 1;
