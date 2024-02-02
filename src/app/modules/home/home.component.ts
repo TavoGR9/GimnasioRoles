@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {}
-  
+  /* roles de usuario */
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
