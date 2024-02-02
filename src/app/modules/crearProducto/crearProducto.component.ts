@@ -83,7 +83,6 @@ export class CrearProductoComponent implements OnInit {
     this.categoriaService.consultarListaCategoria(this.auth.idGym.getValue()).subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
-        console.log('lista de categorias:', this.listaCategorias);
       },
       error: (error) => {
         console.error(error);
@@ -97,9 +96,7 @@ export class CrearProductoComponent implements OnInit {
   }
 
   infoCategoria(event: number) {
-    console.log('Opción seleccionada:', event);
     this.idCategoria = event;
-    console.log('valor idCategoria:', this.idCategoria);
   }
 
   cerrarDialogo(): void {
@@ -121,11 +118,9 @@ export class CrearProductoComponent implements OnInit {
   }
 
   registrar(): any {
-    console.log('Formulario:', this.form.value);
     if (this.form.valid) { 
       this.productoService.creaProducto(this.form.value).subscribe({
           next: (respuesta) => {
-            console.log(respuesta, "respuestaaaaaaaaaaa");
             if (respuesta.success) {
             this.dialog.open(MensajeEmergenteComponent, {
               data: `Categoria agregada exitosamente`,

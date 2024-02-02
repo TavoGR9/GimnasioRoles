@@ -72,7 +72,6 @@ export class EditarCategoriaComponent {
   actualizar(){
     if (this.formularioCategoria.valid) {
     this.categoriaService.actualizarCategoria(this.idCategoria,this.formularioCategoria.value).subscribe(()=>{
-
       this.dialog.open(MensajeEmergentesComponent, {
         data: `Categoria actualizada exitosamente`,
       })

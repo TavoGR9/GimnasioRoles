@@ -29,7 +29,6 @@ export class CategoriaService {
     return this.clienteHttp.get(this.API+"?consultar="+id);
   }
   
-
   borrarCategoria(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?borrar="+id)
   }
@@ -39,12 +38,10 @@ export class CategoriaService {
   }  
 
   updateMembresiaStatus(id: number, estado: { estatus: number }): Observable<any> {
-    console.log("status",estado,"id",id);
     return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
   }
 
   consultarCategoriaGym(id:any):Observable<any>{
-    console.log("this.API+",this.API+"?consultarGym="+id);
     return this.clienteHttp.get(this.API+"?consultarGym="+id);
   }
 

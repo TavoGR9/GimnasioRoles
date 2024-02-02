@@ -13,7 +13,7 @@
       <button class="btn" id="ops" routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>
       <button class="btn" id="ops" routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
       <button class="btn" id="ops" routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
-      <button class="btn" id="op" (click)="logout()">
+      <button class="btn" id="op" (click)="logoutBS()">
         <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
       </button>
     </div>
@@ -24,7 +24,7 @@
       <button mat-menu-item routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
       <button mat-menu-item routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
       <button mat-menu-item routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>
-      <button mat-menu-item (click)="logout()">
+      <button mat-menu-item (click)="logoutBS()">
         <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
       </button>
     </mat-menu>
