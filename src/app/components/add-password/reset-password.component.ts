@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { ResetPasswordService } from 'src/app/service/resetPassword.service';
+import { ResetPasswordService } from 'src/app/service/agregarContra.service';
 
 @Component({
   selector: 'app-reset-password',
