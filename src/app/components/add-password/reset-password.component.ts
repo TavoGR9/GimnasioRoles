@@ -36,7 +36,7 @@ export class AddPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     // Verificar los parámetros 'id' y 'token' en la URL al inicializar el componente
-    const idParam = this.route.snapshot.queryParamMap.get('id');
+   const idParam = this.route.snapshot.queryParamMap.get('id');
     const tokenParam = this.route.snapshot.queryParamMap.get('token');
 
     if (!idParam || !tokenParam) {
