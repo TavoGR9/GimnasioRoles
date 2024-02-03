@@ -8,7 +8,7 @@ import { membresia } from '../models/membresia';
 })
 export class MembresiaService {
  
-  API: string ="http://localhost/plan/membresia.php";
+  API: string ="https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/membresia.php";
   //API: string = "https://olympus.arvispace.com/puntoDeVenta/conf/Membresia.php";  
   
   constructor(private clienteHttp:HttpClient) {
