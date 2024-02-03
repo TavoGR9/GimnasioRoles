@@ -15,6 +15,8 @@ export class GimnasioService {
   Api_home: string =
     'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
+  APISERVICE: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/serviciosGym.php';
+
   //para guardar los headers que manda el API
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -95,6 +97,14 @@ export class GimnasioService {
     };
   
     return this.clienteHttp.post(this.API, body.toString(), options);
+}
+
+getAllServices(): Observable<any> {
+  return this.clienteHttp.get(this.APISERVICE);
+}
+
+getServicesForId(id: any): Observable<any> {
+  return this.clienteHttp.post(this.APISERVICE, { id: id });
 }
 
 }

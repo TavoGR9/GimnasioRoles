@@ -95,6 +95,7 @@ import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.
 import { HorarioEditarComponent } from './horario-editar/horario-editar.component';
 import { MensajeDesactivarComponent } from './mensaje-desactivar/mensaje-desactivar.component';
 import { RouterModule } from '@angular/router';
+import { DialogSelectMembershipComponent } from './dialog-select-membership/dialog-select-membership.component';
 
 
 @NgModule({
@@ -155,7 +156,8 @@ import { RouterModule } from '@angular/router';
     ListaProductoLineaComponent,
     CrearProductoLineaComponent,
     HorarioEditarComponent,
-    MensajeDesactivarComponent
+    MensajeDesactivarComponent,
+    DialogSelectMembershipComponent
     //InventarioComponent
   ],
   imports: [
