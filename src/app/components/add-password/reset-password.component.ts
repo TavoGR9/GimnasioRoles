@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { ResetPasswordService } from 'src/app/service/agregarContra.service';
+import { agregarContra } from 'src/app/service/agregarContra.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -19,7 +19,7 @@ export class AddPasswordComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private passwordReset: ResetPasswordService,
+    private passwordReset: agregarContra,
     private route: ActivatedRoute // Agregar ActivatedRoute al constructor
   ) {
     this.resetForm = this.fb.group({
@@ -34,13 +34,9 @@ export class AddPasswordComponent implements OnInit {
     });
   }
 
-  /**
-   * Al iniciar el componente validar que el link este correcto de lo contrario no puede ver este recurso
-   * @returns 
-   */
   ngOnInit(): void {
     // Verificar los parámetros 'id' y 'token' en la URL al inicializar el componente
-    /*const idParam = this.route.snapshot.queryParamMap.get('id');
+   const idParam = this.route.snapshot.queryParamMap.get('id');
     const tokenParam = this.route.snapshot.queryParamMap.get('token');
 
     if (!idParam || !tokenParam) {
@@ -75,7 +71,7 @@ export class AddPasswordComponent implements OnInit {
           this.router.navigate(['/app-not-found']);
         },
       });
-    }*/
+    }
   }
 
   /**

@@ -35,8 +35,6 @@ export class RoleGuard implements CanActivate {
   }
 
   private checkRole(userRole: string, expectedRole: string): boolean {
-    // Aquí puedes personalizar la lógica de comparación según tus necesidades
-    // Puedes considerar implementar una lógica más avanzada aquí
     return userRole === expectedRole;
   }
 }

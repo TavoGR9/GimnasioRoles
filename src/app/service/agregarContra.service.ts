@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class ResetPasswordService {
+export class agregarContra {
   // API: string = 'http://localhost/EnviarMail/nuevaContra.php/';
-  API: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/agregarPass.php/';
+  API: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/agregarPass.php';
   //para guardar los headers que manda el API
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -18,18 +18,19 @@ export class ResetPasswordService {
    * @param email
    * @returns
    */
-  enviarMail(email: string): Observable<any> {
-    return this.clienteHttp.post(this.API + '?solicitaNuevaPass', email, {
+  /*enviarMail(email: string): Observable<any> {
+    console.log("si llega email, ", email)
+    return this.clienteHttp.post(this.API + '?solicitaPass', email, {
       headers: this.httpHeaders,
     });
-  }
+  }*/
 
-  /**
-   * Metodo para verificar que el link tenga los valores correctos
-   * @param id id usuario
-   * @param token token generado al solicitar cambio de contraseña
-   * @returns
-   */
+  enviarMail(username: string): Observable<any> {
+  const data = { username: username };
+  return this.clienteHttp.post<any>(`${this.API}?solicitaPass`, data);
+}
+
+ 
   validaToken(id: string, token: string): Observable<any> {
     return this.clienteHttp.post(
       this.API + '?consultaToken' + '&id=' + id + '&token=' + token,
