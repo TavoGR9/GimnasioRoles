@@ -97,7 +97,6 @@ import { MensajeDesactivarComponent } from './mensaje-desactivar/mensaje-desacti
 import { RouterModule } from '@angular/router';
 import { DialogSelectMembershipComponent } from './dialog-select-membership/dialog-select-membership.component';
 
-
 @NgModule({
   declarations: [
     HomeComponent,
@@ -188,7 +187,7 @@ import { DialogSelectMembershipComponent } from './dialog-select-membership/dial
     MatMenuModule,
     MatDividerModule,
     MatListModule,
-   FlexLayoutModule,
+    FlexLayoutModule,
     ToastModule,
     FileUploadModule,
     RecepMaterialModule,

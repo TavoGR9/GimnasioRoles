@@ -48,7 +48,6 @@ const routes: Routes = [
           { path: 'editar-sucursal', component:SucursalEditarComponent},
           { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
           { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
-          { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
         ]
       },
       {
@@ -90,7 +89,6 @@ const routes: Routes = [
     ],
     },
 ];
-
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
