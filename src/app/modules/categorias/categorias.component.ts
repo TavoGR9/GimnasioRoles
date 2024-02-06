@@ -40,9 +40,18 @@ export class CategoriasComponent implements OnInit {
         this.categorias = resultData;
         this.dataSource = new MatTableDataSource(this.categorias);
         this.dataSource.paginator = this.paginator;
+  
+        // Llamada a la función después de actualizar los datos
+       // this.actualizarListaCategorias();
+      },
+      error: (error) => {
+        // Manejar errores si es necesario
       }
-    })
+    });
+
+   // this.actualizarListaCategorias();
   }
+  
 
   editarCategoria(idCategoria: string): void {
     const dialogRef = this.dialog.open(EditarCategoriaComponent, {
@@ -89,4 +98,9 @@ export class CategoriasComponent implements OnInit {
       height: '90%',
     });
   }
+
+ /* private actualizarListaCategorias() {
+    // Lógica para obtener la lista de categorías del servicio
+    this.categorias = this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue());
+  }*/
 }

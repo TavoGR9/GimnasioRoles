@@ -172,8 +172,8 @@ export class MembresiasComponent implements OnInit {
       console.log("mostraremos:", option);
     });
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-      minWidth: '500px',
-      minHeight: '400px',
+      width: '70%',
+      height: '90%',
       data: {name: '¿para quien es esta membresia?'}
     });
   }
@@ -185,8 +185,8 @@ export class MembresiasComponent implements OnInit {
     });
     this.planService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-      minWidth: '500px',
-      minHeight: '400px',
+      width: '50%',
+      height: '50%',
       data: {name: 'Servicios de la membresia'}
     });
   }
@@ -202,8 +202,8 @@ export class MembresiasComponent implements OnInit {
     console.log("el tipo es: ", tipo_membresia);
     this.planService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-      minWidth: '500px',
-      minHeight: '400px',
+      width: '70%',
+      height: '90%',
       data: {name: 'Editar membresia', id: idMem}
     })
   }
@@ -213,8 +213,8 @@ export class MembresiasComponent implements OnInit {
     this.planService.optionShow.subscribe((option) => {
       if(option == 4){
         const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-          minWidth: '500px',
-          minHeight: '400px',
+          width: '70%',
+          height: '90%',
           data: {name: 'Agregar servicios'}
         });
       }

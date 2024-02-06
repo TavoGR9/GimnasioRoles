@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { proveedor } from '../models/proveedor';
@@ -12,6 +12,8 @@ export class CategoriaService {
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/categoria.php'
   constructor(private clienteHttp:HttpClient) {
   }
+
+  //categoriaActualizada: EventEmitter<void> = new EventEmitter<void>();
 
   agregarCategoria(datosCategoria:proveedor):Observable<any>{
     return this.clienteHttp.post(this.API+"?insertar=1",datosCategoria);

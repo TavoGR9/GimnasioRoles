@@ -49,6 +49,8 @@ export class AltaCategoriaComponent implements OnInit {
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
+                
+                //this.categoriaService.categoriaActualizada.emit();
                 this.dialogo.close(true);
               } else {
               }

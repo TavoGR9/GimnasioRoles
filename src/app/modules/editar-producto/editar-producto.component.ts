@@ -95,7 +95,6 @@ export class EditarProductoComponent implements OnInit{
     this.categoriaService.obternerCategoria().subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
-        console.log('lista de categorias:', this.listaCategorias);
       },
       error: (error) => {
         console.error(error);
@@ -108,21 +107,18 @@ export class EditarProductoComponent implements OnInit{
     return this.datePipe.transform(fechaActual, 'yyyy-MM-dd HH:mm:ss') || '';
   }
 
-  cancelar() {
-    this.router.navigateByUrl('/admin/gestion-productos');
-  }
 
   actualizar(){
     this.productoService.actualizarProducto(this.idProducto,this.form.value).subscribe(
       (response) => {
-        console.log('Producto actualizado correctamente:', response);
+       
         this.dialog.open(MensajeEmergentesComponent, {
           data: `Producto actualizado exitosamente`,
         })
         .afterClosed()
         .subscribe((cerrarDialogo: Boolean) => {
           if (cerrarDialogo) {
-            this.router.navigateByUrl("/admin/gestion-productos");
+            this.dialogo.close(true);
           } else {
             
           }
@@ -136,9 +132,7 @@ export class EditarProductoComponent implements OnInit{
 }
 
 infoCategoria(event: number) {
-  console.log('Opción seleccionada:', event);
   this.idCategoria = event;
-  console.log('valor idCategoria:', this.idCategoria);
 }
 
 cerrarDialogo(): void {

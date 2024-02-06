@@ -37,6 +37,7 @@ export class GimnasioService {
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
+    console.log("aca tambien llega");
     return this.clienteHttp.post(this.API+"?actualizar="+id,datosPlan);
   }
 
