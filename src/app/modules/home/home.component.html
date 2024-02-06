@@ -141,6 +141,16 @@
             </div>
          </div>
 
+         <div class="col-md-6" *ngIf="isAdmin()">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Servicios</h4>
+                  <p class="card-text">Consulta los servicios de tu sucursal</p>
+                  <a class="btn btn-gym" routerLink="../misServicios">Consultar</a>
+               </div>
+            </div>
+         </div>
+
          <div class="col-md-6" *ngIf="isRecep()">
             <div class="card">
                <div class="card-body">

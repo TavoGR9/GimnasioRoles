@@ -15,6 +15,9 @@ export class PlanService {
   public optionShow: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public showServices: BehaviorSubject<any> = new BehaviorSubject<any>([]);
   public dataToUpdate: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public idService: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  public confirmButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   services: any[] = [];
   data: any = {};
   
@@ -96,6 +99,14 @@ updateMembresia(formData: any): Observable<any>{
 
 newService(data: any): Observable<any> {
   return this.clienteHttp.post(this.API3+"?insertarservicio", data);
+}
+
+getService(id: number): Observable<any> {
+  return this.clienteHttp.get(this.API3+"?getServicio="+id);
+}
+
+updateService(data: any): Observable<any> {
+  return this.clienteHttp.post(this.API3+"?actualizarServicio", data);
 }
 
 }
