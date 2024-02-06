@@ -62,14 +62,14 @@
                 <ng-container *ngIf="estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
                     <mat-icon style="color:green">timer</mat-icon>
                 </ng-container>
+                <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
+                  <mat-icon style="color:green">timer</mat-icon>
+                </ng-container>
                 <ng-container *ngIf="estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status !== 'Activo'">
                     <mat-icon style="color:red">timer_off</mat-icon>
                 </ng-container>
                 <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status !== 'Activo'">
                     <mat-icon style="color:red">timer_off</mat-icon>
-                </ng-container>
-                <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
-                    <mat-icon style="color:greenyellow">timer</mat-icon>
                 </ng-container>
               </ng-container>
             </td>

@@ -43,6 +43,19 @@
             </div>
          </div>
       </div>
+
+      <div class="row mt-4" *ngIf="isSupadmin()">
+         <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Colaboradores</h4>
+                  <p class="card-text">Registrar o editar colaboadores</p>
+                  <a class="btn btn-gym" routerLink="../colaboradores">Alta colaborador</a>
+               </div>
+            </div>
+         </div>
+      </div>
+
       <div class="row mt-4" *ngIf="isAdmin()">
          <div class="col-md-6" >
             <div class="card">
@@ -98,9 +111,9 @@
          <div class="col-md-6" *ngIf="isAdmin()">
             <div class="card">
                <div class="card-body">
-                  <h4 class="card-title">Listado de productos vendidos</h4>
-                  <p class="card-text">Consulta los productos vendidos</p>
-                  <a class="btn btn-gym" routerLink="../colaboradores">Alta colaboradores</a>
+                  <h4 class="card-title">Colaboradores</h4>
+                  <p class="card-text">Registrar o editar colaboadores</p>
+                  <a class="btn btn-gym" routerLink="../colaboradores">Alta colaborador</a>
                </div>
             </div>
          </div>
@@ -141,6 +154,16 @@
             </div>
          </div>
 
+         <div class="col-md-6" *ngIf="isAdmin()">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Servicios</h4>
+                  <p class="card-text">Consulta los servicios de tu sucursal</p>
+                  <a class="btn btn-gym" routerLink="../misServicios">Consultar</a>
+               </div>
+            </div>
+         </div>
+
          <div class="col-md-6" *ngIf="isRecep()">
             <div class="card">
                <div class="card-body">
@@ -166,9 +189,9 @@
          <div class="col-md-6">
             <div class="card">
                <div class="card-body">
-                  <h4 class="card-title">Pago de Membresías</h4>
-                  <p class="card-text">Configura el pago de las membresías de tu gimnasio.</p>
-                  <a class="btn btn-gym" routerLink="../listaMembresias">Consultar</a>
+                  <h4 class="card-title">Socios</h4>
+                  <p class="card-text">Consulta y/o realiza el pago de reenovación de membresias.</p>
+                  <a class="btn btn-gym" routerLink="../listaMembresias">Acceder</a>
                </div>
             </div>
          </div>

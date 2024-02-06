@@ -6,7 +6,9 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PlanService } from 'src/app/service/plan.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { EMPTY } from 'rxjs';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
+import { MatDialog, MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 
 
 @Component({
@@ -43,7 +45,8 @@ export class DialogSelectMembershipComponent implements OnInit{
   constructor( 
     public dialogo: MatDialogRef<DialogSelectMembershipComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
-    private AuthService: AuthService, private http:HttpClient, private GimnasioService: GimnasioService, private formulario: FormBuilder, private planService: PlanService) 
+    private AuthService: AuthService, private http:HttpClient, private GimnasioService: GimnasioService, private formulario: FormBuilder, private planService: PlanService, public dialog: MatDialog,
+    public dialogRefConfirm: MatDialogRef<MensajeEmergentesComponent>) 
   {
     this.formPlan = this.formulario.group({
       idMem: [0, [Validators.required, Validators.pattern(/^\d+$/)]],
@@ -305,7 +308,11 @@ export class DialogSelectMembershipComponent implements OnInit{
           //llamada al servicio para actualizar la membresia
           this.planService.updateMembresia(this.formPlan.value).subscribe(respuesta => {
             if(respuesta) {
-              console.log("Respuesta: ",respuesta);
+              if(respuesta.success == 1){
+                this.dialog.open(MensajeEmergentesComponent, {
+                  data: "La membresía se ha actualizado correctamente"
+                });
+              }
             }
           });
         }
