@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { AuthService } from 'src/app/service/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PlanService } from 'src/app/service/plan.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { EMPTY } from 'rxjs';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 @Component({
@@ -38,10 +39,11 @@ export class DialogSelectMembershipComponent implements OnInit{
   dataToUpdate: any = {};
   plan: any[] = [];
   selectedService: number = 4;
-  
 
-
-  constructor(private AuthService: AuthService, private http:HttpClient, private GimnasioService: GimnasioService, private formulario: FormBuilder, private planService: PlanService) 
+  constructor( 
+    public dialogo: MatDialogRef<DialogSelectMembershipComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
+    private AuthService: AuthService, private http:HttpClient, private GimnasioService: GimnasioService, private formulario: FormBuilder, private planService: PlanService) 
   {
     this.formPlan = this.formulario.group({
       idMem: [0, [Validators.required, Validators.pattern(/^\d+$/)]],
@@ -173,6 +175,11 @@ export class DialogSelectMembershipComponent implements OnInit{
       });*/
   }
 
+
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
+  }
+  
   selectPlan(){
     this.tipo_membresia = 1;
     this.selection = 1;
