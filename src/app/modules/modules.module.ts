@@ -96,6 +96,8 @@ import { HorarioEditarComponent } from './horario-editar/horario-editar.componen
 import { MensajeDesactivarComponent } from './mensaje-desactivar/mensaje-desactivar.component';
 import { RouterModule } from '@angular/router';
 import { DialogSelectMembershipComponent } from './dialog-select-membership/dialog-select-membership.component';
+import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
+import { ServiceDialogComponent } from './service-dialog/service-dialog.component';
 
 
 @NgModule({
@@ -157,7 +159,9 @@ import { DialogSelectMembershipComponent } from './dialog-select-membership/dial
     CrearProductoLineaComponent,
     HorarioEditarComponent,
     MensajeDesactivarComponent,
-    DialogSelectMembershipComponent
+    DialogSelectMembershipComponent,
+    ServiciosListaComponent,
+    ServiceDialogComponent
     //InventarioComponent
   ],
   imports: [
