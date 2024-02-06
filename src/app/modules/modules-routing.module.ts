@@ -30,6 +30,8 @@ import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.
 import { RoleGuard } from '../guards/role.guard';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
 import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
+import { AltaColaboradoresComponent } from './alta-colaboradores/alta-colaboradores.component';
+import { EditarColaboradorComponent } from './editar-colaborador/editar-colaborador.component';
 
 const routes: Routes = [
   {
@@ -74,6 +76,8 @@ const routes: Routes = [
           { path: 'inventarios', component: InventariosComponent},
           { path: 'colaboradores', component: ColaboradoresComponent},
           { path: 'misServicios', component: ServiciosListaComponent},
+          { path: 'alta-colaborador', component:AltaColaboradoresComponent},
+          { path: 'editar-colaborador/:id', component:EditarColaboradorComponent},
         ]
       },
       {

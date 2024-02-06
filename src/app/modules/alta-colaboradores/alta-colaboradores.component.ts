@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {ErrorStateMatcher} from '@angular/material/core';
 import { ColaboradorService } from 'src/app/service/colaborador.service';
+import { AuthService } from 'src/app/service/auth.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
@@ -23,6 +24,7 @@ export class AltaColaboradoresComponent {
 
   constructor (private fb: FormBuilder, 
     private router: Router,
+    private auth: AuthService,
     private http: ColaboradorService,
     private toastr: ToastrService ){
     this.form = this.fb.group({
@@ -47,6 +49,14 @@ export class AltaColaboradoresComponent {
         this.sucursales = resultData;
       }
     })
+  }
+
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+  
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
   }
 
   registrar():any{
