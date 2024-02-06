@@ -40,6 +40,7 @@ export class AddPasswordComponent implements OnInit {
     const tokenParam = this.route.snapshot.queryParamMap.get('token');
 
     if (!idParam || !tokenParam) {
+      console.log(idParam, "idParam");
       // Redirigir al componente 'app-not-found' si falta alguno de los parámetros
       this.router.navigate(['/app-not-found']);
       return;
@@ -54,7 +55,7 @@ export class AddPasswordComponent implements OnInit {
               positionClass: 'toast-bottom-left',
             });
           } else {
-            this.toastr.error(respuesta.message, 'Error', {
+            this.toastr.error(respuesta.message, 'Error aqui si es', {
               positionClass: 'toast-bottom-left',
             });
 
@@ -63,7 +64,7 @@ export class AddPasswordComponent implements OnInit {
           }
         },
         error: (paramError) => {
-          this.toastr.error(paramError.error.message, 'Error', {
+          this.toastr.error(paramError.error.message, 'Error aquiiii', {
             positionClass: 'toast-bottom-left',
           });
 
@@ -98,7 +99,11 @@ export class AddPasswordComponent implements OnInit {
           const idParam = this.route.snapshot.queryParamMap.get('id');
           const tokenParam = this.route.snapshot.queryParamMap.get('token');
           //si los valores del url tienen algun valor  se suscribe al servicio
+          console.log("token", tokenParam);
+          console.log(idParam, "id");
           if (idParam && tokenParam) {
+            console.log("aca si entra")
+            console.log("this.resetForm.value", this.resetForm.value);
             this.passwordReset
               .actualizaPassword(idParam, tokenParam, this.resetForm.value)
               .subscribe({
@@ -113,16 +118,18 @@ export class AddPasswordComponent implements OnInit {
                     // Redirigir al componente 'login'al finalizar la actualizacion
                     this.router.navigate(['/login']);
                   } else {
-                    this.toastr.error(respuesta.message, 'Error', {
+                    this.toastr.error(respuesta.message, 'Error aqui', {
                       positionClass: 'toast-bottom-left',
                     });
                   }
                 },
                 error: (paramError) => {
-                  this.toastr.error(paramError.error.message, 'Error', {
+                  console.error('Error en la solicitud:', paramError);
+                  this.toastr.error(paramError.error.message, 'Error aquí', {
                     positionClass: 'toast-bottom-left',
                   });
                 },
+                
               });
           }
         }

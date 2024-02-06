@@ -49,6 +49,7 @@ export class agregarContra {
    */
   
   actualizaPassword(id: string, token: string, nuevaPass: string) : Observable<any> {
+    console.log(id, "id", "token", token, "nuevaPass", nuevaPass);
     return this.clienteHttp.post(
       this.API + '?actualizarPass' + '&id=' + id + '&token=' + token,
       nuevaPass,
