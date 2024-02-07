@@ -1,5 +1,53 @@
-<h2>Estadisticas - reportes, etc...</h2>
-<form [formGroup]="form">
+<div class="container">
+  <div class="row"><!-- Bloque superAdmin-->
+    <h1 class="title_page">Reportes.</h1>
+    <div class="alert alert-light" role="alert">
+      <form [formGroup]="form">
+        <mat-form-field appearance="outline" class="input_css" *ngIf="esSupAdmin">
+          <mat-label>Sucursal</mat-label>
+          <mat-select id="sucursal" formControlName="sucursal">
+            <mat-option value="0">Mostrar todos...</mat-option>
+            <mat-option *ngFor="let opcion of listaSucursales" [value]="opcion.id"> {{ opcion.sucursal }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="input_css">
+          <mat-label>Periodo</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Fecha inicial" formControlName="p_inicial">
+            <input matEndDate placeholder="Fecha final" formControlName="p_final">
+          </mat-date-range-input>
+          <mat-hint>YYYY/MM/DD – YYYY/MM/DD</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="input_css">
+          <mat-label>Tipo de reporte</mat-label>
+          <mat-select id="sucursal" formControlName="tipo">
+            <mat-option value="1">Membresias vendidas</mat-option>
+            <mat-option value="2">Membresias vendidas (ingresos)</mat-option>
+            <mat-option value="3">Servicios vendidos</mat-option>
+            <mat-option value="4">Servicios vendidos (ingresos)</mat-option>
+            <mat-option value="5">Productos vendidos (productos)</mat-option>
+            <mat-option value="6">Productos vendidos (ingresos)</mat-option>
+            <mat-option *ngIf="esSupAdmin" value="7">Productos vendidos (sucursales)</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="container_btn">
+          <button mat-raised-button class="btn_css btn-danger" (click)="consult()">Generar reporte.</button>
+        </div>
+      </form>
+      <!-- Contenedor correspondiente a renderizar la grafica-->
+      <div *ngIf="contenedorChart">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<form [formGroup]="form">
   <p>
     <mat-form-field appearance="outline">
       <mat-label>Sucursal</mat-label>
@@ -20,13 +68,10 @@
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
-    
-    
   </p>
   <button class="btn btn-danger" (click)="consult()">Consultar información...</button>
 </form>
-<br/>
-<button class="btn btn-info" (click)="requestSerialPort()">Conectar y Enviar Datos</button>
-<div>
-    <canvas id="myChart"></canvas>
-</div>
+
+<br />
+<button class="btn btn-danger" (click)="eventoX()">Selecciona puerto...</button>
+<button class="btn btn-info" (click)="enviarDatosPorPuertoSerial()">Conectar y Enviar Datos</button>-->
