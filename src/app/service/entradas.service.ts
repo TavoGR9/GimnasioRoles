@@ -23,8 +23,8 @@ export class EntradasService {
     return this.clienteHttp.post(this.API+"?registraEntrada",entradaProductos);
   }
   
-  listaProductos(): Observable<ListaProductos> {
-    return this.clienteHttp.get<ListaProductos>(this.API + '?listaProductos');
+  listaProductos(id:any): Observable<ListaProductos> {
+    return this.clienteHttp.get<ListaProductos>(this.API + '?listaProductos='+id);
   }
 
 }

@@ -122,7 +122,7 @@ export class EntradasComponent implements OnInit {
    */
   ngOnInit(): void {
     //Traer la lista de productos para mat select
-    this.entrada.listaProductos().subscribe({
+    this.entrada.listaProductos(this.auth.idGym.getValue()).subscribe({
       next: (resultData) => {
         this.listaProductos = resultData;
       },
@@ -258,10 +258,12 @@ export class EntradasComponent implements OnInit {
         },
       });
     } else {
-      this.toastr.error('Completa el formulario', 'Error', {
+      // Aquí mostramos la notificación específica
+      this.toastr.error('Agrega algo a la tabla antes de enviar', 'Error', {
         positionClass: 'toast-bottom-left',
       });
     }
+    
   }
 
   cerrarDialogo(): void {

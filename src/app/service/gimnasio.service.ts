@@ -15,6 +15,7 @@ export class GimnasioService {
   Api_home: string =
     'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio2.php'
+  APIGym: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
   APISERVICE: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/serviciosGym.php';
 
   //para guardar los headers que manda el API
@@ -37,8 +38,7 @@ export class GimnasioService {
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
-    console.log("aca tambien llega");
-    return this.clienteHttp.post(this.API+"?actualizar="+id,datosPlan);
+    return this.clienteHttp.post(this.APIGym+"?actualizar="+id,datosPlan);
   }
 
   actualizarSucursal(datosGym: gimnasio):Observable<any>{

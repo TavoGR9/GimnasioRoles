@@ -38,3 +38,10 @@ form {
 .full-width input {
     width: 100%;
 }
+
+.responsive-div {
+    width: 100%; /* El div ocupa todo el ancho disponible */
+    height: 100%;
+    margin: 0 auto; /* Centra el div horizontalmente en la pantalla */
+    padding: 20px; /* Agrega espaciado interno si es necesario */
+  }

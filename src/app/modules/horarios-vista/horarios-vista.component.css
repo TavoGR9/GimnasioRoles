@@ -48,3 +48,13 @@
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 700;
 }
+
+.responsive-div {
+    width: 100%; /* El div ocupa todo el ancho disponible */
+    height: 100%;
+    max-width: 1000px; /* Ancho máximo para evitar que se extienda demasiado en pantallas grandes */
+    max-height: 9000px;
+    margin: 0 auto; /* Centra el div horizontalmente en la pantalla */
+    padding: 20px; /* Agrega espaciado interno si es necesario */
+    /* Otros estilos personalizados para tu div */
+  }

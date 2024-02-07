@@ -35,22 +35,22 @@
 </div> 
 <div class="formulario-agregar" *ngIf="optionToShow === 2 || optionToShow === 3">
   <form [formGroup]="formularioSucursales" class="responsive-form">
-    <div class="mi-div-con-borde responsive-div">
+    <div class="responsive-div">
       <div style="color: red;">{{message}}</div>
       <br />
       <div class="row">
         <div class="col-sm-6">
           <p>
-            <label for="nombreColonia" class="large-text" style="margin-right: 35px; margin-left: 45px;">Nombre:</label>
-            <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 9px;" required>
+            <label for="nombreColonia" class="large-text" >Nombre:</label>
+            <mat-form-field appearance="outline"  style="width: 95%;" required>
               <mat-label>Nombre</mat-label>
   
               <input type="text" matInput placeholder="Nombre" autocomplete="off" id="nombreGym" formControlName="nombreGym" />
             </mat-form-field>
           </p>
           <p>
-            <label for="telefono" class="large-text" style="margin-right: 28px; margin-left: 45px;">Telefono :</label>
-            <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 9px;" required>
+            <label for="telefono" class="large-text" >Telefono:</label>
+            <mat-form-field appearance="outline" style="width: 95%;" required>
               <mat-label>Telefono</mat-label>
               <input type="text" placeholder="telefono" matInput autocomplete="off" id="telefono" formControlName="telefono" [errorStateMatcher]="matcher" />
               <mat-error *ngIf="formularioSucursales.get('telefono')?.hasError('pattern') && !formularioSucursales.get('telefono')?.hasError('required')">
@@ -58,23 +58,14 @@
               </mat-error>
             </mat-form-field>
           </p>
-  
-          <p>
-            <label for="idFranquicia" class="large-text" style="margin-right: 24px; margin-left: 45px;">Sucursal:</label>
-            <mat-form-field style="width: 450px; height: 90px;" style="margin-left: 30px;" required>
-              <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar</mat-label>
-              <mat-select id="idFranquicia" formControlName="Franquicia_idFranquicia" (selectionChange)="onSelectionChange($event)">
-                <mat-option *ngFor="let opcion of franquicia" [value]="opcion.idFranquicia"> {{ opcion.nombre }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </p>
+
   
           <br />
         </div>
         <div class="col-sm-6">
           <p>
-            <label for="tipo" class="large-text" style="margin-right: 50px; margin-left: 45px;">Tipo:</label>
-            <mat-form-field style="height: 90px;" autocomplete="off" required>
+            <label for="tipo" class="large-text" >Tipo:</label>
+            <mat-form-field style="width: 95%;"  appearance="outline"  autocomplete="off" required>
               <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar</mat-label>
               <mat-select id="tipo" formControlName="tipo">
                 <mat-option value="Externo" style="font-family: Arial; font-size: 18px;">Externo</mat-option>
@@ -92,19 +83,18 @@
           </p>
           <p>
             <label style="margin-left: 45px;" for="estacionamiento" class="large-text">Estacionamiento:</label>
-            <mat-radio-group style="margin-left: 10px;" id="estacionamiento" formControlName="estacionamiento" class="custom-radio-group" color="warn" required>
+            <mat-radio-group style="margin-left: 25px;" id="estacionamiento" formControlName="estacionamiento" class="custom-radio-group" color="warn" required>
               <mat-radio-button value="1" class="custom-radio-button">Sí</mat-radio-button>
               <mat-radio-button value="0" class="custom-radio-button">No</mat-radio-button>
             </mat-radio-group>
           </p>
           <p>
             <label style="margin-left: 45px;" for="regaderas" class="large-text">Regaderas:</label>
-            <mat-radio-group style="margin-left: 62px;" id="regaderas" formControlName="regaderas" class="custom-radio-group" color="warn" required>
+            <mat-radio-group style="margin-left: 66px;" id="regaderas" formControlName="regaderas" class="custom-radio-group" color="warn" required>
               <mat-radio-button value="1" class="custom-radio-button">Sí</mat-radio-button>
               <mat-radio-button value="0" class="custom-radio-button">No</mat-radio-button>
             </mat-radio-group>
           </p>
-  
           <p>
             <label style="margin-left: 45px;" for="bicicletero" class="large-text">Bicicletero:</label>
             <mat-radio-group style="margin-left: 68px;" id="bicicletero" formControlName="bicicletero" class="custom-radio-group" color="warn" required>
@@ -129,10 +119,16 @@
             <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 32px;" required>
               <mat-label>Ciudad</mat-label>
               <input type="text" placeholder="ciudad" matInput autocomplete="off" id="ciudad" formControlName="ciudad" />
+              <mat-error *ngIf="formularioSucursales.get('ciudad')?.hasError('pattern') && !formularioSucursales.get('ciudad')?.hasError('required')">
+                <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+             </mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 32px;" required>
               <mat-label>Colonia</mat-label>
               <input type="text" placeholder="colonia" matInput autocomplete="off" id="colonia" formControlName="colonia" />
+              <mat-error *ngIf="formularioSucursales.get('colonia')?.hasError('pattern') && !formularioSucursales.get('colonia')?.hasError('required')">
+                <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+             </mat-error>
             </mat-form-field>
           </p>
           <p>
@@ -143,14 +139,26 @@
             <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 30px; width: 170px;" required>
               <mat-label>Codigo postal</mat-label>
               <input type="text" placeholder="codigoPostal" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" />
+              <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('maxlength') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
+                <strong class="txt_msg">**Maximo 5 carácteres</strong>
+             </mat-error>
+             <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('pattern') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
+                <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+             </mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 30px; width: 170px;" required>
               <mat-label>numExt</mat-label>
               <input type="text" placeholder="numExt" matInput autocomplete="off" id="numExt" formControlName="numExt" />
+              <mat-error *ngIf="formularioSucursales.get('numExt')?.hasError('pattern') && !formularioSucursales.get('numExt')?.hasError('required')">
+                <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+             </mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 30px; width: 170px;" required>
               <mat-label>numInt</mat-label>
               <input type="text" placeholder="numInt" matInput autocomplete="off" id="numInt" formControlName="numInt" />
+              <mat-error *ngIf="formularioSucursales.get('numInt')?.hasError('pattern')">
+                <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+             </mat-error>
             </mat-form-field>
           </p>
         </div>

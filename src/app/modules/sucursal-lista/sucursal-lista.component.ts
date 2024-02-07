@@ -254,8 +254,8 @@ export class SucursalListaComponent implements OnInit {
     }
   });
     const dialogRef = this.dialog.open(HorariosVistaComponent, {
-      minWidth: 500,
-      minHeight: 500,
+      width: '70%',
+      height: '90%',
       data: { idGimnasio: idGimnasio },
     });
   }
@@ -271,8 +271,8 @@ export class SucursalListaComponent implements OnInit {
       }
     });
     const dialogRef = this.dialog.open(HorariosVistaComponent, {
-      minWidth: 500,
-      minHeight: 500,
+      width: '70%',
+      height: '90%',
       data: { idGimnasio: this.idGimnasio },
     })
   }
@@ -291,8 +291,8 @@ export class SucursalListaComponent implements OnInit {
     });
     
     const dialogRef = this.dialog.open(HorariosVistaComponent, {
-      minWidth: 500,
-      minHeight: 500,
+      width: '70%',
+      height: '90%',
       data: { idGimnasio: this.idGimnasio },
     })
   }
