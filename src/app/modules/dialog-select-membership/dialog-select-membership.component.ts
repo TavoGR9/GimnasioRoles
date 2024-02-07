@@ -276,7 +276,19 @@ export class DialogSelectMembershipComponent implements OnInit{
       if(this.optionToShow == 1 || this.optionToShow == 2){
       this.planService.agregarPlan(this.formPlan.value).subscribe(respuesta => {
         if(respuesta){
-          console.log("respuesta",respuesta);
+          if(respuesta.success == 1){
+            const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
+              width: '300px',
+              height: '200px',
+              data: "La membresía se ha insertado correctamente"
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+              console.log('The dialog was closed');
+              //this.planService.confirmButton.next(true);
+              this.dialogo.close(true);
+            });
+          }
           /*console.log(respuesta.id);
           this.idMem = respuesta.id;
           if(this.serviciosSeleccionadosFilters.length > 0){
@@ -309,8 +321,16 @@ export class DialogSelectMembershipComponent implements OnInit{
           this.planService.updateMembresia(this.formPlan.value).subscribe(respuesta => {
             if(respuesta) {
               if(respuesta.success == 1){
-                this.dialog.open(MensajeEmergentesComponent, {
+                const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
+                  width: '300px',
+                  height: '200px',
                   data: "La membresía se ha actualizado correctamente"
+                });
+    
+                dialogRef.afterClosed().subscribe(result => {
+                  console.log('The dialog was closed');
+                  //this.planService.confirmButton.next(true);
+                  this.dialogo.close(true);
                 });
               }
             }

@@ -176,6 +176,15 @@ export class MembresiasComponent implements OnInit {
       height: '90%',
       data: {name: '¿para quien es esta membresia?'}
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.planService.consultarPlanId(this.idGym).subscribe(respuesta => {
+        console.log("la respuesta es: ",respuesta);
+        this.plan = respuesta;
+        this.dataSource = new MatTableDataSource(this.plan);
+        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+      });
+    });
   }
 
   openDialogService(idMem: number, tipo_membresia: number){
@@ -206,6 +215,15 @@ export class MembresiasComponent implements OnInit {
       height: '90%',
       data: {name: 'Editar membresia', id: idMem}
     })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.planService.consultarPlanId(this.idGym).subscribe(respuesta => {
+        console.log("la respuesta es: ",respuesta);
+        this.plan = respuesta;
+        this.dataSource = new MatTableDataSource(this.plan);
+        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+      });
+    });
   }
 
   openDialogAddServices(){

@@ -55,7 +55,11 @@ export class HorariosVistaComponent implements OnInit{
       tipo: ["", Validators.required],
       Franquicia_idFranquicia: ["", Validators.required],
       estatus: [1, Validators.required],
-      idGimnasio: [this.idGimnasio]
+      idGimnasio: [this.idGimnasio],
+      casilleros: [, Validators.required],
+      estacionamiento: [, Validators.required],
+      regaderas: [, Validators.required],
+      bicicletero: [, Validators.required]
     });
   }
 
@@ -116,9 +120,11 @@ cerrarDialogo(): void {
 
   enviarForm(): void {
     if (this.formularioSucursales.valid) {
+      console.log("Formulario ok,", this.formularioSucursales.value);
       // Llama al servicio para agregar la sucursal
       this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe((respuesta) => {
         if(respuesta){
+          console.log(respuesta);
           if(respuesta.success === 1){
             this.dialog.open(MensajeEmergentesComponent, {
               data: `Sucursal agregada exitosamente`,
@@ -164,7 +170,11 @@ cerrarDialogo(): void {
               tipo: data[0].tipo,
               Franquicia_idFranquicia: data[0].Franquicia_idFranquicia,
               estatus: data[0].estatus,
-              idGimnasio: this.idGimnasio
+              idGimnasio: this.idGimnasio,
+              casilleros: data[0].casilleros,
+              estacionamiento: data[0].estacionamiento,
+              regaderas: data[0].regaderas,
+              bicicletero: data[0].bicicletero
             });
           }
         });

@@ -14,7 +14,7 @@ export class GimnasioService {
   optionSelected = new BehaviorSubject<number>(0);
   Api_home: string =
     'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
-  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio2.php'
   APISERVICE: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/serviciosGym.php';
 
   //para guardar los headers que manda el API

@@ -108,8 +108,18 @@ export class ServiceDialogComponent implements OnInit{
       if(respuesta){
         //console.log("SERVICIOS INSERTADOS?: ",respuesta);
         if(respuesta.message == "Insertado con exito"){
-          console.log("SERVICIO INSERTADO CON EXITO");
+          const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
+            width: '400px',
+            height: '200px',
+            data: `¡Servicio agregado con éxito!`
+          });
           this.serviceForm.reset();
+
+          dialogRefConfirm.afterClosed().subscribe((result => {
+            console.log("Se tiene que cerrar el dialogo");
+            this.planService.confirmButton.next(true);
+            this.dialogRef.close();
+          }));
         }
 
       }else {

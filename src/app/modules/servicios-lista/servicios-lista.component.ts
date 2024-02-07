@@ -46,6 +46,7 @@ export class ServiciosListaComponent {
   displayedColumns: string[] = ['title', 'details','price','actions'];
 
   ngOnInit(): void {
+    //this.planService.confirmButton.next(false);
     this.auth.idGym.subscribe((id) => {
       if(id){
         this.idGym = id;
@@ -174,10 +175,31 @@ export class ServiciosListaComponent {
       console.log("mostraremos:", option);
     });*/
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
-      minWidth: '500px',
-      minHeight: '400px',
+      width: '55%',
+      height: '60%',
       data: {name: '¿para quien es esta membresia?'}
     });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.planService.confirmButton.subscribe((res) => {
+        if(res){
+          console.log("CONFIRM BUTTON", res);
+          this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
+            this.services = res;
+            this.dataSource = new MatTableDataSource(this.services);
+            this.dataSource.paginator = this.paginator;
+          });
+        }
+      });
+      this.planService.confirmButton.next(false);
+        this.planService.confirmButton.subscribe((res) => {
+          if(!res){
+            console.log("VUELVE A NORMAL",  res);
+          }
+        });
+    });
+
+
   }
 
   /*openDialogService(idMem: number, tipo_membresia: number){
@@ -243,6 +265,7 @@ export class ServiciosListaComponent {
   dialogRef.afterClosed().subscribe((result) => {
     this.planService.confirmButton.subscribe((res) => {
       if(res){
+        console.log("CONFIRM BUTTON", res);
         this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
           this.services = res;
           this.dataSource = new MatTableDataSource(this.services);
@@ -250,6 +273,12 @@ export class ServiciosListaComponent {
         });
       }
     });
+    this.planService.confirmButton.next(false);
+      this.planService.confirmButton.subscribe((res) => {
+        if(!res){
+          console.log("VUELVE A NORMAL",  res);
+        }
+      });
   });
 }
 }
