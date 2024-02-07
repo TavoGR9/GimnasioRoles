@@ -115,7 +115,7 @@ export class AddPasswordComponent implements OnInit {
                     });
 
                     // Redirigir al componente 'login'al finalizar la actualizacion
-                    window.location.href = 'https://olympus.arvispace.com/index';
+                    window.location.href = 'https://olympus.arvispace.com';
                   } else {
                     this.toastr.error(respuesta.message, 'Error aqui', {
                       positionClass: 'toast-bottom-left',
