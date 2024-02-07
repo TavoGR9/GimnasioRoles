@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 @Component({
   selector: 'app-alta-categoria',
   templateUrl: './alta-categoria.component.html',
@@ -17,6 +18,7 @@ export class AltaCategoriaComponent implements OnInit {
   message: string = '';
   hide = true;
   gimnasio: any;
+  fechaRegistro: string = '';
 
   constructor(
     public dialogo: MatDialogRef<AltaCategoriaComponent>,
@@ -28,17 +30,33 @@ export class AltaCategoriaComponent implements OnInit {
     private auth: AuthService,
     public dialog: MatDialog
   ) {
+    //this.fechaRegistro = this.obtenerFechaActual();
+    const fechaActual = new Date().toISOString().split('T')[0];
     this.formularioCategoria = this.formulario.group({
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required],
       estatus: ['', Validators.required],
-      fechaCreacion: ['', Validators.required],
+      //fechaCreacion: ['', Validators.required],
+      //fechaCreacion: [this.fechaRegistro],
+      fechaCreacion: [fechaActual],
       Gimnasio_idGimnasio:[this.auth.idGym.getValue()],
     });
   }
 
   ngOnInit(): void {
   }
+
+  obtenerFechaActual(): string {
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate();
+    const mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0
+    const año = fechaActual.getFullYear();
+
+    // Formatea la fecha como "07/02/2024" para mostrar en la interfaz de usuario
+    const fechaFormateada = `${dia < 10 ? '0' + dia : dia}/${mes < 10 ? '0' + mes : mes}/${año}`;
+
+    return fechaFormateada;
+  }  
 
   enviar(): any {
     if (this.formularioCategoria.valid) {

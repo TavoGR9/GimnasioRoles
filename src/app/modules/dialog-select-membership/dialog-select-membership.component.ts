@@ -178,7 +178,6 @@ export class DialogSelectMembershipComponent implements OnInit{
       });*/
   }
 
-
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
@@ -368,6 +367,8 @@ export class DialogSelectMembershipComponent implements OnInit{
     });
     }
   }
+
+  
 
   setPrice(servicios: any[]){
     this.prices = []; // Vacía el array prices

@@ -25,7 +25,6 @@ export class HorarioService {
  // Cambia el servicio para que el observable emita un arreglo de Horario
 
  actualizarHorario(id: any, datosPlan: any): Observable<any> {
-  console.log("aca si llega");
   return this.clienteHttp.post(`${this.APIHorario}?actualizar=${id}`, datosPlan, { headers: { 'Content-Type': 'application/json' }, responseType: 'text' });
 }
 

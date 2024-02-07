@@ -107,16 +107,15 @@ export class ServiceDialogComponent implements OnInit{
     this.planService.newService(this.serviceForm.value).subscribe(respuesta => {
       if(respuesta){
         //console.log("SERVICIOS INSERTADOS?: ",respuesta);
-        if(respuesta.message == "Insertado con exito"){
+        if(respuesta){
           const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
-            width: '400px',
-            height: '200px',
+            width: '25%',
+            height: '30%',
             data: `¡Servicio agregado con éxito!`
           });
           this.serviceForm.reset();
 
           dialogRefConfirm.afterClosed().subscribe((result => {
-            console.log("Se tiene que cerrar el dialogo");
             this.planService.confirmButton.next(true);
             this.dialogRef.close();
           }));
@@ -133,11 +132,10 @@ export class ServiceDialogComponent implements OnInit{
     console.log("Esto es lo que se le va enviar para actualizar jejeje: ", this.serviceForm.value);
     this.planService.updateService(this.serviceForm.value).subscribe((res) => {
       if(res){
-        console.log("Respuesta:", res);
-        if(res.message == "Actualizado con exito"){
+        if(res){
           const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
-            width: '400px',
-            height: '200px',
+            width: '25%',
+            height: '30%',
             data: `¡Servicio actualizado con éxito!`
           });
 

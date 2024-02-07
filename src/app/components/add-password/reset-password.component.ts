@@ -99,16 +99,15 @@ export class AddPasswordComponent implements OnInit {
           const idParam = this.route.snapshot.queryParamMap.get('id');
           const tokenParam = this.route.snapshot.queryParamMap.get('token');
           //si los valores del url tienen algun valor  se suscribe al servicio
-          console.log("token", tokenParam);
-          console.log(idParam, "id");
+       
           if (idParam && tokenParam) {
-            console.log("aca si entra")
+           
             console.log("this.resetForm.value", this.resetForm.value);
             this.passwordReset
               .actualizaPassword(idParam, tokenParam, this.resetForm.value)
               .subscribe({
                 next: (respuesta) => {
-                  console.log('llego respuesta del api');
+               
                   console.log(respuesta);
                   if (respuesta.success) {
                     this.toastr.success(respuesta.message, 'Exito', {
@@ -116,7 +115,7 @@ export class AddPasswordComponent implements OnInit {
                     });
 
                     // Redirigir al componente 'login'al finalizar la actualizacion
-                    this.router.navigate(['/login']);
+                    window.location.href = 'https://olympus.arvispace.com/index';
                   } else {
                     this.toastr.error(respuesta.message, 'Error aqui', {
                       positionClass: 'toast-bottom-left',

@@ -1,51 +1,54 @@
 <div class="main">
     <h1 *ngIf="seleccionado == 1" class="title">Agregar Servicio</h1>
     <h1 *ngIf="seleccionado == 2" class="title">Editar Servicio</h1>
-
     <form [formGroup]="serviceForm">
-        <div class="form-group">
-            <mat-form-field class="full-width">
-                <mat-label>Nombre del servicio</mat-label>
-                <input matInput formControlName="nombre_servicio" placeholder="Nombre del servicio" />
-                <mat-error *ngIf="isFieldInvalidService('nombre_servicio', 'required')">
-                    El nombre es requerido.
-                  </mat-error>
-                  <mat-error *ngIf="isFieldInvalidService('nombre_servicio', 'pattern')">
-                    Solo se aceptan letras.
-                  </mat-error>
+      <div class="responsive-div">
+      <div class="row">
+        <div class="col-sm-6">
+            <mat-form-field class="full-width" appearance="outline" style="width: 95%;">
+              <mat-label>Nombre del servicio</mat-label>
+              <input matInput formControlName="nombre_servicio" placeholder="Nombre del servicio" />
+              <mat-error *ngIf="isFieldInvalidService('nombre_servicio', 'required')">
+                  El nombre es requerido.
+                </mat-error>
+                <mat-error *ngIf="isFieldInvalidService('nombre_servicio', 'pattern')">
+                  Solo se aceptan letras.
+                </mat-error>
             </mat-form-field>
         </div>
-        
-        <div class="form-group">
-            <mat-form-field class="full-width">
-                <mat-label>Precio unitario</mat-label>
-                <input matInput formControlName="precio_unitario" placeholder="Precio unitario" />
-                <mat-error *ngIf="isFieldInvalidService('precio_unitario', 'required')">
-                    El precio es requerido.
-                  </mat-error>
-                  <mat-error *ngIf="isFieldInvalidService('precio_unitario', 'pattern')">
-                    Solo se aceptan numeros.
-                  </mat-error>
+        <div class="col-sm-6">
+            <mat-form-field class="full-width" appearance="outline" style="width: 95%;">
+              <mat-label>Precio unitario</mat-label>
+              <input matInput formControlName="precio_unitario" placeholder="Precio unitario" />
+              <mat-error *ngIf="isFieldInvalidService('precio_unitario', 'required')">
+                  El precio es requerido.
+                </mat-error>
+                <mat-error *ngIf="isFieldInvalidService('precio_unitario', 'pattern')">
+                  Solo se aceptan numeros.
+                </mat-error>
             </mat-form-field>
         </div>
-
-        <div class="form-group">
-            <mat-form-field class="full-width">
-                <mat-label>Detalles</mat-label>
-                <textarea matInput formControlName="detalles" placeholder="Detalles"></textarea>
-                <mat-error *ngIf="isFieldInvalidService('detalles', 'required')">
-                    El detalle es requerido.
-                  </mat-error>
-                  <mat-error *ngIf="isFieldInvalidService('detalles', 'pattern')">
-                    Solo se aceptan letras.
-                  </mat-error>
-            </mat-form-field>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <mat-form-field class="full-width" appearance="outline" style="width: 95%;">
+            <mat-label>Detalles</mat-label>
+            <textarea matInput formControlName="detalles" placeholder="Detalles"></textarea>
+            <mat-error *ngIf="isFieldInvalidService('detalles', 'required')">
+                El detalle es requerido.
+              </mat-error>
+              <mat-error *ngIf="isFieldInvalidService('detalles', 'pattern')">
+                Solo se aceptan letras.
+              </mat-error>
+        </mat-form-field>
         </div>
-         
-        </form>
-        <div style="display: flex; justify-content: center;">
-            <button *ngIf="seleccionado == 1" mat-stroked-button type="submit" (click)="validaFormService()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;">Aceptar</button>
-            <button *ngIf="seleccionado == 2" mat-stroked-button type="submit" (click)="actualizarForm()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;">Actualizar</button>
-            <button mat-stroked-button (click)="cancelar()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white;">Cancelar</button>
-          </div> 
+      </div>
+    </div>
+    </form>
+    <div style="display: flex; justify-content: center;">
+      <button *ngIf="seleccionado == 1" mat-stroked-button type="submit" (click)="validaFormService()" style="background-color: #fd9727; font-size: 20px;  height: 40px; margin-right: 90px;">Aceptar</button>
+      <button *ngIf="seleccionado == 2" mat-stroked-button type="submit" (click)="actualizarForm()" style="background-color: #fd9727; font-size: 20px; height: 40px;">Actualizar</button>
+      <button mat-stroked-button (click)="cancelar()" style="background-color: #000000; font-size: 20px; height: 40px;color: white;">Cancelar</button>
+    </div> 
+       
 </div>

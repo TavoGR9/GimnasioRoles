@@ -70,12 +70,14 @@ export class CrearProductoComponent implements OnInit {
       fechaCreacion: [this.fechaCreacion],
       codigoBarra: [''],
       idCategoria: ['', Validators.compose([Validators.required])],
+      Gimnasio_idGimnasio: [this.auth.idGym.getValue()],
       unidadMedicion: ['NA', Validators.compose([Validators.required])],
       cantidadUnidades: [0,Validators.compose([Validators.required,Validators.pattern(/^[0-9]+$/)])],
-      color: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
+      color: ['NA',Validators.compose([Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
       longitud: ['NA'],
-      sabor: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
-      marca: ['',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])]
+      sabor: ['NA',Validators.compose([Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
+      talla: [''],
+      marca: ['',Validators.compose([Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])]
     });
   }
 

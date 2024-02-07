@@ -175,8 +175,8 @@ export class ServiciosListaComponent {
       console.log("mostraremos:", option);
     });*/
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
-      width: '55%',
-      height: '60%',
+      width: '50%',
+      height: '55%',
       data: {name: '¿para quien es esta membresia?'}
     });
 
@@ -251,8 +251,8 @@ export class ServiciosListaComponent {
     this.planService.seleccionado.next(this.seleccionado);
     
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
-      minWidth: '500px',
-      minHeight: '400px',
+      width: '50%',
+      height: '55%',
     });
 
     this.planService.idService.next(idServicio);

@@ -156,17 +156,11 @@ export class ConfiguracionComponent  implements OnInit{
     // Realizar las solicitudes concurrentemente con forkJoin
     forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
       next: ([planResponse, horariosResponse]) => {
-        console.log('Respuesta del plan:', planResponse);
-        console.log('Respuesta de horarios:', horariosResponse);
-  
-        // Lógica después de la actualización exitosa
         this.mostrarMensajeYRedireccionar();
       },
       error: (error) => {
-        console.error('Error durante la actualización:', error);
-  
-        // Puedes agregar lógica adicional para manejar el error
         this.mostrarMensajeDeError();
+        console.error('Error de API:', error);
       }
     });
   }
@@ -176,13 +170,14 @@ export class ConfiguracionComponent  implements OnInit{
       data: 'Gimnasio actualizado exitosamente',
     }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
       if (cerrarDialogo) {
-        this.dialog.closeAll();
+        this.router.navigateByUrl("verConfiguracion");
       }
     });
   }
   
   private mostrarMensajeDeError() {
     // Puedes implementar lógica para mostrar un mensaje de error específico si es necesario
+    
     this.dialog.open(MensajeEmergentesComponent, {
       data: 'Error durante la actualización del gimnasio',
     });
