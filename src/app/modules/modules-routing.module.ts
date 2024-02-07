@@ -49,6 +49,7 @@ const routes: Routes = [
           { path: 'editar-sucursal', component:SucursalEditarComponent},
           { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
           { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
+          { path: 'estadisticas', component: ReportsComponent}
         ]
       },
       {
