@@ -3,18 +3,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { Producto } from '../models/producto';
 import { HttpParams } from '@angular/common/http';
-
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoService {
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+  private productoSubject = new BehaviorSubject<any[]>([]);
 
    API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/joinDetalleProducto.php';
    API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/productoSucursal.php';
 
-   private productosSeleccionados = new BehaviorSubject<Producto[]>([]);
+   
    //API2: string = 'http://localhost/plan/joinDetalleProducto.php'
 
     constructor(private clienteHttp:HttpClient) {}
@@ -23,8 +24,18 @@ export class ProductoService {
       return this.clienteHttp.post(this.API+'?creaProducto',datosFormulario);
     }
 
-    consultarProductoId(id:any):Observable<any>{
-      return this.clienteHttp.get(this.API+"?listaProductoGym="+id);
+    consultarProductoId(id:any):Observable<any[]>{
+      return this.clienteHttp.get<any[]>(this.API+"?listaProductoGym="+id)
+      .pipe(
+        tap((nuevosProductos: any[]) => {
+          // Emite el valor al subject después de recibir la respuesta
+          this.productoSubject.next(nuevosProductos);
+        })
+      );
+    }
+
+    getCategoriasSubject() {
+      return this.productoSubject.asObservable();
     }
 
     actualizarProducto(id: any, datosP: any): Observable<any> {
@@ -75,16 +86,16 @@ export class ProductoService {
     }
   
     getProductosSeleccionados() {
-      return this.productosSeleccionados.asObservable();
+      return this.productoSubject.asObservable();
     }
   
     setProductosSeleccionados(productos: Producto[]) {
        // Crear una copia de la lista
-      this.productosSeleccionados.next([...productos]);
+      this.productoSubject.next([...productos]);
     }
   
     clearProductosSeleccionados() {
-      this.productosSeleccionados.next([]);
+      this.productoSubject.next([]);
     }
 
     borrarProductoInventario(idInv: any, usuaId: any): Observable<any>{

@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { AltaCategoriaComponent } from '../alta-categoria/alta-categoria.component';
 import { EditarCategoriaComponent } from '../editar-categoria/editar-categoria.component';
 import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
+import { ChangeDetectorRef } from '@angular/core'
 @Component({
   selector: 'app-categorias',
   templateUrl: './categorias.component.html',
@@ -32,6 +33,7 @@ export class CategoriasComponent implements OnInit {
   constructor(
   private categoriaService: CategoriaService, 
   private auth: AuthService,
+  private cdr: ChangeDetectorRef,
   public dialog: MatDialog) {}
 
   ngOnInit(): void {
@@ -40,24 +42,61 @@ export class CategoriasComponent implements OnInit {
         this.categorias = resultData;
         this.dataSource = new MatTableDataSource(this.categorias);
         this.dataSource.paginator = this.paginator;
-  
-        // Llamada a la función después de actualizar los datos
-       // this.actualizarListaCategorias();
+        this.cargarCategorias();
       },
       error: (error) => {
-        // Manejar errores si es necesario
       }
     });
+  }
 
-   // this.actualizarListaCategorias();
+  private cargarCategorias() {
+    this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
+      next: (resultData) => {
+        this.categorias = resultData;
+        this.dataSource = new MatTableDataSource(this.categorias);
+        this.dataSource.paginator = this.paginator;
+      },
+      error: (error) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    });
   }
   
+  private actualizarTabla() {
+    if (!this.dataSource) {
+      // Asegúrate de que this.dataSource esté definido antes de actualizar
+      this.cargarCategorias();
+    } else {
+      this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
+        next: (resultData) => {
+          this.categorias = resultData;
+          this.dataSource.data = this.categorias;
+        },
+        error: (error) => {
+          console.error('Error al actualizar categorías:', error);
+        }
+      });
+    }
+  }
+
+  altaCategoria(): void {
+    const dialogRef = this.dialog.open(AltaCategoriaComponent, {
+      width: '70%',
+      height: '90%',
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
+  }
 
   editarCategoria(idCategoria: string): void {
     const dialogRef = this.dialog.open(EditarCategoriaComponent, {
       width: '60%',
       height: '90%',
       data: { idCategoria: idCategoria },
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
     });
   }
 
@@ -92,12 +131,7 @@ export class CategoriasComponent implements OnInit {
     );
   }
 
-  altaCategoria(): void {
-    const dialogRef = this.dialog.open(AltaCategoriaComponent, {
-      width: '70%',
-      height: '90%',
-    });
-  }
+  
 
  /* private actualizarListaCategorias() {
     // Lógica para obtener la lista de categorías del servicio

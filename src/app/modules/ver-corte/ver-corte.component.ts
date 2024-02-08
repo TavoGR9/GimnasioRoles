@@ -59,17 +59,46 @@ export class VerCorteComponent implements OnInit  {
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.dataSource.paginator = this.paginator; 
         this.dataSource.data = this.detallesCaja;
-
         const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
         this.fechaFiltro = fechaActual;
         this.aplicarFiltro();
+        this.cargarVentas();
       },
       (error) => {
         console.error("Error al obtener detalles de la caja:", error);
       }
     );
-  
   }  
+
+  private cargarVentas() {
+    this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
+      (resultData) => {
+        this.detallesCaja = resultData;
+        this.dataSource = new MatTableDataSource(this.detallesCaja);
+        this.dataSource.paginator = this.paginator;
+      },
+      (error) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    );
+  }
+  
+
+  private actualizarTabla() {
+    if (!this.dataSource) {
+      this.cargarVentas();
+    } else {
+      this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
+        (resultData) => {
+          this.detallesCaja = resultData;
+          this.dataSource.data = this.detallesCaja;
+        },
+        (error) => {
+          console.error('Error al actualizar categorías:', error);
+        }
+      );
+    }
+  }
 
   private obtenerFechaActual(): Date {
     return new Date();
@@ -318,7 +347,6 @@ export class VerCorteComponent implements OnInit  {
   
     this.toastr.success('Archivo Excel generado correctamente.', '¡Éxito!');
   }
-  
 
   cargarArchivo(event: any): void {
     const file = event.target.files[0];
@@ -341,7 +369,9 @@ export class VerCorteComponent implements OnInit  {
     const dialogRef = this.dialog.open(VentasComponent, {
       width: '80%',
       height: '90%',
-      
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
     });
   }
 

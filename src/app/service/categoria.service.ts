@@ -1,13 +1,17 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject  } from 'rxjs';
 import { proveedor } from '../models/proveedor';
 import { Categorias } from '../models/categorias';
+import { tap } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriaService {
+
+  private categoriasSubject = new BehaviorSubject<any[]>([]);
 
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/categoria.php'
   constructor(private clienteHttp:HttpClient) {
@@ -43,8 +47,20 @@ export class CategoriaService {
     return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
   }
 
-  consultarCategoriaGym(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarGym="+id);
+  consultarCategoriaGym(id: any): Observable<any[]> {
+    // Realiza la solicitud HTTP
+    return this.clienteHttp.get<any[]>(this.API + "?consultarGym=" + id)
+      .pipe(
+        tap((nuevasCategorias: any[]) => {
+          // Emite el valor al subject después de recibir la respuesta
+          this.categoriasSubject.next(nuevasCategorias);
+        })
+      );
+  }
+  
+  
+  getCategoriasSubject() {
+    return this.categoriasSubject.asObservable();
   }
 
   consultarListaCategoria(id:any):Observable<any>{

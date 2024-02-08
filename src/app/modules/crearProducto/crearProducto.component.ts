@@ -17,9 +17,9 @@ import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
+import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { ProductoService } from 'src/app/service/producto.service';
-
+import { Observable, Subject } from 'rxjs';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -119,15 +119,18 @@ export class CrearProductoComponent implements OnInit {
     this.form.patchValue({ files: updatedFiles });
   }
 
+  private productoSubject = new Subject<void>();
+
   registrar(): any {
     if (this.form.valid) { 
       this.productoService.creaProducto(this.form.value).subscribe({
           next: (respuesta) => {
             if (respuesta.success) {
-            this.dialog.open(MensajeEmergenteComponent, {
+            this.dialog.open(MensajeEmergentesComponent, {
               data: `Categoria agregada exitosamente`,
             }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
+                this.productoSubject.next();
                 this.dialogo.close(true);
               } else {
               }
