@@ -14,8 +14,12 @@ export class ColaboradorService {
     }
     
     //servicio correspondiente a llenado de los datos del combo nombre Gym
-    comboDatosGym(){
-        return this.clienteHttp.get(this.API+"?nomGym");
+    comboDatosGym(gimID: any){
+        return this.clienteHttp.get(this.API+"?nomGym="+gimID);
+    }
+
+    comboDatosAllGym(){
+        return this.clienteHttp.get(this.API+"?nomAllGym");
     }
 
     //servicio correspondiente al registro-alta de nuevo colaborador
@@ -27,6 +31,10 @@ export class ColaboradorService {
     //servicio correspondiente a llenar tabla lista de colaboradores
     listaColaboradores():Observable<any>{
         return this.clienteHttp.get<listaEmpleados>(this.API+"?tEmp");
+    }
+
+    listaRecepcionistas(idGym: any):Observable<any>{
+        return this.clienteHttp.get<listaEmpleados>(this.API+"?tEmpRec="+idGym);
     }
 
     //servicio correspondiente a traer datos para la actualizacion de empleado

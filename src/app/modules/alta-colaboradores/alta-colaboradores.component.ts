@@ -5,6 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import {ErrorStateMatcher} from '@angular/material/core';
 import { ColaboradorService } from 'src/app/service/colaborador.service';
 import { AuthService } from 'src/app/service/auth.service';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
@@ -23,6 +25,8 @@ export class AltaColaboradoresComponent {
   sucursales: any;
 
   constructor (private fb: FormBuilder, 
+    public dialog: MatDialog,
+    public dialogo: MatDialogRef<AltaColaboradoresComponent>,
     private router: Router,
     private auth: AuthService,
     private http: ColaboradorService,
@@ -31,7 +35,8 @@ export class AltaColaboradoresComponent {
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       apMaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑ&]{1,2}([A-Za-zñÑ&]([A-Za-zñÑ&](\d(\d(\d(\d(\d(\d(\w(\w(\w)?)?)?)?)?)?)?)?)?)?)?$/)])],
+      rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/), Validators.minLength(12),  //^[A-Za-zñÑ&]{1,2}([A-Za-zñÑ&]([A-Za-zñÑ&](\d(\d(\d(\d(\d(\d(\w(\w(\w)?)?)?)?)?)?)?)?)?)?)?$/
+      Validators.maxLength(13)])],
       Gimnasio_idGimnasio: ['', Validators.compose([ Validators.required])],
       area: ['', Validators.compose([ Validators.required])],
       turnoLaboral: ['', Validators.compose([ Validators.required])],
@@ -43,12 +48,26 @@ export class AltaColaboradoresComponent {
 
   matcher = new MyErrorStateMatcher();
   ngOnInit():void{
-    this.http.comboDatosGym().subscribe({
-      next: (resultData) => {
-        console.log(resultData);
-        this.sucursales = resultData;
-      }
-    })
+    if (this.isAdmin()){
+      this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
+        next: (resultData) => {
+          console.log(resultData);
+          this.sucursales = resultData;
+        }
+      });
+    }
+    if(this.isSupadmin()){
+      this.http.comboDatosAllGym().subscribe({
+        next: (dataResponse) => {
+          console.log(dataResponse);
+          this.sucursales = dataResponse;
+        }
+      });
+    }
+  }
+
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
   }
 
   isAdmin(): boolean {
@@ -60,29 +79,66 @@ export class AltaColaboradoresComponent {
   }
 
   registrar():any{
-    this.http.agregarEmpleado(this.form.value).subscribe({
-      next: (resultData) => {
-        console.log(resultData.msg);
-        //mensaje de error - generado apartir de la existencia previa del rfc en la bd
-        if(resultData.msg == 'RfcExists'){
-          this.toastr.error('El rfc ya existe.', 'Error!!!');
+    if (this.form.valid) {
+
+      this.http.agregarEmpleado(this.form.value).subscribe({
+        next: (resultData) => {
+          console.log(resultData.msg);
+          //mensaje de error - generado apartir de la existencia previa del rfc en la bd
+          if(resultData.msg == 'RfcExists'){
+            this.toastr.error('El rfc ya existe.', 'Error!!!');
+          }
+          //mensaje de error - generado apartir de la existencia previa del email en la bd
+          if(resultData.msg == 'MailExists'){
+            this.toastr.error('El correo ya existe.', 'Error!!!');
+          }
+          //mensaje de insersion correcta
+          if(resultData.msg == 'Success'){
+            //this.toastr.success('Empleado agregado correctamente.', 'Exíto!!!');
+            this.cerrarDialogo()
+
+            this.dialog.open(MensajeEmergentesComponent,{
+              data: 'Registro agregado correctamente.'
+              //width: '500px',
+              //height: '500px',
+            })
+              .afterClosed()
+              .subscribe((cerrarDialogo:Boolean) => {
+                if(cerrarDialogo){
+                  
+                } else {
+        
+                }
+              });
+            
+            this.form.markAsPristine(); 
+            //  marcar un control de formulario como no tocado, indicando que el usuario no ha interactuado con él.
+            this.form.markAsUntouched();
+          }
+        },
+        error: (error) => {
+          this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
+          console.error(error);
         }
-        //mensaje de error - generado apartir de la existencia previa del email en la bd
-        if(resultData.msg == 'MailExists'){
-          this.toastr.error('El correo ya existe.', 'Error!!!');
-        }
-        //mensaje de insersion correcta
-        if(resultData.msg == 'Success'){
-          this.toastr.success('Empleado agregado correctamente.', 'Exíto!!!');
-          this.form.markAsPristine(); 
-          //  marcar un control de formulario como no tocado, indicando que el usuario no ha interactuado con él.
-          this.form.markAsUntouched();
-        }
-              
-      },
-      error: (error) => {
-        console.error(error);
-      }
+      });
+    } else {
+      this.toastr.error('Completar todos los campos antes de guardar.', 'Error!!!');
+    }
+  }
+
+  OpenEditar(empleado: any) {
+    this.dialog.open(MensajeEmergentesComponent,{
+      data: `Empleado agregado correctamente.`
+      //width: '500px',
+      //height: '500px',
     })
+      .afterClosed()
+      .subscribe((cerrarDialogo:Boolean) => {
+        if(cerrarDialogo){
+          
+        } else {
+
+        }
+      });
   }
 }

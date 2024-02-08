@@ -78,7 +78,7 @@ const routes: Routes = [
           { path: 'colaboradores', component: ColaboradoresComponent},
           { path: 'misServicios', component: ServiciosListaComponent},
           { path: 'alta-colaborador', component:AltaColaboradoresComponent},
-          { path: 'editar-colaborador/:id', component:EditarColaboradorComponent},
+          { path: 'editar-colaborador', component:EditarColaboradorComponent},    // /:id
         ]
       },
       {

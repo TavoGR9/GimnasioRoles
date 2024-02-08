@@ -3,11 +3,12 @@
     <div class="content_body">
         <div class="content_margin">
           <br/><br/>
-          <mat-label class="large-text" style="font-family: Arial; font-size: 30px;margin-left: 15px;">Colaborador:</mat-label>
+          <h1 mat-dialog-title>Editar colaborador</h1>
+          <!--<mat-label class="large-text" style="font-family: Arial; font-size: 30px;margin-left: 15px;">Colaborador:</mat-label>-->
           <br/>
           <br/>
-            <div class="form_data">
-                <form [formGroup]="form" (ngSubmit)="actualizar()">
+            <div mat-dialog-content class="form_data">
+              <form [formGroup]="form">  <!--(ngSubmit)="actualizar()"-->
                   <div class="mi-div-con-borde responsive-div">
                         <mat-form-field appearance="outline" class="inputs_properties">
                           <mat-label>Nombre</mat-label>
@@ -38,11 +39,14 @@
                     
                         <mat-form-field appearance="outline" class="inputs_properties">
                             <mat-label>RFC</mat-label>
-                            <input type="text" placeholder="RFC" matInput autocomplete="off" formControlName="rfc" id="rfc" [errorStateMatcher]="matcher">
-                            <mat-error *ngIf="form.get('rfc')?.hasError('pattern') && !form.get('rfc')?.hasError('required')">
-                              <strong class="txt_msg">**Formato no valido...</strong>
-                            </mat-error>
+                            <input type="text" placeholder="RFC" minlength="12" maxlength="13" matInput autocomplete="off" formControlName="rfc" id="rfc" [errorStateMatcher]="matcher">
                             <mat-error *ngIf="form.get('rfc')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                            <mat-error *ngIf="form.get('rfc')?.hasError('minlength') && !form.get('rfc')?.hasError('required')">
+                              <strong class="txt_msg">**Minimo 12 y máximo 13 caracteres</strong>
+                            </mat-error>
+                            <mat-error *ngIf="form.get('rfc')?.hasError('pattern') && !form.get('rfc')?.hasError('required')">
+                              <strong class="txt_msg">**Formato no valido, (solo mayúsculas y números)...</strong>
+                            </mat-error>
                         </mat-form-field>
 
                           <mat-form-field appearance="outline" class="inputs_properties">
@@ -88,10 +92,10 @@
                                    
                       <br/>
 
-                      <div style="display: flex; justify-content: center;">
-                        <button mat-raised-button type="submit"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
-                        <button mat-raised-button    routerLink="/home/colaboradores" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white; width: 120px;">Cancelar</button>
-                      </div>  
+                      <div mat-dialog-actions fxLayoutAlign="center center"> <!--style="display: flex; justify-content: center;"-->
+                        <button mat-raised-button (click)="actualizar()" type="submit"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
+                        <button mat-raised-button  (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white; width: 120px;">Cancelar</button>  <!--routerLink="/home/colaboradores" -->
+                      </div>   
                     </div>  
                 </form>
             </div>
