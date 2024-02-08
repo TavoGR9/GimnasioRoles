@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/service/auth.service';
 import { EntradasService } from 'src/app/service/entradas.service';
 import { ProveedorService } from 'src/app/service/proveedor.service';
-import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
+import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { EntradaProducto } from 'src/app/models/entradas';
@@ -232,7 +232,7 @@ export class EntradasComponent implements OnInit {
         next: (respuesta) => {
           if (respuesta.success) {
             this.dialog
-              .open(MensajeEmergenteComponent, {
+              .open(MensajeEmergentesComponent, {
                 data: `Entrada agregada exitosamente`,
               })
               .afterClosed()

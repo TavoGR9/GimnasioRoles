@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
+import { Observable, Subject } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -58,29 +59,33 @@ export class AltaCategoriaComponent implements OnInit {
     return fechaFormateada;
   }  
 
-  enviar(): any {
-    if (this.formularioCategoria.valid) {
-      this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
-          this.dialog.open(MensajeEmergentesComponent, {
-              data: `Categoria agregada exitosamente`,
-            })
-            .afterClosed()
-            .subscribe((cerrarDialogo: Boolean) => {
-              if (cerrarDialogo) {
-                
-                //this.categoriaService.categoriaActualizada.emit();
-                this.dialogo.close(true);
-              } else {
-              }
-            });
-        });
-    } else {
-      this.message = 'Por favor, complete todos los campos requeridos.';
-    }
-  }
+  private categoriasSubject = new Subject<void>();
 
-  cerrarDialogo(): void {
-    this.dialogo.close(true);
+enviar(): any {
+  if (this.formularioCategoria.valid) {
+    this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
+      // Cierra el diálogo después de agregar la categoría y notificar el cambio
+      this.dialog.open(MensajeEmergentesComponent, {
+        data: `Categoria agregada exitosamente`,
+      })
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+          this.categoriasSubject.next();
+          this.dialogo.close(true);
+        } else {
+          // Hacer algo si no se quiere cerrar el diálogo
+        }
+      });
+
+    });
+  } else {
+    this.message = 'Por favor, complete todos los campos requeridos.';
   }
+}
+
+cerrarDialogo(): void {
+  this.dialogo.close(true);
+}
   
 }
