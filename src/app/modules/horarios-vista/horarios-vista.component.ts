@@ -45,13 +45,13 @@ export class HorariosVistaComponent implements OnInit{
     this.formularioSucursales = this.formulario.group({
       nombreGym: ["", Validators.required],
       codigoPostal: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.maxLength(5)])],
-      estado: ["", Validators.required],
+      estado: ['', Validators.compose([Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       ciudad: ['', Validators.compose([Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       colonia: ['', Validators.compose([Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       calle: ["", Validators.required],
       numExt: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       numInt: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
-      telefono:  ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       tipo: ["", Validators.required],
       Franquicia_idFranquicia: [1],
       estatus: [1, Validators.required],
@@ -83,8 +83,8 @@ export class HorariosVistaComponent implements OnInit{
     });
   }
 
-  /*-----------GENERAL METHODS-----------*/
-  
+
+ 
 cerrarDialogo(): void {
   this.dialogo.close();
 }
@@ -130,6 +130,7 @@ cerrarDialogo(): void {
               data: `Sucursal agregada exitosamente`,
             }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
+                this.dialogo.close();
                 this.formularioSucursales.reset();
               } else {
               }

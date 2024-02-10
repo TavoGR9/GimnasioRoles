@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MensajeDesactivarComponent } from '../mensaje-desactivar/mensaje-desactivar.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -8,6 +8,8 @@ import { HorariosComponent } from '../horarios/horarios.component';
 import { gimnasio } from 'src/app/models/gimnasio';
 import { HorariosVistaComponent } from '../horarios-vista/horarios-vista.component';
 import { ListarSucursalesPipe } from 'src/app/pipes/listar-sucursales.pipe';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator'; 
 @Component({
   selector: 'app-sucursal-lista',
   templateUrl: './sucursal-lista.component.html',
@@ -173,11 +175,19 @@ export class SucursalListaComponent implements OnInit {
       }
     });
   }*/
+
+  dataSource = new MatTableDataSource<any>();
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+
   ngOnInit(): void {
+
     this.gimnasioService.obternerPlan().subscribe((data) => {
       this.gimnasio = data;
+      this.dataSource = new MatTableDataSource(this.gimnasio);
+      this.dataSource.paginator = this.paginator;
+      this.cargarCategorias();
     });
-  
+
     this.gimnasioService.botonEstado.subscribe((data) => {
       if(data.respuesta){
         console.log("HAS DADO EN ACEPTAR");
@@ -219,6 +229,38 @@ export class SucursalListaComponent implements OnInit {
   }
 
 
+
+  private cargarCategorias() {
+    this.gimnasioService.obternerPlan().subscribe(
+      (data) => {
+        this.gimnasio = data;
+        this.dataSource = new MatTableDataSource(this.gimnasio);
+        this.dataSource.paginator = this.paginator;
+      },
+      (error) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    );
+  }
+  
+  
+  private actualizarTabla() {
+    if (!this.dataSource) {
+      // Asegúrate de que this.dataSource esté definido antes de actualizar
+      this.cargarCategorias();
+    } else {
+      this.gimnasioService.obternerPlan().subscribe(
+        (data) => {
+          this.gimnasio = data;
+          this.dataSource.data = this.gimnasio;
+        },
+        (error) => {
+          console.error('Error al actualizar categorías:', error);
+        }
+      );
+    }
+  }
+  
   borrarSucursal(idGimnasio: any) {
     console.log(idGimnasio);
     this.dialog.open(MensajeDesactivarComponent,{
@@ -275,6 +317,9 @@ export class SucursalListaComponent implements OnInit {
       height: '90%',
       data: { idGimnasio: this.idGimnasio },
     })
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
   }
 
   editarSucursal(idGimnasio: number) {
@@ -295,6 +340,9 @@ export class SucursalListaComponent implements OnInit {
       height: '90%',
       data: { idGimnasio: this.idGimnasio },
     })
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
   }
 
 

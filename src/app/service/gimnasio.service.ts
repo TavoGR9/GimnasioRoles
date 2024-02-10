@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { dataGym, gimnasio } from '../models/gimnasio';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GimnasioService {
+
+  private gymSubject = new BehaviorSubject<any[]>([]);
 
   gimnasioSeleccionado = new BehaviorSubject<number>(0);
   botonEstado = new Subject<{respuesta: boolean, idGimnasio: any}>();
@@ -28,8 +30,18 @@ export class GimnasioService {
     return this.clienteHttp.get<dataGym>(this.Api_home + '?listaGym');
   }
 
-  obternerPlan(){
-    return this.clienteHttp.get(this.API+"?consultarGimnasios");
+  obternerPlan(): Observable<any[]>{
+    return this.clienteHttp.get<any[]>(this.API+"?consultarGimnasios")
+    .pipe(
+      tap((nuevosGym: any[]) => {
+        // Emite el valor al subject después de recibir la respuesta
+        this.gymSubject.next(nuevosGym);
+      })
+    );
+  }
+
+  getCategoriasSubject() {
+    return this.gymSubject.asObservable();
   }
 
   // Angular service method
@@ -107,5 +119,7 @@ getAllServices(): Observable<any> {
 getServicesForId(id: any): Observable<any> {
   return this.clienteHttp.post(this.APISERVICE, { id: id });
 }
+
+
 
 }
