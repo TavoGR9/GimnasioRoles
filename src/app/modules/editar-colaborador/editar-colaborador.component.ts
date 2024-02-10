@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ColaboradorService } from 'src/app/service/colaborador.service';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
+import { AuthService } from 'src/app/service/auth.service';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -25,15 +28,19 @@ export class EditarColaboradorComponent implements OnInit{
   public idParam: any;
 
   constructor (private fb: FormBuilder,
+    public dialogo: MatDialogRef<EditarColaboradorComponent>,
+    public dialog: MatDialog,
     private activeR: ActivatedRoute, 
     private router: Router,
     private http: ColaboradorService,
-    private toastr: ToastrService ){
+    private auth: AuthService,
+    private toastr: ToastrService,
+    @Inject(MAT_DIALOG_DATA)  public data: any ){
     //Capturar - rescatar el parametro pasado por la url
-    this.idParam=this.activeR.snapshot.paramMap.get('id');
+    //this.idParam=this.activeR.snapshot.paramMap.get('id');
 
     //llamar al servicio datos empleado - pasando el parametro capturado por url
-    this.http.consultarIdEmpleado(this.idParam).subscribe({
+    this.http.consultarIdEmpleado(this.data.empleadoID).subscribe({
       next: (resultData) => {
         //asignar valor a los campos correspondientes al fomulario
         this.form.setValue({
@@ -54,7 +61,7 @@ export class EditarColaboradorComponent implements OnInit{
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       apMaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑ&]{1,2}([A-Za-zñÑ&]([A-Za-zñÑ&](\d(\d(\d(\d(\d(\d(\w(\w(\w)?)?)?)?)?)?)?)?)?)?)?$/)])],
+      rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/), Validators.minLength(12),Validators.maxLength(13)])],
       Gimnasio_idGimnasio: ['', Validators.compose([ Validators.required])],
       turnoLaboral: ['', Validators.compose([ Validators.required])],
       salario: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
@@ -67,35 +74,78 @@ export class EditarColaboradorComponent implements OnInit{
 
   //mandar a llamar el sevicio correspondiente al llenado del combo sucursal
   ngOnInit():void{
-    this.http.comboDatosGym().subscribe({
-      next: (resultData) => {
-        console.log(resultData);
-        this.sucursales = resultData;
-      }
-    })
+    if (this.isAdmin()){
+      this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
+        next: (resultData) => {
+          console.log(resultData);
+          this.sucursales = resultData;
+        }
+      });
+    }
+    if(this.isSupadmin()){
+      this.http.comboDatosAllGym().subscribe({
+        next: (dataResponse) => {
+          console.log(dataResponse);
+          this.sucursales = dataResponse;
+        }
+      });
+    }
+  }
+
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
+  }
+
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+  
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
   }
 
   //funcion correspondiente a actualizar empleado
   actualizar(){
     console.log(this.form.value);
-    this.http.actualizaEmpleado(this.idParam, this.form.value).subscribe({
-      next: (resultDataUpdate) => {
-        console.log(resultDataUpdate.msg);
-        if(resultDataUpdate.msg == 'RfcExists'){
-          this.toastr.error('El rfc ya existe.', 'Error!!!');
+    if (this.form.valid) {
+      this.http.actualizaEmpleado(this.data.empleadoID, this.form.value).subscribe({
+        next: (resultDataUpdate) => {
+          console.log(resultDataUpdate.msg);
+          if(resultDataUpdate.msg == 'RfcExists'){
+            this.toastr.error('El rfc ya existe.', 'Error!!!');
+          }
+          if(resultDataUpdate.msg == 'MailExists'){
+            this.toastr.error('El correo ya existe.', 'Error!!!');
+          }
+          if(resultDataUpdate.msg == 'Success'){
+            //this.toastr.success('Registro actualizado correctamente.', 'Exíto!!!');
+
+            this.cerrarDialogo()
+            
+            this.dialog.open(MensajeEmergentesComponent,{
+              data: 'Registro actualizado correctamente.'
+              //width: '500px',
+              //height: '500px',
+            })
+              .afterClosed()
+              .subscribe((cerrarDialogo:Boolean) => {
+                if(cerrarDialogo){
+                  
+                } else {
+        
+                }
+              });
+            this.form.reset(); 
+            this.cerrarDialogo() 
+          }
+        },
+        error: (error) => {
+          console.error(error);
         }
-        if(resultDataUpdate.msg == 'MailExists'){
-          this.toastr.error('El correo ya existe.', 'Error!!!');
-        }
-        if(resultDataUpdate.msg == 'Success'){
-          this.toastr.success('Registro actualizado correctamente.', 'Exíto!!!');
-          this.form.reset();  
-        }
-      },
-      error: (error) => {
-        console.error(error);
-      }
-    })
+      });
+    } else {
+      this.toastr.error('Completar todos los campos antes de guardar.', 'Error!!!');
+    }
   }
   
 }

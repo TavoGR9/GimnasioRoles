@@ -9,10 +9,15 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 })
 export class GimnasioService {
 
+  gimnasioSeleccionado = new BehaviorSubject<number>(0);
   botonEstado = new Subject<{respuesta: boolean, idGimnasio: any}>();
+  optionSelected = new BehaviorSubject<number>(0);
   Api_home: string =
     'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
-  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio2.php'
+  APIGym: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
+  APISERVICE: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/serviciosGym.php';
+
   //para guardar los headers que manda el API
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -24,18 +29,21 @@ export class GimnasioService {
   }
 
   obternerPlan(){
-    return this.clienteHttp.get(this.API)
+    return this.clienteHttp.get(this.API+"?consultarGimnasios");
   }
 
   // Angular service method
   agregarSucursal(datosGym: gimnasio):Observable<any>{
-    return this.clienteHttp.post(this.API+"?insertar=1", datosGym);
+    return this.clienteHttp.post(this.API+"?insertar", datosGym);
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
-    console.log("datosPlan",id,datosPlan);
-    return this.clienteHttp.post(this.API+"?actualizar="+id,datosPlan);
-  } 
+    return this.clienteHttp.post(this.APIGym+"?actualizar="+id,datosPlan);
+  }
+
+  actualizarSucursal(datosGym: gimnasio):Observable<any>{
+    return this.clienteHttp.post(this.API+"?actualizar", datosGym);
+  }
 
   consultarPlan(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultar="+id);
@@ -90,6 +98,14 @@ export class GimnasioService {
     };
   
     return this.clienteHttp.post(this.API, body.toString(), options);
+}
+
+getAllServices(): Observable<any> {
+  return this.clienteHttp.get(this.APISERVICE);
+}
+
+getServicesForId(id: any): Observable<any> {
+  return this.clienteHttp.post(this.APISERVICE, { id: id });
 }
 
 }

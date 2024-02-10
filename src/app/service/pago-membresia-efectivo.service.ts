@@ -25,8 +25,8 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.URLServices+"?consultar");
   }*/
 
-  obtenerActivos(inicioDate: any, finDate: any): Observable<any>{
-    const params = new HttpParams().set('fechaInicio',inicioDate).set('fechaFin',finDate);
+  obtenerActivos(inicioDate: any, finDate: any, idGym: any): Observable<any>{
+    const params = new HttpParams().set('fechaInicio',inicioDate).set('fechaFin',finDate).set('GYMid',idGym);
     return this.clienteHttp.get(this.URLServices, {params});
   }
 

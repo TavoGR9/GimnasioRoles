@@ -19,20 +19,17 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'pass', component: AddPasswordComponent},
   {
-    path: 'home',
+    path: '',
     canActivate: [authGuard, hasRoleGuard],
-    data: {
-      rol: 'OlympusGym',
-    },
     loadChildren: () =>
       import('./modules/modules.module').then((m) => m.ModulesModule),
   },
   { path: '**', component: NotFoundComponent },
   
 ];
-
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  //imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {useHash: true})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

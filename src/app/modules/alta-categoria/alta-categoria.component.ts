@@ -1,12 +1,14 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
+import { Observable, Subject } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 @Component({
   selector: 'app-alta-categoria',
   templateUrl: './alta-categoria.component.html',
@@ -17,6 +19,8 @@ export class AltaCategoriaComponent implements OnInit {
   message: string = '';
   hide = true;
   gimnasio: any;
+  fechaRegistro: string = '';
+
   constructor(
     public dialogo: MatDialogRef<AltaCategoriaComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
@@ -27,38 +31,61 @@ export class AltaCategoriaComponent implements OnInit {
     private auth: AuthService,
     public dialog: MatDialog
   ) {
+    //this.fechaRegistro = this.obtenerFechaActual();
+    const fechaActual = new Date().toISOString().split('T')[0];
     this.formularioCategoria = this.formulario.group({
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required],
       estatus: ['', Validators.required],
-      fechaCreacion: ['', Validators.required],
-      gimnasio_id:[this.auth.idGym.getValue()],
+      //fechaCreacion: ['', Validators.required],
+      //fechaCreacion: [this.fechaRegistro],
+      fechaCreacion: [fechaActual],
+      Gimnasio_idGimnasio:[this.auth.idGym.getValue()],
     });
   }
 
   ngOnInit(): void {
   }
 
-  enviar(): any {
-    if (this.formularioCategoria.valid) {
-      this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
-          this.dialog.open(MensajeEmergentesComponent, {
-              data: `Categoria agregada exitosamente`,
-            })
-            .afterClosed()
-            .subscribe((cerrarDialogo: Boolean) => {
-              if (cerrarDialogo) {
-                this.dialogo.close(true);
-              } else {
-              }
-            });
-        });
-    } else {
-      this.message = 'Por favor, complete todos los campos requeridos.';
-    }
-  }
+  obtenerFechaActual(): string {
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate();
+    const mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0
+    const año = fechaActual.getFullYear();
 
-  cerrarDialogo(): void {
-    this.dialogo.close(true);
+    // Formatea la fecha como "07/02/2024" para mostrar en la interfaz de usuario
+    const fechaFormateada = `${dia < 10 ? '0' + dia : dia}/${mes < 10 ? '0' + mes : mes}/${año}`;
+
+    return fechaFormateada;
+  }  
+
+  private categoriasSubject = new Subject<void>();
+
+enviar(): any {
+  if (this.formularioCategoria.valid) {
+    this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
+      // Cierra el diálogo después de agregar la categoría y notificar el cambio
+      this.dialog.open(MensajeEmergentesComponent, {
+        data: `Categoria agregada exitosamente`,
+      })
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+          this.categoriasSubject.next();
+          this.dialogo.close(true);
+        } else {
+          // Hacer algo si no se quiere cerrar el diálogo
+        }
+      });
+
+    });
+  } else {
+    this.message = 'Por favor, complete todos los campos requeridos.';
   }
+}
+
+cerrarDialogo(): void {
+  this.dialogo.close(true);
+}
+  
 }

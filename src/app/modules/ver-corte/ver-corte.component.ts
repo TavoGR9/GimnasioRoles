@@ -33,7 +33,6 @@ export class VerCorteComponent implements OnInit  {
   totalVentas: number = 0;
   total = 0;
   fechaFin: Date = new Date();
-
   fechaInicio: Date = new Date();
   fechaFiltro: string = "";
   opcionSeleccionada: string = "diario";
@@ -51,33 +50,55 @@ export class VerCorteComponent implements OnInit  {
   
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-
-  
   DetallesCaja: any;
 
   ngOnInit(): void {
-    const idGym = this.auth.idGym.getValue();
-    console.log(idGym, "idUsuario");
-  
-    this.joinDetalleVentaService.consultarProductosVentas(1).subscribe(
+    this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
       (data) => {
         this.detallesCaja = data;
         this.dataSource = new MatTableDataSource(this.detallesCaja);
-        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+        this.dataSource.paginator = this.paginator; 
         this.dataSource.data = this.detallesCaja;
-       // this.actualizarTotalVentas();
-         //fecha
         const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
         this.fechaFiltro = fechaActual;
         this.aplicarFiltro();
+        this.cargarVentas();
       },
       (error) => {
         console.error("Error al obtener detalles de la caja:", error);
       }
     );
-  
   }  
+
+  private cargarVentas() {
+    this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
+      (resultData) => {
+        this.detallesCaja = resultData;
+        this.dataSource = new MatTableDataSource(this.detallesCaja);
+        this.dataSource.paginator = this.paginator;
+      },
+      (error) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    );
+  }
+  
+
+  private actualizarTabla() {
+    if (!this.dataSource) {
+      this.cargarVentas();
+    } else {
+      this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
+        (resultData) => {
+          this.detallesCaja = resultData;
+          this.dataSource.data = this.detallesCaja;
+        },
+        (error) => {
+          console.error('Error al actualizar categorías:', error);
+        }
+      );
+    }
+  }
 
   private obtenerFechaActual(): Date {
     return new Date();
@@ -109,147 +130,6 @@ export class VerCorteComponent implements OnInit  {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
     console.log("this.dataSource.filter", this.dataSource.filter);
-  }
-
-  imprimirResumenCorte() {
-    this.totalAPagarCorte = this.detallesCaja.reduce(
-      (total, detalle) =>
-        total + detalle.precioUnitario * detalle.cantidadElegida,
-      0
-    );
-    const totalCantidad = this.detallesCaja.reduce(
-      (total, detalle) => total + parseInt(detalle.cantidadElegida, 10),
-      0
-    );
-    const totalEnPesos = this.convertirNumeroAPalabrasPesos(
-      this.totalAPagarCorte
-    );
-
-    /*const cantidadDinero = this.formularioCaja.get(
-      "cantidadDineroExistente"
-    )?.value;*/
-
-    const ventanaImpresion = window.open("", "_blank");
-    const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
-    const horaActual = new Date().toLocaleTimeString("es-MX", {
-      hour: "2-digit",
-      minute: "2-digit",
-    }); // Obtener solo la hora en formato local de México
-    if (ventanaImpresion) {
-      ventanaImpresion.document.open();
-      ventanaImpresion.document.write(`
-        <html>
-          <head>
-            <title>REPORTE DE CAJA</title>
-            <style>
-              body {
-                font-family: 'Arial', sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f5f5f5;
-              }
-              .ticket {
-                width: 80%;
-                max-width: 600px;
-                margin: 20px auto;
-                background-color: #fff;
-                border-radius: 4px;
-                padding: 20px;
-                
-              }
-              h1 {
-                text-align: center;
-                color: #333;
-                margin-bottom: 20px;
-              }
-              table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-bottom: 20px;
-              }
-              th, td {
-                padding: 8px;
-                border-bottom: 1px solid #ddd;
-                text-align: left;
-              }
-              th {
-                background-color: #f2f2f2;
-              }
-              .total {
-                text-align: right;
-                margin-top: 20px;
-                font-weight: bold;
-              }
-              .total p {
-                margin: 5px 0;
-                font-size: 1.1em;
-              }
-              hr {
-                border: none;
-                border-top: 1px dashed #ccc;
-                margin: 20px 0;
-              }
-              .brand {
-                text-align: center;
-                color: #888;
-                font-size: 20px;
-                margin-top: 20px;
-              }
-              .fecha-hora {
-                display: flex;
-                justify-content: space-between;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="ticket">
-              <h1>REPORTE DE CAJA</h1>
-              <hr>
-              <div class="fecha-hora">
-                <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
-                <p>Hora: ${horaActual}</p> <!-- Hora -->
-              </div>
-              <hr>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nombre</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-          ${this.dataSource.filteredData
-            .map(
-              (detalle: any) => `
-              <tr>
-                <td>${detalle.nombreProducto}</td>
-                <td>${detalle.cantidadElegida}</td>
-                <td>$${detalle.precioUnitario}</td>
-                <td>$${detalle.precioUnitario * detalle.cantidadElegida}</td>
-              </tr>
-            `
-            )
-            .join("")}
-        </tbody>
-              </table>
-              <hr>
-              <p></p>
-              <p>Cantidad total de productos: ${totalCantidad}</p>
-              <div class="total">
-             
-                <p>Total de ventas: $${this.totalAPagarCorte}</p>
-      
-              </div>
-            </div>
-          </body>
-        </html>
-      `);
-      ventanaImpresion.document.close();
-      ventanaImpresion.print();
-      ventanaImpresion.close();
-    }
   }
 
   convertirNumeroAPalabrasPesos(numero: number): string {
@@ -351,16 +231,6 @@ export class VerCorteComponent implements OnInit  {
   }
 
 
-
-  /*actualizarTotalVentas() {
-    // Verifica si this.paginator está definido
-    if (this.paginator) {
-      this.totalVentas = this.calcularTotalVentas(this.detallesCaja);
-    } else {
-      console.warn('El paginador no está definido. No se puede calcular el total de ventas.');
-    }
-  }*/
-
   actualizarTotalVentas(): void {
     this.totalVentas = this.calcularTotalVentas();
   }
@@ -458,10 +328,6 @@ export class VerCorteComponent implements OnInit  {
   
     // Agregar una fila al final con el total
     datosFiltrados.push({
-      'Nombre Producto': 'Total Ventas',
-      'Cantidad': '',
-      'Precio Unitario': '',
-      'Fecha': '',
       'Total Ventas': this.totalVentas  // Ajusta la clave según tu estructura de datos
     });
   
@@ -481,7 +347,6 @@ export class VerCorteComponent implements OnInit  {
   
     this.toastr.success('Archivo Excel generado correctamente.', '¡Éxito!');
   }
-  
 
   cargarArchivo(event: any): void {
     const file = event.target.files[0];
@@ -504,7 +369,9 @@ export class VerCorteComponent implements OnInit  {
     const dialogRef = this.dialog.open(VentasComponent, {
       width: '80%',
       height: '90%',
-      
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
     });
   }
 

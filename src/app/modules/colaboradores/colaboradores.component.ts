@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { ColaboradorService } from 'src/app/service/colaborador.service';
 import { ListarEmpleadosPipe } from 'src/app/pipes/listar-empleados.pipe';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AltaColaboradoresComponent } from '../alta-colaboradores/alta-colaboradores.component';
+import { EditarColaboradorComponent } from '../editar-colaborador/editar-colaborador.component';
+import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
   selector: 'app-colaboradores',
@@ -12,15 +16,34 @@ export class ColaboradoresComponent {
   public page: number = 0;
   public search: string = '';
   
-  constructor(private http: ColaboradorService){}
+  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService,){}
 
   ngOnInit():void{
-    this.http.listaColaboradores().subscribe({
-      next: (resultData) => {
-        console.log(resultData);
-        this.empleados = resultData;
-      }
-    })
+    console.log("El ID del gimnasio es:", this.auth.idGym.getValue());
+    if (this.isSupadmin()){
+      this.http.listaColaboradores().subscribe({
+        next: (resultData) => {
+          console.log(resultData);
+          this.empleados = resultData;
+        }
+      });
+    } 
+    if (this.isAdmin()){
+      this.http.listaRecepcionistas(this.auth.idGym.getValue()).subscribe({
+        next: (dataResponse) => {
+          console.log(dataResponse);
+          this.empleados = dataResponse;
+        }
+      })
+    }
+  }
+
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+  
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
   }
 
   nextPage() {
@@ -35,6 +58,39 @@ export class ColaboradoresComponent {
   onSearchPokemon( search: string ) {
     this.page = 0;
     this.search = search;
+  }
+
+  OpenAgregar() {
+    this.dialog.open(AltaColaboradoresComponent,{
+      //width: '500px',
+      //height: '500px',
+    })
+      .afterClosed()
+      .subscribe((cerrarDialogo:Boolean) => {
+        if(cerrarDialogo){
+          
+        } else {
+
+        }
+      });
+  }
+
+  OpenEditar(empleado: any) {
+    this.dialog.open(EditarColaboradorComponent,{
+      data: {
+        empleadoID: `${empleado.idEmpleado}`
+      },
+      //width: '500px',
+      //height: '500px',
+    })
+      .afterClosed()
+      .subscribe((cerrarDialogo:Boolean) => {
+        if(cerrarDialogo){
+          
+        } else {
+
+        }
+      });
   }
 
 }

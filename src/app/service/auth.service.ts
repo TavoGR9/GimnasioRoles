@@ -41,7 +41,6 @@ export class AuthService {
     .pipe(
      catchError((err: any) => {
        if (err.status === 401) {
-         this.router.navigate(['/login']);
          const errorMessage = err.error.message;
          // this.toastr.error(errorMessage,'Error');
          //  alert(`Error 401: ${errorMessage}`);
@@ -56,6 +55,7 @@ export class AuthService {
  logoutBS(): void {
   this.loggedIn.next(false);
   this.role.next('');
+  this.router.navigate(['login'], { replaceUrl: true });
 }
 
 isLoggedInBS(): boolean {
@@ -72,6 +72,10 @@ isRecepcion(): boolean {
 
 isSupadmin():boolean {
   return this.role.getValue() === 'SuperAdmin';
+}
+
+getRole(): string {
+  return this.role.getValue();
 }
 
 //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***

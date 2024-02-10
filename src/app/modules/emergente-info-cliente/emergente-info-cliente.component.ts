@@ -68,7 +68,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
   private parseFecha(fecha: string): Date {
     const partes = fecha.split('/');
-    return new Date(+partes[2], +partes[1] - 1, +partes[0]);
+    const fechaLocal = new Date(+partes[2], +partes[1] - 1, +partes[0]);
+    return new Date(fechaLocal.getTime() + fechaLocal.getTimezoneOffset() * 60000);
   }
 
 

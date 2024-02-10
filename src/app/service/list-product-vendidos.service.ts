@@ -11,8 +11,8 @@ export class ListProductVendidosService {
   URLServices: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/listadoProductosVendidos.php";   //http://localhost/plan/listadoProductosVendidos.php/     //https://olympus.arvispace.com/puntoDeVenta/conf/listadoProductosVendidos.php    
   constructor(private clienteHttp:HttpClient) { }
 
-  obtenerListaProduct(dateInicio: any, dateFin:any):Observable<any>{
-    const params = new HttpParams().set('fechaInicio',dateInicio).set('fechaFin',dateFin);
+  obtenerListaProduct(dateInicio: any, dateFin:any, idGym: any):Observable<any>{
+    const params = new HttpParams().set('fechaInicio',dateInicio).set('fechaFin',dateFin).set('gymID',idGym);
 
     return this.clienteHttp.get(this.URLServices, { params });
     //return this.clienteHttp.get(this.URLServices+"?consultar");

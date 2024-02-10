@@ -15,10 +15,24 @@ export class HomeComponent implements OnInit{
     public dialog: MatDialog,
   ) {}
 
-  ngOnInit(): void {}
-  
+  ngOnInit(): void {
+    this.auth.idGym.subscribe((data) => {
+      if(data) {
+        console.log("ESTE ES EL ID:", data);
+      }
+    });
+  }
+  /* roles de usuario */
   isAdmin(): boolean {
     return this.auth.isAdmin();
+  }
+  
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
+  }
+
+  isRecep(): boolean {
+    return this.auth.isRecepcion();
   }
 
   ventas(): void {

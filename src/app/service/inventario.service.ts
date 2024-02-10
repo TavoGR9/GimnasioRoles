@@ -24,8 +24,8 @@ export class inventarioService {
     return this.clienteHttp.get(this.API, { params: params });
   }
 
-  HistorialInventario(startDate: any, endDate: any): Observable<any>{
-    const params = new HttpParams().set('DateStartHistorial',startDate).set('DateEndHistorial',endDate);
+  HistorialInventario(startDate: any, endDate: any, idGym : any): Observable<any>{
+    const params = new HttpParams().set('DateStartHistorial',startDate).set('DateEndHistorial',endDate).set('gymID',idGym);
     return this.clienteHttp.get(this.API, {params});
   }
 

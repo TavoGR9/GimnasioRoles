@@ -1,0 +1,47 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.title {
+    text-align: center;
+    padding-block: 20px;
+}
+
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+form {
+    width: 90%;
+    min-height: 300px;
+    /*background-color: red;*/
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    width: 47%;
+    /*background-color: blue;*/
+}
+
+.full-width {
+    width: 100%;
+}
+
+.full-width input {
+    width: 100%;
+}
+
+.responsive-div {
+    width: 100%; /* El div ocupa todo el ancho disponible */
+    height: 100%;
+    margin: 0 auto; /* Centra el div horizontalmente en la pantalla */
+    padding: 20px; /* Agrega espaciado interno si es necesario */
+  }

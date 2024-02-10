@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table'; //para controlar los datos del api y ponerlos en una tabla
-import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator'; 
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { Categorias } from 'src/app/models/categorias';
-//import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from 'src/app/service/auth.service';
 import { AltaCategoriaComponent } from '../alta-categoria/alta-categoria.component';
 import { EditarCategoriaComponent } from '../editar-categoria/editar-categoria.component';
 import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
+import { ChangeDetectorRef } from '@angular/core'
 @Component({
   selector: 'app-categorias',
   templateUrl: './categorias.component.html',
@@ -28,24 +28,65 @@ export class CategoriasComponent implements OnInit {
   categoryData: Categorias[] = [];
   dataSource: any;
   categoriaActiva: boolean = true;
-
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(
   private categoriaService: CategoriaService, 
   private auth: AuthService,
+  private cdr: ChangeDetectorRef,
   public dialog: MatDialog) {}
 
   ngOnInit(): void {
-  //  this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
-    this.categoriaService.consultarCategoriaGym(1).subscribe({
+    this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
       next: (resultData) => {
-        console.log(resultData);
         this.categorias = resultData;
         this.dataSource = new MatTableDataSource(this.categorias);
         this.dataSource.paginator = this.paginator;
+        this.cargarCategorias();
+      },
+      error: (error) => {
       }
-    })
+    });
+  }
+
+  private cargarCategorias() {
+    this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
+      next: (resultData) => {
+        this.categorias = resultData;
+        this.dataSource = new MatTableDataSource(this.categorias);
+        this.dataSource.paginator = this.paginator;
+      },
+      error: (error) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    });
+  }
+  
+  private actualizarTabla() {
+    if (!this.dataSource) {
+      // Asegúrate de que this.dataSource esté definido antes de actualizar
+      this.cargarCategorias();
+    } else {
+      this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
+        next: (resultData) => {
+          this.categorias = resultData;
+          this.dataSource.data = this.categorias;
+        },
+        error: (error) => {
+          console.error('Error al actualizar categorías:', error);
+        }
+      });
+    }
+  }
+
+  altaCategoria(): void {
+    const dialogRef = this.dialog.open(AltaCategoriaComponent, {
+      width: '70%',
+      height: '90%',
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
   }
 
   editarCategoria(idCategoria: string): void {
@@ -54,11 +95,11 @@ export class CategoriasComponent implements OnInit {
       height: '90%',
       data: { idCategoria: idCategoria },
     });
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
   }
 
-  /**
-   * metodo para filtrar la informacion que escribe el usaurio
-   */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -66,7 +107,6 @@ export class CategoriasComponent implements OnInit {
   
   toggleCheckbox(id: number, estatus: number) {
     const estadoOriginal = estatus;
-    console.log('Estatus actual:', estadoOriginal);
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea cambiar el estatus de la categoría?`, 
     });
@@ -82,7 +122,6 @@ export class CategoriasComponent implements OnInit {
   }
   
   actualizarEstatus(idMem: number, estado: { estatus: number }) {
-    console.log(estado.estatus, "nuevo");
     this.categoriaService.updateMembresiaStatus(idMem, estado).subscribe(
       (respuesta) => {
         this.categoriaActiva = estado.estatus == 1;
@@ -92,10 +131,10 @@ export class CategoriasComponent implements OnInit {
     );
   }
 
-  altaCategoria(): void {
-    const dialogRef = this.dialog.open(AltaCategoriaComponent, {
-      width: '70%',
-      height: '90%',
-    });
-  }
+  
+
+ /* private actualizarListaCategorias() {
+    // Lógica para obtener la lista de categorías del servicio
+    this.categorias = this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue());
+  }*/
 }

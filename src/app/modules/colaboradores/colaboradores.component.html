@@ -2,7 +2,7 @@
   <h2 class="mb-3">Lista de colaboradores</h2>
 
   <div style="text-align: right; margin-bottom: 50px;">
-      <button mat-raised-button routerLink="/admin/alta-colaborador" style="background-color: #fd9727; font-size: 16px;"><mat-icon>add</mat-icon>AGREGAR COLABORADOR</button>
+    <button mat-raised-button (click)="OpenAgregar()" style="background-color: #fd9727; font-size: 16px;"><mat-icon>add</mat-icon>AGREGAR COLABORADOR</button>  <!--routerLink="../alta-colaborador"-->
     </div>
 
   <div class="mb-3">
@@ -32,7 +32,7 @@
                 <td> {{ empleado.nombreGym }} </td>
                 <td> {{ empleado.email }} </td>
                 <td> 
-                  <button mat-icon-button color="primary" routerLink="/admin/editar-colaborador/{{ empleado.idEmpleado }}">
+                  <button mat-icon-button color="primary" (click)="OpenEditar(empleado)">  <!--routerLink="../editar-colaborador/{{ empleado.idEmpleado }}"-->
                       <mat-icon>edit</mat-icon>
                     </button>    
                   </td>

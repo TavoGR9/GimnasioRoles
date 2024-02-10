@@ -19,6 +19,7 @@ import { DatePipe } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { EmergenteInfoClienteComponent } from '../emergente-info-cliente/emergente-info-cliente.component';
+import { AuthService } from 'src/app/service/auth.service';
 
 interface ClientesActivos {
   ID: number;
@@ -128,6 +129,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private huellasService: HuellaService,
     private clienteService: ClienteService,
     private datePipe: DatePipe,
+    private auth: AuthService,
   ) {
     this.form = this.fb.group({
       idUsuario: [''],
@@ -156,7 +158,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     });
 
     /*this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                    this.formatDate(this.fechaFin
+                                    this.formatDate(this.fechaFin,
+                                    this.auth.idGym.getValue()
                                     ).subscribe((response) => {
       console.log(response);
       this.clienteActivo = response;
@@ -204,7 +207,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   
     this.pagoService.obtenerActivos(
       this.formatDate(this.fechaInicio),
-      this.formatDate(this.fechaFin)
+      this.formatDate(this.fechaFin),
+      this.auth.idGym.getValue()
     ).subscribe(
       response => {
         console.log(response);
@@ -281,7 +285,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
           // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
           this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                          this.formatDate(this.fechaFin)
+                                          this.formatDate(this.fechaFin),
+                                          this.auth.idGym.getValue()
                                           ).subscribe((respuesta) => {
             console.log(respuesta);
             this.clienteActivo = respuesta;
@@ -358,7 +363,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
           // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
           this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                          this.formatDate(this.fechaFin)
+                                          this.formatDate(this.fechaFin),
+                                          this.auth.idGym.getValue()
                                           ).subscribe((respuesta) => {
             console.log(respuesta);
             this.clienteActivo = respuesta;
@@ -395,6 +401,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         nombre: `${prod.Nombre}`,
         sucursal: `${prod.Sucursal}`,
         membresia: `${prod.Membresia}`,
+        dateStart: `${prod.Fecha_Inicio}`,
+        dateEnd: `${prod.Fecha_Fin}`,
         precio: `${prod.Precio}`,
         duracion: `${prod.Duracion}`,
         idSucursal: `${prod.Gimnasio_idGimnasio}`,
@@ -418,7 +426,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
           // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
           this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                          this.formatDate(this.fechaFin)
+                                          this.formatDate(this.fechaFin),
+                                          this.auth.idGym.getValue()
                                           ).subscribe((respuesta) => {
             console.log(respuesta);
             this.clienteActivo = respuesta;
@@ -461,7 +470,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
           // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
           this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                          this.formatDate(this.fechaFin)
+                                          this.formatDate(this.fechaFin),
+                                          this.auth.idGym.getValue()
                                           ).subscribe((response) => {
             console.log(response);
             this.clienteActivo = response;

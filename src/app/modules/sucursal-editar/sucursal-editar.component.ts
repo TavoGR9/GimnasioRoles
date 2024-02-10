@@ -5,7 +5,7 @@ import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { FranquiciaService } from 'src/app/service/franquicia.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+//import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ErrorStateMatcher} from '@angular/material/core';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -29,8 +29,8 @@ export class SucursalEditarComponent implements OnInit {
   idGimnasio: any;
 
   constructor(
-    public dialogo: MatDialogRef<SucursalEditarComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    //public dialogo: MatDialogRef<SucursalEditarComponent>,
+    //@Inject(MAT_DIALOG_DATA) public data: any,
     private formulario: FormBuilder,
     private activeRoute: ActivatedRoute,
     private router: Router,
@@ -39,7 +39,7 @@ export class SucursalEditarComponent implements OnInit {
     private franquiciaService: FranquiciaService,
   ) {
   
-    this.idGimnasio = data.idGimnasio;
+    //this.idGimnasio = data.idGimnasio;
    
     this.formularioSucursales = this.formulario.group({
      nombreGym: ["", Validators.required],
@@ -117,7 +117,7 @@ export class SucursalEditarComponent implements OnInit {
   }
 
   cerrarDialogo(): void {
-    this.dialogo.close(true);
+    //this.dialogo.close(true);
   }
 }
 

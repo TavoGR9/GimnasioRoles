@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
+import { AuthService } from 'src/app/service/auth.service';
 
 export interface Historial {
   Sucursal: string;
@@ -55,6 +56,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
     private ServiceHistorInventario: inventarioService,
     private toastr: ToastrService,
+    private auth: AuthService,
     private datePipe: DatePipe,) { }
   
   cerrarDialogo(): void {
@@ -95,7 +97,8 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   
     this.ServiceHistorInventario.HistorialInventario(
       this.formatDate(this.fechaInicio),
-      this.formatDate(this.fechaFin)
+      this.formatDate(this.fechaFin),
+      this.auth.idGym.getValue()
     ).subscribe(
       response => {
         console.log(response);
@@ -106,7 +109,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
           this.dataSource = new MatTableDataSource(this.dataHistorial);
           this.dataSource.paginator = this.paginatorHistorial;
           //console.log('No hay clientes activos en este rango de fechas.');
-          this.toastr.info('No hay clientes activos en este rango de fechas.', 'Info!!!');
+          this.toastr.info('No hay historico para mostrar en este rango de fechas.', 'Info!!!');
 
         } else if(response){
           // Si hay datos, actualiza la tabla

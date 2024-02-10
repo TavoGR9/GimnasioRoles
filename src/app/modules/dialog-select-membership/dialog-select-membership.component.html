@@ -1,0 +1,243 @@
+<div>
+
+   <div class="title" *ngIf="optionToShow == 1">
+    <br>
+        <h1>Agregar Plan</h1>
+    </div>
+    <div class="title" *ngIf="optionToShow == 2">
+        <br>
+        <h1>Servicios de membresia</h1>
+    </div>
+    <div class="title" *ngIf="optionToShow == 3">
+        <br>
+        <h1>Editar Plan</h1>
+    </div>
+    <!--<div class="title" *ngIf="optionToShow == 4">
+        <h1>Agregar servicios</h1>
+    </div>-->
+    <!--<div class="options" *ngIf="selection == 0 && optionToShow ==1">
+        <div class="standar_membership">   
+        <button mat-button class="standar_membership_content button_member" (click)="selectPlan()">
+            <mat-icon class="icon_option">
+                roofing
+            </mat-icon>
+            <p>PLAN</p>
+        </button>
+           
+        </div>
+        <div class="personalize_membership">
+            <button mat-button class="personalize_membership_content button_member" (click)="selectPersonalize()">
+                <mat-icon class="icon_option">
+                    person
+                </mat-icon>
+                <p>PERSONALIZADO</p>
+            </button>
+        </div>
+    </div>-->
+    <!--SECCION PARA VER SERVICIOS-->
+    <div class="services_table" *ngIf="optionToShow == 2">
+        <h2 *ngIf="dataSource && dataSource.data && dataSource.data.length > 0">{{dataSource.data[0].titulo}}</h2>
+        <div *ngIf="dataSource.data.length == 0" class="center-container">
+            <div><strong>Sin servicios</strong>
+            </div>
+          </div>
+          
+       <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="No">
+                <th mat-header-cell *matHeaderCellDef> Id. </th>
+                <td mat-cell *matCellDef="let element"> {{element.fk_servicios_individuales}} </td>
+              </ng-container>
+              <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                <td mat-cell *matCellDef="let element"> {{element.nombre_servicio}}</td>
+              </ng-container>
+              <ng-container matColumnDef="precio">
+                <th mat-header-cell *matHeaderCellDef> Precio </th>
+                <td mat-cell *matCellDef="let element"> {{element.precio_unitario}}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+
+    <div>
+        <div class="container mt-4" *ngIf="optionToShow == 1 || optionToShow == 3">
+            <div>
+            <h1 class="title">{{formTittle}}</h1>
+            <form [formGroup]="formPlan">
+                <div class="responsive-div">
+                <div style="color:red"></div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Titulo:</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Precio:</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>
+                                <mat-form-field appearance="outline" style="width: 95%;" required>
+                                    <mat-label>Nombre del plan:</mat-label>
+                                    <input type="text" matInput placeholder="Titulo" autocomplete="off" id="titulo" formControlName="titulo">
+                                    <mat-error *ngIf="isFieldInvalid('titulo', 'required')">
+                                        El título es requerido.
+                                      </mat-error>
+                                      <mat-error *ngIf="isFieldInvalid('titulo', 'pattern')">
+                                        Solo se aceptan letras.
+                                      </mat-error>
+                                </mat-form-field>
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p>
+                                <mat-form-field appearance="outline"  style="width: 95%;" required>
+                                    <mat-label>Precio</mat-label>
+                                    <input type="number" placeholder="Precio" matInput autocomplete="off" id="precio" formControlName="precio" [readonly]="selection == 2 || dataToUpdate.tipo_membresia == 2">
+                                    <mat-error *ngIf="isFieldInvalid('precio', 'required')">
+                                        El precio es requerido.
+                                      </mat-error>
+                                      <mat-error *ngIf="isFieldInvalid('precio', 'pattern')">
+                                        Solo se aceptan números.
+                                      </mat-error>
+                                </mat-form-field>
+                            </p>
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Duración:</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="large-text">Elige tus servicios:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>
+                                <mat-form-field style="width: 95%;" autocomplete="off" required appearance="outline">
+                                    <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar dias</mat-label>
+                                    <input matInput type="number" name="duracion" id="duracion" formControlName="duracion">
+                                    <mat-error *ngIf="isFieldInvalid('duracion', 'required')">
+                                        la duracion es requerida.
+                                      </mat-error>
+                                      <mat-error *ngIf="isFieldInvalid('duracion', 'pattern')">
+                                        Solo se aceptan numeros.
+                                      </mat-error>
+                                </mat-form-field>
+                            </p>
+                            <p>
+                                <label for="detalles" class="large-text">Detalles:</label>
+                                <mat-form-field style="display: inline-block; width: 95%; height: 110px;" required>
+                                    <mat-label>Detalles</mat-label>
+                                    <textarea class="textarea" matInput rows="4" placeholder="Detalles" cols="50" style="display: inline-block; width: 100%;height: 100%;" id="detalles" formControlName="detalles"> </textarea>
+                                    <mat-error *ngIf="isFieldInvalid('detalles', 'required')">
+                                        El detalle es requerido.
+                                      </mat-error>
+                                      <mat-error *ngIf="isFieldInvalid('detalles', 'pattern')">
+                                        Solo se aceptan letras.
+                                      </mat-error>
+                                </mat-form-field>
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p>
+                                <mat-form-field required appearance="outline" style="width: 95%;">
+                                    <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar servicios</mat-label>
+                                    <mat-select formControlName="servicioseleccionado" multiple (selectionChange)="$event.value ? setPrice($event.value) : null">
+                                        <!--<mat-option *ngFor="let servicio of servicios" [value]="servicio">
+                                            {{servicio.nombre_servicio}}.......${{servicio.precio_unitario}}
+                                        </mat-option>-->
+                                        <ng-container *ngFor="let servicio of servicios" style="margin-left: 100px;">
+                                            <mat-option *ngIf="optionToShow == 1 || optionToShow == 3 && dataToUpdate.tipo_membresia == 1 || dataToUpdate.tipo_membresia == 0" [value]="servicio">
+                                              {{servicio.nombre_servicio}}
+                                            </mat-option>
+                                          </ng-container>
+                                        <!--<ng-container *ngFor="let servicio of servicios">
+                                            <mat-option *ngIf="selection==2 || optionToShow == 3 && dataToUpdate.tipo_membresia == 2" [value]="servicio">
+                                              ${{servicio.precio_unitario}}-{{servicio.nombre_servicio}}
+                                            </mat-option>
+                                          </ng-container>-->
+                                    </mat-select>
+                                    <mat-error *ngIf="isFieldInvalid('servicioseleccionado', 'required')">
+                                        los servicios son requeridos.
+                                      </mat-error>
+                                </mat-form-field>
+                            </p>
+                            <div class="services_selected">
+                                <p><strong><label  class="large-text">Servicios seleccionados:</label></strong></p>
+                                <ul *ngFor="let selected of servicioSeleccionado">
+                                    <li>{{selected.nombre_servicio}}</li>
+                                </ul>
+                            </div>
+
+                            <p><label  class="large-text">Estatus:</label></p>
+                            <p>
+                                    <mat-radio-group aria-label="Select an option" formControlName="status">
+                                        <mat-radio-button value=1>Activo</mat-radio-button>
+                                        <mat-radio-button value=0>Inactivo</mat-radio-button>
+                                      </mat-radio-group>
+                            </p>
+                            <br/>
+                            <br/>  
+                        </div>
+                       
+                    </div>
+                    <div style="display: flex; justify-content: center;">
+                        <button *ngIf="optionToShow === 1" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
+                        <button *ngIf="optionToShow === 3" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Actualizar</button>
+                        <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white; width: 120px;">Cancelar</button>
+                      </div>          
+                </div>
+            </form>
+        </div>
+        </div>
+        <div class="servicesForm" *ngIf="optionToShow == 4">
+            <form [formGroup]="formService">
+                <div class="mi-div-con-borde responsive-div">
+                    <div style="color:red"></div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p>
+                                    <label for="nombre" class="large-text" style="margin-right: 35px;margin-left: 45px;">Nombre:</label>
+                                    <mat-form-field appearance="outline" class="inputs_properties" style="margin-right: 35px;" required>
+                                        <mat-label>nombre</mat-label>
+                                        <input type="text" matInput placeholder="Nombre" autocomplete="off" id="nombre" formControlName="nombre">
+                                        <mat-error *ngIf="isFieldInvalidService('nombre', 'required')">
+                                            El nombre es requerido.
+                                          </mat-error>
+                                          <mat-error *ngIf="isFieldInvalidService('nombre', 'pattern')">
+                                            Solo se aceptan letras.
+                                          </mat-error>
+                                    </mat-form-field>
+                                </p>
+
+                                <p>
+                                    <label for="precio" class="large-text" style="margin-right: 35px;margin-left: 45px;">Precio:</label>
+                                    <mat-form-field appearance="outline" class="inputs_properties" style="margin-right: 35px;" required>
+                                        <mat-label>precio</mat-label>
+                                        <input type="number" matInput placeholder="precio" autocomplete="off" id="precio" formControlName="precio">
+                                        <mat-error *ngIf="isFieldInvalidService('precio', 'required')">
+                                            El precio es requerido.
+                                          </mat-error>
+                                          <mat-error *ngIf="isFieldInvalidService('precio', 'pattern')">
+                                            Solo se aceptan numeros.
+                                          </mat-error>
+                                    </mat-form-field>
+                                </p>
+                            </div>    
+                        </div>   
+                        <div style="display: flex; justify-content: center;">
+                            <button mat-stroked-button type="submit" (click)="validaFormService()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;">Aceptar</button>
+                            <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white;">Cancelar</button>
+                          </div>           
+                 </div>    
+            </form>     
+        </div>
+    </div>
+</div>

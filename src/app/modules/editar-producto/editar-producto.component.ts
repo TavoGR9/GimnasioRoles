@@ -13,6 +13,7 @@ import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emerge
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
+import { AuthService } from 'src/app/service/auth.service';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = formulario && formulario.submitted;
@@ -43,6 +44,7 @@ export class EditarProductoComponent implements OnInit{
     private productoService:ProductoService,
     private datePipe: DatePipe,
     private router:Router,
+    private auth:AuthService,
     public dialog: MatDialog,
     private categoriaService: CategoriaService,){
 
@@ -58,12 +60,14 @@ export class EditarProductoComponent implements OnInit{
           descripcion:respuesta [0]['descripcion'],
           codigoBarra:respuesta [0]['codigoBarra'],
           idCategoria:respuesta [0]['Categoria_idCategoria'],
+          Gimnasio_idGimnasio:respuesta [0]['Gimnasio_idGimnasio'],
           fechaCreacion:respuesta [0]['fechaCreacion'],
           unidadMedicion:respuesta [0]['unidadMedicion'],
           cantidadUnidades:respuesta [0]['cantidadUnidades'],
           color:respuesta [0]['color'],
           longitud:respuesta [0]['longitud'],
           sabor:respuesta [0]['sabor'],
+          talla:respuesta [0]['talla'],
           marca:respuesta [0]['marca'],
         });
       }
@@ -78,11 +82,13 @@ export class EditarProductoComponent implements OnInit{
       fechaCreacion: [this.fechaCreacion],
       codigoBarra: [''],
       idCategoria: ['', Validators.compose([Validators.required])],
+      Gimnasio_idGimnasio: [this.auth.idGym.getValue()],
       unidadMedicion: ['NA', Validators.compose([Validators.required])],
       cantidadUnidades: [0,Validators.compose([Validators.required,Validators.pattern(/^[0-9]+$/)])],
       color: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
       longitud: ['NA'],
       sabor: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
+      talla: [''],
       marca: ['',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])]
     });
   }
@@ -95,7 +101,6 @@ export class EditarProductoComponent implements OnInit{
     this.categoriaService.obternerCategoria().subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
-        console.log('lista de categorias:', this.listaCategorias);
       },
       error: (error) => {
         console.error(error);
@@ -108,21 +113,18 @@ export class EditarProductoComponent implements OnInit{
     return this.datePipe.transform(fechaActual, 'yyyy-MM-dd HH:mm:ss') || '';
   }
 
-  cancelar() {
-    this.router.navigateByUrl('/admin/gestion-productos');
-  }
 
   actualizar(){
     this.productoService.actualizarProducto(this.idProducto,this.form.value).subscribe(
       (response) => {
-        console.log('Producto actualizado correctamente:', response);
+       
         this.dialog.open(MensajeEmergentesComponent, {
           data: `Producto actualizado exitosamente`,
         })
         .afterClosed()
         .subscribe((cerrarDialogo: Boolean) => {
           if (cerrarDialogo) {
-            this.router.navigateByUrl("/admin/gestion-productos");
+            this.dialogo.close(true);
           } else {
             
           }
@@ -136,9 +138,7 @@ export class EditarProductoComponent implements OnInit{
 }
 
 infoCategoria(event: number) {
-  console.log('Opción seleccionada:', event);
   this.idCategoria = event;
-  console.log('valor idCategoria:', this.idCategoria);
 }
 
 cerrarDialogo(): void {
