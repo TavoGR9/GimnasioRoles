@@ -15,6 +15,7 @@ export class FormPagoEmergenteComponent implements OnInit{
   membresias: any[] = [];
   membresiaSeleccionada: any;
   idMembresiaSelec: any;
+  nombreMembresia: any;
   precio: any;
   duracion: any;
   moneyRecibido: number = 0; // =0
@@ -55,6 +56,8 @@ export class FormPagoEmergenteComponent implements OnInit{
       console.log('Membresía seleccionada:', this.membresiaSeleccionada);
       this.duracion = `${resultado.Duracion} días`;
       this.precio = `${resultado.Precio}`;
+      this.nombreMembresia = `${resultado.Membresia}`;
+      console.log('Nombre de la membresia: ', resultado.Membresia);
     });
   }
 
@@ -263,10 +266,10 @@ export class FormPagoEmergenteComponent implements OnInit{
                         <tr>
                           <td>${this.data.nombre}</td>
                           <td>${this.data.sucursal}</td>
-                          <td>${this.data.membresia}</td>
+                          <td>${this.data.action === 'Online' ? this.data.membresia : this.nombreMembresia}</td>
                           <td>${this.data.dateStart}</td>
                           <td>${this.data.dateEnd}</td>
-                          <td>$${this.data.precio}</td>
+                          <td>$${this.data.action === 'Online' ? this.data.precio : this.precio}</td>
                         </tr> 
                   </tbody>
                 </table>
