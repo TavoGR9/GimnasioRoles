@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 //import * as jsPDF from 'jspdf';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
+import { AuthService } from 'src/app/service/auth.service';
 
 interface Producto {
   Nombre: string;
@@ -53,9 +54,10 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   @ViewChild('paginatorProductos', { static: true }) paginator!: MatPaginator;
 
   
-  constructor(private prodVendidosService: ListProductVendidosService, private datePipe: DatePipe, private toastr: ToastrService){
-
-  }
+  constructor(private prodVendidosService: ListProductVendidosService, 
+    private datePipe: DatePipe, 
+    private toastr: ToastrService,
+    private auth: AuthService,){}
   
   ngOnInit(): void{
       this.updateDateLogs();  // Actualiza las fechas iniciales al inicio
@@ -95,7 +97,8 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   
     this.prodVendidosService.obtenerListaProduct(
       this.formatDate(this.fechaInicio),
-      this.formatDate(this.fechaFin)
+      this.formatDate(this.fechaFin),
+      this.auth.idGym.getValue()
     ).subscribe(
       response => {
         console.log(response);
@@ -105,12 +108,14 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
           this.productosVendidos = response;
           this.dataSource = new MatTableDataSource(this.productosVendidos);
           this.dataSource.paginator = this.paginator;
+          this.toastr.success('Datos encontrados.', 'Success!!!');
         } else {
           // Si no hay datos, resetea la tabla
           this.productosVendidos = [];
           this.dataSource = new MatTableDataSource(this.productosVendidos);
           this.dataSource.paginator = this.paginator;
-          console.log('No hay datos para mostrar.');
+          this.toastr.info('No hay productos vendidos en este rango de fechas.', 'Info!!!');
+          //console.log('No hay datos para mostrar.');
         }
       },
       error => {
@@ -120,7 +125,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
         this.dataSource = new MatTableDataSource(this.productosVendidos);
         this.dataSource.paginator = this.paginator;
        // console.log('No hay productos comprados en este rango de fechas');
-        this.toastr.info('No hay productos comprados en este rango de fechas.', 'Info!!!');
+        this.toastr.info('No hay productos vendidos en este rango de fechas.', 'Info!!!');
 
       },
       () => {

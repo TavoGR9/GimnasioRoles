@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Valida
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-//import { ColaboradorService } from 'src/app/service/colaborador.service';
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -26,8 +25,8 @@ export class EditarCategoriaComponent {
   gimnasio: any;
   message: string = '';
   idCategoria: any;
-
   elID:any;
+  matcher = new MyErrorStateMatcher();
 
   constructor(
     public dialogo: MatDialogRef<EditarCategoriaComponent>,
@@ -37,7 +36,6 @@ export class EditarCategoriaComponent {
     private categoriaService:CategoriaService,
     private router:Router,
     public dialog: MatDialog){
-
     this.idCategoria = data.idCategoria; // Accede a idGimnasio desde los datos
    
     //llamar al servicio datos empleado - pasando el parametro capturado por url
@@ -63,10 +61,6 @@ export class EditarCategoriaComponent {
     });
   }
 
-  //insanciar objeto para manejar el tipo de error en las validaciones
-  matcher = new MyErrorStateMatcher();
-
-  //mandar a llamar el sevicio correspondiente al llenado del combo sucursal
   ngOnInit(): void {
 
   }
@@ -74,12 +68,10 @@ export class EditarCategoriaComponent {
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
-  
 
   actualizar(){
     if (this.formularioCategoria.valid) {
     this.categoriaService.actualizarCategoria(this.idCategoria,this.formularioCategoria.value).subscribe(()=>{
-
       this.dialog.open(MensajeEmergentesComponent, {
         data: `Categoria actualizada exitosamente`,
       })
@@ -87,9 +79,7 @@ export class EditarCategoriaComponent {
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
           this.dialogo.close(true);
-
         } else {
-          
         }
       });
     });

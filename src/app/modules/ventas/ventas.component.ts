@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild , Inject} from "@angular/core";
-
 import { MatTableDataSource } from "@angular/material/table"; //para controlar los datos del api y ponerlos en una tabla
 import { Producto } from "src/app/models/producto";
 import { ProductoService } from "src/app/service/producto.service";
@@ -23,7 +22,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ClienteService } from "src/app/service/cliente.service";
 import { Ventas } from "src/app/models/ventas";
 import { VentasService } from "src/app/service/ventas.service";
-import { MensajeEmergenteComponent } from "../mensaje-emergente/mensaje-emergente.component";
+import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { JoinDetalleVentaService } from "src/app/service/JoinDetalleVenta";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { inventarioService } from "src/app/service/inventario.service";
@@ -177,23 +176,14 @@ export class VentasComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    console.log(this.auth.idGym.getValue(), "this.auth.getIdGym()");
-   // this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
-    this.productoService.obternerProductos(1).subscribe((respuesta) => {
-      console.log("respuesta", respuesta)
+   this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      console.log("this.productData", this.productData);
       this.dataSource = new MatTableDataSource(this.productData);
-      this.dataSource.paginator = this.paginator; // Asignación del paginador aquí
-      console.log(this.paginator,"this.paginator");
+      this.dataSource.paginator = this.paginator; 
     });
-
-   
-  
   }
 
   ejecutarServicio(): void {
-    // Llama a tu servicio aquí
     this.DetalleVenta.obternerEstatus().subscribe((result) => {
     });
   }
@@ -201,7 +191,6 @@ export class VentasComponent implements OnInit {
   private destroy$: Subject<void> = new Subject<void>();
 
   ngOnInit(): void {
-
     interval(10000)
     .pipe(takeUntil(this.destroy$))
     .subscribe(() => {
@@ -404,7 +393,7 @@ export class VentasComponent implements OnInit {
             console.log("Detalles de ventas guardados correctamente");
           }
         );
-        this.dialog.open(MensajeEmergenteComponent, {
+        this.dialog.open(MensajeEmergentesComponent, {
             data: `Productos registrados correctamente`,
           })
           .afterClosed()
@@ -512,12 +501,13 @@ export class VentasComponent implements OnInit {
             console.log("Detalles de ventas guardados correctamente");
           }
         );
-        this.dialog.open(MensajeEmergenteComponent, {
+        this.dialog.open(MensajeEmergentesComponent, {
             data: `Productos registrados correctamente`,
           })
           .afterClosed()
           .subscribe((cerrarDialogo: Boolean) => {
             if (cerrarDialogo) {
+              this.dialogo.close(true);
               this.resetearValores();
             } else {
             }

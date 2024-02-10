@@ -11,7 +11,19 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  logout(): void {
-    this.auth.logout();
+  logoutBS(): void {
+    this.auth.logoutBS();
+  }
+
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+  
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
+  }
+
+  isRecep(): boolean {
+    return this.auth.isRecepcion();
   }
 }

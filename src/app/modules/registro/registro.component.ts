@@ -20,6 +20,7 @@ import { autoTable } from "jspdf-autotable";
 import { plan } from "src/app/models/plan";
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
+import { agregarContra } from "src/app/service/agregarContra.service";
 
 interface Food {
   value: string;
@@ -134,6 +135,7 @@ export class RegistroComponent implements OnInit {
     private toastr: ToastrService,
     private planService: MembresiaService,
     private auth: AuthService,
+    private add: agregarContra
 
 
   ) {
@@ -162,7 +164,7 @@ export class RegistroComponent implements OnInit {
       fechaNacimiento: ['', Validators.required],
       curp: ['', Validators.compose([ Validators.minLength(18), Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/)])],
       email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
-      pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
+   //   pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
       tiene_huella:[''],
       fotoUrl:['', Validators.required],
       peso:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(300)])],
@@ -432,12 +434,27 @@ export class RegistroComponent implements OnInit {
               .afterClosed()
               .subscribe((cerrarDialogo: Boolean) => {
                 if (cerrarDialogo) {
+                  console.log(respuesta.email);
+
+                  this.add.enviarMail(respuesta.email).subscribe(
+                    (response) => {
+                      console.log('Respuesta exitosa:', response);
+                      // Aquí puedes manejar la respuesta exitosa según tus necesidades
+                    },
+                    (error) => {
+                      console.error('Error al enviar el correo:', error);
+                      // Aquí puedes manejar el error según tus necesidades
+                    }
+                  );
                   
                   this.clienteService.consultarDataPago(this.form.value.email).subscribe(respuesta =>{
                   console.log(respuesta)
                   //this.idClient=respuesta;
-
                     this.responseData=respuesta;
+
+                    
+                    
+
                       this.clienteService.idPagoSucursal(this.responseData.ID_Cliente).subscribe((resultado)=> {
 
                         this.router.navigateByUrl(`/home`);
@@ -453,18 +470,19 @@ export class RegistroComponent implements OnInit {
               if (error.status === 400) {
                 if (error.error && error.error.msg === 'error_tipo_archivo_no_soportado') {
                   // Manejar el error específico 'error_tipo_archivo_no_soportado'
-                  console.error('Error: Tipo de archivo no soportado');
-                  this.toastr.error("Error: Tipo de archivo no soportado");
+                  console.error('Error 400: Tipo de archivo no soportado', error);
+                  this.toastr.error('Error: Tipo de archivo no soportado');
                 } else {
                   // Otro tipo de error 400
-                  console.error('Error 400: Bad Request');
-                  this.toastr.error("Error: no se pudo agregar usuario. Intente de nuevo");
+                  console.error('Error 400: Bad Request', error);
+                  this.toastr.error('Error: no se pudo agregar usuario. Intente de nuevo');
                 }
               } else {
                 // Otro tipo de error diferente a 400
-                console.error('Error: Otro tipo de error');
-                this.toastr.error("Error: no se pudo agregar usuario. Intente de nuevo");
+                console.error('Error: Otro tipo de error', error);
+                this.toastr.error('Error: no se pudo agregar usuario. Intente de nuevo');
               }
+              
             }
             
             );

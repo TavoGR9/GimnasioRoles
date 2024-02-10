@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
-import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
+import { MensajeDesactivarComponent } from '../mensaje-desactivar/mensaje-desactivar.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HorarioService } from 'src/app/service/horario.service';
 import { forkJoin } from 'rxjs';
@@ -8,11 +8,8 @@ import { HorariosComponent } from '../horarios/horarios.component';
 import { gimnasio } from 'src/app/models/gimnasio';
 import { HorariosVistaComponent } from '../horarios-vista/horarios-vista.component';
 import { ListarSucursalesPipe } from 'src/app/pipes/listar-sucursales.pipe';
-import { SucursalAltaComponent } from '../sucursal-alta/sucursal-alta.component';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { SucursalEditarComponent } from '../sucursal-editar/sucursal-editar.component';
-
+import { MatPaginator } from '@angular/material/paginator'; 
 @Component({
   selector: 'app-sucursal-lista',
   templateUrl: './sucursal-lista.component.html',
@@ -28,21 +25,14 @@ export class SucursalListaComponent implements OnInit {
   public sucursales: any;
   public page: number = 0;
   public search: string = '';
+  optionToShow: number = 0;
 
   constructor(
     private gimnasioService: GimnasioService,
     public dialog: MatDialog,
   ){}
 
-  dataSource = new MatTableDataSource<any>();
-
-  // Configuración del paginador
-  pageSize = 10;
-  pageSizeOptions: number[] = [5, 10, 25, 100];
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo',  'alberca', 'ofertas', 'gimnasio', 'IDgimnasio', 'actions', 'horario', 'ubicacion', 'activar'];
+  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'horario', 'ubicacion', 'activar'];
 
   /*onToggle(event: Event, idGimnasio: any) {
 
@@ -102,7 +92,7 @@ export class SucursalListaComponent implements OnInit {
   
     let mensaje = gimnasio.estatus == 1 ? '¿Deseas desactivar esta sucursal?' : '¿Deseas activar esta sucursal?';
   
-    const dialogRef = this.dialog.open(MensajeEliminarComponent, {
+    const dialogRef = this.dialog.open(MensajeDesactivarComponent, {
       data: { mensaje: mensaje, idGimnasio: idGimnasio },
     });
   
@@ -133,6 +123,9 @@ export class SucursalListaComponent implements OnInit {
       }
     });
   }
+  
+
+
 
  /* ngOnInit(): void {
 
@@ -182,19 +175,18 @@ export class SucursalListaComponent implements OnInit {
       }
     });
   }*/
+
+  dataSource = new MatTableDataSource<any>();
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+
   ngOnInit(): void {
+
     this.gimnasioService.obternerPlan().subscribe((data) => {
       this.gimnasio = data;
-      
       this.dataSource = new MatTableDataSource(this.gimnasio);
-      
-      this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
-
-      
+      this.dataSource.paginator = this.paginator;
+      this.cargarCategorias();
     });
-
-    
-
 
     this.gimnasioService.botonEstado.subscribe((data) => {
       if(data.respuesta){
@@ -237,18 +229,41 @@ export class SucursalListaComponent implements OnInit {
   }
 
 
-  editarSucursal(idGimnasio: string): void {
-    const dialogRef = this.dialog.open(SucursalEditarComponent, {
-      width: '75%',
-      height: '90%',
-      data: { idGimnasio: idGimnasio },
-    });
+
+  private cargarCategorias() {
+    this.gimnasioService.obternerPlan().subscribe(
+      (data) => {
+        this.gimnasio = data;
+        this.dataSource = new MatTableDataSource(this.gimnasio);
+        this.dataSource.paginator = this.paginator;
+      },
+      (error) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    );
   }
-
-
+  
+  
+  private actualizarTabla() {
+    if (!this.dataSource) {
+      // Asegúrate de que this.dataSource esté definido antes de actualizar
+      this.cargarCategorias();
+    } else {
+      this.gimnasioService.obternerPlan().subscribe(
+        (data) => {
+          this.gimnasio = data;
+          this.dataSource.data = this.gimnasio;
+        },
+        (error) => {
+          console.error('Error al actualizar categorías:', error);
+        }
+      );
+    }
+  }
+  
   borrarSucursal(idGimnasio: any) {
     console.log(idGimnasio);
-    this.dialog.open(MensajeEliminarComponent,{
+    this.dialog.open(MensajeDesactivarComponent,{
       data: `¿Deseas desactivar esta sucursal?`,
     })
     .afterClosed()
@@ -271,12 +286,65 @@ export class SucursalListaComponent implements OnInit {
   }
 
  verHorario(idGimnasio: string): void {
+  this.gimnasioService.optionSelected.next(1);
+  this.gimnasioService.optionSelected.subscribe((data) => {
+    if(data) {
+      this.optionToShow = data;
+      if(this.optionToShow === 1) {
+        console.log("MOSTRAREMOS HORARIOS");
+      }
+    }
+  });
     const dialogRef = this.dialog.open(HorariosVistaComponent, {
-      width: '60%',
+      width: '70%',
       height: '90%',
       data: { idGimnasio: idGimnasio },
     });
   }
+
+  agregarSucursal(): void {
+    this.gimnasioService.optionSelected.next(2);
+    this.gimnasioService.optionSelected.subscribe((data) => {
+      if(data){
+        this.optionToShow = data;
+        if(this.optionToShow === 2){
+          console.log("MOSTRAREMOS FORMULARIO DE AGREGAR SUCURSAL");
+        }
+      }
+    });
+    const dialogRef = this.dialog.open(HorariosVistaComponent, {
+      width: '70%',
+      height: '90%',
+      data: { idGimnasio: this.idGimnasio },
+    })
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
+  }
+
+  editarSucursal(idGimnasio: number) {
+    console.log("EL id de la sucursal es: ", idGimnasio);
+    this.gimnasioService.gimnasioSeleccionado.next(idGimnasio);
+    this.gimnasioService.optionSelected.next(3);
+    this.gimnasioService.optionSelected.subscribe((data) => {
+      if(data){
+        this.optionToShow = data;
+        if(this.optionToShow === 3){
+          console.log("MOSTRAREMOS FORMULARIO DE EDITAR SUCURSAL");
+        }
+      }
+    });
+    
+    const dialogRef = this.dialog.open(HorariosVistaComponent, {
+      width: '70%',
+      height: '90%',
+      data: { idGimnasio: this.idGimnasio },
+    })
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
+  }
+
 
   agregarHorario(idGimnasio: string): void {
     const dialogRef = this.dialog.open(HorariosComponent, {
@@ -325,15 +393,5 @@ verUbicacion(item: any) {
   })
   // Aquí puedes agregar el código para actualizar el estado en tu base de datos
 }*/
-
-
-sucursalesD(): void {
-  const dialogRef = this.dialog.open(SucursalAltaComponent, {
-    width: '80%',
-    height: '90%',
-    
-  });
-}
-
 
 }

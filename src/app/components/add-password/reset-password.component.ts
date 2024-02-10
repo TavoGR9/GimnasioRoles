@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { ResetPasswordService } from 'src/app/service/resetPassword.service';
+import { agregarContra } from 'src/app/service/agregarContra.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -19,7 +19,7 @@ export class AddPasswordComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private toastr: ToastrService,
-    private passwordReset: ResetPasswordService,
+    private passwordReset: agregarContra,
     private route: ActivatedRoute // Agregar ActivatedRoute al constructor
   ) {
     this.resetForm = this.fb.group({
@@ -34,16 +34,13 @@ export class AddPasswordComponent implements OnInit {
     });
   }
 
-  /**
-   * Al iniciar el componente validar que el link este correcto de lo contrario no puede ver este recurso
-   * @returns 
-   */
   ngOnInit(): void {
     // Verificar los parámetros 'id' y 'token' en la URL al inicializar el componente
-    /*const idParam = this.route.snapshot.queryParamMap.get('id');
+   const idParam = this.route.snapshot.queryParamMap.get('id');
     const tokenParam = this.route.snapshot.queryParamMap.get('token');
 
     if (!idParam || !tokenParam) {
+      console.log(idParam, "idParam");
       // Redirigir al componente 'app-not-found' si falta alguno de los parámetros
       this.router.navigate(['/app-not-found']);
       return;
@@ -58,7 +55,7 @@ export class AddPasswordComponent implements OnInit {
               positionClass: 'toast-bottom-left',
             });
           } else {
-            this.toastr.error(respuesta.message, 'Error', {
+            this.toastr.error(respuesta.message, 'Error aqui si es', {
               positionClass: 'toast-bottom-left',
             });
 
@@ -67,7 +64,7 @@ export class AddPasswordComponent implements OnInit {
           }
         },
         error: (paramError) => {
-          this.toastr.error(paramError.error.message, 'Error', {
+          this.toastr.error(paramError.error.message, 'Error aquiiii', {
             positionClass: 'toast-bottom-left',
           });
 
@@ -75,7 +72,7 @@ export class AddPasswordComponent implements OnInit {
           this.router.navigate(['/app-not-found']);
         },
       });
-    }*/
+    }
   }
 
   /**
@@ -102,12 +99,15 @@ export class AddPasswordComponent implements OnInit {
           const idParam = this.route.snapshot.queryParamMap.get('id');
           const tokenParam = this.route.snapshot.queryParamMap.get('token');
           //si los valores del url tienen algun valor  se suscribe al servicio
+       
           if (idParam && tokenParam) {
+           
+            console.log("this.resetForm.value", this.resetForm.value);
             this.passwordReset
               .actualizaPassword(idParam, tokenParam, this.resetForm.value)
               .subscribe({
                 next: (respuesta) => {
-                  console.log('llego respuesta del api');
+               
                   console.log(respuesta);
                   if (respuesta.success) {
                     this.toastr.success(respuesta.message, 'Exito', {
@@ -115,18 +115,20 @@ export class AddPasswordComponent implements OnInit {
                     });
 
                     // Redirigir al componente 'login'al finalizar la actualizacion
-                    this.router.navigate(['/login']);
+                    window.location.href = 'https://olympus.arvispace.com';
                   } else {
-                    this.toastr.error(respuesta.message, 'Error', {
+                    this.toastr.error(respuesta.message, 'Error aqui', {
                       positionClass: 'toast-bottom-left',
                     });
                   }
                 },
                 error: (paramError) => {
-                  this.toastr.error(paramError.error.message, 'Error', {
+                  console.error('Error en la solicitud:', paramError);
+                  this.toastr.error(paramError.error.message, 'Error aquí', {
                     positionClass: 'toast-bottom-left',
                   });
                 },
+                
               });
           }
         }

@@ -40,7 +40,7 @@ import { AddPasswordComponent } from './components/add-password/reset-password.c
     FormsModule,
     HttpClientModule,
     NgIf,
-    ToastrModule.forRoot({positionClass:'toast-bottom-left'}),
+    ToastrModule.forRoot(),
     FontAwesomeModule,
     MatFormFieldModule,
     MatIconModule,

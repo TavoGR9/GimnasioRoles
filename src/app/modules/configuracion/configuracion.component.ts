@@ -76,6 +76,7 @@ export class ConfiguracionComponent  implements OnInit{
       estacionamiento: ["", Validators.required],
       regaderas: ["", Validators.required],
       bicicletero: ["", Validators.required],
+      estatus: [1],
     });
   }
 
@@ -114,18 +115,22 @@ export class ConfiguracionComponent  implements OnInit{
           casilleros: respuesta[0]['casilleros'],
           estacionamiento: respuesta[0]['estacionamiento'],
           regaderas: respuesta[0]['regaderas'],
-          bicicletero: respuesta[0]['bicicletero']
+          bicicletero: respuesta[0]['bicicletero'],
+          estatus: respuesta[0]['bicicletero'],
         }); 
       }
     );
   }
 
-  actualizar() {
+  /*actualizar() {
+    console.log("aca si");
     const actualizarPlan = this.gimnasioService.actualizarPlan(this.auth.idGym.getValue(), this.formularioSucursales.value);
     const actualizarHorarios = this.HorarioService.actualizarHorario(this.auth.idGym.getValue(), this.formularioHorarios.value);
+    console.log(actualizarPlan, "actualizarPlan");
+    console.log(actualizarHorarios, "actualizarHorarios");
     forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
       next: ([planResponse, horariosResponse]) => {
-        // Acciones posteriores si ambas actualizaciones son exitosas
+        console.log("si paso");
         this.dialog.open(MensajeEmergentesComponent, {
           data: 'Gimnasio actualizado exitosamente',
         }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
@@ -137,7 +142,47 @@ export class ConfiguracionComponent  implements OnInit{
       error: (error) => {
       }
     });
+  }*/
+
+  actualizar() {
+    const idGym = this.auth.idGym.getValue();
+    const planData = this.formularioSucursales.value;
+    const horariosData = this.formularioHorarios.value;
+  
+    // Realizar las solicitudes de actualización
+    const actualizarPlan = this.gimnasioService.actualizarPlan(idGym, planData);
+    const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData);
+  
+    // Realizar las solicitudes concurrentemente con forkJoin
+    forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
+      next: ([planResponse, horariosResponse]) => {
+        this.mostrarMensajeYRedireccionar();
+      },
+      error: (error) => {
+        this.mostrarMensajeDeError();
+        console.error('Error de API:', error);
+      }
+    });
   }
+  
+  private mostrarMensajeYRedireccionar() {
+    this.dialog.open(MensajeEmergentesComponent, {
+      data: 'Gimnasio actualizado exitosamente',
+    }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
+      if (cerrarDialogo) {
+        this.router.navigateByUrl("verConfiguracion");
+      }
+    });
+  }
+  
+  private mostrarMensajeDeError() {
+    // Puedes implementar lógica para mostrar un mensaje de error específico si es necesario
+    
+    this.dialog.open(MensajeEmergentesComponent, {
+      data: 'Error durante la actualización del gimnasio',
+    });
+  }
+  
 
   getHorariosControls(): AbstractControl[]{
     const horariosArray = this.formularioHorarios.get('horarios') as FormArray;

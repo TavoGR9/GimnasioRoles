@@ -22,13 +22,12 @@ export class ProductosComponent implements OnInit {
     'descripcion',
     'estatus',
     'categoria', 
-
   ];
+
   public productos: any;
   listProductData: ListaProductos[] = [];
-  dataSource: any; 
+  dataSource: any;
   productoActiva: boolean = true;
-
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(
@@ -38,13 +37,83 @@ export class ProductosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.productoService.consultarProductoId(1).subscribe({
-      next: (resultData) => {
-        this.productos = resultData;
+    this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
+      next: (resultData: any) => {
+        if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
+        this.productos = Array.isArray(resultData) ? resultData : [];
         this.dataSource = new MatTableDataSource(this.productos);
+        if (this.paginator) {
         this.dataSource.paginator = this.paginator;
+        this.cargarProductos();
+        }
+      } else {
+        console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
+      }
+      },
+      error: (error) => {
+        console.error('Error al consultar categorías:', error);
       }
     })
+  }
+
+  private cargarProductos() {
+    this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
+      next: (resultData: any) => {
+
+        if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
+
+        this.productos = Array.isArray(resultData) ? resultData : [];
+        this.dataSource = new MatTableDataSource(this.productos);
+        if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
+          this.cargarProductos();
+          }
+        } else {
+          console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar categorías:', error);
+      }
+    });
+  }
+
+  private actualizarTabla() {
+    if (!this.dataSource) {
+      // Asegúrate de que this.dataSource esté definido antes de actualizar
+      this.cargarProductos();
+    } else {
+      this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
+        next: (resultData) => {
+          this.productos = resultData;
+          this.dataSource.data = this.productos;
+        },
+        error: (error) => {
+          console.error('Error al actualizar categorías:', error);
+        }
+      });
+    }
+  }
+
+  crearProducto(): void {
+    const dialogRef = this.dialog.open(CrearProductoComponent, {
+      width: '70%',
+      height: '90%',   
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
+  }
+
+  editarProducto(idProducto: string): void {
+    const dialogRef = this.dialog.open(EditarProductoComponent, {
+      width: '75%',
+      height: '90%',
+      data: { idProducto: idProducto },
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.actualizarTabla();
+    });
   }
 
   applyFilter(event: Event) {
@@ -52,9 +121,9 @@ export class ProductosComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
  
-  toggleCheckbox(id: number, estatus: number) {
+  /*  toggleCheckbox(id: number, estatus: number) {
     // Guarda el estado actual en una variable temporal
-   /* console.log("id",id);
+  console.log("id",id);
     const estadoOriginal = estatus;
     console.log('Estatus actual:', estadoOriginal);
   
@@ -78,7 +147,6 @@ export class ProductosComponent implements OnInit {
       }
     });
   }
-
   actualizarEstatus(id: number, estado: { estatus: number }) {
     console.log(estado.estatus, "nuevo");
     this.productoService.updateProductoStatus(id, estado).subscribe(
@@ -90,21 +158,6 @@ export class ProductosComponent implements OnInit {
         console.error('Error al actualizar la membresía:', error);
         // Maneja el error de alguna manera si es necesario.
       }
-    );*/
-  }
-
-  crearProducto(): void {
-    const dialogRef = this.dialog.open(CrearProductoComponent, {
-      width: '70%',
-      height: '90%',   
-    });
-  }
-
-  editarProducto(idProducto: string): void {
-    const dialogRef = this.dialog.open(EditarProductoComponent, {
-      width: '75%',
-      height: '90%',
-      data: { idProducto: idProducto },
-    });
-  }
+    );
+  }*/
 }

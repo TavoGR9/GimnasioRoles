@@ -1,1 +1,180 @@
-<p>horarios-vista works!</p>
+
+<div class="main_container">
+  <div class="title">
+    <label *ngIf="optionToShow === 1">HORARIOS DEL GIMNASIO</label>
+    <label *ngIf="optionToShow === 2">AGREGAR SUCURSAL</label>
+    <label *ngIf="optionToShow === 3">EDITAR SUCURSAL</label>
+    <button class="close-btn" (click)="cerrarDialogo()">
+      <mat-icon>
+        close
+      </mat-icon>
+    </button>
+  </div>
+  <div class="not-found" *ngIf="optionToShow === 1">{{ message }}</div>
+  <br/>
+  
+  <div class="hour_container" *ngIf="optionToShow === 1">
+  <table class="divf">
+    <thead>
+      <tr>
+        <th>Día Semana</th>
+        <th>Hora Entrada</th>
+        <th>Hora Salida</th>
+        <!-- Agrega más encabezados según tus datos -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let horario of datosHorario">
+        <td>{{ horario.diaSemana }}</td>
+        <td>{{ horario.horaEntrada }}</td>
+        <td>{{ horario.horaSalida }}</td>
+        <!-- Agrega más celdas según tus datos -->
+      </tr>
+    </tbody>
+  </table>
+  </div> 
+  <div class="formulario-agregar" *ngIf="optionToShow === 2 || optionToShow === 3">
+    <form [formGroup]="formularioSucursales" class="responsive-form">
+      <div class="responsive-div">
+        <div style="color: red;">{{message}}</div>
+        <br />
+        <div class="row">
+          <div class="col-sm-6">
+            <p>
+              <label for="nombreColonia" class="large-text" >Nombre:</label>
+              <mat-form-field appearance="outline"  style="width: 95%;" required>
+                <mat-label>Nombre</mat-label>
+    
+                <input type="text" matInput placeholder="Nombre" autocomplete="off" id="nombreGym" formControlName="nombreGym" />
+              </mat-form-field>
+            </p>
+            <p>
+              <label for="telefono" class="large-text" >Telefono:</label>
+              <mat-form-field appearance="outline" style="width: 95%;" required>
+                <mat-label>Telefono</mat-label>
+                <input type="text" placeholder="telefono"minlength="7" maxlength="10"  matInput autocomplete="off" id="telefono" formControlName="telefono" [errorStateMatcher]="matcher" />
+                <mat-error *ngIf="formularioSucursales.get('telefono')?.hasError('pattern') && !formularioSucursales.get('telefono')?.hasError('required')">
+                  <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+              </mat-error>
+              <mat-error *ngIf="formularioSucursales.get('telefono')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+              </mat-form-field>
+            </p>
+            <br />
+          </div>
+          <div class="col-sm-6">
+            <p>
+              <label for="tipo" class="large-text" >Tipo:</label>
+              <mat-form-field style="width: 95%;"  appearance="outline"  autocomplete="off" required>
+                <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar</mat-label>
+                <mat-select id="tipo" formControlName="tipo">
+                  <mat-option value="Externo" style="font-family: Arial; font-size: 18px;">Externo</mat-option>
+                  <mat-option value="Interno" style="font-family: Arial; font-size: 18px;">Interno</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </p>
+            <p><label style="margin-right: 40px; margin-left: 45px;" class="large-text">DISPONIBLE:</label></p>
+            <p>
+              <label style="margin-left: 45px;" for="casilleros" class="large-text">Casilleros:</label>
+              <mat-radio-group style="margin-left: 70px;" formControlName="casilleros" id="casilleros" class="custom-radio-group" color="warn" required>
+                <mat-radio-button value="1" class="custom-radio-button">Sí</mat-radio-button>
+                <mat-radio-button value="0" class="custom-radio-button">No</mat-radio-button>
+              </mat-radio-group>
+            </p>
+            <p>
+              <label style="margin-left: 45px;" for="estacionamiento" class="large-text">Estacionamiento:</label>
+              <mat-radio-group style="margin-left: 25px;" id="estacionamiento" formControlName="estacionamiento" class="custom-radio-group" color="warn" required>
+                <mat-radio-button value="1" class="custom-radio-button">Sí</mat-radio-button>
+                <mat-radio-button value="0" class="custom-radio-button">No</mat-radio-button>
+              </mat-radio-group>
+            </p>
+            <p>
+              <label style="margin-left: 45px;" for="regaderas" class="large-text">Regaderas:</label>
+              <mat-radio-group style="margin-left: 66px;" id="regaderas" formControlName="regaderas" class="custom-radio-group" color="warn" required>
+                <mat-radio-button value="1" class="custom-radio-button">Sí</mat-radio-button>
+                <mat-radio-button value="0" class="custom-radio-button">No</mat-radio-button>
+              </mat-radio-group>
+            </p>
+            <p>
+              <label style="margin-left: 45px;" for="bicicletero" class="large-text">Bicicletero:</label>
+              <mat-radio-group style="margin-left: 68px;" id="bicicletero" formControlName="bicicletero" class="custom-radio-group" color="warn" required>
+                <mat-radio-button value="1" class="custom-radio-button">Sí</mat-radio-button>
+                <mat-radio-button value="0" class="custom-radio-button">No</mat-radio-button>
+              </mat-radio-group>
+            </p>-
+            <br />
+            <br />
+          </div>
+    
+          <div class="col-sm-12">
+            <!--------------------------------------------------------->
+            <p>
+              <label for="direccion" class="large-text" style="margin-right: 28px; margin-left: 45px;">Dirección :</label>
+            </p>
+            <p>
+              <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 32px; margin-right: 1px;" required>
+                <mat-label>Estado</mat-label>
+                <input type="text" placeholder="Estado" matInput autocomplete="off" id="estado" formControlName="estado" />
+                <mat-error *ngIf="formularioSucursales.get('estado')?.hasError('pattern') && !formularioSucursales.get('estado')?.hasError('required')">
+                  <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+               </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 32px;" required>
+                <mat-label>Ciudad</mat-label>
+                <input type="text" placeholder="ciudad" matInput autocomplete="off" id="ciudad" formControlName="ciudad" />
+                <mat-error *ngIf="formularioSucursales.get('ciudad')?.hasError('pattern') && !formularioSucursales.get('ciudad')?.hasError('required')">
+                  <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+               </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 32px;" required>
+                <mat-label>Colonia</mat-label>
+                <input type="text" placeholder="colonia" matInput autocomplete="off" id="colonia" formControlName="colonia" />
+                <mat-error *ngIf="formularioSucursales.get('colonia')?.hasError('pattern') && !formularioSucursales.get('colonia')?.hasError('required')">
+                  <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+               </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 30px;" required>
+                <mat-label>Calle</mat-label>
+                <input type="text" placeholder="calle" matInput autocomplete="off" id="calle" formControlName="calle" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 30px; width: 170px;" required>
+                <mat-label>Codigo postal</mat-label>
+                <input type="text" placeholder="codigoPostal" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" />
+                <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('maxlength') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
+                  <strong class="txt_msg">**Maximo 5 carácteres</strong>
+               </mat-error>
+               <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('pattern') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
+                  <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+               </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 30px; width: 170px;" required>
+                <mat-label>numExt</mat-label>
+                <input type="text" placeholder="numExt" matInput autocomplete="off" id="numExt" formControlName="numExt" />
+                <mat-error *ngIf="formularioSucursales.get('numExt')?.hasError('pattern') && !formularioSucursales.get('numExt')?.hasError('required')">
+                  <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+               </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 30px; width: 170px;" required>
+                <mat-label>numInt</mat-label>
+                <input type="text" placeholder="numInt" matInput autocomplete="off" id="numInt" formControlName="numInt" />
+                <mat-error *ngIf="formularioSucursales.get('numInt')?.hasError('pattern')">
+                  <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+               </mat-error>
+              </mat-form-field>
+            </p>
+          </div>
+        </div>
+        <div style="margin: auto; display: block; text-align: center;">
+          <button *ngIf="optionToShow === 2" mat-raised-button type="submit" (click)="enviarForm()" style="background-color: #fd9727; font-size: 20px; margin-top: 50px; height: 40px; width: 120px;">Aceptar</button>
+          <button *ngIf="optionToShow === 3" mat-raised-button type="submit" (click)="confirmarEdicion()" style="background-color: #fd9727; font-size: 20px; margin-top: 50px; height: 40px; width: 120px;">Aceptar</button>
+  
+          <button mat-raised-button type="submit" (click)="cancelar()"  style="background-color: #000000; font-size: 20px; margin-left: 100px; margin-top: 50px; height: 40px; width: 120px;color: white;">Cancelar</button>
+        </div>
+      </div>
+      <br/><br/><br/>
+    </form>
+  </div> 
+  </div>
+  <br/>
+  <br/>

@@ -92,6 +92,12 @@
                              </p>
                           </div>
                        </div>
+
+
+
+
+
+
                        <div class="row">
                           <div class="col-sm-6">
                              <label >Tipo de producto:</label>
@@ -100,6 +106,33 @@
                              <label >Descripción:</label>
                           </div>
                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                        <div class="row">
                           <div class="col-sm-6">
                              <p>
@@ -125,8 +158,9 @@
                                    </mat-error>
                                 </mat-form-field>
                              </p>
-                             <fieldset
-                                *ngIf="idCategoria === 1 || idCategoria === 2 || idCategoria === 3"
+
+
+                             <fieldset *ngIf="showCategoria.value"
                                 >
                                 <strong>Características de consumibles</strong>
                                 <mat-form-field appearance="outline" class="inputs_properties">
@@ -149,7 +183,7 @@
                                    </mat-error>
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" class="inputs_properties">
-                                   <mat-label>Cantidad de unidades</mat-label>
+                                   <mat-label>Cantidad de medición</mat-label>
                                    <input
                                       type="number"
                                       min="0"
@@ -198,6 +232,46 @@
                                       ><strong class="txt_msg">**Campo requerido</strong></mat-error
                                       >
                                 </mat-form-field>
+                                <mat-form-field appearance="outline" class="inputs_properties">
+                                  <mat-label>Color</mat-label>
+                                  <input
+                                    type="text"
+                                    matInput
+                                    placeholder="Marca comercial"
+                                    autocomplete="off"
+                                    formControlName="color"
+                                    id="color"
+                                    [errorStateMatcher]="matcher"
+                                  />
+                                  <mat-error
+                                    *ngIf="
+                                      form.get('color')?.hasError('pattern') &&
+                                      !form.get('color')?.hasError('required')
+                                    "
+                                  >
+                                    <strong class="txt_msg">**Solo se admiten letras</strong>
+                                  </mat-error>
+                                  <mat-error *ngIf="form.get('color')?.hasError('required')"
+                                    ><strong class="txt_msg">**Campo requerido</strong></mat-error
+                                  >
+                                </mat-form-field>
+                    
+                                <mat-form-field appearance="outline" class="inputs_properties">
+                                  <mat-label>Talla</mat-label>
+                                  <mat-select
+                                    id="talla"
+                                    formControlName="talla"
+                                    [errorStateMatcher]="matcher"
+                                  >
+                                    <mat-option value="CH">Chica</mat-option>
+                                    <mat-option value="M">Mediana</mat-option>
+                                    <mat-option value="G">Grande</mat-option>
+                                    <mat-option value="EG">Extra grande</mat-option>
+                                  </mat-select>
+                                  <mat-error *ngIf="form.get('talla')?.hasError('required')">
+                                    <strong class="txt_msg">**Campo requerido</strong>
+                                  </mat-error>
+                                </mat-form-field>
                              </fieldset>
                           </div>
                           <div class="col-sm-6">
@@ -225,6 +299,47 @@
                              </p>
                           </div>
                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     </fieldset>
                     <!--<fieldset>
                        <legend>Imagenes</legend>

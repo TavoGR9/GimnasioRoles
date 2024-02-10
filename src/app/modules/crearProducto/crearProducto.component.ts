@@ -17,9 +17,9 @@ import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
+import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { ProductoService } from 'src/app/service/producto.service';
-
+import { Observable, Subject } from 'rxjs';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -70,12 +70,14 @@ export class CrearProductoComponent implements OnInit {
       fechaCreacion: [this.fechaCreacion],
       codigoBarra: [''],
       idCategoria: ['', Validators.compose([Validators.required])],
+      Gimnasio_idGimnasio: [this.auth.idGym.getValue()],
       unidadMedicion: ['NA', Validators.compose([Validators.required])],
       cantidadUnidades: [0,Validators.compose([Validators.required,Validators.pattern(/^[0-9]+$/)])],
-      color: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
+      color: ['NA',Validators.compose([Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
       longitud: ['NA'],
-      sabor: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
-      marca: ['',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])]
+      sabor: ['NA',Validators.compose([Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
+      talla: [''],
+      marca: ['',Validators.compose([Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])]
     });
   }
 
@@ -83,7 +85,6 @@ export class CrearProductoComponent implements OnInit {
     this.categoriaService.consultarListaCategoria(this.auth.idGym.getValue()).subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
-        console.log('lista de categorias:', this.listaCategorias);
       },
       error: (error) => {
         console.error(error);
@@ -97,9 +98,7 @@ export class CrearProductoComponent implements OnInit {
   }
 
   infoCategoria(event: number) {
-    console.log('Opción seleccionada:', event);
     this.idCategoria = event;
-    console.log('valor idCategoria:', this.idCategoria);
   }
 
   cerrarDialogo(): void {
@@ -120,17 +119,18 @@ export class CrearProductoComponent implements OnInit {
     this.form.patchValue({ files: updatedFiles });
   }
 
+  private productoSubject = new Subject<void>();
+
   registrar(): any {
-    console.log('Formulario:', this.form.value);
     if (this.form.valid) { 
       this.productoService.creaProducto(this.form.value).subscribe({
           next: (respuesta) => {
-            console.log(respuesta, "respuestaaaaaaaaaaa");
             if (respuesta.success) {
-            this.dialog.open(MensajeEmergenteComponent, {
+            this.dialog.open(MensajeEmergentesComponent, {
               data: `Categoria agregada exitosamente`,
             }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
+                this.productoSubject.next();
                 this.dialogo.close(true);
               } else {
               }

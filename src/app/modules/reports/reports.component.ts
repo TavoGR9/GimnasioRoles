@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import Chart from 'chart.js/auto';
 import { format } from 'date-fns';
@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.css']
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent implements OnInit, AfterViewInit{
   form: FormGroup;
   listaSucursales: any;
   existe_grtafica!: Chart;
@@ -87,7 +87,8 @@ export class ReportsComponent implements OnInit {
         // Extraer los nombres de gimnasios y las ventas
         const sucursalesResult = resultData.map((item: any) => item.nombre);
         const ventasResult = resultData.map((item: any) => item.ventas);
-        this.showChart(sucursalesResult, ventasResult);
+
+        this.setContenedorChartAndShow(sucursalesResult, ventasResult);
       }, error: (error) => { console.log(error); }
     });
   }
@@ -262,4 +263,13 @@ export class ReportsComponent implements OnInit {
   }
 
 
+}
+  setContenedorChartAndShow(sucursalesResult: any[], ventasResult: any[]) {
+    this.contenedorChart = true;
+    // Usamos setTimeout para asegurarnos de que el cambio de detección de Angular se ha ejecutado
+    // y el elemento canvas se ha renderizado antes de intentar crear el gráfico.
+    setTimeout(() => {
+      this.showChart(sucursalesResult, ventasResult);
+    }, 0);
+  }
 }
