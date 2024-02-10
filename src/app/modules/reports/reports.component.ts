@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import Chart from 'chart.js/auto';
 import { format } from 'date-fns';
@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.css']
 })
-export class ReportsComponent implements OnInit, AfterViewInit{
+export class ReportsComponent implements OnInit{
   form: FormGroup;
   listaSucursales: any;
   existe_grtafica!: Chart;
@@ -262,8 +262,6 @@ export class ReportsComponent implements OnInit, AfterViewInit{
     this.openSerialPort();
   }
 
-
-}
   setContenedorChartAndShow(sucursalesResult: any[], ventasResult: any[]) {
     this.contenedorChart = true;
     // Usamos setTimeout para asegurarnos de que el cambio de detección de Angular se ha ejecutado
@@ -272,4 +270,7 @@ export class ReportsComponent implements OnInit, AfterViewInit{
       this.showChart(sucursalesResult, ventasResult);
     }, 0);
   }
+
 }
+  
+
