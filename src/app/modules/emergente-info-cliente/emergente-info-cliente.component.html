@@ -25,9 +25,9 @@
     </div>
 
     <br>
-
+    
     <h3 style="font-weight: bold;">Historial de membresias adquiridas:</h3>
-
+    
     <div  class="table-container">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
@@ -82,6 +82,8 @@
 
 </div>
 <div mat-dialog-actions fxLayoutAlign="center center">
+    <button mat-button (click)="abrirPuertoSerial(data)" (click)="cerrarDialogo()">Acceso manual</button>
     <button mat-button (click)="abrirDialogFoto(data)" (click)="cerrarDialogo()">Tomar Foto</button>
+    <button mat-button (click)="abrirDialogCapturarHuella(data)" (click)="cerrarDialogo()">Capturar huella</button>
     <button mat-button (click)="cerrarDialogo()">Cerrar</button>
 </div>

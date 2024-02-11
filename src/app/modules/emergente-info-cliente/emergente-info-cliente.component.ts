@@ -5,6 +5,8 @@ import { EmergenteCargarFotoComponent } from '../emergente-cargar-foto/emergente
 import { PagoMembresiaEfectivoService } from 'src/app/service/pago-membresia-efectivo.service';
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
 import { MatTableDataSource } from '@angular/material/table'; //para controlar los datos del api y ponerlos en una tabla
+import { EmergenteCapturarHuellasComponent } from '../emergente-capturar-huellas/emergente-capturar-huellas.component';
+import { EmergenteAperturaPuertoSerialComponent } from '../emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
 
 @Component({
   selector: 'app-emergente-info-cliente',
@@ -90,5 +92,41 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
+  // Apertura mat-dialog captura de huella
+  abrirDialogCapturarHuella(data: any): void {
+    this.dialogo.close(true);
+    this.dialog.open(EmergenteCapturarHuellasComponent, {
+      data: {
+        clienteID: `${data.idCliente}`
+      },
+    })
+    .afterClosed()
+    .subscribe((cerrarDialogo: Boolean) => {
+      if (cerrarDialogo) {
+
+      } else {
+
+      }
+    });
+  }
+
+  // Apertura mat-dialog apertura de puerto serial com
+  abrirPuertoSerial(data: any): void {
+    this.dialogo.close(true);
+    console.log(this.membresiaHisto);
+    this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
+      data: {
+        clienteID: `${data.idCliente}`
+      },
+    })
+    .afterClosed()
+    .subscribe((cerrarDialogo: Boolean) => {
+      if (cerrarDialogo) {
+
+      } else {
+
+      }
+    });
+  }
   
 }

@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Acceso manual.</h1>
+<div mat-dialog-content>
+
+    <!-- Contenido - body capturar huella -->
+    <div *ngFor="let mb of membresiaHisto">
+    <div *ngIf="mb.Status === 'Activo'" class="card-body content_profile_img">
+        <div class="alert alert-light contentBtns" role="alert">
+            <button mat-button *ngIf="!selectedPort" class="btn btn-danger" (click)="eventoX()">Selecciona
+                puerto.</button>
+            <button mat-button *ngIf="selectedPort" class="btn btn-info" (click)="enviarDatosPorPuertoSerial()">Dar
+                acceso manual.</button>
+        </div>
+    </div>
+
+    <div *ngIf="mb.Status !== 'Activo'" class="card-body content_profile_img">
+        <div class="alert alert-light contentBtns" role="alert">
+            <h2>Acceso no permitido, tu status es <strong>Inactivo</strong></h2>
+        </div>
+    </div>
+</div>
+</div>
+<!--</div>-->
+<div mat-dialog-actions fxLayoutAlign="center center">
+    <button class="button-pay" mat-button (click)="cerrarDialogo()">Cerrar</button>
+</div>
