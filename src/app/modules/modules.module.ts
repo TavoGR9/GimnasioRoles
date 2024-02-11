@@ -98,6 +98,8 @@ import { RouterModule } from '@angular/router';
 import { DialogSelectMembershipComponent } from './dialog-select-membership/dialog-select-membership.component';
 import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
 import { ServiceDialogComponent } from './service-dialog/service-dialog.component';
+import { EmergenteCapturarHuellasComponent } from './emergente-capturar-huellas/emergente-capturar-huellas.component';
+import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
 
 @NgModule({
   declarations: [
@@ -160,7 +162,9 @@ import { ServiceDialogComponent } from './service-dialog/service-dialog.componen
     MensajeDesactivarComponent,
     DialogSelectMembershipComponent,
     ServiciosListaComponent,
-    ServiceDialogComponent
+    ServiceDialogComponent,
+    EmergenteCapturarHuellasComponent,
+    EmergenteAperturaPuertoSerialComponent
     //InventarioComponent
   ],
   imports: [

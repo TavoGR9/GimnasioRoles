@@ -103,4 +103,9 @@ logout() {
   localStorage.removeItem('lastInsertedId'); // Aquí eliminas lastInsertedId al cerrar sesión
 }
 
+// Guardar huella dactilar en BD
+saveFingerprint(data: any): Observable<any>{
+  return this.clienteHttp.post(this.APIv2 + 'fingerprintSave.php', data, { headers: this.httpHeaders });
+}
+
 }

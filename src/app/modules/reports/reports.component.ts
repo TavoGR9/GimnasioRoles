@@ -33,7 +33,7 @@ export class ReportsComponent implements OnInit{
   ngOnInit(): void {
     if ("serial" in navigator) {
       // The Web Serial API is supported.
-      console.log("Es compatible...")
+      //console.log("Es compatible...")
     }
 
     //Traer lista de sucursales 
