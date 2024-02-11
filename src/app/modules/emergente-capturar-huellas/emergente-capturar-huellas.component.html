@@ -7,15 +7,15 @@
         <h2 *ngIf="!existsHuella">El usuario no cuenta con huella dactilar capturada.</h2>
         <!-- Imagen de la huella dactilar almacenada en BD -->
         <div *ngIf="existsHuella" class="alert alert-light" role="alert">
-            <img *ngIf="existsHuella" src="" alt="">
+            <img class="fingerImg" *ngIf="existsHuella" src="" alt="">
         </div>
 
         <!-- Imagen de huella dactilar capturada -->
         <div *ngIf="currentImageFingerFixed != null" class="alert alert-light" role="alert">
-            <img *ngIf="currentImageFingerFixed != null" src="{{currentImageFingerFixed}}" alt="huella_capturada">
+            <img class="fingerImg" *ngIf="currentImageFingerFixed != null" src="{{currentImageFingerFixed}}" alt="huella_capturada">
         </div>
 
-        <button *ngIf="!lecturaHuella" class="btn btn-primary btn-block">
+        <button *ngIf="!lecturaHuella" class="btn btn-primary btn-block" (click)="fn_Listar_Dispositivos()">
             Iniciar lectura de huella
         </button>
 
