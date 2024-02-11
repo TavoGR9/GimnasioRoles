@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from './../../service/auth.service'
 import {
   FingerprintReader,
   SampleFormat,
@@ -23,7 +23,7 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
   // Manejar objeto para envio de id e imagen base64 de huella capturada
   archivo = {
     id: 0,
-    base64textString: ''
+    huella: ''
   }
   // Manejar estado de existencia de huella dactilar en BD
   existsHuella: boolean = false;
@@ -122,6 +122,7 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
     .then((response) => {
       console.log("You can start capturing!!!");
       console.log(response);
+      //this.fn_CapturaFP();
     })
     .catch((error) => {
       console.log(error);
@@ -148,6 +149,8 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
       if(lsize > 0){
         this.currentImageFinger = ListImages[0];
         this.currentImageFingerFixed = this.fn_fixFormatImageBase64(this.currentImageFinger);
+        // Guardar huella en BD
+        this.archivo.huella = this.currentImageFingerFixed;
       }
     }
   }
@@ -175,7 +178,7 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
   uploadFingerprint(){
     console.log(this.archivo);
     // Validación de captura de huellas
-    if (this.archivo.base64textString === '' || this.archivo.id === 0) {
+    if (this.archivo.huella === '' || this.archivo.id === 0) {
       console.log('No haz capurado huella aun.');
       this.toastr.error('Aún no haz capturado la huella dactilar.', 'Error');
       return;

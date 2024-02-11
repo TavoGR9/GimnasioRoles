@@ -30,7 +30,10 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/ngx-toastr/toastr.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./src/app/WebSdk/index.js",
+              "./node_modules/@digitalpersona/devices/dist/es6.bundles/index.umd.min.js"
+            ]
           },
           "configurations": {
             "production": {
