@@ -140,7 +140,7 @@
               </mat-form-field>
               <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 30px; width: 170px;" required>
                 <mat-label>Codigo postal</mat-label>
-                <input type="text" placeholder="codigoPostal" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" />
+                <input type="text" placeholder="codigoPostal" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" (blur)="getAddressFromPostalCode()" />
                 <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('maxlength') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
                   <strong class="txt_msg">**Maximo 5 carácteres</strong>
                </mat-error>
