@@ -186,7 +186,7 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
 
     this.service.saveFingerprint(this.archivo).subscribe({
       next: (resultData) => { console.log(resultData); 
-        this.toastr.success('Huella dactilar guardaa correctamente...', 'Éxito');
+        this.toastr.success('Huella dactilar guardada correctamente...', 'Éxito');
         this.dialogo.close(true);
       }, error: (error) => { console.log(error); }
     });
