@@ -21,3 +21,8 @@
 .content_data {
     text-align: center;
 }
+
+.fingerImg {
+    width: 200px;
+    height: 200px;
+}
