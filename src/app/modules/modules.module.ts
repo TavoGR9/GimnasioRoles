@@ -100,7 +100,9 @@ import { ServiciosListaComponent } from './servicios-lista/servicios-lista.compo
 import { ServiceDialogComponent } from './service-dialog/service-dialog.component';
 import { EmergenteCapturarHuellasComponent } from './emergente-capturar-huellas/emergente-capturar-huellas.component';
 import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
-
+import { planComponent } from './plan-lista/membresias.component';
+import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
+import { planEditarComponent } from './plan-editar/membresias-editar.component';
 @NgModule({
   declarations: [
     HomeComponent,
@@ -164,7 +166,10 @@ import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-pue
     ServiciosListaComponent,
     ServiceDialogComponent,
     EmergenteCapturarHuellasComponent,
-    EmergenteAperturaPuertoSerialComponent
+    EmergenteAperturaPuertoSerialComponent,
+    planComponent,
+    planAgregarComponent,
+    planEditarComponent
     //InventarioComponent
   ],
   imports: [

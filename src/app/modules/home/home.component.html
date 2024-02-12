@@ -70,9 +70,31 @@
          <div class="col-md-6" >
             <div class="card">
                <div class="card-body">
+                  <h4 class="card-title">Servicios</h4>
+                  <p class="card-text">Consulta los servicios de tu sucursal</p>
+                  <a class="btn btn-gym" routerLink="../misServicios">Consultar</a>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6" >
+            <div class="card">
+               <div class="card-body">
                   <h4 class="card-title">Mis membresias</h4>
                   <p class="card-text">Consulta la información acerca de las membresías de tu gimnasio</p>
                   <a class="btn btn-gym" routerLink="../misMembresias">Consultar</a>
+               </div>
+            </div>
+         </div>
+
+      </div>
+
+      <div class="row mt-4" *ngIf="isAdmin()">
+         <div class="col-md-6" >
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Mis planes</h4>
+                  <p class="card-text">Consulta la información acerca de los planes de tu gimnasio</p>
+                  <a class="btn btn-gym" routerLink="../plan">Consultar</a>
                </div>
             </div>
          </div>
@@ -85,8 +107,9 @@
                </div>
             </div>
          </div>
-         
+      
       </div>
+
       <div class="row mt-4" *ngIf="isAdmin()">
          <div class="col-md-6">
             <div class="card">
@@ -163,27 +186,20 @@
                </div>
             </div>
          </div>
-
-         <div class="col-md-6" *ngIf="isAdmin()">
+         <div class="col-md-6" *ngIf="isAdmin() || isRecep()">
             <div class="card">
                <div class="card-body">
-                  <h4 class="card-title">Servicios</h4>
-                  <p class="card-text">Consulta los servicios de tu sucursal</p>
-                  <a class="btn btn-gym" routerLink="../misServicios">Consultar</a>
+                  <h4 class="card-title">Socios</h4>
+                  <p class="card-text">Consulta y/o realiza el pago de reenovación de membresias.</p>
+                  <a class="btn btn-gym" routerLink="../listaMembresias">Acceder</a>
                </div>
             </div>
          </div>
+
+         
          <br>
 
-         <div class="col-md-6" *ngIf="isRecep()">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Ventas</h4>
-                  <p class="card-text">Consultar las ventas de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../verCorte">Consultar</a>
-               </div>
-            </div>
-         </div>
+         
         <!-- <div class="col-md-6">
             <div class="card">
                <div class="card-body">
@@ -196,26 +212,19 @@
          
       </div>
       
-      <div class="row mt-4" *ngIf="isRecep() || isAdmin()">
-         <div class="col-md-6">
+      <div >
+
+         <div class="col-md-6" *ngIf="isRecep()">
             <div class="card">
                <div class="card-body">
-                  <h4 class="card-title">Socios</h4>
-                  <p class="card-text">Consulta y/o realiza el pago de reenovación de membresias.</p>
-                  <a class="btn btn-gym" routerLink="../listaMembresias">Acceder</a>
+                  <h4 class="card-title">Ventas</h4>
+                  <p class="card-text">Consultar las ventas de tu gimnasio</p>
+                  <a class="btn btn-gym" routerLink="../verCorte">Consultar</a>
                </div>
             </div>
          </div>
-        <!-- <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Inventarios</h4>
-                  <p class="card-text">Configura los inventarios de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../inventarios">Configurar</a>
-               </div>
-            </div>
-         </div>-->
-         <div class="col-md-6">
+
+         <div class="col-md-6" *ngIf="isRecep()">
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Registro</h4>
@@ -224,6 +233,25 @@
                </div>
             </div>
          </div>
+         
+        <!-- <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Inventarios</h4>
+                  <p class="card-text">Configura los inventarios de tu gimnasio</p>
+                  <a class="btn btn-gym" routerLink="../inventarios">Configurar</a>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Registro</h4>
+                  <p class="card-text">Registrar a un cliente</p>
+                  <a class="btn btn-gym" routerLink="../registrar">Registrar Ahora</a>
+               </div>
+            </div>
+         </div>-->
       </div> 
    </div>
 </body>
