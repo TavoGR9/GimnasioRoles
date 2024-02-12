@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Valida
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {ErrorStateMatcher} from '@angular/material/core';
-import { ColaboradorService } from 'src/app/service/colaborador.service';
+import { ColaboradorService } from './../../service/colaborador.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';

@@ -1,15 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { GimnasioService } from 'src/app/service/gimnasio.service';
+import { GimnasioService } from './../../service/gimnasio.service';
 import { MensajeDesactivarComponent } from '../mensaje-desactivar/mensaje-desactivar.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { HorarioService } from 'src/app/service/horario.service';
+import { HorarioService } from './../../service/horario.service';
 import { forkJoin } from 'rxjs';
 import { HorariosComponent } from '../horarios/horarios.component';
-import { gimnasio } from 'src/app/models/gimnasio';
+import { gimnasio } from './../../models/gimnasio';
 import { HorariosVistaComponent } from '../horarios-vista/horarios-vista.component';
-import { ListarSucursalesPipe } from 'src/app/pipes/listar-sucursales.pipe';
+import { ListarSucursalesPipe } from './../../pipes/listar-sucursales.pipe';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator'; 
+
 @Component({
   selector: 'app-sucursal-lista',
   templateUrl: './sucursal-lista.component.html',
