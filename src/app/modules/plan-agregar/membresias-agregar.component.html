@@ -1,0 +1,97 @@
+<div class="container mt-4">
+    <div class="responsive-div">
+  
+
+            <form [formGroup]="formulariodePlan">
+                <div class="responsive-div">
+                <!--<div class="mi-div-con-borde responsive-div"></div>-->
+                <div style="color:red">{{message}}</div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>
+                                <mat-form-field appearance="outline" style="width: 95%;" required>
+                                    <mat-label>Nombre del plan:</mat-label>
+                                    <input type="text" matInput placeholder="Titulo" autocomplete="off" id="titulo" formControlName="titulo">
+                                    <mat-error *ngIf="isFieldInvalid('titulo', 'required')">
+                                        El título es requerido.
+                                      </mat-error>
+                                      <mat-error *ngIf="isFieldInvalid('titulo', 'pattern')">
+                                        Solo se aceptan letras.
+                                      </mat-error>
+                                </mat-form-field>
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                                <p>
+                                    <mat-form-field appearance="outline"  style="width: 95%;" required>
+                                        <mat-label>Precio</mat-label>
+                                        <input type="number" placeholder="Precio" matInput autocomplete="off" id="precio" formControlName="precio" >
+                                        <mat-error *ngIf="isFieldInvalid('precio', 'required')">
+                                            El precio es requerido.
+                                          </mat-error>
+                                          <mat-error *ngIf="isFieldInvalid('precio', 'pattern')">
+                                            Solo se aceptan números.
+                                          </mat-error>
+                                    </mat-form-field>
+                                </p>
+                            </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>
+                                <label for="detalles" class="large-text">Detalles:</label>
+                                <mat-form-field style="display: inline-block; width: 95%; height: 110px;" required appearance="outline">
+                                    <mat-label>Detalles</mat-label>
+                                    <textarea class="textarea" matInput rows="4" placeholder="Detalles" cols="50" style="display: inline-block; width: 100%;height: 100%;" id="detalles" formControlName="detalles"> </textarea>
+                                    
+                                </mat-form-field>
+                            </p>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <p>
+                                <mat-form-field>
+                                    <mat-label>Selecciona una membresía</mat-label>
+                                    <mat-select [(value)]="selectedMembresia">
+                                      <mat-option *ngFor="let membresia of plan" [value]="membresia">
+                                        {{ membresia.titulo }} - {{ membresia.duracion }} días
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                            </p>
+
+                        </div>
+                       
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Fecha inicio:</mat-label>
+                                <input matInput [matDatepicker]="picker" placeholder="Selecciona una fecha inicio">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-6">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Fecha fin:</mat-label>
+                                <input matInput [matDatepicker]="picker" placeholder="Selecciona una fecha fin">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                            
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: center;">
+                        <button mat-stroked-button (click)="enviar()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;">Aceptar</button>
+                        <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white;">Cancelar</button>
+                      </div>          
+                </div>
+            </form>
+    </div>
+</div>
+
+
+

@@ -62,8 +62,8 @@ export class ColaboradoresComponent {
 
   OpenAgregar() {
     this.dialog.open(AltaColaboradoresComponent,{
-      //width: '500px',
-      //height: '500px',
+      width: '70%',
+      height: '90%',
     })
       .afterClosed()
       .subscribe((cerrarDialogo:Boolean) => {
@@ -80,8 +80,8 @@ export class ColaboradoresComponent {
       data: {
         empleadoID: `${empleado.idEmpleado}`
       },
-      //width: '500px',
-      //height: '500px',
+      width: '70%',
+      height: '90%',
     })
       .afterClosed()
       .subscribe((cerrarDialogo:Boolean) => {

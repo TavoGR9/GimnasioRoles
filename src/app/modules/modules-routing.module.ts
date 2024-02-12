@@ -32,6 +32,9 @@ import { ColaboradoresComponent } from './colaboradores/colaboradores.component'
 import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
 import { AltaColaboradoresComponent } from './alta-colaboradores/alta-colaboradores.component';
 import { EditarColaboradorComponent } from './editar-colaborador/editar-colaborador.component';
+import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
+import { planComponent } from './plan-lista/membresias.component';
+import { planEditarComponent } from './plan-editar/membresias-editar.component';
 
 const routes: Routes = [
   {
@@ -78,7 +81,11 @@ const routes: Routes = [
           { path: 'colaboradores', component: ColaboradoresComponent},
           { path: 'misServicios', component: ServiciosListaComponent},
           { path: 'alta-colaborador', component:AltaColaboradoresComponent},
-          { path: 'editar-colaborador', component:EditarColaboradorComponent},    // /:id
+          { path: 'editar-colaborador', component:EditarColaboradorComponent}, 
+          
+          { path: 'agregar-plan', component:planAgregarComponent}, 
+          { path: 'plan', component:planComponent}, 
+          { path: 'editar-plan', component:planEditarComponent},
         ]
       },
       {

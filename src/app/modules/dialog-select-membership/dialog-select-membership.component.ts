@@ -2,13 +2,21 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { AuthService } from 'src/app/service/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { PlanService } from 'src/app/service/plan.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { EMPTY } from 'rxjs';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { MatDialog, MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {ErrorStateMatcher} from '@angular/material/core';
 
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = formulario && formulario.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 
 
 @Component({
@@ -53,7 +61,7 @@ export class DialogSelectMembershipComponent implements OnInit{
       titulo: ['', [Validators.required, Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)]],
       duracion: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
       precio: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
-      detalles: ['', [Validators.required, Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)]],
+      detalles: [''],
       servicioseleccionado: [[], Validators.required],
       status: ['1', [Validators.pattern(/^\d+$/)]],
       tipo_membresia: ['1', [Validators.required, Validators.pattern(/^\d+$/)]],
@@ -66,6 +74,9 @@ export class DialogSelectMembershipComponent implements OnInit{
       gimnasio: [this.AuthService.idGym.value, Validators.required],
     });
    }
+
+   
+  matcher = new MyErrorStateMatcher();
 
   ngOnInit(): void {
       this.getIdGym();

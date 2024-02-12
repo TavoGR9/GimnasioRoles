@@ -30,6 +30,14 @@ export class MembresiaService {
     return this.clienteHttp.get(this.API+"?consultarGYM="+id);
   }
 
+  consultarPlanIdMem(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarGYMMem="+id);
+  }
+
+  consultarPlanIdPlan(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarGYMPlan="+id);
+  }
+
   borrarPlan(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?borrar="+id)
   }

@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/service/auth.service';
-import {
+/*import {
   FingerprintReader,
   SampleFormat,
   DeviceConnected,
@@ -11,7 +11,7 @@ import {
   AcquisitionStarted,
   AcquisitionStopped,
   QualityReported
-} from '@digitalpersona/devices';
+} from '@digitalpersona/devices';*/
 
 @Component({
   selector: 'app-emergente-capturar-huellas',

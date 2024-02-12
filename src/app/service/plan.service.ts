@@ -8,7 +8,7 @@ import { plan } from '../models/plan';
 export class PlanService {
  
   //API: string ="http://localhost/plan/membresia.php";
-  API: string = "https://olympus.arvispace.com/puntoDeVenta/conf/Membresia.php";  
+  API: string ="https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/membresia.php";
   API2: string = "https://olympus.arvispace.com/conPrincipal/Membresia.php";
   API3: string = "https://olympus.arvispace.com/conPrincipal/servicesMembresia.php";
 
@@ -34,6 +34,14 @@ export class PlanService {
 
   consultarPlan(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultar="+id);
+  }
+
+  consultarPlanIdMem(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarGYMMem="+id);
+  }
+
+  consultarPlanIdPlan(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarGYMPlan="+id);
   }
 
   consultarPlanGym(id:any):Observable<any>{
