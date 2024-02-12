@@ -27,7 +27,7 @@ export class AuthService {
    httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private router: Router, private clienteHttp: HttpClient) {
-  
+    console.log('Hola...');
   }
   //public idGym!: number;
   usuarioRegistrado: any[] = [];
