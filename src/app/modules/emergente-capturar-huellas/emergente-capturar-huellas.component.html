@@ -11,7 +11,7 @@
         </div>
 
         <!-- Imagen de huella dactilar capturada -->
-        <div class="alert alert-light" role="alert">
+        <div *ngIf="currentImageFingerFixed" class="alert alert-light" role="alert">
             <img class="fingerImg" src="data:image/jpeg;base64, {{currentImageFingerFixed}}" alt="huella_capturada">
         </div>
 
@@ -27,7 +27,7 @@
 <br/><br/><br/><!--
 <button (click)="fn_CapturaFP()">Mostrar captura</button> -->
 
-        <button *ngIf="currentImageFingerFixed" class="btn btn-primary btn-block" (click)="uploadFingerprint()">
+        <button *ngIf="currentImageFingerFixed" class="btn btn-danger btn-block" (click)="uploadFingerprint()">
             Guardar huella capturada
         </button>
 
