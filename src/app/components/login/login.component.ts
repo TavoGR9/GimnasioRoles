@@ -24,7 +24,8 @@ export class LoginComponent implements OnInit {
       password: ['', Validators.required],
     });
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   getErrorMessage() {
     const usernameControl = this.loginForm.get('username');
@@ -53,6 +54,7 @@ export class LoginComponent implements OnInit {
             this.auth.email.next(resultData.email);
             this.router.navigate(['/home']);
             console.log('Tu rol es: ' + resultData.rolUser);
+            
           } else {
             this.toastr.error('No cuentas con permisos...', 'Error', {
               positionClass: 'toast-bottom-left',
