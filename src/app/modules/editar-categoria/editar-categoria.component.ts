@@ -7,6 +7,7 @@ import { CategoriaService } from 'src/app/service/categoria.service';
 import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxSpinnerService } from "ngx-spinner";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
@@ -35,7 +36,8 @@ export class EditarCategoriaComponent {
     private activeRoute: ActivatedRoute, 
     private categoriaService:CategoriaService,
     private router:Router,
-    public dialog: MatDialog){
+    public dialog: MatDialog,
+    private spinner: NgxSpinnerService){
     this.idCategoria = data.idCategoria; // Accede a idGimnasio desde los datos
    
     //llamar al servicio datos empleado - pasando el parametro capturado por url
@@ -71,9 +73,13 @@ export class EditarCategoriaComponent {
 
   actualizar(){
     if (this.formularioCategoria.valid) {
+      this.spinner.show();
+
     this.categoriaService.actualizarCategoria(this.idCategoria,this.formularioCategoria.value).subscribe(()=>{
+      this.spinner.hide();
       this.dialog.open(MensajeEmergentesComponent, {
         data: `Categoria actualizada exitosamente`,
+
       })
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
