@@ -12,6 +12,7 @@ import { FranquiciaService } from 'src/app/service/franquicia.service';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArray, FormControl } from '@angular/forms';
 import { ErrorStateMatcher} from '@angular/material/core';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
+import { PostalCodeService } from 'src/app/service/cp.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
@@ -32,10 +33,13 @@ export class HorariosVistaComponent implements OnInit{
   optionToShow: number = 0;
   franquicia: any;
   formularioSucursales: FormGroup;
+  postalCodeControl = new FormControl('');
+  addressControl = new FormControl('');
 
   constructor(private gimnasioService: GimnasioService, private HorarioService: HorarioService,private route: ActivatedRoute,
     public dialogo: MatDialogRef<HorariosVistaComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private formulario: FormBuilder, private franquiciaService: FranquiciaService, private router: Router) {
+    @Inject(MAT_DIALOG_DATA) public data: any, public dialog: MatDialog, private formulario: FormBuilder, 
+    private franquiciaService: FranquiciaService, private router: Router, private postalCodeService: PostalCodeService) {
     // Obtén el ID del parámetro de la URL
     this.idGimnasio = this.route.snapshot.params['id'];
     this.idGimnasio = data.idGimnasio; // Accede a idGimnasio desde los datos
@@ -61,6 +65,14 @@ export class HorariosVistaComponent implements OnInit{
       regaderas: [, Validators.required],
       bicicletero: [, Validators.required]
     });
+
+    this.postalCodeControl.valueChanges.subscribe((postalCode) => {
+      // Check if postalCode is not null before calling the function
+      if (postalCode !== null) {
+        this.handlePostalCodeChange(postalCode);
+      }
+    });
+    
   }
 
   matcher = new MyErrorStateMatcher();
@@ -98,7 +110,7 @@ cerrarDialogo(): void {
         console.log('Datos del horario:', this.datosHorario);
       },
       (error) => {
-        this.message = "Horario no disponible";
+        this.message = "Horario no disponible. El administrador aún no ha registrado el horario";
         console.error('Error al consultar el horario:', error);
       }
     );
@@ -145,6 +157,54 @@ cerrarDialogo(): void {
     }
   }
 
+  private handlePostalCodeChange(postalCode: string): void {
+    if (postalCode) {
+      this.postalCodeService.getAddressByPostalCode(postalCode).subscribe(
+        (response) => {
+          if (response && response.length > 0) {
+            const address = response[0].display_name;
+            this.addressControl.setValue(address);
+          }
+        },
+        (error) => {
+          console.error('Error fetching address:', error);
+        }
+      );
+    }
+  }
+
+  getAddressFromPostalCode() {
+    if (this.formularioSucursales) {
+    const postalCode = this.formularioSucursales.get('codigoPostal')?.value;
+  
+    if (postalCode) {
+      // Llama al servicio para obtener la dirección basada en el código postal
+      this.postalCodeService.getAddressByPostalCode(postalCode).subscribe((addressInfo) => {
+        // Verifica que addressInfo y display_name estén definidos antes de continuar
+        console.log(addressInfo[0].display_name, "addressInfo");
+        if (addressInfo && addressInfo[0].display_name) {
+          console.log("hola")
+          const display_name_parts = addressInfo[0].display_name.split(', ');
+          
+          if (display_name_parts.length >= 4) {
+            // Establece los campos del formulario basados en la estructura de display_name
+            this.formularioSucursales.get('estado')?.setValue(display_name_parts[3]);
+            this.formularioSucursales.get('colonia')?.setValue(display_name_parts[0]);
+            this.formularioSucursales.get('ciudad')?.setValue(display_name_parts[1]);
+            // Otros campos según la estructura de tu formulario y la respuesta de la API
+          } else {
+            console.error('La cadena display_name no tiene la estructura esperada.');
+          }
+        } else {
+          console.error('La respuesta de la API no tiene la estructura esperada o display_name es undefined.');
+        }
+      }, (error) => {
+        console.error('Error al obtener la dirección desde el código postal:', error);
+      });
+    }
+  }
+  }
+  
   cancelar(){
     this.dialogo.close();
   }

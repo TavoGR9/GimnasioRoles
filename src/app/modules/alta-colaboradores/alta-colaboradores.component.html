@@ -52,7 +52,6 @@
                           <mat-form-field appearance="outline" class="inputs_properties">
                             <mat-label>Sucursal</mat-label>
                             <mat-select id="sucursal" formControlName="Gimnasio_idGimnasio" id="Gimnasio_idGimnasio" [errorStateMatcher]="matcher">
-                              <mat-option></mat-option>
                               <mat-option *ngFor="let sucursal of sucursales" value="{{sucursal.idGimnasio}}">{{sucursal.nombreGym}}</mat-option>
                             </mat-select>
                             <mat-error *ngIf="form.get('Gimnasio_idGimnasio')?.hasError('required')">
@@ -63,8 +62,7 @@
                         <mat-form-field appearance="outline" class="inputs_properties">
                           <mat-label>Área</mat-label>
                           <mat-select id="area" formControlName="area" id="area" [errorStateMatcher]="matcher">
-                            <mat-option></mat-option>
-                            <mat-option *ngIf="isSupadmin()" value="2">Administrador</mat-option>
+                            <mat-option *ngIf="isSupadmin() || isAdmin()" value="2">Administrador</mat-option>
                             <mat-option *ngIf="isAdmin()" value="4">Recepcionista</mat-option>
                           </mat-select>
                           <mat-error *ngIf="form.get('area')?.hasError('required')">
@@ -75,7 +73,6 @@
                       <mat-form-field appearance="outline" class="inputs_properties">
                         <mat-label>Turno laboral</mat-label>
                         <mat-select id="turno" formControlName="turnoLaboral" id="turnoLaboral" [errorStateMatcher]="matcher">
-                          <mat-option></mat-option>
                           <mat-option value="Matutino">Matutino</mat-option>
                           <mat-option value="Vespertino">Vespertino</mat-option>
                         </mat-select>
