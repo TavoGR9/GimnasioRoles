@@ -17,9 +17,9 @@ export class AuthService {
   public email = new BehaviorSubject<string>('');
   public idGym = new BehaviorSubject<number>(0);
   public nombreGym = new BehaviorSubject<string>('');
-
+  public encryptedMail = new BehaviorSubject<string>(''); // Varible a utilizar en Sesion Storage
+  private readonly USER_KEY = 'olympus'; // Manejar la sesion por Sesion Storage
   
-
    //variable que guarda el endpoint en el srver API: string = 'conf/';
    API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
    APIv2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/api/';
@@ -27,7 +27,10 @@ export class AuthService {
    httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private router: Router, private clienteHttp: HttpClient) {
-    console.log('Hola...');
+    const encryptedMail = sessionStorage.getItem(this.USER_KEY);
+    if (encryptedMail) {
+      this.encryptedMail.next(encryptedMail);
+    }
   }
   //public idGym!: number;
   usuarioRegistrado: any[] = [];
@@ -55,6 +58,7 @@ export class AuthService {
  logoutBS(): void {
   this.loggedIn.next(false);
   this.role.next('');
+  this.clearCurrentUser();  // Borrar informacion de usuario en sesion storage
   this.router.navigate(['login'], { replaceUrl: true });
 }
 
@@ -106,6 +110,28 @@ logout() {
 // Guardar huella dactilar en BD
 saveFingerprint(data: any): Observable<any>{
   return this.clienteHttp.post(this.APIv2 + 'fingerprintSave.php', data, { headers: this.httpHeaders });
+}
+
+// Almacenar información del usuario en sessionStorage
+setCurrentUser(userData: { olympus: string } ): void {
+  this.encryptedMail.next(userData.olympus);
+  sessionStorage.setItem(this.USER_KEY, JSON.stringify(userData));
+}
+
+// Obtener información del usuario desde sessionStorage
+getCurrentUser(): string {
+  const userString = sessionStorage.getItem(this.USER_KEY);
+  return userString ? JSON.parse(userString) : null;
+}
+
+// Limpiar información del usuario al cerrar sesión
+clearCurrentUser(): void {
+  sessionStorage.removeItem(this.USER_KEY);
+}
+
+// Traer datos de usuario logeaddo
+dataUser(data: any): Observable<any> {
+  return this.clienteHttp.post<dataLogin>(this.APIv2 + 'datosSStorage.php', data, { headers: this.httpHeaders});
 }
 
 }
