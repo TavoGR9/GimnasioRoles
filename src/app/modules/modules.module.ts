@@ -103,6 +103,8 @@ import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-pue
 import { planComponent } from './plan-lista/membresias.component';
 import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+
 
 @NgModule({
   declarations: [
@@ -205,7 +207,8 @@ import { planEditarComponent } from './plan-editar/membresias-editar.component';
     ToastModule,
     FileUploadModule,
     RecepMaterialModule,
-    WebcamModule
+    WebcamModule,
+    BrowserAnimationsModule
   ]
 })
 export class ModulesModule {
