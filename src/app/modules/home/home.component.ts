@@ -59,6 +59,7 @@ export class HomeComponent implements OnInit{
     });
   }
 
+  
   /* roles de usuario */
   isAdmin(): boolean {
     return this.auth.isAdmin();
@@ -84,7 +85,7 @@ export class HomeComponent implements OnInit{
     const dialogRef = this.dialog.open(EntradasComponent, {
       width: '75%',
       height: '90%',
-      
+      disableClose: true,
     });
   }
 

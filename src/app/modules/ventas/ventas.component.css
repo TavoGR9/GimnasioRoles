@@ -7,6 +7,13 @@ table {
     width: 100%;
 }
 
+.title {
+  background-color: #eeeded;
+  padding: 12px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+}
 
 
   /* Estilos para el contenedor principal */
