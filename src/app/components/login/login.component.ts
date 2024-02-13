@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit {
     });
   }
   ngOnInit(): void {
+    if(this.auth.isLoggedInBS() || this.auth.getCurrentUser()){
+      this.router.navigate(['/home']);
+    }
   }
 
   getErrorMessage() {
@@ -52,6 +55,8 @@ export class LoginComponent implements OnInit {
             this.auth.idGym.next(resultData.idGym);
             this.auth.nombreGym.next(resultData.nombreGym);
             this.auth.email.next(resultData.email);
+            this.auth.encryptedMail.next(resultData.encryptedMail);
+            this.auth.setCurrentUser({ olympus: resultData.encryptedMail});
             this.router.navigate(['/home']);
             console.log('Tu rol es: ' + resultData.rolUser);
             

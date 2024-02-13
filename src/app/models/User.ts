@@ -13,6 +13,7 @@ export class User {
     email!: string;
     idGym!: string;
     nombreGym!: string;
+    encryptedMail!: string;
   }
 
   export class listaSucursal {
