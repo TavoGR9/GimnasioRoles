@@ -31,6 +31,7 @@ export class VerCorteComponent implements OnInit  {
   }
 
   totalVentas: number = 0;
+  idGym: number = 0;
   total = 0;
   fechaFin: Date = new Date();
   fechaInicio: Date = new Date();
@@ -39,6 +40,7 @@ export class VerCorteComponent implements OnInit  {
   totalAPagarCorte: number = 0;
   botonProductos: boolean = false;
   mostrarInputFlag: boolean = false;
+  currentUser: string = '';
   detallesCaja: any[] = [];
   detallesCajaaaa: any[] = [];
   columnas: string[] = [
@@ -53,7 +55,40 @@ export class VerCorteComponent implements OnInit  {
   DetallesCaja: any;
 
   ngOnInit(): void {
-    this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
+   
+
+
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+  
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTablas();
+      this.cargarVentas();
+      this.actualizarTabla();
+      
+    }); 
+  }  
+
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
+
+  listaTablas(){
+    this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
         this.dataSource = new MatTableDataSource(this.detallesCaja);
@@ -68,10 +103,10 @@ export class VerCorteComponent implements OnInit  {
         console.error("Error al obtener detalles de la caja:", error);
       }
     );
-  }  
+  }
 
   private cargarVentas() {
-    this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
+    this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
       (resultData) => {
         this.detallesCaja = resultData;
         this.dataSource = new MatTableDataSource(this.detallesCaja);
@@ -88,7 +123,7 @@ export class VerCorteComponent implements OnInit  {
     if (!this.dataSource) {
       this.cargarVentas();
     } else {
-      this.joinDetalleVentaService.consultarProductosVentas(this.auth.idGym.getValue()).subscribe(
+      this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
         (resultData) => {
           this.detallesCaja = resultData;
           this.dataSource.data = this.detallesCaja;
@@ -369,6 +404,7 @@ export class VerCorteComponent implements OnInit  {
     const dialogRef = this.dialog.open(VentasComponent, {
       width: '80%',
       height: '90%',
+      disableClose: true
     });
     dialogRef.afterClosed().subscribe(() => {
       this.actualizarTabla();

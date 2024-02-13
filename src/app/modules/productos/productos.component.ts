@@ -25,7 +25,9 @@ export class ProductosComponent implements OnInit {
   ];
 
   public productos: any;
+  currentUser: string = '';
   listProductData: ListaProductos[] = [];
+  private idGym: number = 0;
   dataSource: any;
   productoActiva: boolean = true;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -37,7 +39,37 @@ export class ProductosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+  
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+      this.actualizarTabla();
+      this.cargarProductos();
+    }); 
+    
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
+
+
+  listaTabla(){
+    this.productoService.consultarProductoId(this.idGym).subscribe({
       next: (resultData: any) => {
         if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
         this.productos = Array.isArray(resultData) ? resultData : [];
@@ -57,7 +89,7 @@ export class ProductosComponent implements OnInit {
   }
 
   private cargarProductos() {
-    this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
+    this.productoService.consultarProductoId(this.idGym).subscribe({
       next: (resultData: any) => {
 
         if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
@@ -83,7 +115,7 @@ export class ProductosComponent implements OnInit {
       // Asegúrate de que this.dataSource esté definido antes de actualizar
       this.cargarProductos();
     } else {
-      this.productoService.consultarProductoId(this.auth.idGym.getValue()).subscribe({
+      this.productoService.consultarProductoId(this.idGym).subscribe({
         next: (resultData) => {
           this.productos = resultData;
           this.dataSource.data = this.productos;
@@ -97,20 +129,23 @@ export class ProductosComponent implements OnInit {
 
   crearProducto(): void {
     const dialogRef = this.dialog.open(CrearProductoComponent, {
-      width: '70%',
-      height: '90%',   
+      width: '65%',
+      height: '90%',
+      disableClose: true,   
     });
     dialogRef.afterClosed().subscribe(() => {
       this.actualizarTabla();
     });
   }
 
-  editarProducto(idProducto: string): void {
+  editarProducto(idProducto: number): void {
+    console.log("idProducto", idProducto);
     const dialogRef = this.dialog.open(EditarProductoComponent, {
-      width: '75%',
-      height: '90%',
-      data: { idProducto: idProducto },
+      width: '65%',
+      height: '90%', 
+      data: { idProducto: idProducto }
     });
+  
     dialogRef.afterClosed().subscribe(() => {
       this.actualizarTabla();
     });

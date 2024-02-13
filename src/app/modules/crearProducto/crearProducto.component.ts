@@ -48,6 +48,7 @@ export class CrearProductoComponent implements OnInit {
   idCategoria: number = 0;
   listaCategorias: any;
   uploadedFiles: File[] = [];
+  private idGym: number = 0;
 
   constructor(
     public dialogo: MatDialogRef<CrearProductoComponent>,

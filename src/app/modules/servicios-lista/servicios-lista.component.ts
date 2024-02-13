@@ -31,6 +31,7 @@ export class ServiciosListaComponent {
   idGym: number = 0;
   seleccionado: number = 0;
   confirmButton: boolean = false;
+  currentUser: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -40,24 +41,46 @@ export class ServiciosListaComponent {
     private auth: AuthService,
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef,
+    
     public dialog: MatDialog
   ){}
 
   displayedColumns: string[] = ['title', 'details','price','actions'];
 
   ngOnInit(): void {
-    //this.planService.confirmButton.next(false);
-    this.auth.idGym.subscribe((id) => {
-      if(id){
-        this.idGym = id;
-      }
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    }); 
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
     });
+  }
+
+  listaTabla(){
     this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
       this.services = res;
       console.log("SERVICIOS", this.services);
       this.dataSource = new MatTableDataSource(this.services);
       this.dataSource.paginator = this.paginator;
     });
+
   }
   
 
@@ -175,9 +198,10 @@ export class ServiciosListaComponent {
       console.log("mostraremos:", option);
     });*/
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
-      width: '50%',
-      height: '55%',
-      data: {name: '¿para quien es esta membresia?'}
+      width: '55%',
+      height: '60%',
+      data: {name: '¿para quien es esta membresia?'},
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -251,8 +275,9 @@ export class ServiciosListaComponent {
     this.planService.seleccionado.next(this.seleccionado);
     
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
-      width: '50%',
-      height: '55%',
+      width: '55%',
+      height: '60%',
+      disableClose: true,
     });
 
     this.planService.idService.next(idServicio);
