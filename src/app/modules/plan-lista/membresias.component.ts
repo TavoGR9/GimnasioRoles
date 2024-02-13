@@ -12,7 +12,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { DialogSelectMembershipComponent } from '../dialog-select-membership/dialog-select-membership.component';
 import { planAgregarComponent } from '../plan-agregar/membresias-agregar.component';
-
+import { planEditarComponent} from '../plan-editar/membresias-editar.component';
 
 @Component({
   selector: 'app-membresias',
@@ -31,6 +31,8 @@ export class planComponent implements OnInit {
   dataSource: any;
   services: any[] = [];
   idGym: number = 0;
+  section: number = 0;
+  option: number = 0;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -46,6 +48,14 @@ export class planComponent implements OnInit {
   displayedColumns: string[] = ['title', 'details','price','duration','servicios','actions'];
 
   ngOnInit(): void {
+    this.planService.optionShow.next(4);
+    this.planService.optionShow.subscribe((option) => {
+      if(option){
+        if(option == 4){
+          this.option = option;
+        }
+      }
+    });
     this.auth.idGym.subscribe((id) => {
       if(id){
         this.idGym = id;
@@ -166,6 +176,7 @@ export class planComponent implements OnInit {
   }*/
 
   openDialog(): void {
+    this.planService.section.next(1);
     const dialogRef = this.dialog.open(planAgregarComponent, {
       width: '70%',
       height: '90%',
@@ -181,7 +192,7 @@ export class planComponent implements OnInit {
   }
 
   openDialogEdit(idMem: number, tipo_membresia: number){
-    this.planService.optionShow.next(3);
+    //this.planService.optionShow.next(4);
     this.planService.optionShow.subscribe((option) => {
       console.log("mostraremos:", option);
     })
@@ -190,14 +201,14 @@ export class planComponent implements OnInit {
     console.log("el id es: ", idMem);
     console.log("el tipo es: ", tipo_membresia);
     this.planService.setDataToupdate(idMem, tipo_membresia);
-    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+    const dialogRef = this.dialog.open(planEditarComponent, {
       width: '70%',
       height: '90%',
       data: {name: 'Editar membresia', id: idMem}
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.planService.consultarPlanId(this.idGym).subscribe(respuesta => {
+      this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
         console.log("la respuesta es: ",respuesta);
         this.plan = respuesta;
         this.dataSource = new MatTableDataSource(this.plan);
