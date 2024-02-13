@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnInit} from "@angular/core";
+import { Component, ElementRef, ViewChild, OnInit, Inject} from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -21,6 +21,7 @@ import { plan } from "src/app/models/plan";
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 import { agregarContra } from "src/app/service/agregarContra.service";
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 interface Food {
   value: string;
@@ -135,7 +136,9 @@ export class RegistroComponent implements OnInit {
     private toastr: ToastrService,
     private planService: MembresiaService,
     private auth: AuthService,
-    private add: agregarContra
+    private add: agregarContra,
+    public dialogo: MatDialogRef<RegistroComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string
 
 
   ) {
@@ -192,6 +195,10 @@ export class RegistroComponent implements OnInit {
       }
 
     });
+    }
+
+    cerrarDialogo(): void {
+      this.dialogo.close(true);
     }
 
   selectedFile: File | null = null;
