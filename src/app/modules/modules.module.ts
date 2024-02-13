@@ -103,6 +103,7 @@ import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-pue
 import { planComponent } from './plan-lista/membresias.component';
 import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
+
 @NgModule({
   declarations: [
     HomeComponent,
