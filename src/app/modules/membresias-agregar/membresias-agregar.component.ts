@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-membresias-agregar',
@@ -28,8 +29,9 @@ export class MembresiasAgregarComponent {
     private membresiaService: MembresiaService,
     private auth: AuthService,
    // private gimnasioService: GimnasioService,
-    public dialog: MatDialog
-  ) {
+    public dialog: MatDialog,
+    private spinner: NgxSpinnerService) {
+
     this.formulariodePlan = this.formulario.group({
       titulo: ['', Validators.required],
       detalles: ['', Validators.required],
@@ -56,10 +58,11 @@ export class MembresiasAgregarComponent {
   enviar(): any {
     console.log(this.formulariodePlan.value);
     // Verifica si el formulario es válido
+ 
     if (this.formulariodePlan.valid) {
-      this.membresiaService
-        .agregarPlan(this.formulariodePlan.value)
-        .subscribe((respuesta) => {
+      
+      this.membresiaService.agregarPlan(this.formulariodePlan.value).subscribe((respuesta) => {
+      
           this.dialog
             .open(MensajeEmergentesComponent, {
               data: `Membresía agregada exitosamente`,
