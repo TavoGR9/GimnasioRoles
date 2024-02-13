@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, EventEmitter, Output } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { PagoMembresiaEfectivoService } from 'src/app/service/pago-membresia-efectivo.service'
+import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
 import { ToastrService } from 'ngx-toastr';
 
@@ -20,10 +20,18 @@ export class FormPagoEmergenteComponent implements OnInit{
   duracion: any;
   moneyRecibido: number = 0; // =0
   @Output() actualizarTablas = new EventEmitter<boolean>();
-  constructor(private toastr: ToastrService, public dialog: MatDialog, private membresiaService: PagoMembresiaEfectivoService, public dialogo: MatDialogRef<FormPagoEmergenteComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any) { }
+  
 
-    
+  constructor(
+    private toastr: ToastrService, 
+    public dialog: MatDialog, 
+    @Inject(MAT_DIALOG_DATA)
+  public data: any,
+    private membresiaService: PagoMembresiaEfectivoService, 
+    public dialogo: MatDialogRef<FormPagoEmergenteComponent>,
+  ) { }
+
+              
   ngOnInit(): void {
     // Llamar al servicio para obtener la lista de membresías
     this.precio = this.data.precio;

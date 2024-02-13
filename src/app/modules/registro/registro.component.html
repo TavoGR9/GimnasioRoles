@@ -2,13 +2,12 @@
     <div class="body">
         <!--SE AGREGA CONTENIDO DE LA PANTALLA-->
         <div class="content_body">
-           <br />
-           <div class="title_page">
+           <div mat-dialog-title class="title_page">
               <h1>¡Registra a tu cliente aquí!</h1>
               <h3>Ingresa los siguientes datos:</h3>
            </div>
            <!--cierra title page-->
-           <div class="form_content">
+           <div mat-dialog-content class="form_content">
               <form [formGroup]="form" >
               <p>
                  <strong class="txt_msg">
@@ -308,14 +307,20 @@
                     </p>
                  </div>-->
               </div>
-              <div class="button-container">
+              <!--<div class="button-container">
                 <button class="btn_int" (click)="registrar()" mat-raised-button style="background: #fd9727; color: white; width: 30%;">
                   ¡REGISTRAR!
                 </button>
-              </div>
+              </div>-->
               
               </form>
            </div>
+           <div mat-dialog-actions fxLayoutAlign="center center">
+            <button mat-button (click)="registrar()" mat-raised-button style="background: #fd9727; color: white; width: 30%;">
+              ¡Registrar!
+            </button>
+            <button  mat-button (click)="cerrarDialogo()" mat-raised-button style="background: #000000; color: white; width: 30%;">Cerrar</button>
+          </div>
         </div>
      </div>
     </div>

@@ -4,8 +4,6 @@
             <br/><br/>
             <h1 mat-dialog-title>Agregar colaborador</h1>
             <!--<mat-label class="large-text" style="font-family: Arial; font-size: 30px;margin-left: 15px;">Alta de colaborador</mat-label>-->
-            <br/>
-            <br/>
             <div mat-dialog-content>
                 <form [formGroup]="form">  <!--(ngSubmit)="registrar()"-->
                   <div class="responsive-div">
@@ -48,7 +46,7 @@
                       
                       </div>
                       <div class="col-sm-6">
-                        <mat-form-field appearance="outline" style="width: 90%;">
+                        <!--<mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>RFC</mat-label>
                           <input type="text" placeholder="RFC" minlength="12" maxlength="13" matInput autocomplete="off" formControlName="rfc" id="rfc" [errorStateMatcher]="matcher">                  
                           <mat-error *ngIf="form.get('rfc')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
@@ -58,14 +56,7 @@
                           <mat-error *ngIf="form.get('rfc')?.hasError('minlength') && !form.get('rfc')?.hasError('required')">
                             <strong class="txt_msg">**Minimo 12 y máximo 13 caracteres</strong>
                           </mat-error>
-                      </mat-form-field>
-                      
-                      </div>
-
-                    </div>
-
-                    <div class="row">
-                      <div class="col-sm-6">
+                      </mat-form-field>-->
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Sucursal</mat-label>
                           <mat-select id="sucursal" formControlName="Gimnasio_idGimnasio" id="Gimnasio_idGimnasio" [errorStateMatcher]="matcher">
@@ -74,8 +65,12 @@
                           <mat-error *ngIf="form.get('Gimnasio_idGimnasio')?.hasError('required')">
                             <strong class="txt_msg">**Campo requerido</strong>
                           </mat-error>
-                      </mat-form-field>
+                        </mat-form-field>
                       </div>
+
+                    </div>
+
+                    <div class="row">
                       <div class="col-sm-6">
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Área</mat-label>
@@ -88,10 +83,6 @@
                           </mat-error>
                       </mat-form-field>
                       </div>
-                    </div>
-
-
-                    <div class="row">
                       <div class="col-sm-6">
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Turno laboral</mat-label>
@@ -104,6 +95,10 @@
                           </mat-error>
                         </mat-form-field>
                       </div>
+                    </div>
+
+
+                    <div class="row">
                       <div class="col-sm-6">
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Salario</mat-label>
@@ -114,10 +109,6 @@
                           <mat-error *ngIf="form.get('salario')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                         </mat-form-field>
                       </div>
-                    </div>
-
-
-                    <div class="row">
                       <div class="col-sm-6">
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Email</mat-label>
@@ -128,6 +119,10 @@
                           <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                         </mat-form-field>
                       </div>
+                    </div>
+
+
+                    <div class="row">
                       <div class="col-sm-6">
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Asignar contraseña</mat-label>
@@ -141,17 +136,21 @@
                           <mat-error *ngIf="form.get('pass')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                       </mat-form-field>
                       </div>
+                      <div class="col-sm-6">
+                        
+                      </div>
                     </div>
-                        <div mat-dialog-actions fxLayoutAlign="center center">  <!--style="display: flex; justify-content: center;"-->
-                          <div>
-                            <button mat-raised-button (click)="registrar()" type="submit"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
-                          </div> 
-                          <div style="display: flex; justify-content: center; margin-top: 20px;">
-                            <button mat-raised-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; height: 40px;color: white; width: 120px;">Cancelar</button>
-                          </div>
-                        </div>        
+                              
                     </div>
                 </form>
             </div>
+            <div mat-dialog-actions fxLayoutAlign="center center">  <!--style="display: flex; justify-content: center;"-->
+              <div>
+                <button mat-raised-button (click)="registrar()" type="submit"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
+              </div> 
+              <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <button mat-raised-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; height: 40px;color: white; width: 120px;">Cancelar</button>
+              </div>
+            </div>  
         </div>
     </div>
