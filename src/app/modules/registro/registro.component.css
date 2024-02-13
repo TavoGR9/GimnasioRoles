@@ -91,14 +91,13 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  
-  
 
-
-
-
-
-
+  .scrollable-container {
+    overflow: auto; /* Habilita el desplazamiento vertical y horizontal si el contenido se desborda */
+    max-height: 650px; /* Define la altura máxima del contenedor */
+    width: 700px,
+    /* Opcional: ajusta otros estilos como margen, relleno, bordes, etc., según sea necesario */
+  }
 
   /* Estilos generales */
 .content_up_picture {

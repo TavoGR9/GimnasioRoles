@@ -103,12 +103,10 @@ import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-pue
 import { planComponent } from './plan-lista/membresias.component';
 import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
+
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-
-
-
 
 @NgModule({
   declarations: [
@@ -215,7 +213,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
     BrowserAnimationsModule
 
-  
   ]
 })
 export class ModulesModule {
