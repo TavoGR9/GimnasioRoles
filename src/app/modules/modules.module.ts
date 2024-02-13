@@ -105,6 +105,10 @@ import { planAgregarComponent } from './plan-agregar/membresias-agregar.componen
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+
+
+
 
 @NgModule({
   declarations: [
@@ -208,7 +212,9 @@ import { NgxSpinnerModule } from "ngx-spinner";
     FileUploadModule,
     RecepMaterialModule,
     WebcamModule,
-    NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'})
+    NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
+    BrowserAnimationsModule
+
   
   ]
 })
