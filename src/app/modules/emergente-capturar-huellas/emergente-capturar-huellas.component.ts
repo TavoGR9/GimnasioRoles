@@ -35,10 +35,10 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
   ListaSamplesFingerPrints: any;
   currentImageFinger: any;
   currentImageFingerFixed: any;
-
+  @Inject(MAT_DIALOG_DATA) public data: any
   constructor( private toastr: ToastrService, private service: AuthService, 
     public dialogo: MatDialogRef<EmergenteCapturarHuellasComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
+   ) { 
       this.reader = new FingerprintReader();
     }
 
