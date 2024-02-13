@@ -10,9 +10,10 @@
     <!-- Utiliza los elementos del menú como botones en pantallas grandes -->
     <div class="d-none d-lg-flex">
       <button class="btn" id="ops" routerLink="./home">Inicio</button>
-      <button class="btn" id="ops" routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>
+      <!--<button class="btn" id="ops" routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>-->
       <button class="btn" id="ops" routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
       <button class="btn" id="ops" routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
+      <button class="btn" id="ops" (click)="AbrirRegistro()" *ngIf="isAdmin() || isRecep()">Registro</button>  <!--routerLink="./registrar" -->
       <button class="btn" id="op" (click)="logoutBS()">
         <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
       </button>
@@ -24,6 +25,7 @@
       <button mat-menu-item routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
       <button mat-menu-item routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
       <button mat-menu-item routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>
+      <button mat-menu-item (click)="AbrirRegistro()" *ngIf="isAdmin() || isRecep()">Registro</button>
       <button mat-menu-item (click)="logoutBS()">
         <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
       </button>
