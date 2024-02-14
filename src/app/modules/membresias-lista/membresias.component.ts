@@ -29,6 +29,7 @@ export class MembresiasComponent implements OnInit {
   public page: number = 0;
   public search: string = '';
   dataSource: any;
+  currentUser: string = '';
   services: any[] = [];
   idGym: number = 0;
 
@@ -46,11 +47,35 @@ export class MembresiasComponent implements OnInit {
   displayedColumns: string[] = ['title', 'details','price','duration','servicios','actions'];
 
   ngOnInit(): void {
-    this.auth.idGym.subscribe((id) => {
-      if(id){
-        this.idGym = id;
-      }
+ 
+    
+
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+  
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    }); 
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
     });
+  }
+
+  listaTabla(){
     this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
       console.log("la respuesta es: ",respuesta);
       this.plan = respuesta;

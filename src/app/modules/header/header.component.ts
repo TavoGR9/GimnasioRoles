@@ -34,7 +34,9 @@ AbrirRegistro() {
   const dialogConfig = new MatDialogConfig();
   dialogConfig.data = `Empleado agregado correctamente.`;
   dialogConfig.disableClose = true; // Bloquea el cierre del diálogo haciendo clic fuera de él
-
+  dialogConfig.width = '75%';
+  dialogConfig.height = '95%';
+ 
   this.dialog.open(RegistroComponent, dialogConfig)
     .afterClosed()
     .subscribe((cerrarDialogo: Boolean) => {
@@ -45,4 +47,5 @@ AbrirRegistro() {
       }
     });
 }
+
 }

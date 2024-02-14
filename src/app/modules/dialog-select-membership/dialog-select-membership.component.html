@@ -12,36 +12,14 @@
         <br>
         <h1>Editar membresia</h1>
     </div>
-    <!--<div class="title" *ngIf="optionToShow == 4">
-        <h1>Agregar servicios</h1>
-    </div>-->
-    <!--<div class="options" *ngIf="selection == 0 && optionToShow ==1">
-        <div class="standar_membership">   
-        <button mat-button class="standar_membership_content button_member" (click)="selectPlan()">
-            <mat-icon class="icon_option">
-                roofing
-            </mat-icon>
-            <p>PLAN</p>
-        </button>
-           
-        </div>
-        <div class="personalize_membership">
-            <button mat-button class="personalize_membership_content button_member" (click)="selectPersonalize()">
-                <mat-icon class="icon_option">
-                    person
-                </mat-icon>
-                <p>PERSONALIZADO</p>
-            </button>
-        </div>
-    </div>-->
-    <!--SECCION PARA VER SERVICIOS-->
-    <div class="services_table" *ngIf="optionToShow == 2 || optionToShow == 5">
+    <div class="services_table" *ngIf="optionToShow == 2 || optionToShow == 5" mat-dialog-content>
         <h2 *ngIf="dataSource && dataSource.data && dataSource.data.length > 0">{{dataSource.data[0].titulo}}</h2>
         <div *ngIf="dataSource.data.length == 0" class="center-container">
             <div><strong>Sin servicios</strong>
             </div>
           </div>
           
+
        <table mat-table [dataSource]="dataSource">
             <ng-container matColumnDef="No">
                 <th mat-header-cell *matHeaderCellDef> Id. </th>
@@ -60,12 +38,12 @@
         </table>
     </div>
 
-    <div>
-        <div class="container mt-4" *ngIf="optionToShow == 1 || optionToShow == 3">
+    <div mat-dialog-content>
+        <div  *ngIf="optionToShow == 1 || optionToShow == 3">
             <div>
-            <h1 class="title">{{formTittle}}</h1>
+            <!--<h1 class="title">{{formTittle}}</h1>-->
             <form [formGroup]="formPlan">
-                <div class="responsive-div">
+                <div >
                 <div style="color:red"></div>
                     <br/>
                     <div class="row">
@@ -198,11 +176,7 @@
                         </div>
                        
                     </div>
-                    <div style="display: flex; justify-content: center;">
-                        <button *ngIf="optionToShow === 1" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
-                        <button *ngIf="optionToShow === 3" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Actualizar</button>
-                        <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white; width: 120px;">Cancelar</button>
-                      </div>          
+                          
                 </div>
             </form>
         </div>
@@ -251,4 +225,10 @@
             </form>     
         </div>
     </div>
+
+    <div style="display: flex; justify-content: center;" mat-dialog-actions>
+        <button *ngIf="optionToShow === 1" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
+        <button *ngIf="optionToShow === 3" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Actualizar</button>
+        <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white; width: 120px;">Cancelar</button>
+      </div>   
 </div>
