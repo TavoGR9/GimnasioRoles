@@ -77,7 +77,6 @@ export class MembresiasComponent implements OnInit {
 
   listaTabla(){
     this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
-      console.log("la respuesta es: ",respuesta);
       this.plan = respuesta;
       this.dataSource = new MatTableDataSource(this.plan);
       this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
@@ -86,20 +85,16 @@ export class MembresiasComponent implements OnInit {
   
 
   borrarPlan(idMem: any) {
-    console.log(idMem);
     this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea eliminar esta membresía?`,
     })
     .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          this.planService.borrarPlan(idMem).subscribe((respuesta) => {
-            console.log("si entro") 
-            //window.location.reload();    
+          this.planService.borrarPlan(idMem).subscribe((respuesta) => {    
             this.ngOnInit();
           },
           (error) => {
-            console.log("Error al eliminar:", error);
             this.message = "¡Error al eliminar! Hay clientes inscritos en esta membresía";
             setTimeout(() => {
               this.message = ''; // Ocultar el mensaje de error después de 20 segundos
@@ -136,8 +131,6 @@ export class MembresiasComponent implements OnInit {
   toggleCheckbox(idMem: number, status: number) {
     // Guarda el estado actual en una variable temporal
     const estadoOriginal = status;
-    console.log('Estatus actual:', estadoOriginal);
-  
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea cambiar el estatus de la categoría?`, 
     });
@@ -146,24 +139,17 @@ export class MembresiasComponent implements OnInit {
       if (confirmado) {
         // Invierte el estado actual de la categoría
         const nuevoEstado = status == 1 ? { status: 0 } : { status: 1 };
-        console.log('Nuevo estado:', nuevoEstado);
   
-        // Actualiza el estado solo si el usuario confirma en el diálogo
         this.actualizarEstatusMembresia(idMem, nuevoEstado);
         
       } else {
-        // Si el usuario cancela, vuelve al estado original
-        console.log('Acción cancelada, volviendo al estado original:', estadoOriginal);
-        // Puedes decidir si deseas revertir visualmente la interfaz aquí
       }
     });
   }
 
   actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
-    console.log(estado.status, "nuevo");
     this.planService.updateMembresiaStatus(idMem, estado).subscribe(
       (respuesta) => {
-        console.log('Membresía actualizada con éxito:', respuesta);
         this.membresiaActiva = estado.status == 1;
       },
       (error) => {
@@ -194,17 +180,16 @@ export class MembresiasComponent implements OnInit {
   openDialog(): void {
     this.planService.optionShow.next(1);
     this.planService.optionShow.subscribe((option) => {
-      console.log("mostraremos:", option);
     });
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: '70%',
       height: '90%',
+      disableClose: true,
       data: {name: '¿para quien es esta membresia?'}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
-        console.log("la respuesta es: ",respuesta);
         this.plan = respuesta;
         this.dataSource = new MatTableDataSource(this.plan);
         this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
@@ -215,12 +200,12 @@ export class MembresiasComponent implements OnInit {
   openDialogService(idMem: number, tipo_membresia: number){
     this.planService.optionShow.next(2);
     this.planService.optionShow.subscribe((option) => {
-      console.log("mostraremos:", option);
     });
     this.planService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: '50%',
       height: '50%',
+      disableClose: true,
       data: {name: 'Servicios de la membresia'}
     });
   }
@@ -228,22 +213,17 @@ export class MembresiasComponent implements OnInit {
   openDialogEdit(idMem: number, tipo_membresia: number){
     this.planService.optionShow.next(3);
     this.planService.optionShow.subscribe((option) => {
-      console.log("mostraremos:", option);
     })
-
-    //estos campos deben ser mostrados publicos
-    console.log("el id es: ", idMem);
-    console.log("el tipo es: ", tipo_membresia);
     this.planService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: '70%',
       height: '90%',
+      disableClose: true,
       data: {name: 'Editar membresia', id: idMem}
     })
 
     dialogRef.afterClosed().subscribe(result => {
       this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
-        console.log("la respuesta es: ",respuesta);
         this.plan = respuesta;
         this.dataSource = new MatTableDataSource(this.plan);
         this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
@@ -264,15 +244,4 @@ export class MembresiasComponent implements OnInit {
     });
   }
 
-  /*getServices(id: number){
-    console.log("id",id);
-    let item = this.plan.find((item) => item.idMem == id);
-    if(item){
-      this.services = item.servicios;
-      console.log("servicios",this.services);
-      this.planService.getServices(this.services);
-    }else {
-      console.log("no hay servicios");
-    }
-}*/
 }

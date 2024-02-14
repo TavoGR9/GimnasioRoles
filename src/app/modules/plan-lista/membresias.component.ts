@@ -94,20 +94,16 @@ export class planComponent implements OnInit {
   }
 
   borrarPlan(idMem: any) {
-    console.log(idMem);
     this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea eliminar esta membresía?`,
     })
     .afterClosed()
       .subscribe((confirmado: Boolean) => {
         if (confirmado) {
-          this.planService.borrarPlan(idMem).subscribe((respuesta) => {
-            console.log("si entro") 
-            //window.location.reload();    
+          this.planService.borrarPlan(idMem).subscribe((respuesta) => {    
             this.ngOnInit();
           },
           (error) => {
-            console.log("Error al eliminar:", error);
             this.message = "¡Error al eliminar! Hay clientes inscritos en esta membresía";
             setTimeout(() => {
               this.message = ''; // Ocultar el mensaje de error después de 20 segundos
@@ -157,6 +153,7 @@ export class planComponent implements OnInit {
     const dialogRef = this.dialog.open(planAgregarComponent, {
       width: '70%',
       height: '90%',
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe(result => {
       this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
@@ -172,6 +169,7 @@ export class planComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: '50%',
       height: '50%',
+      disableClose: true,
       data: {name: 'Servicios de la membresia'}
     });
   }
@@ -184,6 +182,7 @@ export class planComponent implements OnInit {
     const dialogRef = this.dialog.open(planEditarComponent, {
       width: '70%',
       height: '90%',
+      disableClose: true,
       data: {name: 'Editar membresia', id: idMem}
     })
 
@@ -203,6 +202,7 @@ export class planComponent implements OnInit {
         const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
           width: '70%',
           height: '90%',
+          disableClose: true,
           data: {name: 'Agregar servicios'}
         });
       }

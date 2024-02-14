@@ -141,10 +141,10 @@ export class ProductosComponent implements OnInit {
   }
 
   editarProducto(idProducto: number): void {
-    console.log("idProducto", idProducto);
     const dialogRef = this.dialog.open(EditarProductoComponent, {
       width: '65%',
       height: '90%', 
+      disableClose: true,  
       data: { idProducto: idProducto }
     });
   
