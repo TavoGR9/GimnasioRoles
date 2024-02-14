@@ -7,6 +7,9 @@ import { MatPaginator } from '@angular/material/paginator'; //para paginacion en
 import { MatTableDataSource } from '@angular/material/table'; //para controlar los datos del api y ponerlos en una tabla
 import { EmergenteCapturarHuellasComponent } from '../emergente-capturar-huellas/emergente-capturar-huellas.component';
 import { EmergenteAperturaPuertoSerialComponent } from '../emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-emergente-info-cliente',
@@ -35,11 +38,29 @@ export class EmergenteInfoClienteComponent implements OnInit{
   item: any;
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorHistorialMembre', { static: true }) paginator!: MatPaginator;
+  // Manejar el contenido del formulario
+  form: FormGroup;
 
-  constructor(public dialog: MatDialog,
+
+  constructor(public dialog: MatDialog, private fb: FormBuilder,
+    private spinner: NgxSpinnerService,
     private pagoService: PagoMembresiaEfectivoService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
-    @Inject(MAT_DIALOG_DATA)  public data: any) { }   //public mensaje: string,
+    @Inject(MAT_DIALOG_DATA)  public data: any) { 
+      // Agregar campos el formulario 
+      this.form = this.fb.group({
+        id_cliente: [this.data.idCliente, Validators.required],
+        nombre: [this.data.nombre_cl, Validators.required],
+        apPaterno: [this.data.paterno, Validators.required],
+        apMaterno: [this.data.materno, Validators.required],
+        telefono: [this.data.telefono, Validators.required],
+        email: [this.data.email, Validators.required],
+        peso: [this.data.peso, Validators.required],
+        estatura: [this.data.estatura, Validators.required]
+      });
+
+      
+    }   //public mensaje: string,
 
   cerrarDialogo(): void {
     this.dialogo.close(true);
@@ -49,11 +70,10 @@ export class EmergenteInfoClienteComponent implements OnInit{
   }*/
 
   ngOnInit() {
-
     this.duracion = this.data.duracion + ' ' + 'días';
     this.photo = this.img+this.data.foto;
     //console.log('idclienteeeee:',this.data.idCliente)
-  
+    console.log("Esto viene del componente padre: "+this.data.peso);
     this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
       //console.log('historial:',respuesta);
       this.membresiaHisto = respuesta;
@@ -113,7 +133,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
   // Apertura mat-dialog apertura de puerto serial com
   abrirPuertoSerial(data: any): void {
     this.dialogo.close(true);
-    console.log(this.membresiaHisto);
     this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
       data: {
         clienteID: `${data.idCliente}`
@@ -129,4 +148,28 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
   
+  // Actualizar datos de cliente
+  actualizar(): void {
+    if(!this.form.valid){
+      console.log("Formulario invalido...");
+      return;
+    }
+
+    this.spinner.show();
+    this.pagoService.actualizaDatosCliente(this.form.value).subscribe({
+      next: (resultData) => {
+        console.log(resultData);
+        this.spinner.hide();
+        this.dialog.open(MensajeEmergenteComponent, {})
+        .afterClosed()
+        .subscribe((cerrarDialogo: Boolean) => {
+          if (cerrarDialogo) {
+
+          } else {
+    
+          }
+        });
+      }, error: (error) => { console.log(error); }
+    });
+  }
 }

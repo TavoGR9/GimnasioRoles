@@ -56,7 +56,6 @@ import { AddPasswordComponent } from './components/add-password/reset-password.c
     FormsModule,
     ModulesModule,
     RouterModule
-    
   ],
   providers: [],
   bootstrap: [AppComponent]
