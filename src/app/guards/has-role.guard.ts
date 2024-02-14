@@ -7,10 +7,10 @@ export const hasRoleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const router = inject(Router);
   // Accede al valor de 'rol' desde 'data' en el ActivatedRouteSnapshot
   const requiredRole = route.data['rol'];
-
+  const currentUser = auth.getCurrentUser();
   // Lógica para verificar si el usuario tiene el rol requerido
   // Por ejemplo, compara requiredRole con el rol del usuario autenticado
-  if (auth.isSupadmin() || auth.isRecepcion() || auth.isAdmin()) {
+  if (auth.isSupadmin() || auth.isRecepcion() || auth.isAdmin() || auth.getCurrentUser()) {
     return true; // Usuario tiene el rol requerido, permite la navegación
   } else {
     // Usuario no tiene el rol requerido, redirige o toma otra acción apropiada

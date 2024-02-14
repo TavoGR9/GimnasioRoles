@@ -103,6 +103,10 @@ import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-pue
 import { planComponent } from './plan-lista/membresias.component';
 import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
+
+//modulo de spinner
+import { NgxSpinnerModule } from "ngx-spinner";
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -204,7 +208,9 @@ import { planEditarComponent } from './plan-editar/membresias-editar.component';
     ToastModule,
     FileUploadModule,
     RecepMaterialModule,
-    WebcamModule
+    WebcamModule,
+    NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
+
   ]
 })
 export class ModulesModule {

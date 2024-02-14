@@ -20,7 +20,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { NgIf } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AddPasswordComponent } from './components/add-password/reset-password.component';
 @NgModule({
@@ -39,7 +38,6 @@ import { AddPasswordComponent } from './components/add-password/reset-password.c
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    NgIf,
     ToastrModule.forRoot(),
     FontAwesomeModule,
     MatFormFieldModule,
@@ -56,7 +54,8 @@ import { AddPasswordComponent } from './components/add-password/reset-password.c
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    NgIf,
+    ModulesModule,
+    RouterModule
     
   ],
   providers: [],

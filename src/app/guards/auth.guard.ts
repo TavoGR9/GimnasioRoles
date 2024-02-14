@@ -6,10 +6,15 @@ export const authGuard = () => {
   
   const auth = inject(AuthService);
   const router = inject(Router);
-
+  const currentUser = auth.getCurrentUser();
+/*
   if (!auth.isLoggedInBS()) {
     router.navigate(['/login']);
   }
+*/
+  if(!JSON.stringify(currentUser)){
+    router.navigate(['/login']);
+  }
 
-  return auth.isLoggedInBS();
+  return true;
 };

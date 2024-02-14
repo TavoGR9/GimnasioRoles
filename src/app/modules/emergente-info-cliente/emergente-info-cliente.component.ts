@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { EmergenteCargarFotoComponent } from '../emergente-cargar-foto/emergente-cargar-foto.component';
-import { PagoMembresiaEfectivoService } from 'src/app/service/pago-membresia-efectivo.service';
+import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
 import { MatTableDataSource } from '@angular/material/table'; //para controlar los datos del api y ponerlos en una tabla
 import { EmergenteCapturarHuellasComponent } from '../emergente-capturar-huellas/emergente-capturar-huellas.component';

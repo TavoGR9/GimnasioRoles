@@ -9,15 +9,15 @@
 }
 
 .title {
-    background-color: #f4f4f4;
-    padding: 30px;
+    background-color: #eeeded;
+    padding: 20px;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
     font-weight:700;
 }
 
-.title .close-btn {
-    background-color: red;
+.close-btn {
+    background-color: rgb(219, 219, 219);
     border: none;
     width: 35px;
     height: 35px;
@@ -58,3 +58,24 @@
     padding: 20px; /* Agrega espaciado interno si es necesario */
     /* Otros estilos personalizados para tu div */
   }
+
+  /* persona.component.css */
+
+.subtitulo {
+    background-color: black;
+    color: white;
+    padding: 4px; /* Ajusta el relleno según tus preferencias */
+    font-size: 1.0em; /* Ajusta el tamaño de la fuente según tus preferencias */
+    font-weight: bold; /* Opcional: Puedes ajustar el peso de la fuente */
+  }
+  
+
+  .mat-form-field-invalid {
+    border-color: red; /* Agrega un borde rojo a los campos no válidos */
+  }
+  
+  .required-field-label::after {
+    content: ' *'; /* Agrega un asterisco al final de las etiquetas de campo requerido */
+    color: red;
+  }
+  

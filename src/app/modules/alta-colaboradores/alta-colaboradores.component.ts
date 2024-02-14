@@ -3,8 +3,8 @@ import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Valida
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {ErrorStateMatcher} from '@angular/material/core';
-import { ColaboradorService } from 'src/app/service/colaborador.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { ColaboradorService } from './../../service/colaborador.service';
+import { AuthService } from '../../service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 
@@ -35,8 +35,8 @@ export class AltaColaboradoresComponent {
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       apMaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/), Validators.minLength(12),  //^[A-Za-zñÑ&]{1,2}([A-Za-zñÑ&]([A-Za-zñÑ&](\d(\d(\d(\d(\d(\d(\w(\w(\w)?)?)?)?)?)?)?)?)?)?)?$/
-      Validators.maxLength(13)])],
+      //rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/), Validators.minLength(12),  //^[A-Za-zñÑ&]{1,2}([A-Za-zñÑ&]([A-Za-zñÑ&](\d(\d(\d(\d(\d(\d(\w(\w(\w)?)?)?)?)?)?)?)?)?)?)?$/
+      //Validators.maxLength(13)])],
       Gimnasio_idGimnasio: ['', Validators.compose([ Validators.required])],
       area: ['', Validators.compose([ Validators.required])],
       turnoLaboral: ['', Validators.compose([ Validators.required])],
@@ -79,6 +79,7 @@ export class AltaColaboradoresComponent {
   }
 
   registrar():any{
+    console.log(this.form.value);
     if (this.form.valid) {
 
       this.http.agregarEmpleado(this.form.value).subscribe({

@@ -32,13 +32,11 @@ interface Producto {
 
 export class ProductosVendidosComponent implements OnInit, DoCheck{
   fechaInicio: Date = new Date(); // Inicializa como una nueva fecha
-  fechaFin: Date = new Date();    // Inicializa como una nueva fecha
-
-// Asegúrate de que productosVendidos tenga el tipo adecuado (en este caso, un array de Producto)
+  fechaFin: Date = new Date();    
+  idGym: number = 0;
+  currentUser: string = '';
   productosVendidos: Producto[] = [];
-  //productosVendidos: any;
-  dataSource: any; // instancia para matTableDatasource
-  //titulos de columnas de la tabla de pago online
+  dataSource: any; 
   displayedColumns: string[] = [
     'Nombre',
     'Sucursal',
@@ -60,7 +58,31 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     private auth: AuthService,){}
   
   ngOnInit(): void{
-      this.updateDateLogs();  // Actualiza las fechas iniciales al inicio
+     // Actualiza las fechas iniciales al inicio
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+  
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.updateDateLogs(); 
+     
+    }); 
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
   }
 
   ngDoCheck(): void {
@@ -98,7 +120,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     this.prodVendidosService.obtenerListaProduct(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
-      this.auth.idGym.getValue()
+      this.idGym
     ).subscribe(
       response => {
         console.log(response);

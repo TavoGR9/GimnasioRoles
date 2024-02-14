@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { ProductoService } from 'src/app/service/producto.service';
 import { Observable, Subject } from 'rxjs';
+import { NgxSpinnerService } from "ngx-spinner";
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -48,6 +49,7 @@ export class CrearProductoComponent implements OnInit {
   idCategoria: number = 0;
   listaCategorias: any;
   uploadedFiles: File[] = [];
+  private idGym: number = 0;
 
   constructor(
     public dialogo: MatDialogRef<CrearProductoComponent>,
@@ -60,7 +62,8 @@ export class CrearProductoComponent implements OnInit {
     private productoService: ProductoService,
     private httpClient: HttpClient,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private spinner: NgxSpinnerService
   ) {
     this.fechaCreacion = this.obtenerFechaActual();
     // formulario
@@ -123,9 +126,11 @@ export class CrearProductoComponent implements OnInit {
 
   registrar(): any {
     if (this.form.valid) { 
+      this.spinner.show();
       this.productoService.creaProducto(this.form.value).subscribe({
           next: (respuesta) => {
             if (respuesta.success) {
+              this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, {
               data: `Categoria agregada exitosamente`,
             }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
