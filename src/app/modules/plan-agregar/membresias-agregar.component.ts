@@ -82,14 +82,18 @@ export class planAgregarComponent {
       this.membresiaService
         .agregarPlan(this.formulariodePlan.value)
         .subscribe((respuesta) => {
+          if(respuesta){
+            console.log(respuesta);
+          }
           this.dialog
             .open(MensajeEmergentesComponent, {
-              data: `Membresía agregada exitosamente`,
+              data: `Plan agregado exitosamente`,
             })
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
-                this.router.navigateByUrl('/admin/misMembresias');
+                this.router.navigateByUrl('/plan');
+                this.formulariodePlan.reset();
               } else {
               }
             });

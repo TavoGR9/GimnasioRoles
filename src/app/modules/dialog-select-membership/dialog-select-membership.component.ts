@@ -154,6 +154,8 @@ export class DialogSelectMembershipComponent implements OnInit{
               //const servicioCancha = this.servicios.find(servicio => servicio.nombre_servicio === this.plan[0].servicios[0].nombre_servicio);
               const serviciosPlan = this.plan[0].servicios.map((servicio: any) => servicio.nombre_servicio);
               const serviciosCoincidentes = this.servicios.filter(servicio => serviciosPlan.includes(servicio.nombre_servicio));
+              let servicioSeleccionado = this.servicios.find(servicio => servicio.nombre_servicio === this.plan[0].servicios[0].nombre_servicio);
+
 
               this.formPlan.setValue({
                 idMem: 0,
@@ -161,7 +163,7 @@ export class DialogSelectMembershipComponent implements OnInit{
                 duracion: this.plan[0].duracion,
                 precio: this.plan[0].precio,
                 detalles: this.plan[0].detalles,
-                servicioseleccionado: serviciosCoincidentes,
+                servicioseleccionado: servicioSeleccionado, // Aquí estableces "Gym" como valor por defecto en un array
                 status: this.plan[0].status,
                 tipo_membresia: 1,
                 Gimnasio_idGimnasio: this.plan[0].Gimnasio_idGimnasio,

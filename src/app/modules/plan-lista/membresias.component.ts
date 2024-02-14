@@ -181,9 +181,19 @@ export class planComponent implements OnInit {
       width: '70%',
       height: '90%',
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
+        console.log("la respuesta es: ",respuesta);
+        this.plan = respuesta;
+        this.dataSource = new MatTableDataSource(this.plan);
+        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+      });
+    });
   }
 
   openDialogService(idMem: number, tipo_membresia: number){
+    this.planService.optionShow.next(5);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: '50%',
       height: '50%',
