@@ -31,6 +31,7 @@ export class DialogSelectMembershipComponent implements OnInit{
   tipo_membresia: number = 0;
   optionToShow: number = 0;
   selection: number = 0;
+  section: number = 0;
   formTittle: string = "";
   idGym: any;
   idMem: any;
@@ -153,6 +154,8 @@ export class DialogSelectMembershipComponent implements OnInit{
               //const servicioCancha = this.servicios.find(servicio => servicio.nombre_servicio === this.plan[0].servicios[0].nombre_servicio);
               const serviciosPlan = this.plan[0].servicios.map((servicio: any) => servicio.nombre_servicio);
               const serviciosCoincidentes = this.servicios.filter(servicio => serviciosPlan.includes(servicio.nombre_servicio));
+              let servicioSeleccionado = this.servicios.find(servicio => servicio.nombre_servicio === this.plan[0].servicios[0].nombre_servicio);
+
 
               this.formPlan.setValue({
                 idMem: 0,
@@ -160,7 +163,7 @@ export class DialogSelectMembershipComponent implements OnInit{
                 duracion: this.plan[0].duracion,
                 precio: this.plan[0].precio,
                 detalles: this.plan[0].detalles,
-                servicioseleccionado: serviciosCoincidentes,
+                servicioseleccionado: servicioSeleccionado, // Aquí estableces "Gym" como valor por defecto en un array
                 status: this.plan[0].status,
                 tipo_membresia: 1,
                 Gimnasio_idGimnasio: this.plan[0].Gimnasio_idGimnasio,
@@ -171,10 +174,18 @@ export class DialogSelectMembershipComponent implements OnInit{
           });
         }else if(this.optionToShow == 4) {
           console.log("Formulario para agregar servicios");
-
         }
         }
       });
+
+      this.planService.section.subscribe(respuesta => {
+        if(respuesta){
+          this.section = respuesta;
+        }
+      });
+
+      console.log("PRUEBAS: ",this.optionToShow, this.section);
+      
 
       //OBTENER LOS SERVICIOS
       /*this.planService.showService().subscribe(respuesta => {
@@ -284,7 +295,13 @@ export class DialogSelectMembershipComponent implements OnInit{
 
       //llamado a la peticion para insertar la membresia
       if(this.optionToShow == 1 || this.optionToShow == 2){
-      this.planService.agregarPlan(this.formPlan.value).subscribe(respuesta => {
+        let formValue = this.formPlan.value;
+
+// Comprueba si servicioseleccionado es un objeto y, de ser así, conviértelo en un array
+if (formValue.servicioseleccionado && typeof formValue.servicioseleccionado === 'object' && !Array.isArray(formValue.servicioseleccionado)) {
+    formValue.servicioseleccionado = [formValue.servicioseleccionado];
+}
+      this.planService.agregarPlan((formValue)).subscribe(respuesta => {
         if(respuesta){
           if(respuesta.success == 1){
             const dialogRef = this.dialog.open(MensajeEmergentesComponent, {

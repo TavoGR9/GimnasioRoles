@@ -18,6 +18,7 @@ export class PlanService {
   public idService: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public confirmButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public section: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   services: any[] = [];
   data: any = {};
   
@@ -25,12 +26,14 @@ export class PlanService {
   }
 
   agregarPlan(datosPlan:plan):Observable<any>{
-    return this.clienteHttp.post(this.API2+"?insertar=1",datosPlan);
+    return this.clienteHttp.post(this.API2+"?insertar",datosPlan);
   }
 
   obternerPlan(){
     return this.clienteHttp.get(this.API)
   }
+
+
 
   consultarPlan(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultar="+id);
@@ -44,12 +47,16 @@ export class PlanService {
     return this.clienteHttp.get(this.API+"?consultarGYMPlan="+id);
   }
 
+  consultarPlanIdPlan2(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarGYMPlan",id);
+  }
+
   consultarPlanGym(id:any):Observable<any>{
     return this.clienteHttp.get(this.API2+"?consultarMembresia="+id);
   }
 
   consultarPlanId(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API2+"?consultarGYM="+id);
+    return this.clienteHttp.get(this.API+"?consultarGYM="+id);
   }
 
   borrarPlan(id:any):Observable<any>{
