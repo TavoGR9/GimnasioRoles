@@ -1,89 +1,134 @@
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
 <h1 mat-dialog-title>Confirmación</h1>
 <div mat-dialog-content>
-    <img [src]="photo" class="size_image" alt="Imagen del Cliente no disponible">
-    <!--<img src="../../../assets/img/user.png" class="size_image" alt="Imagen del Cliente no disponible">-->
-    <div class="grid">
-        <div class="column"> 
-            <h3 style="font-weight: bold;">Nombre:</h3> {{ data.nombre }}
-        </div>
+  <img [src]="photo" class="size_image" alt="Imagen del Cliente no disponible">
+  <!--<img src="../../../assets/img/user.png" class="size_image" alt="Imagen del Cliente no disponible">-->
+  <div class="formContent">
+    <form [formGroup]="form">
+      <mat-form-field appearance="outline" class="formInputs">
+        <mat-label>Nombre:</mat-label>
+        <input id="nombre" formControlName="nombre" type="text" matInput autocomplete="off" placeholder="Nombre" />
+      </mat-form-field>
 
-        <div class="column"> 
-            <h3 style="font-weight: bold;">Sucursal:</h3> {{ data.sucursal }}
-        </div>
+      <mat-form-field appearance="outline" class="formInputs">
+        <mat-label>Apellido paterno:</mat-label>
+        <input id="apPaterno" formControlName="apPaterno" type="text" matInput autocomplete="off" placeholder="Apellido paterno" />
+      </mat-form-field>
 
-        <div class="column"> 
-            <h3 style="font-weight: bold;">Membresia:</h3> {{ data.membresia }}
-        </div>
+      <mat-form-field appearance="outline" class="formInputs">
+        <mat-label>Apellido materno:</mat-label>
+        <input id="apMaterno" formControlName="apMaterno" type="text" matInput autocomplete="off" placeholder="Apellido materno" />
+      </mat-form-field>
 
-        <div class="column"> 
-            <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
-        </div>
+      <mat-form-field appearance="outline" class="formInputs">
+        <mat-label>Telefono:</mat-label>
+        <input id="telefono" formControlName="telefono" type="text" matInput autocomplete="off" placeholder="Telefono" />
+      </mat-form-field>
 
-        <div class="column"> 
-            <h3 style="font-weight: bold;">Información de la membresia:</h3> {{ data.infoMembresia }}
-        </div>
+      <mat-form-field appearance="outline" class="formInputs">
+        <mat-label>Correo electronico.</mat-label>
+        <input id="email" formControlName="email" type="text" matInput autocomplete="off" placeholder="Correo electronico" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="formInputs">
+        <mat-label>Estatura</mat-label>
+        <input id="estatura" formControlName="estatura" type="text" matInput autocomplete="off" placeholder="Estatura" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="formInputs">
+        <mat-label>Peso</mat-label>
+        <input id="peso" formControlName="peso" type="text" matInput autocomplete="off" placeholder="Peso" />
+      </mat-form-field>
+
+      <div style="display: flex; justify-content: center;">
+        <button mat-raised-button (click)="actualizar()" style="background-color: #fd9727; font-size: 15px; margin-top: 10px; height: 40px;">Actualizar información</button>
+     </div>
+
+    </form>
+  </div>
+  <div class="grid">
+    <!--<div class="column">
+      <h3 style="font-weight: bold;">Nombre:</h3> {{ data.nombre }}
+    </div>-->
+
+    <div class="column">
+      <h3 style="font-weight: bold;">Sucursal:</h3> {{ data.sucursal }}
     </div>
 
-    <br>
-    
-    <h3 style="font-weight: bold;">Historial de membresias adquiridas:</h3>
-    
-    <div  class="table-container">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-          <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
-            <th mat-header-cell *matHeaderCellDef style="text-align: center;">{{ column }}</th>
-            <td mat-cell *matCellDef="let memCli" style="text-align: center;">
-              <ng-container *ngIf="column === 'ID'">
-                {{ memCli.ID }}
-              </ng-container>
-              <ng-container *ngIf="column === 'Nombre'">
-                {{ memCli.Nombre }}
-              </ng-container>
-              <ng-container *ngIf="column === 'Membresía'">
-                {{ memCli.Membresia }}
-              </ng-container>
-              <ng-container *ngIf="column === 'Precio'">
-                ${{ memCli.Precio }}
-              </ng-container>
-              <ng-container *ngIf="column === 'Duración'">
-                {{ memCli.Duracion }} días
-              </ng-container>
-              <ng-container *ngIf="column === 'Fecha Inicio'">
-                {{ memCli.Fecha_Inicio }}
-              </ng-container>
-              <ng-container *ngIf="column === 'Fecha Fin'">
-                {{ memCli.Fecha_Fin }}
-              </ng-container>
-              <!--<ng-container *ngIf="column === 'Status'">
+    <div class="column">
+      <h3 style="font-weight: bold;">Membresia:</h3> {{ data.membresia }}
+    </div>
+
+    <div class="column">
+      <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
+    </div>
+
+    <div class="column">
+      <h3 style="font-weight: bold;">Información de la membresia:</h3> {{ data.infoMembresia }}
+    </div>
+  </div>
+
+  <br>
+
+  <h3 style="font-weight: bold;">Historial de membresias adquiridas:</h3>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+        <th mat-header-cell *matHeaderCellDef style="text-align: center;">{{ column }}</th>
+        <td mat-cell *matCellDef="let memCli" style="text-align: center;">
+          <ng-container *ngIf="column === 'ID'">
+            {{ memCli.ID }}
+          </ng-container>
+          <ng-container *ngIf="column === 'Nombre'">
+            {{ memCli.Nombre }}
+          </ng-container>
+          <ng-container *ngIf="column === 'Membresía'">
+            {{ memCli.Membresia }}
+          </ng-container>
+          <ng-container *ngIf="column === 'Precio'">
+            ${{ memCli.Precio }}
+          </ng-container>
+          <ng-container *ngIf="column === 'Duración'">
+            {{ memCli.Duracion }} días
+          </ng-container>
+          <ng-container *ngIf="column === 'Fecha Inicio'">
+            {{ memCli.Fecha_Inicio }}
+          </ng-container>
+          <ng-container *ngIf="column === 'Fecha Fin'">
+            {{ memCli.Fecha_Fin }}
+          </ng-container>
+          <!--<ng-container *ngIf="column === 'Status'">
                 {{ memCli.Status }}
               </ng-container>-->
-              <ng-container *ngIf="column === 'Status'">
-                <p>{{ memCli.Status }}</p>
-                <ng-container *ngIf="estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
-                    <mat-icon style="color:green">timer</mat-icon>
-                </ng-container>
-                <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
-                  <mat-icon style="color:green">timer</mat-icon>
-                </ng-container>
-                <ng-container *ngIf="estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status !== 'Activo'">
-                    <mat-icon style="color:red">timer_off</mat-icon>
-                </ng-container>
-                <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status !== 'Activo'">
-                    <mat-icon style="color:red">timer_off</mat-icon>
-                </ng-container>
-              </ng-container>
-            </td>
+          <ng-container *ngIf="column === 'Status'">
+            <p>{{ memCli.Status }}</p>
+            <ng-container *ngIf="estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
+              <mat-icon style="color:green">timer</mat-icon>
+            </ng-container>
+            <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
+              <mat-icon style="color:green">timer</mat-icon>
+            </ng-container>
+            <ng-container *ngIf="estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status !== 'Activo'">
+              <mat-icon style="color:red">timer_off</mat-icon>
+            </ng-container>
+            <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status !== 'Activo'">
+              <mat-icon style="color:red">timer_off</mat-icon>
+            </ng-container>
           </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let productofila; columns: displayedColumns"></tr>
-        </table>
-      </div>
-        <mat-paginator #paginatorHistorialMembre [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let productofila; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  <mat-paginator #paginatorHistorialMembre [pageSizeOptions]="[5, 10, 25, 50, 100]"
+    showFirstLastButtons></mat-paginator>
 
 </div>
 <div mat-dialog-actions fxLayoutAlign="center center">
-    <button mat-button (click)="abrirPuertoSerial(data)" (click)="cerrarDialogo()">Acceso manual</button>
-    <button mat-button (click)="abrirDialogFoto(data)" (click)="cerrarDialogo()">Tomar Foto</button>
-    <button mat-button (click)="abrirDialogCapturarHuella(data)" (click)="cerrarDialogo()">Capturar huella</button>
-    <button mat-button (click)="cerrarDialogo()">Cerrar</button>
+  <button mat-button (click)="abrirPuertoSerial(data)" (click)="cerrarDialogo()">Acceso manual</button>
+  <button mat-button (click)="abrirDialogFoto(data)" (click)="cerrarDialogo()">Tomar Foto</button>
+  <button mat-button (click)="abrirDialogCapturarHuella(data)" (click)="cerrarDialogo()">Capturar huella</button>
+  <button mat-button (click)="cerrarDialogo()">Cerrar</button>
 </div>

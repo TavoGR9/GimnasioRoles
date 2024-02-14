@@ -11,3 +11,12 @@
     grid-template-columns: repeat(2, 1fr);  /* Dos columnas con el mismo ancho */
     gap: 20px;  /* Espacio entre las columnas */
 }
+
+.formContent {
+    margin: 40px auto;
+}
+
+.formInputs {
+    display: inline-block;
+    margin: 10px;
+}

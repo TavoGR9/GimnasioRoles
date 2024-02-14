@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
+import { msgResult } from '../models/empleado';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ export class PagoMembresiaEfectivoService {
 
   URLServices: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/pagoEfectivoMembresia.php/"; 
   constructor(private clienteHttp:HttpClient) { }
-
+  httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+  
   obternerDataMem(){
     return this.clienteHttp.get(this.URLServices);
   }
@@ -54,5 +56,9 @@ export class PagoMembresiaEfectivoService {
 
   histoClienteMemb(id:any):Observable<any>{
     return this.clienteHttp.get(this.URLServices+"?histoCliente="+id);
-  } 
+  }
+
+  actualizaDatosCliente(data: any): Observable<any> {
+    return this.clienteHttp.post<msgResult>(this.URLServices+"?updatePersonalData", data, { headers: this.httpHeaders });
+  }
 }
