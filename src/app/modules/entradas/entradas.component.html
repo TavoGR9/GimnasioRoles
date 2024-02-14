@@ -1,9 +1,10 @@
 
-   <div class="title" mat-dialog-title>
-      <label>ENTRADAS</label>
-    </div>
+  
+      <label class="title" mat-dialog-title>ENTRADAS</label>
+
     
     <div mat-dialog-content>
+      <br>
       <form [formGroup]="form">
         <div class="row">
           <div class="col-sm-12">
@@ -153,13 +154,23 @@
       </form>
     </div>
     
-    <div style="display: flex; justify-content: center;" mat-dialog-actions>
+   <!-- <div style="display: flex; justify-content: center;" mat-dialog-actions>
       <button mat-raised-button (click)="registrar()" id="btn_guardar"
         style="background-color: #fd9727; font-size: 20px; margin-top: 50px; height: 35px; width: 120px; color: black">
         Guardar
       </button>
       <button style="background-color: #000000; font-size: 20px; margin-left: 30px; margin-top: 50px; height: 35px; width: 120px;color: rgb(255, 255, 255);"
         mat-raised-button id="btn_canelar" (click)="cerrarDialogo()">Cancelar
+      </button>
+    </div>-->
+
+    <div style="display: flex; justify-content: center;" mat-dialog-actions>
+      <button mat-raised-button (click)="registrar()" style="background-color: #fd9727;font-size: 20px;"
+       >
+        Guardar
+      </button>
+      <button  mat-raised-button style="background-color: #000000;margin-left: 51px;font-size: 20px;color: rgb(255, 255, 255);"
+          (click)="cerrarDialogo()">Cancelar
       </button>
     </div>
     

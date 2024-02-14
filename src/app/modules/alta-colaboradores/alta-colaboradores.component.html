@@ -1,14 +1,14 @@
     <!--CONTENIDO PANTALLA ALTA DE UDUARIO-->
-    <div class="content_body">
-        <div class="content_margin">
-            <br/><br/>
-            <h1 mat-dialog-title>Agregar colaborador</h1>
+    <div >
+        <div>
+            <h1 class="title" mat-dialog-title>Agregar colaborador</h1>
             <!--<mat-label class="large-text" style="font-family: Arial; font-size: 30px;margin-left: 15px;">Alta de colaborador</mat-label>-->
             <div mat-dialog-content>
                 <form [formGroup]="form">  <!--(ngSubmit)="registrar()"-->
-                  <div class="responsive-div">
+                  <div >
                     <div class="row">
                       <div class="col-sm-6">
+                        <label >Nombre:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Nombre</mat-label>
                           <input type="text" matInput placeholder="Juan" autocomplete="off" formControlName="nombre" id="nombre" [errorStateMatcher]="matcher">
@@ -20,6 +20,7 @@
 
                       </div>
                       <div class="col-sm-6">
+                        <label>Apellido paterno:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Apellido paterno</mat-label>
                           <input type="text" matInput placeholder="Pérez" autocomplete="off" formControlName="apPaterno" id="apPaterno" [errorStateMatcher]="matcher">
@@ -35,6 +36,7 @@
 
                     <div class="row">
                       <div class="col-sm-6">
+                        <label>Apellido materno:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Apellido materno</mat-label>
                           <input type="text" placeholder="Sanchéz" matInput autocomplete="off" formControlName="apMaterno" id="apMaterno" [errorStateMatcher]="matcher">
@@ -57,6 +59,7 @@
                             <strong class="txt_msg">**Minimo 12 y máximo 13 caracteres</strong>
                           </mat-error>
                       </mat-form-field>-->
+                      <label>Sucursal:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Sucursal</mat-label>
                           <mat-select id="sucursal" formControlName="Gimnasio_idGimnasio" id="Gimnasio_idGimnasio" [errorStateMatcher]="matcher">
@@ -72,6 +75,7 @@
 
                     <div class="row">
                       <div class="col-sm-6">
+                        <label>Áreas:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Área</mat-label>
                           <mat-select id="area" formControlName="area" id="area" [errorStateMatcher]="matcher">
@@ -84,6 +88,7 @@
                       </mat-form-field>
                       </div>
                       <div class="col-sm-6">
+                        <label>Turno laboral:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Turno laboral</mat-label>
                           <mat-select id="turno" formControlName="turnoLaboral" id="turnoLaboral" [errorStateMatcher]="matcher">
@@ -100,6 +105,7 @@
 
                     <div class="row">
                       <div class="col-sm-6">
+                        <label>Salario:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Salario</mat-label>
                           <input type="text" placeholder="Salario" matInput autocomplete="off" formControlName="salario" id="salario" [errorStateMatcher]="matcher">
@@ -110,6 +116,7 @@
                         </mat-form-field>
                       </div>
                       <div class="col-sm-6">
+                        <label>Email:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Email</mat-label>
                           <input type="email" placeholder="ejemplo@yahoo.com" matInput autocomplete="off" formControlName="email" id="email" [errorStateMatcher]="matcher">
@@ -124,6 +131,7 @@
 
                     <div class="row">
                       <div class="col-sm-6">
+                        <label>Contraseña:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Asignar contraseña</mat-label>
                           <input matInput  matInput [type]="hide ? 'password' : 'text'" placeholder="Asignar contraseña" formControlName="pass" id="pass" [errorStateMatcher]="matcher">

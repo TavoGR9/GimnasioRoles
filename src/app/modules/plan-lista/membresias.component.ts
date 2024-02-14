@@ -33,6 +33,7 @@ export class planComponent implements OnInit {
   idGym: number = 0;
   section: number = 0;
   option: number = 0;
+  currentUser: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -45,6 +46,7 @@ export class planComponent implements OnInit {
     public dialog: MatDialog
   ){}
 
+
   displayedColumns: string[] = ['title', 'details','price','duration','servicios','actions'];
 
   ngOnInit(): void {
@@ -56,18 +58,40 @@ export class planComponent implements OnInit {
         }
       }
     });
-    this.auth.idGym.subscribe((id) => {
-      if(id){
-        this.idGym = id;
-      }
-    });
+    
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+  
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    }); 
+    
+  }
+  
+  listaTabla(){
     this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
       this.plan = respuesta;
       this.dataSource = new MatTableDataSource(this.plan);
       this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
     });
+}
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
   }
-  
 
   borrarPlan(idMem: any) {
     console.log(idMem);
@@ -101,90 +125,41 @@ export class planComponent implements OnInit {
   }
 
 
-  /*toggleCheckbox(idMem: number, status: number) {
-    const dialogRef = this.dialog.open(MensajeEliminarComponent, {
-      data: `¿Desea cambiar el estatus de la membresía?`, 
-    });
-
-    dialogRef.afterClosed().subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        console.log("membresiaActiva",status);
-        // Invierte el estado actual de la membresía
-        const nuevoEstado = status ? { status: 0 } : { status: 1 };
-  
-        this.actualizarEstatusMembresia(idMem, nuevoEstado);
-      }
-    });
-  }*/
-
   toggleCheckbox(idMem: number, status: number) {
-    // Guarda el estado actual en una variable temporal
     const estadoOriginal = status;
-    console.log('Estatus actual:', estadoOriginal);
-  
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea cambiar el estatus de la categoría?`, 
     });
-  
     dialogRef.afterClosed().subscribe((confirmado: boolean) => {
       if (confirmado) {
         // Invierte el estado actual de la categoría
         const nuevoEstado = status == 1 ? { status: 0 } : { status: 1 };
-        console.log('Nuevo estado:', nuevoEstado);
-  
         // Actualiza el estado solo si el usuario confirma en el diálogo
         this.actualizarEstatusMembresia(idMem, nuevoEstado);
-        
       } else {
-        // Si el usuario cancela, vuelve al estado original
-        console.log('Acción cancelada, volviendo al estado original:', estadoOriginal);
-        // Puedes decidir si deseas revertir visualmente la interfaz aquí
       }
     });
   }
 
   actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
-    console.log(estado.status, "nuevo");
     this.planService.updateMembresiaStatus(idMem, estado).subscribe(
       (respuesta) => {
-        console.log('Membresía actualizada con éxito:', respuesta);
         this.membresiaActiva = estado.status == 1;
       },
       (error) => {
         console.error('Error al actualizar la membresía:', error);
-        // Maneja el error de alguna manera si es necesario.
       }
     );
   }
   
-  /*actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
-    console.log(estado.status, "nuevo");
-    this.planService.updateMembresiaStatus(idMem, estado).subscribe(
-      (respuesta) => {
-        console.log('Membresía actualizada con éxito:', respuesta);
-  
-        // Invierte el estado en la interfaz después de una actualización exitosa
-        this.membresiaActiva = estado.status === 1;
-  
-        // Realiza cualquier lógica adicional después de la actualización.
-      },
-      (error) => {
-        console.error('Error al actualizar la membresía:', error);
-        // Maneja el error de alguna manera si es necesario.
-      }
-    );
-  }*/
-
   openDialog(): void {
     this.planService.section.next(1);
     const dialogRef = this.dialog.open(planAgregarComponent, {
       width: '70%',
       height: '90%',
     });
-
     dialogRef.afterClosed().subscribe(result => {
       this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
-        console.log("la respuesta es: ",respuesta);
         this.plan = respuesta;
         this.dataSource = new MatTableDataSource(this.plan);
         this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
@@ -202,14 +177,9 @@ export class planComponent implements OnInit {
   }
 
   openDialogEdit(idMem: number, tipo_membresia: number){
-    //this.planService.optionShow.next(4);
     this.planService.optionShow.subscribe((option) => {
-      console.log("mostraremos:", option);
     })
 
-    //estos campos deben ser mostrados publicos
-    console.log("el id es: ", idMem);
-    console.log("el tipo es: ", tipo_membresia);
     this.planService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(planEditarComponent, {
       width: '70%',
@@ -219,10 +189,9 @@ export class planComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
-        console.log("la respuesta es: ",respuesta);
         this.plan = respuesta;
         this.dataSource = new MatTableDataSource(this.plan);
-        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+        this.dataSource.paginator = this.paginator; 
       });
     });
   }
@@ -239,16 +208,4 @@ export class planComponent implements OnInit {
       }
     });
   }
-
-  /*getServices(id: number){
-    console.log("id",id);
-    let item = this.plan.find((item) => item.idMem == id);
-    if(item){
-      this.services = item.servicios;
-      console.log("servicios",this.services);
-      this.planService.getServices(this.services);
-    }else {
-      console.log("no hay servicios");
-    }
-}*/
 }
