@@ -8,6 +8,8 @@ import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Observable, Subject } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxSpinnerService } from "ngx-spinner";
+
 
 @Component({
   selector: 'app-alta-categoria',
@@ -29,7 +31,8 @@ export class AltaCategoriaComponent implements OnInit {
     private categoriaService: CategoriaService,
     private gimnasioService: GimnasioService,
     private auth: AuthService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private spinner: NgxSpinnerService
   ) {
     //this.fechaRegistro = this.obtenerFechaActual();
     const fechaActual = new Date().toISOString().split('T')[0];
@@ -63,8 +66,10 @@ export class AltaCategoriaComponent implements OnInit {
 
 enviar(): any {
   if (this.formularioCategoria.valid) {
+    this.spinner.show();
     this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
       // Cierra el diálogo después de agregar la categoría y notificar el cambio
+      this.spinner.hide();
       this.dialog.open(MensajeEmergentesComponent, {
         data: `Categoria agregada exitosamente`,
       })
