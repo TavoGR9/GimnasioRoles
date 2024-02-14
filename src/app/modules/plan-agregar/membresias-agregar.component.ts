@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject} from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators,AbstractControl } from '@angular/forms';
 import { MembresiaService } from 'src/app/service/membresia.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -41,22 +41,31 @@ export class planAgregarComponent {
       detalles: ['', Validators.required],
       duracion: ['', Validators.required],
       precio: ['', Validators.required],
+      status: [1, Validators.required],
       tipo_membresia: [3],
       Gimnasio_idGimnasio: [this.auth.idGym.getValue(), Validators.required],
-      fechaInicio:[''],
-      fechaFin:[''],
-    });
+      fechaInicio:['', Validators.required],
+      fechaFin:['', Validators.required],
+      membresias: [[], [Validators.required, this.requireMinItems(1)]],
+    }, {validators: this.dateLessThan('fechaInicio', 'fechaFin')});
   }
 
   ngOnInit(): void {
     this.auth.idGym.subscribe((id) => {
       if(id){
         this.idGym = id;
+        console.log("EL id es: ", this.idGym);
       }
+      this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
+        this.plan = respuesta;
+      });
     });
-    this.planService.consultarPlanId(this.idGym).subscribe(respuesta => {
+    /*this.planService.consultarPlanId(JSON.stringify(this.idGym)).subscribe(respuesta => {
       this.plan = respuesta;
-     
+    });*/
+
+    this.formulariodePlan.get('membresias')?.valueChanges.subscribe(() => {
+      this.setDuration();
     });
   }
 
@@ -73,14 +82,18 @@ export class planAgregarComponent {
       this.membresiaService
         .agregarPlan(this.formulariodePlan.value)
         .subscribe((respuesta) => {
+          if(respuesta){
+            console.log(respuesta);
+          }
           this.dialog
             .open(MensajeEmergentesComponent, {
-              data: `Membresía agregada exitosamente`,
+              data: `Plan agregado exitosamente`,
             })
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
-                this.router.navigateByUrl('/admin/misMembresias');
+                this.router.navigateByUrl('/plan');
+                this.formulariodePlan.reset();
               } else {
               }
             });
@@ -99,5 +112,36 @@ export class planAgregarComponent {
   isFieldInvalid(field: string, error: string): boolean {
     const control = this.formulariodePlan.get(field);
     return control?.errors?.[error] && (control?.touched ?? false);  
+  }
+
+  setDuration(){
+    if(this.formulariodePlan.get('membresias')?.value.length > 0){
+        let duracion = this.formulariodePlan.get('membresias')?.value.reduce((acc: number, item: any) => {
+            return acc + Number(item.duracion);
+        }, 0);
+        this.formulariodePlan.get('duracion')?.setValue(duracion);
+    } else {
+        this.formulariodePlan.get('duracion')?.setValue(0);
+    }
+}
+
+  requireMinItems(min: number) {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      const length = control.value ? control.value.length : 0;
+      return length >= min ? null : { 'minItems': {value: control.value}};
+    };
+  }
+
+  dateLessThan(from: string, to: string) {
+    return (group: FormGroup): {[key: string]: any} => {
+      let f = group.controls[from];
+      let t = group.controls[to];
+      if (f.value > t.value) {
+        return {
+          dates: "La fecha de inicio debe ser anterior a la fecha de fin"
+        };
+      }
+      return {};
+    }
   }
 }

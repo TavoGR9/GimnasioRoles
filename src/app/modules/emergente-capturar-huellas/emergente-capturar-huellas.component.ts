@@ -188,7 +188,7 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
         this.toastr.success('Huella dactilar guardada correctamente...', 'Éxito');
         this.dialogo.close(true);
       }, error: (error) => { console.log(error); }
-    });
-  }
+    });
+  }
 
 }

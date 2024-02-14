@@ -48,11 +48,9 @@ export class CategoriaService {
   }
 
   consultarCategoriaGym(id: any): Observable<any[]> {
-    // Realiza la solicitud HTTP
     return this.clienteHttp.get<any[]>(this.API + "?consultarGym=" + id)
       .pipe(
         tap((nuevasCategorias: any[]) => {
-          // Emite el valor al subject después de recibir la respuesta
           this.categoriasSubject.next(nuevasCategorias);
         })
       );

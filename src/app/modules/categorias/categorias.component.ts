@@ -15,7 +15,8 @@ import { ChangeDetectorRef } from '@angular/core'
   styleUrls: ['./categorias.component.css'],
 })
 export class CategoriasComponent implements OnInit {
-  //titulos de columnas de la tabla
+
+  currentUser: string = '';
   displayedColumns: string[] = [
     'idCategoria',
     'nombre',
@@ -29,6 +30,7 @@ export class CategoriasComponent implements OnInit {
   dataSource: any;
   categoriaActiva: boolean = true;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  idGym: number = 0;
 
   constructor(
   private categoriaService: CategoriaService, 
@@ -37,43 +39,50 @@ export class CategoriasComponent implements OnInit {
   public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+      this.cargarCategorias();
+      this.actualizarTabla();
+    });  
+  }
+
+  listaTabla(){
+    this.categoriaService.consultarCategoriaGym(this.idGym).subscribe({
       next: (resultData) => {
         this.categorias = resultData;
         this.dataSource = new MatTableDataSource(this.categorias);
         this.dataSource.paginator = this.paginator;
         this.cargarCategorias();
-      },
-      error: (error) => {
       }
     });
   }
 
-  private cargarCategorias() {
-    this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
+
+  cargarCategorias() {
+    this.categoriaService.consultarCategoriaGym(this.idGym).subscribe({
       next: (resultData) => {
         this.categorias = resultData;
         this.dataSource = new MatTableDataSource(this.categorias);
         this.dataSource.paginator = this.paginator;
-      },
-      error: (error) => {
-        console.error('Error al cargar categorías:', error);
       }
     });
   }
   
-  private actualizarTabla() {
+  actualizarTabla() {
     if (!this.dataSource) {
       // Asegúrate de que this.dataSource esté definido antes de actualizar
       this.cargarCategorias();
     } else {
-      this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue()).subscribe({
+      this.categoriaService.consultarCategoriaGym(this.idGym).subscribe({
         next: (resultData) => {
           this.categorias = resultData;
           this.dataSource.data = this.categorias;
-        },
-        error: (error) => {
-          console.error('Error al actualizar categorías:', error);
         }
       });
     }
@@ -81,19 +90,22 @@ export class CategoriasComponent implements OnInit {
 
   altaCategoria(): void {
     const dialogRef = this.dialog.open(AltaCategoriaComponent, {
-      width: '70%',
+      width: '60%',
       height: '90%',
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
       this.actualizarTabla();
     });
   }
 
+
   editarCategoria(idCategoria: string): void {
     const dialogRef = this.dialog.open(EditarCategoriaComponent, {
       width: '60%',
       height: '90%',
       data: { idCategoria: idCategoria },
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
       this.actualizarTabla();
@@ -131,10 +143,18 @@ export class CategoriasComponent implements OnInit {
     );
   }
 
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
   
-
- /* private actualizarListaCategorias() {
-    // Lógica para obtener la lista de categorías del servicio
-    this.categorias = this.categoriaService.consultarCategoriaGym(this.auth.idGym.getValue());
-  }*/
 }
