@@ -106,7 +106,6 @@ import { planEditarComponent } from './plan-editar/membresias-editar.component';
 
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -211,7 +210,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     RecepMaterialModule,
     WebcamModule,
     NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
-    BrowserAnimationsModule
 
   ]
 })

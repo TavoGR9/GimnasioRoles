@@ -48,6 +48,7 @@ export class AltaCategoriaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+   
   }
 
   obtenerFechaActual(): string {

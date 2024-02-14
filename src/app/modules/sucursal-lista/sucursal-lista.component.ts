@@ -10,6 +10,7 @@ import { HorariosVistaComponent } from '../horarios-vista/horarios-vista.compone
 import { ListarSucursalesPipe } from './../../pipes/listar-sucursales.pipe';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator'; 
+import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
   selector: 'app-sucursal-lista',
@@ -27,10 +28,12 @@ export class SucursalListaComponent implements OnInit {
   public page: number = 0;
   public search: string = '';
   optionToShow: number = 0;
+  currentUser: string = '';
 
   constructor(
     private gimnasioService: GimnasioService,
     public dialog: MatDialog,
+    private auth: AuthService,
   ){}
 
   displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'horario', 'ubicacion', 'activar'];
@@ -229,6 +232,7 @@ export class SucursalListaComponent implements OnInit {
     });
   }
 
+  
 
 
   private cargarCategorias() {

@@ -1005,6 +1005,8 @@ export class VentasComponent implements OnInit {
     );
   }
 
-
+  cerrarDialogo(): void {
+    this.dialogo.close(true);
+  }
   
 }

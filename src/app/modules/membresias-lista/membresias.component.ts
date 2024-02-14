@@ -51,7 +51,7 @@ export class MembresiasComponent implements OnInit {
         this.idGym = id;
       }
     });
-    this.planService.consultarPlanId(this.idGym).subscribe(respuesta => {
+    this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
       console.log("la respuesta es: ",respuesta);
       this.plan = respuesta;
       this.dataSource = new MatTableDataSource(this.plan);
@@ -178,7 +178,7 @@ export class MembresiasComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.planService.consultarPlanId(this.idGym).subscribe(respuesta => {
+      this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
         console.log("la respuesta es: ",respuesta);
         this.plan = respuesta;
         this.dataSource = new MatTableDataSource(this.plan);
@@ -217,7 +217,7 @@ export class MembresiasComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.planService.consultarPlanId(this.idGym).subscribe(respuesta => {
+      this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
         console.log("la respuesta es: ",respuesta);
         this.plan = respuesta;
         this.dataSource = new MatTableDataSource(this.plan);

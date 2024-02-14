@@ -15,7 +15,7 @@ export class MembresiaService {
   }
 
   agregarPlan(datosPlan:membresia):Observable<any>{
-    return this.clienteHttp.post(this.API+"?insertar=1",datosPlan);
+    return this.clienteHttp.post(this.API+"?insertarplan",datosPlan);
   }
 
   obternerPlan(){

@@ -1,8 +1,9 @@
 <div class="container mt-4">
     <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
     <div class="responsive-div">
-  
-
+        <div class="title">
+            <h1>Agregar Plan</h1>
+        </div>
             <form [formGroup]="formulariodePlan">
                 <div class="responsive-div">
                 <!--<div class="mi-div-con-borde responsive-div"></div>-->
@@ -55,7 +56,7 @@
                             <p>
                                 <mat-form-field>
                                     <mat-label>Selecciona una membresía</mat-label>
-                                    <mat-select [(value)]="selectedMembresia">
+                                    <mat-select [(value)]="selectedMembresia" multiple formControlName="membresias"> 
                                       <mat-option *ngFor="let membresia of plan" [value]="membresia">
                                         {{ membresia.titulo }} - {{ membresia.duracion }} días
                                       </mat-option>
@@ -68,21 +69,31 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
+                            <p>
+                                <mat-form-field>
+                                    <mat-label>Duración</mat-label>
+                                    <input matInput type="number" formControlName="duracion">
+                                  </mat-form-field>
+                            </p>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
                             <mat-form-field appearance="outline">
                                 <mat-label>Fecha inicio:</mat-label>
-                                <input matInput [matDatepicker]="picker" placeholder="Selecciona una fecha inicio">
-                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                <mat-datepicker #picker></mat-datepicker>
+                                <input matInput placeholder="Selecciona una fecha inicio" formControlName="fechaInicio" [matDatepicker]="picker1">
+                                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                <mat-datepicker #picker1></mat-datepicker>
                             </mat-form-field>
                         </div>
                         <div class="col-sm-6">
                             <mat-form-field appearance="outline">
                                 <mat-label>Fecha fin:</mat-label>
-                                <input matInput [matDatepicker]="picker" placeholder="Selecciona una fecha fin">
-                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                <mat-datepicker #picker></mat-datepicker>
+                                <input matInput placeholder="Selecciona una fecha fin" formControlName="fechaFin" [matDatepicker]="picker2">
+                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                <mat-datepicker #picker2></mat-datepicker>
                             </mat-form-field>
-                            
                         </div>
                     </div>
                     <div style="display: flex; justify-content: center;">
