@@ -1,10 +1,8 @@
-/* Estilos generales */
-
-.card {
+  .card {
     width: 100%
-}
+  }
 
-body {
+  body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -97,6 +95,5 @@ body {
     display: flex;
     align-items: center;
     margin: 10px 0; /* Espaciado entre elementos */
-    /* Otros estilos de tu contenido */
   }
 
