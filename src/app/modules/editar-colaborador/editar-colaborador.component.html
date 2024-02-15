@@ -102,11 +102,16 @@
                         <label>Telefono:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Telefono</mat-label>
-                          <input type="text" placeholder="Telefono celular" matInput autocomplete="off" formControlName="telefono" id="telefono" [errorStateMatcher]="matcher">
+                          <input type="text" placeholder="Telefono celular" matInput autocomplete="off" formControlName="telefono" id="telefono" minlength="10" maxlength="10" [errorStateMatcher]="matcher">
                           <mat-error *ngIf="form.get('telefono')?.hasError('pattern') && !form.get('telefono')?.hasError('required')">
-                            <strong class="txt_msg">**Formato no valido...</strong>
+                            <strong class="error-msg">**Formato no valido, (solo números)...</strong>
                           </mat-error>
-                          <mat-error *ngIf="form.get('telefono')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                          <mat-error *ngIf="form.get('telefono')?.hasError('minlength') && !form.get('telefono')?.hasError('required')">
+                            <strong class="error-msg">**Minimo 10 carácteres</strong>
+                          </mat-error>
+                          <mat-error *ngIf="form.get('telefono')?.touched && form.get('telefono')?.hasError('required')">
+                            <strong class="error-msg">**Campo requerido</strong>
+                          </mat-error>
                         </mat-form-field>
                       </div>
                       <div class="col-sm-6">
