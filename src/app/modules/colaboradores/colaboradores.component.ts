@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ColaboradorService } from 'src/app/service/colaborador.service';
 import { ListarEmpleadosPipe } from 'src/app/pipes/listar-empleados.pipe';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { AltaColaboradoresComponent } from '../alta-colaboradores/alta-colaboradores.component';
 import { EditarColaboradorComponent } from '../editar-colaborador/editar-colaborador.component';
 import { AuthService } from 'src/app/service/auth.service';
@@ -48,6 +48,7 @@ export class ColaboradoresComponent {
     if (this.isAdmin()){
       this.http.listaRecepcionistas(this.idGym).subscribe({
         next: (dataResponse) => {
+          console.log('lista de recepcionistas: ', dataResponse);
           this.empleados = dataResponse;
           this.dataSource = new MatTableDataSource(this.empleados);
         this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
@@ -94,36 +95,39 @@ export class ColaboradoresComponent {
   }
 
   OpenAgregar() {
-    this.dialog.open(AltaColaboradoresComponent,{
-      width: '70%',
-      height: '90%',
-      disableClose: true,  
-    })
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '70%';
+    dialogConfig.height = '90%';
+    dialogConfig.disableClose = true;
+  
+    this.dialog.open(AltaColaboradoresComponent, dialogConfig)
       .afterClosed()
-      .subscribe((cerrarDialogo:Boolean) => {
-        if(cerrarDialogo){
-          
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+          // Hacer algo cuando se cierra el diálogo
         } else {
-
+          // Hacer algo cuando se cancela el diálogo
         }
       });
   }
 
   OpenEditar(empleado: any) {
-    this.dialog.open(EditarColaboradorComponent,{
-      data: {
-        empleadoID: `${empleado.idEmpleado}`
-      },
-      width: '70%',
-      height: '90%',
-      disableClose: true,  
-    })
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '70%';
+    dialogConfig.height = '90%';
+    dialogConfig.disableClose = true; // Evita que el diálogo se cierre haciendo clic fuera de él
+    
+    dialogConfig.data = {
+      empleadoID: `${empleado.idEmpleado}`
+    };
+  
+    this.dialog.open(EditarColaboradorComponent, dialogConfig)
       .afterClosed()
-      .subscribe((cerrarDialogo:Boolean) => {
-        if(cerrarDialogo){
-          
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+          // Hacer algo cuando se cierra el diálogo
         } else {
-
+          // Hacer algo cuando se cancela el diálogo
         }
       });
   }

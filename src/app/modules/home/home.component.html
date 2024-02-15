@@ -154,27 +154,6 @@
          
       </div>
 
-      <div class="row mt-4" *ngIf="isAdmin()">
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Ventas</h4>
-                  <p class="card-text">Consultar las ventas de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../verCorte">Consultar</a>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Registro</h4>
-                  <p class="card-text">Registrar a un cliente</p>
-                  <a class="btn btn-gym" routerLink="../registrar">Registrar Ahora</a>
-               </div>
-            </div>
-         </div>
-
-      </div>
       <!--Apartados de RECEPCIONISTA--->
       <div class="row mt-4" >
          <div class="col-md-6" *ngIf="isAdmin() || isRecep()">
@@ -211,10 +190,9 @@
          </div>-->
          
       </div>
-      
-      <div >
 
-         <div class="col-md-6" *ngIf="isRecep()">
+      <div class="row mt-4" *ngIf="isAdmin()">
+         <div class="col-md-6" >
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Ventas</h4>
@@ -223,8 +201,22 @@
                </div>
             </div>
          </div>
+      </div>
+      
+      <div >
+         <div class="row mt-4" >
+            <div class="col-md-6" *ngIf="isRecep()">
+               <div class="card">
+                  <div class="card-body">
+                     <h4 class="card-title">Ventas</h4>
+                     <p class="card-text">Consultar las ventas de tu gimnasio</p>
+                     <a class="btn btn-gym" routerLink="../verCorte">Consultar</a>
+                  </div>
+               </div>
+            </div>
+         </div>
 
-         <div class="col-md-6" *ngIf="isRecep()">
+         <!--<div class="col-md-6" *ngIf="isRecep()">
             <div class="card">
                <div class="card-body">
                   <h4 class="card-title">Registro</h4>
@@ -232,7 +224,7 @@
                   <a class="btn btn-gym" routerLink="../registrar">Registrar Ahora</a>
                </div>
             </div>
-         </div>
+         </div>-->
          
         <!-- <div class="col-md-6">
             <div class="card">

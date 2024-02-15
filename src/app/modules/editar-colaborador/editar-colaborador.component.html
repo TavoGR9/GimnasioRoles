@@ -99,7 +99,18 @@
 
                     <div class="row">
                       <div class="col-sm-6">
-                        <label>Email:</label>
+                        <label>Telefono:</label>
+                        <mat-form-field appearance="outline" style="width: 90%;">
+                          <mat-label>Telefono</mat-label>
+                          <input type="text" placeholder="Telefono celular" matInput autocomplete="off" formControlName="telefono" id="telefono" [errorStateMatcher]="matcher">
+                          <mat-error *ngIf="form.get('telefono')?.hasError('pattern') && !form.get('telefono')?.hasError('required')">
+                            <strong class="txt_msg">**Formato no valido...</strong>
+                          </mat-error>
+                          <mat-error *ngIf="form.get('telefono')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-sm-6">
+                        <label>Email:</label><p>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Email</mat-label>
                           <input type="email" placeholder="ejemplo@yahoo.com" matInput autocomplete="off" formControlName="email" id="email" [errorStateMatcher]="matcher">

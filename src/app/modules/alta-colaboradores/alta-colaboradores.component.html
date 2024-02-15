@@ -8,7 +8,7 @@
                   <div >
                     <div class="row">
                       <div class="col-sm-6">
-                        <label >Nombre:</label>
+                        <mat-label >Nombre: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Nombre</mat-label>
                           <input type="text" matInput placeholder="Juan" autocomplete="off" formControlName="nombre" id="nombre" [errorStateMatcher]="matcher">
@@ -20,7 +20,7 @@
 
                       </div>
                       <div class="col-sm-6">
-                        <label>Apellido paterno:</label>
+                        <mat-label>Apellido paterno: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Apellido paterno</mat-label>
                           <input type="text" matInput placeholder="Pérez" autocomplete="off" formControlName="apPaterno" id="apPaterno" [errorStateMatcher]="matcher">
@@ -36,7 +36,7 @@
 
                     <div class="row">
                       <div class="col-sm-6">
-                        <label>Apellido materno:</label>
+                        <mat-label>Apellido materno: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Apellido materno</mat-label>
                           <input type="text" placeholder="Sanchéz" matInput autocomplete="off" formControlName="apMaterno" id="apMaterno" [errorStateMatcher]="matcher">
@@ -59,7 +59,7 @@
                             <strong class="txt_msg">**Minimo 12 y máximo 13 caracteres</strong>
                           </mat-error>
                       </mat-form-field>-->
-                      <label>Sucursal:</label>
+                      <mat-label>Sucursal: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Sucursal</mat-label>
                           <mat-select id="sucursal" formControlName="Gimnasio_idGimnasio" id="Gimnasio_idGimnasio" [errorStateMatcher]="matcher">
@@ -75,7 +75,7 @@
 
                     <div class="row">
                       <div class="col-sm-6">
-                        <label>Áreas:</label>
+                        <mat-label>Áreas: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Área</mat-label>
                           <mat-select id="area" formControlName="area" id="area" [errorStateMatcher]="matcher">
@@ -88,7 +88,7 @@
                       </mat-form-field>
                       </div>
                       <div class="col-sm-6">
-                        <label>Turno laboral:</label>
+                        <mat-label>Turno laboral: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Turno laboral</mat-label>
                           <mat-select id="turno" formControlName="turnoLaboral" id="turnoLaboral" [errorStateMatcher]="matcher">
@@ -105,7 +105,7 @@
 
                     <div class="row">
                       <div class="col-sm-6">
-                        <label>Salario:</label>
+                        <mat-label>Salario: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Salario</mat-label>
                           <input type="text" placeholder="Salario" matInput autocomplete="off" formControlName="salario" id="salario" [errorStateMatcher]="matcher">
@@ -116,14 +116,19 @@
                         </mat-form-field>
                       </div>
                       <div class="col-sm-6">
-                        <label>Email:</label>
+                        <mat-label>Telefono: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
-                          <mat-label>Email</mat-label>
-                          <input type="email" placeholder="ejemplo@yahoo.com" matInput autocomplete="off" formControlName="email" id="email" [errorStateMatcher]="matcher">
-                          <mat-error *ngIf="form.get('email')?.hasError('pattern') && !form.get('email')?.hasError('required')">
-                            <strong class="txt_msg">**Formato no valido...</strong>
+                          <mat-label>Telefono </mat-label>
+                        <input matInput placeholder="Número de celular" autocomplete="off" formControlName="telefono" minlength="10" maxlength="10" [errorStateMatcher]="matcher"/>
+                          <mat-error *ngIf="form.get('telefono')?.touched && form.get('telefono')?.hasError('required')">
+                            <strong class="txt_msg">**Campo requerido</strong>
                           </mat-error>
-                          <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                          <mat-error *ngIf="form.get('telefono')?.hasError('pattern') && !form.get('telefono')?.hasError('required')">
+                            <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                          </mat-error>
+                          <mat-error *ngIf="form.get('telefono')?.hasError('minlength') && !form.get('telefono')?.hasError('required')">
+                            <strong class="txt_msg">**Minimo 10 carácteres</strong>
+                          </mat-error>
                         </mat-form-field>
                       </div>
                     </div>
@@ -131,7 +136,21 @@
 
                     <div class="row">
                       <div class="col-sm-6">
-                        <label>Contraseña:</label>
+                        <mat-label>Email: </mat-label>
+                        <mat-form-field appearance="outline" style="width: 90%;">
+                            <mat-label>Email:</mat-label>
+                            <input type="email" placeholder="ejemplo@yahoo.com" matInput autocomplete="off" formControlName="email" id="email" [errorStateMatcher]="matcher">
+                            <mat-error *ngIf="form.get('email')?.hasError('pattern') && !form.get('email')?.hasError('required')">
+                                <strong class="txt_msg">**Formato no válido...</strong>
+                            </mat-error>
+                            <mat-error *ngIf="form.get('email')?.hasError('required')">
+                                <strong class="txt_msg">**Campo requerido</strong>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    
+                      <div class="col-sm-6">
+                        <mat-label>Contraseña: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Asignar contraseña</mat-label>
                           <input matInput  matInput [type]="hide ? 'password' : 'text'" placeholder="Asignar contraseña" formControlName="pass" id="pass" [errorStateMatcher]="matcher">
@@ -142,10 +161,7 @@
                             <strong class="txt_msg">**Minimo 8 caracteres</strong>
                           </mat-error>
                           <mat-error *ngIf="form.get('pass')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                      </mat-form-field>
-                      </div>
-                      <div class="col-sm-6">
-                        
+                        </mat-form-field>
                       </div>
                     </div>
                               
@@ -154,7 +170,7 @@
             </div>
             <div mat-dialog-actions fxLayoutAlign="center center">  <!--style="display: flex; justify-content: center;"-->
               <div>
-                <button mat-raised-button (click)="registrar()" type="submit"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
+                <button mat-raised-button (click)="registrar(); enviarMensajeWhatsApp()" type="submit"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
               </div> 
               <div style="display: flex; justify-content: center; margin-top: 20px;">
                 <button mat-raised-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; height: 40px;color: white; width: 120px;">Cancelar</button>

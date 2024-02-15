@@ -40,6 +40,7 @@ export class AltaColaboradoresComponent {
       Gimnasio_idGimnasio: ['', Validators.compose([ Validators.required])],
       area: ['', Validators.compose([ Validators.required])],
       turnoLaboral: ['', Validators.compose([ Validators.required])],
+      telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
       salario: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
       pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])]
@@ -64,6 +65,23 @@ export class AltaColaboradoresComponent {
         }
       });
     }
+  }
+
+  enviarMensajeWhatsApp() {
+    // Número de teléfono al que se enviará el mensaje
+    const telefono = this.form.value.telefono;
+    const correo = this.form.value.email;
+    const password = this.form.value.pass;
+
+    console.log("Numero de telefono: ", telefono);
+    // Mensaje que se enviará
+    const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
+    console.log("Mensaje: ", mensaje);
+    // Crear la URL para abrir WhatsApp con el mensaje predefinido
+    const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+  
+    // Abrir WhatsApp en una nueva ventana o pestaña
+    window.open(url, '_blank');
   }
 
   cerrarDialogo(): void {
