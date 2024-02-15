@@ -47,9 +47,6 @@ export class MembresiasComponent implements OnInit {
   displayedColumns: string[] = ['title', 'details','price','duration','servicios','actions'];
 
   ngOnInit(): void {
- 
-    
-
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));

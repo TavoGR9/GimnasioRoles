@@ -93,5 +93,6 @@ enviar(): any {
 cerrarDialogo(): void {
   this.dialogo.close(true);
 }
+
   
 }
