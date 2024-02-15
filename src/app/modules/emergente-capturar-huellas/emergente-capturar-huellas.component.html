@@ -1,23 +1,23 @@
 <h1 mat-dialog-title>Captura de huella dactilar.</h1>
 <div mat-dialog-content>
 
-    <!-- Contenido - body capturar huella 
+    <!-- Contenido - body capturar huella -->
     <div class="card-body content_data">
         <h2 *ngIf="existsHuella">El usuario ya cuenta con huella dactilar capturada.</h2>
         <h2 *ngIf="!existsHuella">El usuario no cuenta con huella dactilar capturada.</h2>
-         Imagen de la huella dactilar almacenada en BD
+        <!-- Imagen de la huella dactilar almacenada en BD -->
         <div *ngIf="existsHuella" class="alert alert-light" role="alert">
             <img class="fingerImg" *ngIf="existsHuella" src="" alt="">
         </div>
 
-        Imagen de huella dactilar capturada 
+        <!-- Imagen de huella dactilar capturada -->
         <div *ngIf="currentImageFingerFixed" class="alert alert-light" role="alert">
             <img class="fingerImg" src="data:image/jpeg;base64, {{currentImageFingerFixed}}" alt="huella_capturada">
         </div>
 
         <button class="btn btn-primary btn-block" (click)="fn_Listar_Dispositivos()">
             Iniciar lectura de huella
-        </button>-->
+        </button>
         <!--
             <button (click)="fn_DeviceInfo()">Información de dispositivo.</button>
         
@@ -27,14 +27,14 @@
 <br/><br/><br/><!--
 <button (click)="fn_CapturaFP()">Mostrar captura</button> -->
 
-        <!--<button *ngIf="currentImageFingerFixed" class="btn btn-danger btn-block" (click)="uploadFingerprint()">
+        <button *ngIf="currentImageFingerFixed" class="btn btn-danger btn-block" (click)="uploadFingerprint()">
             Guardar huella capturada
         </button>
 
 
 
     </div>
-    </div>
+    <!--</div>-->
     <div mat-dialog-actions fxLayoutAlign="center center">
         <button class="button-pay" mat-button (click)="cerrarDialogo()">Cerrar</button>
-    </div>-->
+    </div>
