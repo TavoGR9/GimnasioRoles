@@ -18,7 +18,7 @@ import './../../WebSdk';
   templateUrl: './emergente-capturar-huellas.component.html',
   styleUrls: ['./emergente-capturar-huellas.component.css']
 })
-export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {/*
+export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
   // Manejar objeto para envio de id e imagen base64 de huella capturada
   archivo = {
     id: 0,
@@ -58,18 +58,18 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {/*
     console.log("En el evento: Adquisición de imagen");
     console.log(event);
     this.ListaSamplesFingerPrints = event;
-    //this.fn_CapturaFP();
-  };*/
+    this.fn_CapturaFP();
+  };
 
-  ngOnDestroy(): void {/*
+  ngOnDestroy(): void {
     this.reader.off("DeviceConnected", this.onDeviceConnected);
     this.reader.off("DeviceDisconnected", this.onDeviceDisconnected);
     this.reader.off("AcquisitionStopped", this.onAcquisitionStopped);
     this.reader.off("SamplesAcquired", this.onSamplesAcquired);
-    this.reader.off("AcquisitionStarted", this.onAcquisitionStarted);*/
+    this.reader.off("AcquisitionStarted", this.onAcquisitionStarted);
   }
 
-  ngOnInit(): void {/*
+  ngOnInit(): void {
     //Alamacenar el dato del ide del cliente pasado del componente padre
     this.archivo.id = this.data.clienteID;
 
@@ -78,11 +78,11 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {/*
     this.reader.on("DeviceDisconnected", this.onDeviceDisconnected);
     this.reader.on("AcquisitionStopped", this.onAcquisitionStopped);
     this.reader.on("SamplesAcquired", this.onSamplesAcquired);
-    this.reader.on("AcquisitionStarted", this.onAcquisitionStarted);*/
+    this.reader.on("AcquisitionStarted", this.onAcquisitionStarted);
   }
 
   // INICIAN METODOS DE LA LIBRERIA DIGITAL PERSONA PARA CAPTURA DE HUELLA >->->->->->->->->->->
-/*
+
   // Listar dispositivos conectados
   fn_Listar_Dispositivos(){
     Promise.all([
@@ -190,5 +190,5 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {/*
       }, error: (error) => { console.log(error); }
     });
   }
-*/
+
 }
