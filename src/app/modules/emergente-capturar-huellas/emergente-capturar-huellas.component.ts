@@ -199,7 +199,7 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.archivo.id=11;
+    this.archivo.id=this.service.idGym.getValue();
     console.log(this.archivo);
     this.service.testSpringBoot(this.archivo).subscribe({
       next: (resultData) => { console.log(resultData); 
