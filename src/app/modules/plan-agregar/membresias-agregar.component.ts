@@ -39,7 +39,7 @@ export class planAgregarComponent {
     this.formulariodePlan = this.formulario.group({
       titulo: ['', Validators.required],
       detalles: ['', Validators.required],
-      duracion: ['', Validators.required],
+      duracion: ['1', Validators.required],
       precio: ['', Validators.required],
       status: [1, Validators.required],
       tipo_membresia: [3],

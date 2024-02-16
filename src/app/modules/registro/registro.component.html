@@ -1,13 +1,12 @@
-<div class="container mt-4">
-    <div class="body">
+<div >
+    <div >
         <!--SE AGREGA CONTENIDO DE LA PANTALLA-->
-        <div class="content_body">
+        <div >
            <div mat-dialog-title class="title_page">
               <h1>¡Registra a tu cliente aquí!</h1>
-              <h3>Ingresa los siguientes datos:</h3>
            </div>
            <!--cierra title page-->
-           <div mat-dialog-content class="form_content">
+           <div mat-dialog-content >
               <form [formGroup]="form" >
               <p>
                  <strong class="txt_msg">
@@ -24,35 +23,31 @@
                        </mat-select>
                     </mat-form-field>
                  </p>
-                 <br />
               </div>
-              <br />
               <br />
               <div class="row">
                  <div class="col-md-6">
-                    <div class="content_up_picture">
-                       <h2><strong> Sube tu imagen.</strong></h2>
-                       <input accept="image/*" type="file" name="image" class="d-none" (change)="onPhotoSelected($event)" #photoInput />
-                       <img
+                  <div >
+                     <h2><strong> Sube tu imagen.</strong></h2>
+                     <input accept="image/*" type="file" name="image" class="d-none" (change)="onPhotoSelected($event)" #photoInput />
+                     <img
                        [src]="photoSelected || 'https://images.vexels.com/media/users/3/137047/isolated/lists/5831a17a290077c646a48c4db78a81bb-icono-de-perfil-de-usuario-azul.png'"
                        class="img-fluid"
                        alt="No image"
                        (click)="photoInput.click()"
-                       />
-                       <br>
-                       <p *ngIf="photoSelected"><strong>Imagen seleccionada correctamente.</strong></p>
-                       <p *ngIf="not_size"><strong style="color: red;">La imagen excede el peso permitido (1mb).</strong></p>
-                       <p *ngIf="not_format"><strong style="color: red;">El archivo que intentas subir no tiene un formato valido..</strong></p>
-                       <button *ngIf="photoSelected" class="btn btn-primary btn-block" (click)="uploadPhoto()">
-                       Aceptar imagen
+                     />
+                     <br>
+                     <p *ngIf="photoSelected" (click)="uploadPhoto()"><strong>Imagen seleccionada correctamente.</strong></p>
+                     <p *ngIf="not_size"><strong style="color: red;">La imagen excede el peso permitido (1mb).</strong></p>
+                     <p *ngIf="not_format"><strong style="color: red;">El archivo que intentas subir no tiene un formato válido.</strong></p>
+                     <div class="mt-3" *ngIf="webcamImage">
+                       <button class="btn btn-danger" (click)="resetWebcamImage()" *ngIf="webcamImage">
+                         Descartar foto.
                        </button>
-                       <div class="mt-3" *ngIf="webcamImage">
-                          <button class="btn btn-danger" (click)="resetWebcamImage()" *ngIf="webcamImage">
-                          Descartar foto.
-                          </button>
-                       </div>
-                       <br>
-                    </div>
+                     </div>
+                     <br>
+                   </div>
+                   
                     <div>
                        <br>
                        <button mat-menu-item (click)="show_option('up')" >
@@ -316,10 +311,10 @@
               </form>
            </div>
            <div mat-dialog-actions fxLayoutAlign="center center">
-            <button mat-button (click)="registrar()" mat-raised-button style="background: #fd9727; color: white; width: 30%;">
+            <button mat-button (click)="registrar()" mat-raised-button style="background: #fd9727; color: white; width: 20%;">
               ¡Registrar!
             </button>
-            <button  mat-button (click)="cerrarDialogo()" mat-raised-button style="background: #000000; color: white; width: 30%;">Cerrar</button>
+            <button  mat-button (click)="cerrarDialogo()" mat-raised-button style="background: #000000; color: white; width: 20%;">Cerrar</button>
           </div>
         </div>
      </div>

@@ -27,7 +27,7 @@ export class ProductosComponent implements OnInit {
   public productos: any;
   currentUser: string = '';
   listProductData: ListaProductos[] = [];
-  private idGym: number = 0;
+  idGym: number = 0;
   dataSource: any;
   productoActiva: boolean = true;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -36,7 +36,9 @@ export class ProductosComponent implements OnInit {
     private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog,
-  ) {}
+  ) {
+    
+  }
 
   ngOnInit(): void {
     this.currentUser = this.auth.getCurrentUser();
@@ -139,10 +141,10 @@ export class ProductosComponent implements OnInit {
   }
 
   editarProducto(idProducto: number): void {
-    console.log("idProducto", idProducto);
     const dialogRef = this.dialog.open(EditarProductoComponent, {
       width: '65%',
       height: '90%', 
+      disableClose: true,  
       data: { idProducto: idProducto }
     });
   

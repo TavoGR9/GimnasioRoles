@@ -24,24 +24,26 @@ class Horario {
   styleUrls: ['./configuracion.component.css'] 
 })
 export class ConfiguracionComponent  implements OnInit{
-  diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
-  formularioHorarios: FormGroup;
-  idGimnasio: any;
-  formularioSucursales: FormGroup;
+  elID: any;
   gimnasio: any;
   franquicia: any;
-  elID: any;
+  idGym: number = 0;
   message: string = '';
-
+  currentUser: string = '';
+  formularioHorarios: FormGroup;
+  formularioSucursales: FormGroup;
+  diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+  idGimnasio: any;
+  
   constructor(
+    private router: Router,
+    public dialog: MatDialog,
+    private auth: AuthService,
     private formulario: FormBuilder,
     private activeRoute: ActivatedRoute,
-    private router: Router,
-    private gimnasioService: GimnasioService,
     public formularioHorario: FormBuilder,
-    public dialog: MatDialog,
     private HorarioService: HorarioService,
-    private auth: AuthService,
+    private gimnasioService: GimnasioService, 
   ) {
    {
       this.idGimnasio = this.auth.idGym.getValue(); // Accede a idGimnasio desde los datos
@@ -59,7 +61,6 @@ export class ConfiguracionComponent  implements OnInit{
     }
 
     this.elID = this.activeRoute.snapshot.paramMap.get('id');
-    console.log(this.elID);
     this.formularioSucursales = this.formulario.group({
      nombreGym: ["", Validators.required],
      codigoPostal: ["", Validators.required],
@@ -82,7 +83,7 @@ export class ConfiguracionComponent  implements OnInit{
 
 
   agregarHorarioExistente(diaSemana: string, respuesta: any): void {
-  const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
+    const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
     // Si existe un horario para este día, usa esos valores, de lo contrario, usa valores por defecto
     const horaEntrada = horarioExistente ? horarioExistente.horaEntrada : '';
     const horaSalida = horarioExistente ? horarioExistente.horaSalida : '';
@@ -98,7 +99,19 @@ export class ConfiguracionComponent  implements OnInit{
   }
   
   ngOnInit(): void {
-    this.gimnasioService.consultarPlan(this.auth.idGym.getValue()).subscribe(
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+  
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    }); 
+  }
+
+  listaTabla(){
+    this.gimnasioService.consultarPlan(this.idGym).subscribe(
       (respuesta) => {
         this.formularioSucursales.setValue({
           nombreGym: respuesta[0]['nombreGym'],
@@ -122,27 +135,19 @@ export class ConfiguracionComponent  implements OnInit{
     );
   }
 
-  /*actualizar() {
-    console.log("aca si");
-    const actualizarPlan = this.gimnasioService.actualizarPlan(this.auth.idGym.getValue(), this.formularioSucursales.value);
-    const actualizarHorarios = this.HorarioService.actualizarHorario(this.auth.idGym.getValue(), this.formularioHorarios.value);
-    console.log(actualizarPlan, "actualizarPlan");
-    console.log(actualizarHorarios, "actualizarHorarios");
-    forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
-      next: ([planResponse, horariosResponse]) => {
-        console.log("si paso");
-        this.dialog.open(MensajeEmergentesComponent, {
-          data: 'Gimnasio actualizado exitosamente',
-        }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
-          if (cerrarDialogo) {
-            this.router.navigateByUrl("/admin/verConfiguracion");
-          }
-        });
-      },
-      error: (error) => {
-      }
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
     });
-  }*/
+  }
 
   actualizar() {
     const idGym = this.auth.idGym.getValue();
@@ -176,14 +181,11 @@ export class ConfiguracionComponent  implements OnInit{
   }
   
   private mostrarMensajeDeError() {
-    // Puedes implementar lógica para mostrar un mensaje de error específico si es necesario
-    
     this.dialog.open(MensajeEmergentesComponent, {
       data: 'Error durante la actualización del gimnasio',
     });
   }
   
-
   getHorariosControls(): AbstractControl[]{
     const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
     return horariosArray.controls;

@@ -39,6 +39,7 @@ export class HorariosVistaComponent implements OnInit{
   franquicia: any;
   formularioSucursales: FormGroup;
   personaForm: FormGroup;
+  mostrarFormularioAdministrador: boolean = false;
   postalCodeControl = new FormControl('');
   addressControl = new FormControl('');
 
@@ -78,6 +79,7 @@ export class HorariosVistaComponent implements OnInit{
       nombre: ['', Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       apPaterno: ['', Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       apMaterno: ['', Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
+      telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
       area: [2],
       turnoLaboral: ['Matutino'],
       salario: [0],
@@ -119,21 +121,42 @@ export class HorariosVistaComponent implements OnInit{
       }
     });
 
+  }
 
-    if(this.isSupadmin()){
-      this.http.comboDatosAllGym().subscribe({
-        next: (dataResponse) => {
-          console.log(dataResponse);
-          this.sucursales = dataResponse;
-        }
-      });
+  actualizarSelect() {
+    if (this.isSupadmin()) {
+      console.log('Las sucursales que se muestran son: ', this.formularioSucursales.value.nombreGym);
+      setTimeout(() => {
+        this.http.comboDatosGymByNombre(this.formularioSucursales.value.nombreGym).subscribe({
+          next: (dataResponse) => {
+            console.log('Las sucursales disponibles son: ', dataResponse);
+            this.sucursales = dataResponse;
+          }
+        });
+      }, 5000); // 5000 milisegundos = 5 segundos
     }
   }
 
-
- 
 cerrarDialogo(): void {
   this.dialogo.close();
+}
+
+mostrarFormulario() {
+  this.mostrarFormularioAdministrador = true;
+}
+
+enviarMensajeWhatsApp() {
+  // Número de teléfono al que se enviará el mensaje
+  const telefono = this.personaForm.value.telefono;
+  const nombre = this.personaForm.value.nombre;
+  // Mensaje que se enviará
+  const mensaje = `Hola ${nombre} estos son tus accesos... Correo: ${this.email}, Contraseña: ${this.pass}`;
+
+  // Crear la URL para abrir WhatsApp con el mensaje predefinido
+  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+  // Abrir WhatsApp en una nueva ventana o pestaña
+  window.open(url, '_blank');
 }
 
 
@@ -475,6 +498,68 @@ enviarFormularios(): void {
         // Manejo de errores
         console.error('Error en la solicitud al servidor:', error);
         // Puedes agregar lógica adicional aquí según tus necesidades
+      }
+    );
+  } else {
+    this.message = "Por favor, complete todos los campos requeridos.";
+  }
+}
+
+enviarSucursal(): void {
+  if (this.formularioSucursales.valid) {
+    this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe(
+      (respuestaSucursal) => {
+        if (respuestaSucursal && respuestaSucursal.success === 1) {
+          console.log(this.formularioSucursales.value);
+          console.log('el gimnasio es: ', this.formularioSucursales.value.nombreGym);
+        } else {
+          // Manejo de errores en la respuesta de agregarSucursal
+        }
+      },
+      (error) => {
+        // Manejo de errores en la solicitud al servidor para agregarSucursal
+        console.error('Error en la solicitud al servidor para agregarSucursal:', error);
+      }
+    );
+  } else {
+    this.message = "Por favor, complete todos los campos requeridos.";
+  }
+}
+
+enviarEmpleado(): void {
+  if (this.personaForm.valid) {
+    const datosFormulario = this.personaForm.value;
+    datosFormulario.email = this.email;
+    datosFormulario.pass = this.pass;
+    console.log('datos del empleado: ', datosFormulario)
+    
+    this.http.agregarEmpleado(datosFormulario).subscribe(
+      (respuestaEmpleado) => {
+        if (respuestaEmpleado && respuestaEmpleado.msg === 'Success' ) {
+          console.log('Respuesta del servidor para agregarEmpleado:', respuestaEmpleado);
+          console.log('segunda de datos del empleado: ', datosFormulario)
+
+          this.dialog.open(MensajeEmergentesComponent, {
+            data: `Empleado agregado exitosamente`,
+            disableClose: true
+          }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
+            if (cerrarDialogo) {
+              this.dialogo.close();
+              this.personaForm.reset();
+            }
+          });
+        } else {
+          if (respuestaEmpleado) {
+            console.error('Error al agregar empleado:', respuestaEmpleado.error);
+          } else {
+            console.error('Error al agregar empleado: respuesta vacía');
+          }
+        }
+      },
+      (error) => {
+        // Manejo de errores en la solicitud al servidor para agregarEmpleado
+        console.error('Error en la solicitud al servidor para agregarEmpleado:', error);
+        // Aquí puedes mostrar un mensaje de error o ejecutar alguna otra acción
       }
     );
   } else {

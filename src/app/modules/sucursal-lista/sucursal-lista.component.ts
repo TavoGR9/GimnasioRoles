@@ -310,18 +310,21 @@ export class SucursalListaComponent implements OnInit {
   agregarSucursal(): void {
     this.gimnasioService.optionSelected.next(2);
     this.gimnasioService.optionSelected.subscribe((data) => {
-      if(data){
+      if (data) {
         this.optionToShow = data;
-        if(this.optionToShow === 2){
+        if (this.optionToShow === 2) {
           console.log("MOSTRAREMOS FORMULARIO DE AGREGAR SUCURSAL");
         }
       }
     });
+  
     const dialogRef = this.dialog.open(HorariosVistaComponent, {
       width: '70%',
       height: '90%',
       data: { idGimnasio: this.idGimnasio },
-    })
+      disableClose: true // Bloquea el cierre del diálogo haciendo clic fuera de él o presionando Escape
+    });
+  
     dialogRef.afterClosed().subscribe(() => {
       this.actualizarTabla();
     });
@@ -344,7 +347,9 @@ export class SucursalListaComponent implements OnInit {
       width: '70%',
       height: '90%',
       data: { idGimnasio: this.idGimnasio },
-    })
+      disableClose: true // Bloquea el cierre del diálogo haciendo clic fuera de él o presionando Escape
+    });
+  
     dialogRef.afterClosed().subscribe(() => {
       this.actualizarTabla();
     });
