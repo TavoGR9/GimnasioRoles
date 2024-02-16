@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 //para conectarse al api
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
+import { msgResult } from '../models/empleado';
 
 @Injectable({
   providedIn: 'root'
@@ -132,6 +133,11 @@ clearCurrentUser(): void {
 // Traer datos de usuario logeaddo
 dataUser(data: any): Observable<any> {
   return this.clienteHttp.post<dataLogin>(this.APIv2 + 'datosSStorage.php', data, { headers: this.httpHeaders});
+}
+
+// Valiodar huella
+testSpringBoot(data: any):Observable<any> {
+  return this.clienteHttp.post<msgResult>(this.APIv2 + 'fingerAuth.php', data, { headers: this.httpHeaders});
 }
 
 }

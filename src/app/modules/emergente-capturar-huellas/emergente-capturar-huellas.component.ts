@@ -188,7 +188,25 @@ export class EmergenteCapturarHuellasComponent implements OnInit, OnDestroy {
         this.toastr.success('Huella dactilar guardada correctamente...', 'Éxito');
         this.dialogo.close(true);
       }, error: (error) => { console.log(error); }
-    });
-  }
+    });
+  }
+
+  testVerifyFinger(){
+    // Validación de captura de huellas
+    if (this.archivo.huella === '' || this.archivo.id === 0) {
+      console.log('No haz capurado huella aun.');
+      this.toastr.error('Aún no haz capturado la huella dactilar.', 'Error');
+      return;
+    }
+
+    this.archivo.id=11;
+    console.log(this.archivo);
+    this.service.testSpringBoot(this.archivo).subscribe({
+      next: (resultData) => { console.log(resultData); 
+        this.toastr.success('Valicacion ok...', 'Éxito');
+        this.dialogo.close(true);
+      }, error: (error) => { console.log(error); }
+    });
+  }
 
 }
