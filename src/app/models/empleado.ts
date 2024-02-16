@@ -3,7 +3,7 @@ export class registrarEmpleado {
     nombre!: string;
     apPaterno!: string;
     apMaterno!: string;
-    rfc!: string;
+    telefono!: string;
     Gimnasio_idGimnasio!: string;
     area!: string;
     turnoLaboral!: string;
@@ -12,6 +12,7 @@ export class registrarEmpleado {
     pass!: string;
 }
 
+//rfc!: string;
 //mensaje retornado despues insertar/
 export class msgResult {
     msg!: string;
@@ -23,6 +24,7 @@ export class listaEmpleados {
     nombre!: string;
     apPaterno!: string;
     apMaterno!: string;
+    telefono!: string;
     rfc!: string;
     Gimnasio_idGimnasio!: string;
     turnoLaboral!: string;

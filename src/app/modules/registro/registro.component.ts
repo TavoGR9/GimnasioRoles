@@ -338,7 +338,6 @@ export class RegistroComponent implements OnInit {
   }
 
   onPhotoSelected(event: any): void {
-    
     if (event.target.files && event.target.files[0]) {
       var files = event.target.files;
       var file = files[0];
@@ -359,7 +358,6 @@ export class RegistroComponent implements OnInit {
           return;
         }
       }
-
       // Almacenar el nombre del archivo/imagen en el json Archivo
       this.archivo.nombreArchivo = file.name;
 
@@ -368,13 +366,17 @@ export class RegistroComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = e => this.photoSelected = reader.result;
       reader.readAsDataURL(this.file);
-
+     
       if (files && file) {
-        // Create a new instance of FileReader
+        
         const newReader = new FileReader();
         newReader.onload = this._handleReaderLoaded.bind(this);
+     
         newReader.readAsBinaryString(file);
+        
       }
+
+     
     } else {
       // Si no se selecciona ninguna imagen, mostrar la imagen por defecto y resetear valores del objeto Archivo
       this.photoSelected = null;
@@ -382,47 +384,36 @@ export class RegistroComponent implements OnInit {
       this.archivo.nombreArchivo = '';
       return;
     }
-
+   
   }
 
   // Codificar la imagen a base64
   _handleReaderLoaded(readerEvent: any) {
     var binaryString = readerEvent.target.result;
     this.archivo.base64textString = btoa(binaryString);
+    
+    this.uploadPhoto();
   }
 
 
  uploadPhoto() {
-  console.log("hola");
-    console.log(this.archivo);
-    if (this.archivo.base64textString === '' || this.archivo.nombreArchivo === '' ) {
-      console.log('Selecciona una imagen antes de querer subir la imagen.');
+    if (  this.archivo.nombreArchivo === '' ) {
       this.toastr.error('Aún no haz seleccionado una imagen valida...', 'Error');
       return;
     }
-    console.log("hola");
-    /*this.auth.send_profile_img(this.archivo).subscribe({
-      next: (resultData) => { console.log(resultData); }, error: (error) => { console.log(error); }
-    });*/
+
+    this.form.patchValue({
+      fotoUrl: this.archivo.nombreArchivo,
+      nombreArchivo: this.archivo.nombreArchivo,
+      base64textString: this.archivo.base64textString
+    });
     
-    this.form.patchValue({
-      fotoUrl: this.archivo.nombreArchivo  // Asigna la imagen a fotoUrl
-    });
-
-    this.form.patchValue({
-      nombreArchivo: this.archivo.nombreArchivo  // Asigna la imagen a fotoUrl
-    });
-    this.form.patchValue({
-      base64textString: this.archivo.base64textString  // Asigna la imagen a fotoUrl
-    });
-
   }
 
 
   registrar(): any {
     console.log(this.form.value);
     this.email = this.form.value.email;
-    console.log(this.email);
     if (this.form.valid) {
       this.clienteService.consultarEmail(this.email).subscribe((resultData) => {
         console.log(resultData.msg);

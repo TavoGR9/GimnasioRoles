@@ -46,9 +46,6 @@
     margin-top: 80px;
    }
   
-  
-  
-
 
    .toggle-container {
     float: left;
@@ -91,4 +88,10 @@
     left: 0; /* Mantiene la "bolita" a la izquierda cuando está activo */
   }
  
- 
+  .title {
+    background-color: #eeeded;
+    padding: 10px;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+  }

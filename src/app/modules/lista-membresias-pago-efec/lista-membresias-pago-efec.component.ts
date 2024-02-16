@@ -109,10 +109,12 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     'Pagar',
     'Actualizar',
   ];
-  dineroRecibido: number = 0; // =0
-  moneyRecibido: number = 0; // =0
-  cash: number = 0; // =0
+  dineroRecibido: number = 0; 
+  moneyRecibido: number = 0; 
+  cash: number = 0; 
   IDvalid: number = 0;
+  currentUser: string = '';
+  idGym: number = 0;
 
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorPagoOnline', { static: true }) paginator!: MatPaginator;
@@ -174,7 +176,30 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       this.dataSourceReenovacion.paginator = this.paginatorReenovacion;
     });
 
-    this.updateDateLogs();  // Actualiza las fechas iniciales al inicio
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+  
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.updateDateLogs();  
+    }); 
+
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
   }
 
   ngDoCheck(): void {
@@ -208,11 +233,10 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.pagoService.obtenerActivos(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
-      this.auth.idGym.getValue()
+      this.idGym
+
     ).subscribe(
       response => {
-        console.log(response);
-  
         if (response.msg == 'No hay resultados') {
           // Si no hay datos, resetea la tabla
           this.clienteActivo = [];

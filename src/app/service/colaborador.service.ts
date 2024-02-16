@@ -18,6 +18,10 @@ export class ColaboradorService {
         return this.clienteHttp.get(this.API+"?nomGym="+gimID);
     }
 
+    comboDatosGymByNombre(gimName: any){
+        return this.clienteHttp.get(this.API+"?nameGym="+gimName);
+    }
+
     comboDatosAllGym(){
         return this.clienteHttp.get(this.API+"?nomAllGym");
     }

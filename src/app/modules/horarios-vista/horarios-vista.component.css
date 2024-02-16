@@ -16,6 +16,16 @@
     font-weight:700;
 }
 
+.error-msg {
+    font-size: 12px; /* Aquí puedes ajustar el tamaño del texto según tus preferencias */
+  }
+
+.mat-error {
+    font-size: 12px; /* Ajustar el tamaño del texto del mensaje de error */
+    margin-top: 4px; /* Reducir el espacio entre el campo y el mensaje de error */
+    color: #f44336; /* Cambiar el color del mensaje de error si lo deseas */
+}
+
 .close-btn {
     background-color: rgb(219, 219, 219);
     border: none;

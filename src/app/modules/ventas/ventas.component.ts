@@ -956,8 +956,9 @@ export class VentasComponent implements OnInit {
   }
 
   validarYAgregarProducto(producto: Producto) {
-   // this.InventarioService.obtenerProductoPorId(producto.id, this.auth.idGym.getValue()).subscribe(
-    this.InventarioService.obtenerProductoPorId(producto.id, 1).subscribe(
+    console.log(producto, "producto");
+   this.InventarioService.obtenerProductoPorId(producto.id, this.auth.idGym.getValue()).subscribe(
+    //this.InventarioService.obtenerProductoPorId(producto.id, 1).subscribe(
       (data) => {
         const productoObtenido = data[0];
         

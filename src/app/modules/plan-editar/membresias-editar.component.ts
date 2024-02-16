@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { FormGroup,FormBuilder,Validators, AbstractControl } from '@angular/forms';
@@ -6,6 +6,7 @@ import { MembresiaService } from 'src/app/service/membresia.service';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from 'src/app/service/auth.service';
 import { PlanService } from '../../service/plan.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-membresias-editar',
@@ -23,7 +24,10 @@ export class planEditarComponent {
   serviceToUpdate: any = [];
   memberships: any = [];
 
-  constructor(public formulario:FormBuilder,
+  constructor(
+    public dialogo: MatDialogRef<planEditarComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
+    public formulario:FormBuilder,
     private activeRoute: ActivatedRoute, 
     private membresiaService:MembresiaService,
     private router:Router,
@@ -94,6 +98,7 @@ export class planEditarComponent {
   }
 
   cerrarDialogo(){
+    this.dialogo.close(true);
   }
 
   enviar(){

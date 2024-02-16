@@ -12,12 +12,14 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 })
 export class VerConfiguracionComponent implements OnInit {
 
+  id:any;
+  item: any; 
   gimnasio: any;
   idGimnasio: any;
-  datosHorario: any[] = [];
+  idGym: number = 0;
   message: string = "";
-  item: any; 
-  id:any;
+  currentUser: string = '';
+  datosHorario: any[] = [];
 
   constructor(
     private gimnasioService: GimnasioService,
@@ -27,18 +29,28 @@ export class VerConfiguracionComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.gimnasioService.consultarPlan(this.auth.idGym.getValue()).subscribe(respuesta => {
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+  
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.consultarHorario();
+      this.consultarGym();
+    }); 
+  }
+
+  consultarGym(){
+    this.gimnasioService.consultarPlan(this.idGym).subscribe(respuesta => {
       this.gimnasio = respuesta;
     });
-    this.consultarHorario();
-
-    this.id=this.auth.idGym.getValue();
   }
 
   consultarHorario() {
-    this.HorarioService.consultarHorario(this.auth.idGym.getValue()).subscribe(
+    this.HorarioService.consultarHorario(this.idGym).subscribe(
       (data) => {
-        this.datosHorario = data;  // Asigna los datos a la propiedad
+        this.datosHorario = data; 
       },
       (error) => {
         this.message = "Horario no disponible";
@@ -46,8 +58,21 @@ export class VerConfiguracionComponent implements OnInit {
     );
   }
 
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
+
   agregarHorario(idGimnasio: number): void {
-    console.log("idGimnasio", idGimnasio);
     const dialogRef = this.dialog.open(HorariosComponent, {
       width: '60%',
       height: '90%',
