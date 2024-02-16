@@ -45,10 +45,10 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     console.log(this.loginForm.value);
-    if(this.loginForm.valid){
+    if (this.loginForm.valid) {
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
-          if (resultData.rolUser !== 'No_acceso') {
+          if (resultData && resultData.rolUser !== 'No_acceso') {
             this.auth.loggedIn.next(true);
             this.auth.role.next(resultData.rolUser);
             this.auth.userId.next(resultData.id);
@@ -56,22 +56,31 @@ export class LoginComponent implements OnInit {
             this.auth.nombreGym.next(resultData.nombreGym);
             this.auth.email.next(resultData.email);
             this.auth.encryptedMail.next(resultData.encryptedMail);
-            this.auth.setCurrentUser({ olympus: resultData.encryptedMail});
+            this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
             this.router.navigate(['/home']);
             console.log('Tu rol es: ' + resultData.rolUser);
-            
           } else {
-            this.toastr.error('No cuentas con permisos...', 'Error', {
+            this.toastr.error('Por favor, verifica las credenciales proporcionadas....', 'Error', {
               positionClass: 'toast-bottom-left',
             });
           }
-        }, error: (error) => {
-            this.toastr.error(error, 'Error', {
-            positionClass: 'toast-bottom-left',
-          });
-        }
-      })
+        },
+        error: (error) => {
+          if (error.status === 401) {
+            // La contraseña es incorrecta
+            this.toastr.error('La contraseña ingresada es incorrecta.', 'Error', {
+              positionClass: 'toast-bottom-left',
+            });
+          } else {
+            // Otro tipo de error
+            this.toastr.error(error.message, 'Error', {
+              positionClass: 'toast-bottom-left',
+            });
+          }
+        },
+      });
     }
   }
+  
 
 }
