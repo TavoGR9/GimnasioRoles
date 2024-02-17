@@ -23,6 +23,10 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.URLServices, { params });
   }
 
+  ticketPagoInfo(id:any):Observable<any>{
+    return this.clienteHttp.get(this.URLServices+"?infoTicketMembresia="+id);
+  }
+
   /*obtenerActivos(){
     return this.clienteHttp.get(this.URLServices+"?consultar");
   }*/

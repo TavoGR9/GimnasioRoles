@@ -16,7 +16,7 @@
               <div class="select-box">
                  <h3>Selecciona una membresía:</h3>
                  <p>
-                    <mat-form-field style="width: 100%; height: 90px;" required>
+                    <mat-form-field style="width: 100%; height: 90px;" >
                        <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar</mat-label>
                        <mat-select formControlName="Membresia_idMem">
                           <mat-option *ngFor="let opcion of planes" [value]="opcion.value"> {{ opcion.label }}</mat-option>
@@ -311,7 +311,7 @@
               </form>
            </div>
            <div mat-dialog-actions fxLayoutAlign="center center">
-            <button mat-button (click)="registrar()" mat-raised-button style="background: #fd9727; color: white; width: 20%;">
+            <button mat-button (click)="registrar(); cerrarDialogo()" mat-raised-button style="background: #fd9727; color: white; width: 20%;">
               ¡Registrar!
             </button>
             <button  mat-button (click)="cerrarDialogo()" mat-raised-button style="background: #000000; color: white; width: 20%;">Cerrar</button>

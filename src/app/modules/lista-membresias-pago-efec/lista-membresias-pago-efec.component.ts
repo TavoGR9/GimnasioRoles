@@ -250,10 +250,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           this.clienteActivo = response;
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
-          this.toastr.success('Datos encontrados.', 'Success!!!');
+          //this.toastr.success('Datos encontrados.', 'Success!!!');
         }
-      },
-      error => {
+      }, error => {
         console.error('Error en la solicitud:', error);
         // Manejo de errores adicional si es necesario
         this.clienteActivo = [];

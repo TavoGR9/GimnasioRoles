@@ -89,6 +89,7 @@ export class RegistroComponent implements OnInit {
   actualizar_imagen: string = '';
   photoSelected: string | ArrayBuffer | null;
   public errors: WebcamInitError[] = [];
+  idMemGlobal: any;
   imageUrl =
     "https://images.vexels.com/media/users/3/137047/isolated/preview/5831a17a290077c646a48c4db78a81bb-icono-de-perfil-de-usuario-azul.png"; // URL de la imagen por defecto
 
@@ -177,6 +178,7 @@ export class RegistroComponent implements OnInit {
       nombreArchivo: [''],
       base64textString: [''],
     })
+
   }
 
   ngOnInit(): void {
@@ -185,7 +187,11 @@ export class RegistroComponent implements OnInit {
     });
 
     this.planService.consultarPlanId(this.auth.idGym.getValue()).subscribe((respuesta) => {
-      if (Array.isArray(respuesta)) {
+      console.log(respuesta);
+      if (Array.isArray(respuesta) && respuesta.length > 0) {
+        const primerPlan = respuesta[0]; // Obtener el primer objeto del arreglo
+        this.idMemGlobal = primerPlan.idMem; // Asignar el valor a la variable global
+        console.log('ID del primer plan:', this.idMemGlobal);
         this.planes = respuesta.map((dato) => ({
           value: dato.idMem, // Valor que se enviará al seleccionar
           label: dato.titulo, // Etiqueta que se mostrará en el combo
