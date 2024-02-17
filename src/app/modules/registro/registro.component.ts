@@ -182,11 +182,18 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.planService.consultarPlanId(this.auth.idGym.getValue()).subscribe((respuesta: plan[]) => {
-      this.planes = respuesta;
-    });
-
     this.planService.consultarPlanId(this.auth.idGym.getValue()).subscribe((respuesta) => {
+      const valorMembresia$ = this.obtenerValorMembresia(respuesta);
+      valorMembresia$.subscribe((valorMembresia) => {
+        this.form.patchValue({
+          Membresia_idMem: valorMembresia
+        });
+      });
+    });
+  }
+
+  obtenerValorMembresia(respuesta: any[]): Observable<any> {
+    return new Observable((observer) => {
       console.log(respuesta);
       if (Array.isArray(respuesta) && respuesta.length > 0) {
         const primerPlan = respuesta[0]; // Obtener el primer objeto del arreglo
@@ -196,12 +203,15 @@ export class RegistroComponent implements OnInit {
           value: dato.idMem, // Valor que se enviará al seleccionar
           label: dato.titulo, // Etiqueta que se mostrará en el combo
         }));
+  
+        observer.next(this.idMemGlobal);
+        observer.complete();
       } else {
         console.error("La respuesta no es un arreglo.");
+        observer.error("La respuesta no es un arreglo.");
       }
-
     });
-    }
+  }
 
     cerrarDialogo(): void {
       this.dialogo.close(true);
