@@ -10,6 +10,7 @@
         <div >
            <form [formGroup]="form" enctype="multipart/form-data">
            <div >
+            <div style="color:red">{{message}}</div>
               <fieldset>
                  <div class="row">
                     <label >Codigo de barra:</label>
@@ -24,7 +25,7 @@
                              type="text"
                              matInput
                              autocomplete="off"
-                             placeholder="escribelo o escanealo"
+                             placeholder="escribelo o escanealo" minlength="12" maxlength="15"
                              />
                        </mat-form-field>
                     </p>
@@ -243,9 +244,6 @@
                                 formControlName="descripcion"
                                 >
                               </textarea>
-                             <mat-error *ngIf="form.get('descripcion')?.hasError('required')"
-                                ><strong class="txt_msg">**Campo requerido</strong></mat-error
-                                >
                           </mat-form-field>
                        </p>
                     </div>

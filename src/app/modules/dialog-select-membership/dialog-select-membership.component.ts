@@ -9,6 +9,7 @@ import { EMPTY } from 'rxjs';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { MatDialog, MatDialogRef,MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {ErrorStateMatcher} from '@angular/material/core';
+import { NgxSpinnerService } from "ngx-spinner";
 
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -54,12 +55,13 @@ export class DialogSelectMembershipComponent implements OnInit{
   constructor( 
     public dialogo: MatDialogRef<DialogSelectMembershipComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
+    private spinner: NgxSpinnerService,
     private AuthService: AuthService, private http:HttpClient, private GimnasioService: GimnasioService, private formulario: FormBuilder, private planService: PlanService, public dialog: MatDialog,
     public dialogRefConfirm: MatDialogRef<MensajeEmergentesComponent>) 
   {
     this.formPlan = this.formulario.group({
       idMem: [0, [Validators.required, Validators.pattern(/^\d+$/)]],
-      titulo: ['', [Validators.required, Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)]],
+      titulo: [''],
       duracion: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
       precio: ['', [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       detalles: [''],
@@ -267,16 +269,13 @@ export class DialogSelectMembershipComponent implements OnInit{
 
 
   validarFormulario(){
-    console.log("FORMULARIO",this.formPlan.value);
     if(this.formPlan.invalid){
-      console.log("Formulario invalido");
       Object.values(this.formPlan.controls).forEach(control => {
         console.log(control.errors); // Imprime los errores de cada control
         control.markAsTouched();
       });
     }
     else{
-      console.log("Formulario valido");
       this.formPlan.setValue({
         idMem: 0,
         titulo: this.formPlan.value.titulo,
@@ -288,12 +287,7 @@ export class DialogSelectMembershipComponent implements OnInit{
         tipo_membresia: this.tipo_membresia,
         Gimnasio_idGimnasio: this.idGym,
       });
-      console.log("Formulario",this.formPlan.value);
-      /*this.serviciosSeleccionadosFilters = [...this.servicioSeleccionado]; // Hacemos una copia del array
-      this.serviciosSeleccionadosFilters.splice(this.serviciosSeleccionadosFilters.length-1,1); // Eliminamos el último elemento
-      console.log("SERVICIOS OKS",this.serviciosSeleccionadosFilters);*/
 
-      //llamado a la peticion para insertar la membresia
       if(this.optionToShow == 1 || this.optionToShow == 2){
         let formValue = this.formPlan.value;
 
@@ -304,6 +298,7 @@ if (formValue.servicioseleccionado && typeof formValue.servicioseleccionado === 
       this.planService.agregarPlan((formValue)).subscribe(respuesta => {
         if(respuesta){
           if(respuesta.success == 1){
+            this.spinner.hide();
             const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
               width: '300px',
               height: '200px',
@@ -329,8 +324,7 @@ if (formValue.servicioseleccionado && typeof formValue.servicioseleccionado === 
       });
       }
       if(this.optionToShow == 3){
-        //console.log("ID ANTES DE SETVALUE:", this.dataToUpdate.id);
-        console.log("ANTES DE LLAMAR A SETVALUE: ", this.dataToUpdate, this.formPlan.value);
+     
         this.formPlan.setValue({
           idMem: this.dataToUpdate.id,
           titulo: this.formPlan.value.titulo,
@@ -343,11 +337,14 @@ if (formValue.servicioseleccionado && typeof formValue.servicioseleccionado === 
           Gimnasio_idGimnasio: this.idGym,
         });
         if(this.formPlan.valid){
-          console.log("FORMULARIO PARA ACTUALIZAR",this.formPlan.value);
+
           //llamada al servicio para actualizar la membresia
           this.planService.updateMembresia(this.formPlan.value).subscribe(respuesta => {
+           
             if(respuesta) {
+              this.spinner.hide();
               if(respuesta.success == 1){
+                
                 const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
                   width: '300px',
                   height: '200px',

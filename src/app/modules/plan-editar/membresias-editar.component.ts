@@ -2,12 +2,12 @@ import { Component, OnInit, Inject} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { FormGroup,FormBuilder,Validators, AbstractControl } from '@angular/forms';
-import { MembresiaService } from 'src/app/service/membresia.service';
+import { MembresiaService } from './../../service/membresia.service';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from 'src/app/service/auth.service';
 import { PlanService } from '../../service/plan.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-membresias-editar',
   templateUrl: './membresias-editar.component.html',
@@ -23,29 +23,33 @@ export class planEditarComponent {
   dataToUpdate: any = [];
   serviceToUpdate: any = [];
   memberships: any = [];
+  idMem: any;
 
   constructor(
     public dialogo: MatDialogRef<planEditarComponent>,
-    @Inject(MAT_DIALOG_DATA) public mensaje: string,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     public formulario:FormBuilder,
     private activeRoute: ActivatedRoute, 
     private membresiaService:MembresiaService,
     private router:Router,
     private auth: AuthService,
+    private spinner: NgxSpinnerService,
     public dialog: MatDialog,
     private planService: PlanService) {
+
+      this.idMem = data.idMem;
 
       this.formulariodePlan = this.formulario.group({
         titulo: ['', Validators.required],
         detalles: ['', Validators.required],
-        duracion: ['', Validators.required],
+        duracion: ['1', Validators.required],
         precio: ['', Validators.required],
         status: [1, Validators.required],
         tipo_membresia: [3],
         Gimnasio_idGimnasio: [this.auth.idGym.getValue(), Validators.required],
         fechaInicio:['', Validators.required],
         fechaFin:['', Validators.required],
-        membresias: [[], [Validators.required, this.requireMinItems(1)]],
+       // membresias: [[], [Validators.required, this.requireMinItems(1)]],
       }, {validators: this.dateLessThan('fechaInicio', 'fechaFin')});
   }
 
@@ -76,21 +80,22 @@ export class planEditarComponent {
           Gimnasio_idGimnasio: this.serviceToUpdate[0].Gimnasio_idGimnasio,
           fechaInicio: this.serviceToUpdate[0].fechaInicio,
           fechaFin: this.serviceToUpdate[0].fechaFin,
-          membresias: "gimnasio"
+         // membresias: "gimnasio"
         });
       }
     });
   }
     
   actualizar(){
-    this.membresiaService.actualizarPlan(this.elID,this.formulariodePlan.value).subscribe(()=>{
+    this.membresiaService.actualizarPlan(this.idMem,this.formulariodePlan.value).subscribe(()=>{
+      this.spinner.hide();
       this.dialog.open(MensajeEmergentesComponent, {
         data: `Membresía actualizada exitosamente`,
       })
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          this.router.navigateByUrl("/admin/misMembresias");
+          this.dialogo.close(true);
         } else {
         }
       });
