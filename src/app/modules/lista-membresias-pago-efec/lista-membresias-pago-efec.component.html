@@ -2,9 +2,9 @@
 <h1 style="margin-left: 66px;">Pago de membresia en efectivo</h1>
 <br>
 <div class="grid-menu" style=" justify-content: center;">
-    <mat-tab-group>
+    <!--<mat-tab-group>-->
         <!-- APARTADO 1, LISTADO TOTAL DE CLIENTES CON UNA MEMBRESIA ACTIVA -->
-        <mat-tab label="Clientes activos"> 
+        <!--<mat-tab label="Clientes activos"> -->
             <br>
             <h2>Lista de clientes con status activo</h2>
 
@@ -68,16 +68,36 @@
                         {{ prod.Sucursal }}
                       </ng-container>
                       <ng-container *ngIf="column === 'Membresia'">
-                        {{ prod.Membresia }}
+                        <ng-container *ngIf="prod.accion !== 'Online'">
+                          {{ prod.Membresia }}
+                        </ng-container>
+                        <ng-container *ngIf="prod.accion === 'Online'">
+                          &nbsp;
+                        </ng-container>
                       </ng-container>
                       <ng-container *ngIf="column === 'Precio'">
-                        {{ prod.Precio }}
+                        <ng-container *ngIf="prod.accion !== 'Online'">
+                          {{ prod.Precio }}
+                        </ng-container>
+                        <ng-container *ngIf="prod.accion === 'Online'">
+                          &nbsp;
+                        </ng-container>
                       </ng-container>
                       <ng-container *ngIf="column === 'Fecha Inicio'">
-                        {{ prod.Fecha_Inicio }}
+                        <ng-container *ngIf="prod.accion !== 'Online'">
+                          {{ prod.Fecha_Inicio }}
+                        </ng-container>
+                        <ng-container *ngIf="prod.accion === 'Online'">
+                          &nbsp;
+                        </ng-container>
                       </ng-container>
                       <ng-container *ngIf="column === 'Fecha Fin'">
-                        {{ prod.Fecha_Fin }}
+                        <ng-container *ngIf="prod.accion !== 'Online'">
+                          {{ prod.Fecha_Fin }}
+                        </ng-container>
+                        <ng-container *ngIf="prod.accion === 'Online'">
+                          &nbsp;
+                        </ng-container>
                       </ng-container>
                       <ng-container *ngIf="column === 'Status'">
                         <p>{{ prod.Status }}</p>
@@ -110,8 +130,8 @@
               </table>
             </div>
               <mat-paginator #paginatorActivos [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
-        </mat-tab>
-        <!--
+        <!--</mat-tab>
+
          APARTADO 2, REENOVACION DE MEMBRESIA SOLICITADO DESDE SUCURSAL 
         <mat-tab label="Reenovacion de membresia"> 
           <br>
@@ -220,7 +240,7 @@
             <mat-paginator #paginatorPagoOnline [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
         </mat-tab>-->
 
-        <mat-tab label="Registro de huella"> 
+       <!-- <mat-tab label="Registro de huella"> 
           <br>
           <h2>Lista de clientes para registrar huella dactilar</h2>
           
@@ -261,11 +281,11 @@
                   <input matInput type="text"  id="email" name="email" [value]="cliente.email || ''" disabled>
                 </mat-form-field>
               </div>
-            </div>
+            </div>-->
             <!-- <div class="col-sm-4">
               <button mat-button class="mat-button" (click)="RegistrarHuella(this.cliente.ID_Cliente)">Registrar huella</button>
             </div> -->
-          </div>
+          <!--</div>
         
 
           <br>
@@ -290,5 +310,5 @@
             color: #000000;" mat-raised-button>Registrar huella<mat-icon>fingerprint</mat-icon></button>
           </form>
         </mat-tab>
-    </mat-tab-group>
+    </mat-tab-group>-->
 </div>

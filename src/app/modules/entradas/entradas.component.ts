@@ -55,7 +55,7 @@ export class EntradasComponent implements OnInit {
   listaProductos: any;
   listaProducto: Producto[] = [];
   idProducto: number = 0;
- 
+  message: string = '';
 
   //guardar lista proveedores y id
   listaProveedores: any;
@@ -187,6 +187,7 @@ export class EntradasComponent implements OnInit {
   
 
   agregarATabla() {
+    if (this.form.valid) { 
     // Verificar si el formulario y sus controles no son nulos
     if (this.form && this.form.get('idProducto') && this.form.get('idProveedor') && this.form.get('cantidad')) {
       const idProductoSeleccionado = this.form.get('idProducto')!.value;
@@ -222,6 +223,9 @@ export class EntradasComponent implements OnInit {
       } else {
         console.warn('Producto no encontrado en listaProductos');
       }
+    }}else{
+      this.message = 'Por favor, complete todos los campos requeridos.';
+      this.marcarCamposInvalidos(this.form);
     }
   }
   
@@ -262,9 +266,25 @@ export class EntradasComponent implements OnInit {
       this.toastr.error('Agrega algo a la tabla antes de enviar', 'Error', {
         positionClass: 'toast-bottom-left',
       });
+      this.message = 'Por favor, complete todos los campos requeridos.';
+      this.marcarCamposInvalidos(this.form);
     }
     
   }
+
+  marcarCamposInvalidos(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const control = formGroup.get(campo);
+      if (control instanceof FormGroup) {
+        this.marcarCamposInvalidos(control);
+      } else {
+        if (control) {
+          control.markAsTouched();
+        };
+      }
+    });
+  }
+
 
   cerrarDialogo(): void {
     this.dialogo.close(true);

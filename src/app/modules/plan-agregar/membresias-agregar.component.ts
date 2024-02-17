@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PlanService } from 'src/app/service/plan.service';
 import { plan } from 'src/app/models/plan';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-membresias-agregar',
@@ -33,12 +34,13 @@ export class planAgregarComponent {
     private membresiaService: MembresiaService,
     private auth: AuthService,
     private planService: PlanService,
+    private spinner: NgxSpinnerService,
    // private gimnasioService: GimnasioService,
     public dialog: MatDialog
   ) {
     this.formulariodePlan = this.formulario.group({
       titulo: ['', Validators.required],
-      detalles: ['', Validators.required],
+      detalles: [''],
       duracion: ['1', Validators.required],
       precio: ['', Validators.required],
       status: [1, Validators.required],
@@ -46,7 +48,7 @@ export class planAgregarComponent {
       Gimnasio_idGimnasio: [this.auth.idGym.getValue(), Validators.required],
       fechaInicio:['', Validators.required],
       fechaFin:['', Validators.required],
-      membresias: [[], [Validators.required, this.requireMinItems(1)]],
+     // membresias: [[], [Validators.required, this.requireMinItems(1)]],
     }, {validators: this.dateLessThan('fechaInicio', 'fechaFin')});
   }
 
@@ -83,8 +85,9 @@ export class planAgregarComponent {
         .agregarPlan(this.formulariodePlan.value)
         .subscribe((respuesta) => {
           if(respuesta){
-            console.log(respuesta);
+
           }
+          this.spinner.hide();
           this.dialog
             .open(MensajeEmergentesComponent, {
               data: `Plan agregado exitosamente`,
@@ -92,8 +95,9 @@ export class planAgregarComponent {
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
-                this.router.navigateByUrl('/plan');
+                this.dialogo.close(true);
                 this.formulariodePlan.reset();
+
               } else {
               }
             });

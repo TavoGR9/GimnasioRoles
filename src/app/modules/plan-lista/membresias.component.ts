@@ -183,7 +183,7 @@ export class planComponent implements OnInit {
       width: '70%',
       height: '90%',
       disableClose: true,
-      data: {name: 'Editar membresia', id: idMem}
+      data: { idMem: idMem },
     })
 
     dialogRef.afterClosed().subscribe(result => {

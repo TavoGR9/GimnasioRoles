@@ -38,11 +38,11 @@
       </ng-container>-->
       <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef>Precio</th>
-        <td mat-cell *matCellDef="let item">{{ item.precio }}</td>
+        <td mat-cell *matCellDef="let item">${{ item.precio }}</td>
       </ng-container>
       <ng-container matColumnDef="duration">
         <th mat-header-cell *matHeaderCellDef>Duración</th>
-        <td mat-cell *matCellDef="let item">{{ item.duracion}}</td>
+        <td mat-cell *matCellDef="let item">{{ item.duracion}} días</td>
       </ng-container>
       <!--<ng-container matColumnDef="cancha">
         <th mat-header-cell *matHeaderCellDef>Cancha</th>

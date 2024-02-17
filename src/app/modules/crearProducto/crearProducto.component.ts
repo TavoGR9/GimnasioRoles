@@ -50,6 +50,8 @@ export class CrearProductoComponent implements OnInit {
   listaCategorias: any;
   uploadedFiles: File[] = [];
   private idGym: number = 0;
+  message: string = '';
+  currentUser: string = '';
 
   constructor(
     public dialogo: MatDialogRef<CrearProductoComponent>,
@@ -69,9 +71,9 @@ export class CrearProductoComponent implements OnInit {
     // formulario
     this.form = this.fb.group({
       nombre: [ '',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),]),],
-      descripcion: ['', Validators.required],
+      descripcion: [''],
       fechaCreacion: [this.fechaCreacion],
-      codigoBarra: [''],
+      codigoBarra: ['', [Validators.minLength(12), Validators.maxLength(15)]],
       idCategoria: ['', Validators.compose([Validators.required])],
       Gimnasio_idGimnasio: [this.auth.idGym.getValue()],
       unidadMedicion: ['NA', Validators.compose([Validators.required])],
@@ -85,7 +87,34 @@ export class CrearProductoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.categoriaService.consultarListaCategoria(this.auth.idGym.getValue()).subscribe({
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    });  
+    
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
+
+  listaTabla(){
+    this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
       },
@@ -93,7 +122,8 @@ export class CrearProductoComponent implements OnInit {
         console.error(error);
       },
     });
-  }
+
+  };
 
   obtenerFechaActual(): string {
     const fechaActual = new Date();
@@ -181,9 +211,22 @@ export class CrearProductoComponent implements OnInit {
           },
         });*/
     } else {
-      this.toastr.error('Completa el formulario', 'Error', {
-        positionClass: 'toast-bottom-left',
-      });
+      this.message = 'Por favor, complete todos los campos requeridos.';
+    this.marcarCamposInvalidos(this.form);
     }
   }
+
+  marcarCamposInvalidos(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const control = formGroup.get(campo);
+      if (control instanceof FormGroup) {
+        this.marcarCamposInvalidos(control);
+      } else {
+        if (control) {
+          control.markAsTouched();
+        };
+      }
+    });
+  }
+
 }

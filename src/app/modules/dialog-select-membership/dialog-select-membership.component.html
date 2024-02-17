@@ -1,25 +1,17 @@
 <div>
+    <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
 
-   <div class="title" *ngIf="optionToShow == 1">
-    <br>
-        <h1>Agregar membresia</h1>
-    </div>
-    <div class="title" *ngIf="optionToShow == 2">
-        <br>
-        <h1>Servicios de membresia</h1>
-    </div>
-    <div class="title" *ngIf="optionToShow == 3">
-        <br>
-        <h1>Editar membresia</h1>
-    </div>
+    <h1 class="title" *ngIf="optionToShow == 1" mat-dialog-title>Agregar membresia</h1>
+    <h1 class="title" *ngIf="optionToShow == 2"  mat-dialog-title>Servicios de membresia</h1>
+    <h1 class="title" *ngIf="optionToShow == 3" mat-dialog-title >Editar membresia</h1>
+
+
     <div class="services_table" *ngIf="optionToShow == 2 || optionToShow == 5" mat-dialog-content>
         <h2 *ngIf="dataSource && dataSource.data && dataSource.data.length > 0">{{dataSource.data[0].titulo}}</h2>
         <div *ngIf="dataSource.data.length == 0" class="center-container">
             <div><strong>Sin servicios</strong>
             </div>
           </div>
-          
-
        <table mat-table [dataSource]="dataSource">
             <ng-container matColumnDef="No">
                 <th mat-header-cell *matHeaderCellDef> Id. </th>
@@ -37,6 +29,9 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
     </div>
+
+
+
 
     <div mat-dialog-content>
         <div  *ngIf="optionToShow == 1 || optionToShow == 3">
@@ -63,9 +58,6 @@
                                     <input type="text" matInput placeholder="Titulo" autocomplete="off" id="titulo" formControlName="titulo">
                                     <mat-error *ngIf="isFieldInvalid('titulo', 'required')">
                                         El título es requerido.
-                                      </mat-error>
-                                      <mat-error *ngIf="isFieldInvalid('titulo', 'pattern')">
-                                        Solo se aceptan letras.
                                       </mat-error>
                                 </mat-form-field>
                             </p>
@@ -227,8 +219,8 @@
     </div>
 
     <div style="display: flex; justify-content: center;" mat-dialog-actions>
-        <button *ngIf="optionToShow === 1" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
-        <button *ngIf="optionToShow === 3" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;width: 120px;">Actualizar</button>
-        <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white; width: 120px;">Cancelar</button>
+        <button *ngIf="optionToShow === 1" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
+        <button *ngIf="optionToShow === 3" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px;  height: 40px; margin-right: 90px;width: 120px;">Actualizar</button>
+        <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; height: 40px;color: white; width: 120px;">Cancelar</button>
       </div>   
 </div>

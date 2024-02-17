@@ -19,6 +19,7 @@ export class FormPagoEmergenteComponent implements OnInit{
   precio: any;
   duracion: any;
   moneyRecibido: number = 0; // =0
+  ticketInfo: any;
   @Output() actualizarTablas = new EventEmitter<boolean>();
   
 
@@ -34,14 +35,15 @@ export class FormPagoEmergenteComponent implements OnInit{
               
   ngOnInit(): void {
     // Llamar al servicio para obtener la lista de membresías
-    this.precio = this.data.precio;
-    this.duracion = this.data.duracion + ' ' + 'días';
+    this.precio = 0;
+    this.duracion = 'días';
     //console.log('el detalle membresia del cliente es: ', this.data.detMemID )
-    if(this.data.action == 'Online' ){
+    /*if(this.data.action == 'Online' ){
       this.idMembresiaSelec = this.data.idMem;
       console.log('membresia seleccionada: ', this.idMembresiaSelec);
-    }
-    //console.log('membresia seleccionada2: ', this.membresiaSeleccionada);
+    }*/
+   //this.membresiaSeleccionada;
+   console.log('membresia seleccionada: ', this.membresiaSeleccionada);
 
     //console.log('ID del cliente:', this.data.idCliente);
 
@@ -61,7 +63,7 @@ export class FormPagoEmergenteComponent implements OnInit{
 
   onMembresiaChange(): void {
     this.membresiaService.membresiasInfo(this.membresiaSeleccionada).subscribe((resultado)=> {
-      console.log('Membresía seleccionada:', this.membresiaSeleccionada);
+      console.log('Membresia seleccionada:', this.membresiaSeleccionada);
       this.duracion = `${resultado.Duracion} días`;
       this.precio = `${resultado.Precio}`;
       this.nombreMembresia = `${resultado.Membresia}`;
@@ -178,205 +180,192 @@ export class FormPagoEmergenteComponent implements OnInit{
       if (this.precio <= this.moneyRecibido) {
         const PrecioCalcular = this.moneyRecibido - this.precio ;
         
-        const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.precio);
-        const totalEnPesosRecibido = this.convertirNumeroAPalabrasPesos(this.moneyRecibido);
-        const totalEnPesosCambio = this.convertirNumeroAPalabrasPesos(PrecioCalcular);
-        const ventanaImpresion = window.open("", "_blank");
-        const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
-        const horaActual = new Date().toLocaleTimeString("es-MX", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }); // Obtener solo la hora en formato local de México
-        if (ventanaImpresion) {
-          ventanaImpresion.document.open();
-          ventanaImpresion.document.write(`
-          <html>
-            <head>
-              <title>Ticket de Compra</title>
-              <style>
-                body {
-                  font-family: 'Arial', sans-serif;
-                  margin: 0;
-                  padding: 0;
-                  background-color: #f5f5f5;
-                }
-                .ticket {
-                  width: 80%;
-                  max-width: 600px;
-                  margin: 20px auto;
-                  background-color: #fff;
-                  border-radius: 4px;
-                  padding: 20px;
-                }
-                
-                h1 {
-                  text-align: center;
-                  color: #333;
-                  margin-bottom: 20px;
-                }
-                table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-bottom: 20px;
-                }
-                th, td {
-                  padding: 8px;
-                  border-bottom: 1px solid #ddd;
-                  text-align: left;
-                }
-                th {
-                  background-color: #f2f2f2;
-                }
-                .total {
-                  text-align: right;
-                  margin-top: 20px;
-                  font-weight: bold;
-                }
-                .total p {
-                  margin: 5px 0;
-                  font-size: 1.1em;
-                }
-                hr {
-                  border: none;
-                  border-top: 1px dashed #ccc;
-                  margin: 20px 0;
-                }
-                .brand {
-                  text-align: center;
-                  color: #888;
-                  font-size: 20px;
-                  margin-top: 20px;
-                }
-                .fecha-hora {
-                  display: flex;
-                  justify-content: space-between;
-                }
-              </style>
-            </head>
-            <body> 
-            <div class="ticket">
-            <div style="display: flex; justify-content: center; align-items: center;">
-              <img src='../../../../../../assets/img/logo.jpeg)' alt="Logo" style="max-width: 300px; height: auto;">
-            </div>
-                <h1>Ticket de Compra</h1>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Sucursal</th>
-                      <th>Membresia</th>
-                      <th>Fecha Inicio</th>
-                      <th>Fecha Fin</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+        this.membresiaService.ticketPagoInfo(this.data.idCliente).subscribe((respuesta) => {
+          console.log('Informacion del ticket a pagar antes del if:',respuesta);
+
+          if (respuesta && respuesta.length > 0) {
+            const ticketInfo = respuesta[0];
+              //this.ticketInfo = respuesta;
+              console.log('Informacion del ticket a pagar despues del if:',ticketInfo);
+
+            const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.precio);
+            const totalEnPesosRecibido = this.convertirNumeroAPalabrasPesos(this.moneyRecibido);
+            const totalEnPesosCambio = this.convertirNumeroAPalabrasPesos(PrecioCalcular);
+            const ventanaImpresion = window.open("", "_blank");
+            const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
+            const horaActual = new Date().toLocaleTimeString("es-MX", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }); // Obtener solo la hora en formato local de México
+            if (ventanaImpresion) {
+              ventanaImpresion.document.open();
+              ventanaImpresion.document.write(`
+              <html>
+                <head>
+                  <title>Ticket de Compra</title>
+                  <style>
+                    body {
+                      font-family: 'Arial', sans-serif;
+                      margin: 0;
+                      padding: 0;
+                      background-color: #f5f5f5;
+                    }
+                    .ticket {
+                      width: 80%;
+                      max-width: 600px;
+                      margin: 20px auto;
+                      background-color: #fff;
+                      border-radius: 4px;
+                      padding: 20px;
+                    }
+
+                    h1 {
+                      text-align: center;
+                      color: #333;
+                      margin-bottom: 20px;
+                    }
+                    table {
+                      width: 100%;
+                      border-collapse: collapse;
+                      margin-bottom: 20px;
+                    }
+                    th, td {
+                      padding: 8px;
+                      border-bottom: 1px solid #ddd;
+                      text-align: left;
+                    }
+                    th {
+                      background-color: #f2f2f2;
+                    }
+                    .total {
+                      text-align: right;
+                      margin-top: 20px;
+                      font-weight: bold;
+                    }
+                    .total p {
+                      margin: 5px 0;
+                      font-size: 1.1em;
+                    }
+                    hr {
+                      border: none;
+                      border-top: 1px dashed #ccc;
+                      margin: 20px 0;
+                    }
+                    .brand {
+                      text-align: center;
+                      color: #888;
+                      font-size: 20px;
+                      margin-top: 20px;
+                    }
+                    .fecha-hora {
+                      display: flex;
+                      justify-content: space-between;
+                    }
+                  </style>
+                </head>
+                <body> 
+                <div class="ticket">
+                <div style="display: flex; justify-content: center; align-items: center;">
+                  <img src='../../../../../../assets/img/logo.jpeg)' alt="Logo" style="max-width: 300px; height: auto;">
+                </div>
+                    <h1>Ticket de Compra</h1>
+                    <table>
+                      <thead>
                         <tr>
-                          <td>${this.data.nombre}</td>
-                          <td>${this.data.sucursal}</td>
-                          <td>${this.data.action === 'Online' ? this.data.membresia : this.nombreMembresia}</td>
-                          <td>${this.data.dateStart}</td>
-                          <td>${this.data.dateEnd}</td>
-                          <td>$${this.data.action === 'Online' ? this.data.precio : this.precio}</td>
-                        </tr> 
-                  </tbody>
-                </table>
-                <hr>
-                <div>
-                  <p>(${totalEnPesos} PESOS)</p>
-                  <div class="total">
-                    <p>Total a Pagar: $${this.precio}</p>
+                          <th>Nombre</th>
+                          <th>Sucursal</th>
+                          <th>Membresia</th>
+                          <th>Fecha Inicio</th>
+                          <th>Fecha Fin</th>
+                          <th>Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                            <tr>
+                              <td>${ticketInfo.Nombre}</td>
+                              <td>${ticketInfo.Sucursal}</td>
+                              <td>${ticketInfo.Membresia}</td>
+                              <td>${ticketInfo.Fecha_Inicio}</td>
+                              <td>${ticketInfo.Fecha_Fin}</td>
+                              <td>$${ticketInfo.Precio}</td>
+                            </tr> 
+                      </tbody>
+                    </table>
+                    <hr>
+                    <div>
+                      <p>(${totalEnPesos} PESOS)</p>
+                      <div class="total">
+                        <p>Total a Pagar: $${this.precio}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="total">
+                        <p>Dinero recibido: $${this.moneyRecibido}</p>
+                        <p>Cambio: $${PrecioCalcular}</p>
+                      </div>
+                    </div>
+                    <div class="fecha-hora">
+                      <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
+                      <p>Hora: ${horaActual}</p> <!-- Hora -->
+                    </div>
+                    <div class="brand">
+                      <p>Gracias por su compra</p>
+                      <p>¡Vuelva pronto!</p>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div class="total">
-                    <p>Dinero recibido: $${this.moneyRecibido}</p>
-                    <p>Cambio: $${PrecioCalcular}</p>
-                  </div>
-                </div>
-                <div class="fecha-hora">
-                  <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
-                  <p>Hora: ${horaActual}</p> <!-- Hora -->
-                </div>
-                <div class="brand">
-                  <p>Gracias por su compra</p>
-                  <p>¡Vuelva pronto!</p>
-                </div>
-              </div>
-            </body>
-          </html>
-        `);
-          ventanaImpresion.document.close();
-          ventanaImpresion.print();
-          ventanaImpresion.close();
-        }
+                </body>
+              </html>
+            `);
+              ventanaImpresion.document.close();
+              ventanaImpresion.print();
+              ventanaImpresion.close();
+            } else {
+              console.error('No se pudo abrir la ventana de impresión.');
+            }
+          } else {
+            console.error('La respuesta del servicio no contiene los datos necesarios para generar el ticket.');
+          }
+        });
+      
       } else {
         this.toastr.error("Ingresa el pago");
       }
     }
   
-  successDialog(): void {
-    if(this.membresiaSeleccionada != undefined){
-      if(this.moneyRecibido >= this.precio){
-        const PrecioCalcular = this.moneyRecibido - this.precio ;
-        console.log(PrecioCalcular);
-      
-        this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, this.data.detMemID).subscribe((dataResponse: any)=> {
-        console.log(dataResponse.msg)
-
-        this.actualizarTablas.emit(true);
+    successDialog(): void {    
+      if (this.membresiaSeleccionada != undefined){
+        //console.log('membresia seleccionada antes de pagar:', this.membresiaSeleccionada );
+        if(this.moneyRecibido >= this.precio){
+          const PrecioCalcular = this.moneyRecibido - this.precio ;
+          console.log(PrecioCalcular);
         
-        this.dialogo.close(true);
-        
-        this.dialog.open(MensajeEmergenteComponent, {
-          data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
-        })
-        .afterClosed()
-        .subscribe((cerrarDialogo: Boolean) => {
-          if (cerrarDialogo) {
-            this.imprimirResumen();
-          } else {
-
-          }
+          this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, this.data.detMemID).subscribe((dataResponse: any)=> {
+          console.log(dataResponse.msg)
+  
+          this.actualizarTablas.emit(true);
+          
+          this.dialogo.close(true);
+          
+          this.dialog.open(MensajeEmergenteComponent, {
+            data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
+            disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
+          })
+          .afterClosed()
+          .subscribe((cerrarDialogo: Boolean) => {
+            if (cerrarDialogo) {
+              this.imprimirResumen();
+            } else {
+  
+            }
+          });
         });
-      });
-    
-      }else{
-        this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
+      
+        }else{
+          this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
+        }
       }
-    } else if (this.idMembresiaSelec != undefined && this.membresiaSeleccionada == undefined){
-      this.membresiaSeleccionada = this.idMembresiaSelec;
-      console.log(this.membresiaSeleccionada );
-      if(this.moneyRecibido >= this.precio){
-        const PrecioCalcular = this.moneyRecibido - this.precio ;
-        console.log(PrecioCalcular);
-      
-        this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, this.data.detMemID).subscribe((dataResponse: any)=> {
-        console.log(dataResponse.msg)
-
-        this.actualizarTablas.emit(true);
-        
-        this.dialogo.close(true);
-        
-        this.dialog.open(MensajeEmergenteComponent, {
-          data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
-        })
-        .afterClosed()
-        .subscribe((cerrarDialogo: Boolean) => {
-          if (cerrarDialogo) {
-            this.imprimirResumen();
-          } else {
-
-          }
-        });
-      });
-    
-      }else{
-        this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
+      else {
+        this.toastr.warning('Selecciona una membresía', 'Alerta!!!');
       }
     }
-    else {
-      this.toastr.warning('Selecciona una membresía', 'Alerta!!!');
-    }
-  }
 }

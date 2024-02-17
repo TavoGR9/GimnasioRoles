@@ -14,6 +14,7 @@ import { CategoriaService } from 'src/app/service/categoria.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { AuthService } from 'src/app/service/auth.service';
+import { NgxSpinnerService } from "ngx-spinner";
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = formulario && formulario.submitted;
@@ -44,6 +45,7 @@ export class EditarProductoComponent implements OnInit{
     private productoService:ProductoService,
     private datePipe: DatePipe,
     private router:Router,
+    private spinner: NgxSpinnerService,
     private auth:AuthService,
     public dialog: MatDialog,
     private categoriaService: CategoriaService,){
@@ -80,7 +82,7 @@ export class EditarProductoComponent implements OnInit{
       nombre: [ '',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),]),],
       descripcion: ['', Validators.required],
       fechaCreacion: [this.fechaCreacion],
-      codigoBarra: [''],
+      codigoBarra: ['', [Validators.minLength(12), Validators.maxLength(15)]],
       idCategoria: ['', Validators.compose([Validators.required])],
       Gimnasio_idGimnasio: [this.auth.idGym.getValue()],
       unidadMedicion: ['NA', Validators.compose([Validators.required])],
@@ -117,7 +119,7 @@ export class EditarProductoComponent implements OnInit{
   actualizar(){
     this.productoService.actualizarProducto(this.idProducto,this.form.value).subscribe(
       (response) => {
-       
+        this.spinner.hide();
         this.dialog.open(MensajeEmergentesComponent, {
           data: `Producto actualizado exitosamente`,
         })
