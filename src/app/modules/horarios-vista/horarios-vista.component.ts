@@ -168,7 +168,7 @@ enviarMensajeWhatsApp() {
         console.log('Datos del horario:', this.datosHorario);
       },
       (error) => {
-        this.message = "Horario no disponible. El administrador aún no ha registrado el horario";
+        this.message = "Horario no disponible. El administrador aún no ha registrado información";
         console.error('Error al consultar el horario:', error);
       }
     );

@@ -23,6 +23,7 @@ export class AltaColaboradoresComponent {
   hide = true;
   form: FormGroup;
   sucursales: any;
+  message: string = '';
 
   constructor (private fb: FormBuilder, 
     public dialog: MatDialog,
@@ -97,7 +98,6 @@ export class AltaColaboradoresComponent {
   }
 
   registrar():any{
-    console.log(this.form.value);
     if (this.form.valid) {
 
       this.http.agregarEmpleado(this.form.value).subscribe({
@@ -114,8 +114,8 @@ export class AltaColaboradoresComponent {
           //mensaje de insersion correcta
           if(resultData.msg == 'Success'){
             //this.toastr.success('Empleado agregado correctamente.', 'Exíto!!!');
-            this.cerrarDialogo()
-
+            this.cerrarDialogo();
+            this. enviarMensajeWhatsApp();
             this.dialog.open(MensajeEmergentesComponent,{
               data: 'Registro agregado correctamente.'
               //width: '500px',
@@ -141,7 +141,8 @@ export class AltaColaboradoresComponent {
         }
       });
     } else {
-      this.toastr.error('Completar todos los campos antes de guardar.', 'Error!!!');
+      this.message = 'Por favor, complete todos los campos requeridos.';
+      this.marcarCamposInvalidos(this.form);
     }
   }
 
@@ -159,5 +160,18 @@ export class AltaColaboradoresComponent {
 
         }
       });
+  }
+
+  marcarCamposInvalidos(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const control = formGroup.get(campo);
+      if (control instanceof FormGroup) {
+        this.marcarCamposInvalidos(control);
+      } else {
+        if (control) {
+          control.markAsTouched();
+        };
+      }
+    });
   }
 }

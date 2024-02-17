@@ -87,11 +87,25 @@ enviar(): any {
     });
   } else {
     this.message = 'Por favor, complete todos los campos requeridos.';
+    this.marcarCamposInvalidos(this.formularioCategoria);
   }
 }
 
 cerrarDialogo(): void {
   this.dialogo.close(true);
+}
+
+marcarCamposInvalidos(formGroup: FormGroup) {
+  Object.keys(formGroup.controls).forEach((campo) => {
+    const control = formGroup.get(campo);
+    if (control instanceof FormGroup) {
+      this.marcarCamposInvalidos(control);
+    } else {
+      if (control) {
+        control.markAsTouched();
+      };
+    }
+  });
 }
 
   

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map , throwError} from 'rxjs';
 import { membresia } from '../models/membresia';
-
+import { catchError } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -43,8 +43,11 @@ export class MembresiaService {
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
+    console.log(id, "id", datosPlan, "datos");
     return this.clienteHttp.post(this.API+"?actualizar="+id,datosPlan);
   }  
+
+ 
 
   updateMembresiaStatus(id: number, estado: { status: number }): Observable<any> {
     console.log("status",estado,"id",id);

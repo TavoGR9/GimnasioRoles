@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { RouterLink, Router} from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
-
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-service-dialog',
@@ -18,6 +18,7 @@ export class ServiceDialogComponent implements OnInit{
   idService: number = 0;
   service: Service | null = null;
   seleccionado: number = 0;
+  message: string = '';
 
 
   constructor(
@@ -25,6 +26,7 @@ export class ServiceDialogComponent implements OnInit{
     private planService: PlanService, 
     private auth: AuthService,
     public dialog: MatDialog,
+    private spinner: NgxSpinnerService,
     private dialogRef: MatDialogRef<ServiceDialogComponent>,
     private dialogRefConfirm: MatDialogRef<MensajeEmergentesComponent>,
     private router: Router
@@ -94,6 +96,7 @@ export class ServiceDialogComponent implements OnInit{
         console.log(control.errors); // Imprime los errores de cada control
         control.markAsTouched();
       });
+      this.message = 'Por favor, complete todos los campos requeridos.';
     } else {
     console.log("FORM SERVICIO VALIDO");
     this.serviceForm.setValue({
@@ -108,6 +111,7 @@ export class ServiceDialogComponent implements OnInit{
       if(respuesta){
         //console.log("SERVICIOS INSERTADOS?: ",respuesta);
         if(respuesta){
+          this.spinner.hide();
           const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
             width: '25%',
             height: '30%',
@@ -133,6 +137,7 @@ export class ServiceDialogComponent implements OnInit{
     this.planService.updateService(this.serviceForm.value).subscribe((res) => {
       if(res){
         if(res){
+          this.spinner.hide();
           const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
             width: '25%',
             height: '30%',
