@@ -129,7 +129,7 @@ export class ConfiguracionComponent  implements OnInit{
           estacionamiento: respuesta[0]['estacionamiento'],
           regaderas: respuesta[0]['regaderas'],
           bicicletero: respuesta[0]['bicicletero'],
-          estatus: respuesta[0]['bicicletero'],
+          estatus: respuesta[0]['estatus'],
         }); 
       }
     );
@@ -157,6 +157,7 @@ export class ConfiguracionComponent  implements OnInit{
     // Realizar las solicitudes de actualización
     const actualizarPlan = this.gimnasioService.actualizarPlan(idGym, planData);
     const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData);
+    console.log(actualizarPlan, "actualizarPlan");
   
     // Realizar las solicitudes concurrentemente con forkJoin
     forkJoin([actualizarPlan, actualizarHorarios]).subscribe({

@@ -17,6 +17,7 @@ import { AuthService } from './../../service/auth.service';
 import { ColaboradorService } from './../../service/colaborador.service';
 import { mergeMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { NgxSpinnerService } from "ngx-spinner";
 
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -43,7 +44,7 @@ export class HorariosVistaComponent implements OnInit{
   postalCodeControl = new FormControl('');
   addressControl = new FormControl('');
 
-  constructor(private gimnasioService: GimnasioService, private HorarioService: HorarioService,private route: ActivatedRoute,
+  constructor(private gimnasioService: GimnasioService, private spinner: NgxSpinnerService,private HorarioService: HorarioService,private route: ActivatedRoute,
     public dialogo: MatDialogRef<HorariosVistaComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, 
     
@@ -190,12 +191,13 @@ enviarMensajeWhatsApp() {
 
   enviarForm(): void {
     if (this.formularioSucursales.valid) {
-      console.log("Formulario ok,", this.formularioSucursales.value);
+      this.spinner.show();
       // Llama al servicio para agregar la sucursal
       this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe((respuesta) => {
         if(respuesta){
           console.log(respuesta);
           if(respuesta.success === 1){
+            this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, {
               data: `Sucursal agregada exitosamente`,
             }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
@@ -360,10 +362,11 @@ enviarMensajeWhatsApp() {
   confirmarEdicionTodo() {}
 
   confirmarEdicion() {
-    console.log(this.formularioSucursales.value);
+    this.spinner.show();
     this.gimnasioService.actualizarSucursal(this.formularioSucursales.value).subscribe((respuesta) => {
       if(respuesta){
         if(respuesta.success === 1){
+          this.spinner.hide();
           this.dialog.open(MensajeEmergentesComponent, {
             data: `Sucursal editada exitosamente`,
           }).afterClosed().subscribe((cerrarDialogo: Boolean) => {

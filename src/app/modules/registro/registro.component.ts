@@ -22,7 +22,7 @@ import { Subject, Observable } from 'rxjs';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 import { agregarContra } from "src/app/service/agregarContra.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
+import { NgxSpinnerService } from "ngx-spinner";
 interface Food {
   value: string;
   viewValue: string;
@@ -138,6 +138,7 @@ export class RegistroComponent implements OnInit {
     private planService: MembresiaService,
     private auth: AuthService,
     private add: agregarContra,
+    private spinner: NgxSpinnerService,
     public dialogo: MatDialogRef<RegistroComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string
 
@@ -209,6 +210,19 @@ export class RegistroComponent implements OnInit {
       } else {
         console.error("La respuesta no es un arreglo.");
         observer.error("La respuesta no es un arreglo.");
+      }
+    });
+  }
+
+  marcarCamposInvalidos(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const control = formGroup.get(campo);
+      if (control instanceof FormGroup) {
+        this.marcarCamposInvalidos(control);
+      } else {
+        if (control) {
+          control.markAsTouched();
+        };
       }
     });
   }
@@ -428,11 +442,10 @@ export class RegistroComponent implements OnInit {
 
 
   registrar(): any {
-    console.log(this.form.value);
     this.email = this.form.value.email;
     if (this.form.valid) {
+      this.spinner.show();
       this.clienteService.consultarEmail(this.email).subscribe((resultData) => {
-        console.log(resultData.msg);
         if (resultData.msg == "emailExist") {
           this.toastr.warning("El correo ingresado ya existe.", "Alerta!!!");
         }
@@ -440,7 +453,7 @@ export class RegistroComponent implements OnInit {
           this.clienteService
             .guardarCliente(this.form.value)
             .subscribe((respuesta) => {
-
+              this.spinner.hide();
               this.dialog
                 .open(MensajeEmergentesComponent, {
                 data: `Usuario registrado exitosamente`,
@@ -448,12 +461,10 @@ export class RegistroComponent implements OnInit {
               .afterClosed()
               .subscribe((cerrarDialogo: Boolean) => {
                 if (cerrarDialogo) {
-                  console.log(respuesta.email);
-
+                  this.dialogo.close(true);
                   this.add.enviarMail(respuesta.email).subscribe(
                     (response) => {
                       console.log('Respuesta exitosa:', response);
-                      // Aquí puedes manejar la respuesta exitosa según tus necesidades
                     },
                     (error) => {
                       console.error('Error al enviar el correo:', error);
@@ -462,13 +473,7 @@ export class RegistroComponent implements OnInit {
                   );
                   
                   this.clienteService.consultarDataPago(this.form.value.email).subscribe(respuesta =>{
-                  console.log(respuesta)
-                  //this.idClient=respuesta;
                     this.responseData=respuesta;
-
-                    
-                    
-
                       this.clienteService.idPagoSucursal(this.responseData.ID_Cliente).subscribe((resultado)=> {
 
                         this.router.navigateByUrl(`/home`);
@@ -506,6 +511,7 @@ export class RegistroComponent implements OnInit {
     } else {
       // El formulario no es válido, muestra un mensaje de error
       this.message = "Por favor, complete todos los campos requeridos.";
+      this.marcarCamposInvalidos(this.form);
     }
   }
 

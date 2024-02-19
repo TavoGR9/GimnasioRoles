@@ -9,6 +9,7 @@ import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArr
 import { AbstractControl } from '@angular/forms';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { HorarioService } from 'src/app/service/horario.service';
+import { NgxSpinnerService } from "ngx-spinner";
 
 class Horario {
   constructor(
@@ -37,6 +38,7 @@ export class HorariosComponent implements OnInit {
     private gimnasioService: GimnasioService,
     private HorarioService: HorarioService,
     private router: Router,
+    private spinner: NgxSpinnerService,
     public dialog: MatDialog,
   ) {
     this.idGimnasio = data.idGimnasio; // Accede a idGimnasio desde los datos
@@ -49,8 +51,6 @@ export class HorariosComponent implements OnInit {
     // Agrega horarios iniciales
     ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'].forEach(diaSemana => this.agregarHorario(diaSemana));
   }
-
- 
 
   ngOnInit(): void {
   }
@@ -91,6 +91,7 @@ export class HorariosComponent implements OnInit {
   
   
   enviarHorario(): void {
+    console.log("entro");
     const horarios: Horario[] = this.formularioHorarios.value.horarios;
   
     // Itera sobre los horarios y establece los valores predeterminados si las horas están en blanco
@@ -103,10 +104,12 @@ export class HorariosComponent implements OnInit {
         horario.horaSalida = '00:00:00';
       }
     });
-  
+  console.log(this.formularioHorarios.value, "this.formularioHorarios.valid");
     // Verifica si el formulario es válido
     if (this.formularioHorarios.valid) {
+      this.spinner.show();
       this.HorarioService.agregarHorario(this.formularioHorarios.value).subscribe((respuesta) => {
+        this.spinner.hide();
         this.dialog.open(MensajeEmergentesComponent, {
           data: `Horario agregado exitosamente`,
         })

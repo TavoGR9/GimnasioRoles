@@ -38,6 +38,7 @@ export class VerConfiguracionComponent implements OnInit {
       this.idGym = data;
       this.consultarHorario();
       this.consultarGym();
+   
     }); 
   }
 
