@@ -47,7 +47,7 @@ export class planComponent implements OnInit {
   ){}
 
 
-  displayedColumns: string[] = ['title', 'details','price','duration','servicios','actions'];
+  displayedColumns: string[] = ['title', 'details','price','actions'];
 
   ngOnInit(): void {
     this.planService.optionShow.next(4);

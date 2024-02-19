@@ -111,6 +111,9 @@ export class VerCorteComponent implements OnInit  {
         this.detallesCaja = resultData;
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.dataSource.paginator = this.paginator;
+        const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
+        this.fechaFiltro = fechaActual;
+        this.aplicarFiltro();
       },
       (error) => {
         console.error('Error al cargar categorías:', error);
@@ -127,6 +130,9 @@ export class VerCorteComponent implements OnInit  {
         (resultData) => {
           this.detallesCaja = resultData;
           this.dataSource.data = this.detallesCaja;
+          const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
+          this.fechaFiltro = fechaActual;
+          this.aplicarFiltro();
         },
         (error) => {
           console.error('Error al actualizar categorías:', error);
@@ -265,16 +271,13 @@ export class VerCorteComponent implements OnInit  {
     return palabras;
   }
 
-
   actualizarTotalVentas(): void {
     this.totalVentas = this.calcularTotalVentas();
   }
   
-
   calcularTotalVentas(): number {
     // Obtén los datos visibles después de aplicar filtros
     const datosVisibles = this.dataSource.filteredData || this.dataSource.data;
-    console.log(datosVisibles, "los datos")
   
     // Realiza el cálculo del total
     return datosVisibles.reduce((total, detalle) => {
@@ -288,8 +291,6 @@ export class VerCorteComponent implements OnInit  {
       }
     }, 0);
   }
-  
-
   
   descargarPDF2(): void {
     // Verifica si hay datos para exportar

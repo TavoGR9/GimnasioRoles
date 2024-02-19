@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { ColaboradorService } from 'src/app/service/colaborador.service';
+import { ColaboradorService } from './../../service/colaborador.service';
 import { ListarEmpleadosPipe } from 'src/app/pipes/listar-empleados.pipe';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { AltaColaboradoresComponent } from '../alta-colaboradores/alta-colaboradores.component';
@@ -34,6 +34,8 @@ export class ColaboradoresComponent {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
+      this.cargarCategorias();
+      this.actualizarTabla();
     }); 
   }
 
@@ -48,7 +50,7 @@ export class ColaboradoresComponent {
     if (this.isAdmin()){
       this.http.listaRecepcionistas(this.idGym).subscribe({
         next: (dataResponse) => {
-          console.log('lista de recepcionistas: ', dataResponse);
+          console.log("debe entrar aqui");
           this.empleados = dataResponse;
           this.dataSource = new MatTableDataSource(this.empleados);
         this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
@@ -56,6 +58,32 @@ export class ColaboradoresComponent {
       })
     }
 
+  }
+
+  colaboradores: any;
+  
+  cargarCategorias() {
+    this.http.listaRecepcionistas(this.idGym).subscribe({
+      next: (resultData) => {
+        this.empleados = resultData;
+        this.dataSource = new MatTableDataSource(this.empleados);
+        this.dataSource.paginator = this.paginator;
+      }
+    });
+  }
+  
+  actualizarTabla() {
+    if (!this.dataSource) {
+      // Asegúrate de que this.dataSource esté definido antes de actualizar
+      this.cargarCategorias();
+    } else {
+      this.http.listaRecepcionistas(this.idGym).subscribe({
+        next: (resultData) => {
+          this.empleados = resultData;
+          this.dataSource.data = this.empleados;
+        }
+      });
+    }
   }
 
   getSSdata(data: any){
@@ -105,11 +133,13 @@ export class ColaboradoresComponent {
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
           // Hacer algo cuando se cierra el diálogo
+          this.actualizarTabla();
         } else {
           // Hacer algo cuando se cancela el diálogo
         }
       });
   }
+  
 
   OpenEditar(empleado: any) {
     const dialogConfig = new MatDialogConfig();
@@ -125,11 +155,12 @@ export class ColaboradoresComponent {
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          // Hacer algo cuando se cierra el diálogo
+          this.actualizarTabla();
         } else {
           // Hacer algo cuando se cancela el diálogo
         }
       });
+     
   }
 
 }
