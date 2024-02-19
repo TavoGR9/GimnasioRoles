@@ -57,7 +57,6 @@
                       <th>Día Semana</th>
                       <th>Hora Entrada</th>
                       <th>Hora Salida</th>
-                      <!-- Agrega más encabezados según tus datos -->
                   </tr>
               </thead>
               <tbody>
@@ -65,7 +64,6 @@
                       <td>{{ horario.diaSemana }}</td>
                       <td>{{ horario.horaEntrada }}</td>
                       <td>{{ horario.horaSalida }}</td>
-                      <!-- Agrega más celdas según tus datos -->
                   </tr>
               </tbody>
           </table>
@@ -73,12 +71,12 @@
       <ng-template #noHorario>
           <p style="text-align: center; margin-top: 20px;">Horario no disponible</p>
           <div style="display: flex; justify-content: center;">
-            <button mat-raised-button style="background-color: #fd9727; width: 190px; font-size: 16px; margin-bottom: 30px;" (click)="agregarHorario(id)">
+            <button *ngFor="let gimnasio of gimnasio" mat-raised-button style="background-color: #fd9727; width: 190px; font-size: 16px; margin-bottom: 30px;" (click)="agregarHorario(gimnasio.idGimnasio)">
                 <mat-icon>add</mat-icon> Agregar horario
             </button>
             <br><br>  
          </div>
-         <br><br>    
+        <br>
       </ng-template>
   </div>
  </div>
