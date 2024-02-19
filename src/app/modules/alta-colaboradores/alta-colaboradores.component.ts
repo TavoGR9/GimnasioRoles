@@ -7,6 +7,8 @@ import { ColaboradorService } from './../../service/colaborador.service';
 import { AuthService } from '../../service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
+import { NgxSpinnerService } from "ngx-spinner";
+
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
@@ -31,6 +33,7 @@ export class AltaColaboradoresComponent {
     private router: Router,
     private auth: AuthService,
     private http: ColaboradorService,
+    private spinner: NgxSpinnerService,
     private toastr: ToastrService ){
     this.form = this.fb.group({
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
@@ -53,7 +56,6 @@ export class AltaColaboradoresComponent {
     if (this.isAdmin()){
       this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
         next: (resultData) => {
-          console.log(resultData);
           this.sucursales = resultData;
         }
       });
@@ -61,7 +63,6 @@ export class AltaColaboradoresComponent {
     if(this.isSupadmin()){
       this.http.comboDatosAllGym().subscribe({
         next: (dataResponse) => {
-          console.log(dataResponse);
           this.sucursales = dataResponse;
         }
       });
@@ -73,11 +74,8 @@ export class AltaColaboradoresComponent {
     const telefono = this.form.value.telefono;
     const correo = this.form.value.email;
     const password = this.form.value.pass;
-
-    console.log("Numero de telefono: ", telefono);
     // Mensaje que se enviará
     const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
-    console.log("Mensaje: ", mensaje);
     // Crear la URL para abrir WhatsApp con el mensaje predefinido
     const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
   
@@ -99,10 +97,10 @@ export class AltaColaboradoresComponent {
 
   registrar():any{
     if (this.form.valid) {
+      this.spinner.show();
 
       this.http.agregarEmpleado(this.form.value).subscribe({
         next: (resultData) => {
-          console.log(resultData.msg);
           //mensaje de error - generado apartir de la existencia previa del rfc en la bd
           if(resultData.msg == 'RfcExists'){
             this.toastr.error('El rfc ya existe.', 'Error!!!');
@@ -116,6 +114,7 @@ export class AltaColaboradoresComponent {
             //this.toastr.success('Empleado agregado correctamente.', 'Exíto!!!');
             this.cerrarDialogo();
             this. enviarMensajeWhatsApp();
+            this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent,{
               data: 'Registro agregado correctamente.'
               //width: '500px',
@@ -129,6 +128,7 @@ export class AltaColaboradoresComponent {
         
                 }
               });
+              
             
             this.form.markAsPristine(); 
             //  marcar un control de formulario como no tocado, indicando que el usuario no ha interactuado con él.
@@ -137,7 +137,6 @@ export class AltaColaboradoresComponent {
         },
         error: (error) => {
           this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
-          console.error(error);
         }
       });
     } else {
@@ -175,3 +174,4 @@ export class AltaColaboradoresComponent {
     });
   }
 }
+

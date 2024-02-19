@@ -7,6 +7,7 @@ import { ColaboradorService } from '../../service/colaborador.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { AuthService } from '../../service/auth.service';
+import { NgxSpinnerService } from "ngx-spinner";
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -35,6 +36,7 @@ export class EditarColaboradorComponent implements OnInit{
     private http: ColaboradorService,
     private auth: AuthService,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     @Inject(MAT_DIALOG_DATA)  public data: any ){
     //Capturar - rescatar el parametro pasado por la url
     //this.idParam=this.activeR.snapshot.paramMap.get('id');
@@ -79,7 +81,6 @@ export class EditarColaboradorComponent implements OnInit{
     if (this.isAdmin()){
       this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
         next: (resultData) => {
-          console.log(resultData);
           this.sucursales = resultData;
         }
       });
@@ -87,7 +88,6 @@ export class EditarColaboradorComponent implements OnInit{
     if(this.isSupadmin()){
       this.http.comboDatosAllGym().subscribe({
         next: (dataResponse) => {
-          console.log(dataResponse);
           this.sucursales = dataResponse;
         }
       });
@@ -108,11 +108,10 @@ export class EditarColaboradorComponent implements OnInit{
 
   //funcion correspondiente a actualizar empleado
   actualizar(){
-    console.log(this.form.value);
     if (this.form.valid) {
+      this.spinner.show();
       this.http.actualizaEmpleado(this.data.empleadoID, this.form.value).subscribe({
         next: (resultDataUpdate) => {
-          console.log(resultDataUpdate.msg);
           if(resultDataUpdate.msg == 'RfcExists'){
             this.toastr.error('El rfc ya existe.', 'Error!!!');
           }
@@ -122,8 +121,8 @@ export class EditarColaboradorComponent implements OnInit{
           if(resultDataUpdate.msg == 'Success'){
             //this.toastr.success('Registro actualizado correctamente.', 'Exíto!!!');
 
-            this.cerrarDialogo()
-            
+            this.cerrarDialogo();
+            this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent,{
               data: 'Registro actualizado correctamente.'
               //width: '500px',

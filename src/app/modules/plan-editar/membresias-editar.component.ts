@@ -69,7 +69,6 @@ export class planEditarComponent {
     this.planService.consultarPlan(this.dataToUpdate.id).subscribe(respuesta => {
       if(respuesta){
         this.serviceToUpdate = respuesta;
-        console.log("TEST:", this.serviceToUpdate);
         this.formulariodePlan.setValue({
           titulo: this.serviceToUpdate[0].titulo,
           detalles: this.serviceToUpdate[0].detalles,
@@ -87,6 +86,7 @@ export class planEditarComponent {
   }
     
   actualizar(){
+    this.spinner.show();
     this.membresiaService.actualizarPlan(this.idMem,this.formulariodePlan.value).subscribe(()=>{
       this.spinner.hide();
       this.dialog.open(MensajeEmergentesComponent, {

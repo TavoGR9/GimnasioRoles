@@ -1,13 +1,14 @@
 import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, BehaviorSubject  } from 'rxjs';
 import { listaEmpleados, msgResult, registrarEmpleado } from '../models/empleado';
-
+import { tap } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root'
 })
 
 export class ColaboradorService {
+    private categoriasSubject = new BehaviorSubject<any[]>([]);
 
     API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/empleado.php';
     constructor(private clienteHttp:HttpClient) {
@@ -22,23 +23,38 @@ export class ColaboradorService {
         return this.clienteHttp.get(this.API+"?nameGym="+gimName);
     }
 
-    comboDatosAllGym(){
-        return this.clienteHttp.get(this.API+"?nomAllGym");
-    }
+    
 
     //servicio correspondiente al registro-alta de nuevo colaborador
     agregarEmpleado(datosEmpleado: registrarEmpleado):Observable<any>{
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-        return this.clienteHttp.post<msgResult>(this.API+"?addEmpleado",datosEmpleado, {headers});
+        return this.clienteHttp.post<msgResult>(this.API+"?addEmpleado",datosEmpleado, {headers})
     }
 
-    //servicio correspondiente a llenar tabla lista de colaboradores
-    listaColaboradores():Observable<any>{
-        return this.clienteHttp.get<listaEmpleados>(this.API+"?tEmp");
+
+
+    comboDatosAllGym(){
+        return this.clienteHttp.get(this.API+"?nomAllGym");
     }
 
-    listaRecepcionistas(idGym: any):Observable<any>{
-        return this.clienteHttp.get<listaEmpleados>(this.API+"?tEmpRec="+idGym);
+
+    listaColaboradores():Observable<any[]>{
+        return this.clienteHttp.get<any[]>(this.API+"?tEmp");
+        
+    }
+
+      getCategoriasSubject() {
+        return this.categoriasSubject.asObservable();
+      }
+
+
+    listaRecepcionistas(idGym: any):Observable<any[]>{
+        return this.clienteHttp.get<any[]>(this.API+"?tEmpRec="+idGym)
+        .pipe(
+            tap((nuevasCategorias: any[]) => {
+              this.categoriasSubject.next(nuevasCategorias);
+            })
+          );
     }
 
     //servicio correspondiente a traer datos para la actualizacion de empleado

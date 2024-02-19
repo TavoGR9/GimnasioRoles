@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import Chart from 'chart.js/auto';
 import { format } from 'date-fns';
-import { AuthService } from 'src/app/service/auth.service';
-import { SerialService } from 'src/app/service/serial.service';
+import { AuthService } from './../../service/auth.service';
+import { SerialService } from './../../service/serial.service';
 import * as SerialPort from 'serialport';
 import { ToastrService } from 'ngx-toastr';
 
@@ -76,8 +76,6 @@ export class ReportsComponent implements OnInit{
     console.log(this.form.value);
     this.service.chart_sucursales(this.form.value).subscribe({
       next: (resultData) => {
-        console.log(resultData);
-        //Validar que se obtenga algun resultado valido de la BD
         if(resultData.nombre == 'No_result'){
           this.toastr.error('No hay resultados disponibles...', 'No hay resultados', {
             positionClass: 'toast-bottom-left',

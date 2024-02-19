@@ -25,11 +25,11 @@
         <mat-form-field appearance="outline" class="input_css">
           <mat-label>Tipo de reporte</mat-label>
           <mat-select id="sucursal" formControlName="tipo">
-            <mat-option value="1">Membresias vendidas</mat-option>
-            <mat-option value="2">Membresias vendidas (ingresos)</mat-option>
-            <mat-option value="3">Servicios vendidos</mat-option>
-            <mat-option value="4">Servicios vendidos (ingresos)</mat-option>
-            <mat-option value="5">Productos vendidos (productos)</mat-option>
+           <!-- <mat-option value="1">Membresias vendidas</mat-option>-->
+            <mat-option value="2">Membresias vendidas</mat-option>
+           <!-- <mat-option value="3">Servicios vendidos</mat-option>-->
+            <mat-option value="4">Servicios vendidos</mat-option>
+            <!--<mat-option value="5">Productos vendidos (productos)</mat-option>-->
             <mat-option value="6">Productos vendidos (ingresos)</mat-option>
             <mat-option *ngIf="esSupAdmin" value="7">Productos vendidos (sucursales)</mat-option>
           </mat-select>

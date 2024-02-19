@@ -51,12 +51,9 @@ export class EditarProductoComponent implements OnInit{
     private categoriaService: CategoriaService,){
 
     this.idProducto = data.idProducto;
-    console.log(this.idProducto, "this.idProducto");
     //llamar al servicio datos empleado - pasando el parametro capturado por url
     this.productoService.consultarProductosJ(this.idProducto).subscribe(
       respuesta=>{
-        //asignar valor a los campos correspondientes al fomulario
-        console.log(respuesta, "respuesta");
         this.form.setValue({
           nombre:respuesta [0]['nombre'],
           descripcion:respuesta [0]['descripcion'],
@@ -117,6 +114,7 @@ export class EditarProductoComponent implements OnInit{
 
 
   actualizar(){
+    this.spinner.show();
     this.productoService.actualizarProducto(this.idProducto,this.form.value).subscribe(
       (response) => {
         this.spinner.hide();
@@ -133,8 +131,6 @@ export class EditarProductoComponent implements OnInit{
         });
       },
       (error) => {
-        console.error('Error al actualizar producto:', error);
-        // Manejo de errores
       }
     );
 }

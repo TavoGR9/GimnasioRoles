@@ -19,6 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { EntradaProducto } from 'src/app/models/entradas';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxSpinnerService } from "ngx-spinner";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -73,6 +74,7 @@ export class EntradasComponent implements OnInit {
     private entrada: EntradasService,
     private proveedor: ProveedorService,
     private dialog: MatDialog,
+    private spinner: NgxSpinnerService,
     private router:Router,
   ) {
     this.ubicacion = this.auth.nombreGym.getValue();
@@ -231,10 +233,12 @@ export class EntradasComponent implements OnInit {
   
   registrar(): any {
     if (this.tablaDatos.length > 0) {
+      this.spinner.show();
       const dataToSend: any[] = this.tablaDatos;
       this.entrada.agregarEntradaProducto(dataToSend).subscribe({
         next: (respuesta) => {
           if (respuesta.success) {
+            this.spinner.hide();
             this.dialog
               .open(MensajeEmergentesComponent, {
                 data: `Entrada agregada exitosamente`,

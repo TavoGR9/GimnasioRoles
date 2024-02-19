@@ -56,7 +56,6 @@ export class planAgregarComponent {
     this.auth.idGym.subscribe((id) => {
       if(id){
         this.idGym = id;
-        console.log("EL id es: ", this.idGym);
       }
       this.planService.consultarPlanIdMem(this.idGym).subscribe(respuesta => {
         this.plan = respuesta;
@@ -78,9 +77,8 @@ export class planAgregarComponent {
 
   
   enviar(): any {
-    console.log(this.formulariodePlan.value);
-    // Verifica si el formulario es válido
     if (this.formulariodePlan.valid) {
+      this.spinner.show();
       this.membresiaService
         .agregarPlan(this.formulariodePlan.value)
         .subscribe((respuesta) => {
@@ -103,9 +101,22 @@ export class planAgregarComponent {
             });
         });
     } else {
-      // El formulario no es válido, muestra un mensaje de error
       this.message = 'Por favor, complete todos los campos requeridos.';
+      this.marcarCamposInvalidos(this.formulariodePlan);
     }
+  }
+
+  marcarCamposInvalidos(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const control = formGroup.get(campo);
+      if (control instanceof FormGroup) {
+        this.marcarCamposInvalidos(control);
+      } else {
+        if (control) {
+          control.markAsTouched();
+        };
+      }
+    });
   }
 
   cerrarDialogo(): void {
