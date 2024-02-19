@@ -160,7 +160,10 @@ export class EmergenteInfoClienteComponent implements OnInit{
       next: (resultData) => {
         console.log(resultData);
         this.spinner.hide();
-        this.dialog.open(MensajeEmergenteComponent, {})
+        this.cerrarDialogo();
+        this.dialog.open(MensajeEmergenteComponent, {
+          data: `Datos actualizados satisfacoriamente`,
+        })
         .afterClosed()
         .subscribe((cerrarDialogo: Boolean) => {
           if (cerrarDialogo) {
