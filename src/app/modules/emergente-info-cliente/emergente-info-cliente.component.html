@@ -56,15 +56,30 @@
     </div>
 
     <div class="column">
-      <h3 style="font-weight: bold;">Membresia:</h3> {{ data.membresia }}
+      <ng-container *ngIf="data.action === 'Activo'; else notActive">
+        <h3 style="font-weight: bold;">Membresia:</h3> {{ data.membresia }}
+      </ng-container>
+      <ng-template #notActive>
+        <h3 style="font-weight: bold;">Membresia:</h3> N/A
+      </ng-template>
     </div>
 
     <div class="column">
-      <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
+      <ng-container *ngIf="data.action === 'Activo'; else notActive">
+        <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
+      </ng-container>
+      <ng-template #notActive>
+        <h3 style="font-weight: bold;">Duración:</h3> N/A
+      </ng-template>
     </div>
 
     <div class="column">
-      <h3 style="font-weight: bold;">Información de la membresia:</h3> {{ data.infoMembresia }}
+      <ng-container *ngIf="data.action === 'Activo'; else notActive">
+        <h3 style="font-weight: bold;">Información de la membresia:</h3> {{ data.infoMembresia }}
+      </ng-container>
+      <ng-template #notActive>
+        <h3 style="font-weight: bold;">Información de la membresia:</h3> N/A
+      </ng-template>
     </div>
   </div>
 
