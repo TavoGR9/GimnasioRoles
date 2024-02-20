@@ -87,12 +87,12 @@ export class HorariosVistaComponent implements OnInit{
       Gimnasio_idGimnasio: ['', Validators.required], 
     });
 
-    this.postalCodeControl.valueChanges.subscribe((postalCode) => {
+ /*   this.postalCodeControl.valueChanges.subscribe((postalCode) => {
       // Check if postalCode is not null before calling the function
       if (postalCode !== null) {
         this.handlePostalCodeChange(postalCode);
       }
-    });
+    });*/
     
   }
 
@@ -217,7 +217,7 @@ enviarMensajeWhatsApp() {
     }
   }
 
-  private handlePostalCodeChange(postalCode: string): void {
+ /* private handlePostalCodeChange(postalCode: string): void {
     if (postalCode) {
       this.postalCodeService.getAddressByPostalCode(postalCode).subscribe(
         (response) => {
@@ -231,10 +231,10 @@ enviarMensajeWhatsApp() {
         }
       );
     }
-  }
+  }*/
 
   getAddressFromPostalCode() {
-    if (this.formularioSucursales) {
+   /* if (this.formularioSucursales) {
     const postalCode = this.formularioSucursales.get('codigoPostal')?.value;
   
     if (postalCode) {
@@ -262,12 +262,43 @@ enviarMensajeWhatsApp() {
         console.error('Error al obtener la dirección desde el código postal:', error);
       });
     }
+  }*/
   }
+  asentamientosUnicos: Set<string> = new Set<string>();
+  consultarCodigoPostal(): void {
+    const codigoPostal = this.formularioSucursales.get('codigoPostal')?.value;
+  
+    // Reiniciar el conjunto antes de agregar nuevos asentamientos
+    this.asentamientosUnicos.clear();
+  
+    this.postalCodeService.consultarCodigoPostal(codigoPostal).subscribe(
+      (response: any[]) => {
+        if (response && response.length > 0) {
+          response.forEach((resultado: any) => {
+            this.asentamientosUnicos.add(resultado.asentamiento);
+          });
+        } else {
+          console.log('No se encontraron asentamientos para el código postal.');
+        }
+  
+        console.log(response, "response");
+        if (response.length > 0) {
+          // Mostrar solo el primer resultado
+          const primerResultado = response[0];
+          this.formularioSucursales.get('estado')?.setValue(primerResultado.estado);
+          this.formularioSucursales.get('ciudad')?.setValue(primerResultado.municipio);
+        } else {
+          console.log('Código postal no encontrado o sin datos de estado.');
+        }
+      },
+      (error) => {
+        console.error(error);
+        // Manejar errores si es necesario
+      }
+    );
   }
   
-
-
-
+  
   cancelar(){
     this.dialogo.close();
   }

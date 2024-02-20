@@ -47,7 +47,6 @@ export class MembresiaService {
     return this.clienteHttp.post(this.API+"?actualizar="+id,datosPlan);
   }  
 
- 
 
   updateMembresiaStatus(id: number, estado: { status: number }): Observable<any> {
     console.log("status",estado,"id",id);

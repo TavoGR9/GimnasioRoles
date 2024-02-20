@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject,TemplateRef } from "@angular/core";
 import { AuthService } from "src/app/service/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { GimnasioService } from "src/app/service/gimnasio.service";
@@ -10,7 +10,7 @@ import {
   NgForm,
   Validators,
 } from "@angular/forms";
-import { PlanService } from "src/app/service/plan.service";
+import { PlanService } from "../../service/plan.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { EMPTY } from "rxjs";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -21,6 +21,7 @@ import {
 } from "@angular/material/dialog";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { NgxSpinnerService } from "ngx-spinner";
+import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -42,6 +43,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ["./dialog-select-membership.component.css"],
 })
 export class DialogSelectMembershipComponent implements OnInit {
+  noServicios: boolean = false; 
   displayedColumns: string[] = ["No", "nombre", "precio"];
   dataSource: MatTableDataSource<MyElement> =
     new MatTableDataSource<MyElement>();
@@ -213,6 +215,24 @@ export class DialogSelectMembershipComponent implements OnInit {
     }
   }
 
+  seleccionado: number = 0;
+
+  abrirDialogo() {
+    this.seleccionado = 1;
+    this.planService.seleccionado.next(this.seleccionado);
+    const dialogRef = this.dialog.open(ServiceDialogComponent, {
+      width: "55%",
+      height: "60%",
+      data: { name: "¿para quien es esta membresia?" },
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('El diálogo se cerró', result);
+      this.formPlan.get('servicioseleccionado')?.updateValueAndValidity();
+    });
+  }
+
+  
   getIdGym() {
     this.AuthService.idGym.subscribe((respuesta) => {
       this.idGym = respuesta;
@@ -259,6 +279,7 @@ export class DialogSelectMembershipComponent implements OnInit {
           formValue.servicioseleccionado = [formValue.servicioseleccionado];
         }
         this.planService.agregarPlan(formValue).subscribe((respuesta) => {
+          console.log(respuesta, "respuesta");
           if (respuesta) {
             if (respuesta.success == 1) {
               this.spinner.hide();

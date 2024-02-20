@@ -47,8 +47,11 @@ export class PlanService {
     return this.clienteHttp.get(this.API+"?consultarGYMPlan="+id);
   }
 
+
+
+
   consultarPlanIdPlan2(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarGYMPlan",id);
+    return this.clienteHttp.get(this.API+"?consultarGYMPlanT="+id);
   }
 
   consultarPlanGym(id:any):Observable<any>{

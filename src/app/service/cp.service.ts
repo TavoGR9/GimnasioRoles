@@ -8,7 +8,7 @@ import axios from 'axios';
   providedIn: 'root',
 })
 export class PostalCodeService {
-  private nominatimUrl = 'https://nominatim.openstreetmap.org/search';
+  /*private nominatimUrl = 'https://nominatim.openstreetmap.org/search';
 
   constructor(private http: HttpClient) {}
 
@@ -38,5 +38,17 @@ export class PostalCodeService {
           observer.error(error);
         });
     });
+  }*/
+
+  private apiUrl = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/cp.php';
+
+  constructor(private http: HttpClient) { }
+
+  consultarCodigoPostal(codigoPostal: string): Observable<any> {
+    console.log(codigoPostal, "codigoPostal");
+    const url = `${this.apiUrl}?consultarCodigoP=${codigoPostal}`;
+    console.log(url, "url");
+    return this.http.get<any>(url);
   }
+
 }
