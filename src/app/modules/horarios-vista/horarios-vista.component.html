@@ -63,7 +63,7 @@
               <label for="nombreColonia" class="large-text" >Codigo postal:</label>
               <mat-form-field appearance="outline"  style="width: 95%;" required>
                 <mat-label>Codigo postal</mat-label>
-                <input type="text" placeholder="codigoPostal" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" (blur)="getAddressFromPostalCode()" />
+                <input type="text" placeholder="codigoPostal" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" (blur)="consultarCodigoPostal()" />
                 <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('maxlength') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
                   <strong class="txt_msg">**Maximo 5 carácteres</strong>
                </mat-error>
@@ -103,13 +103,23 @@
             </div>
             <div class="col-sm-6">
               <label for="nombreColonia" class="large-text" >Colonia:</label>
-              <mat-form-field appearance="outline" style="width: 95%;" required>
+             <!-- <mat-form-field appearance="outline" style="width: 95%;" required>
                 <mat-label>Colonia</mat-label>
                 <input type="text" placeholder="colonia" matInput autocomplete="off" id="colonia" formControlName="colonia" />
                 <mat-error *ngIf="formularioSucursales.get('colonia')?.hasError('pattern') && !formularioSucursales.get('colonia')?.hasError('required')">
                   <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                </mat-error>
                <mat-error *ngIf="formularioSucursales.get('colonia')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+              </mat-form-field>-->
+
+              <mat-form-field appearance="outline" style="width: 95%;" required>
+                <mat-label>Colonia</mat-label>
+                <mat-select formControlName="colonia">
+                  <mat-option *ngFor="let asentamiento of asentamientosUnicos" [value]="asentamiento">
+                    {{ asentamiento }}
+                  </mat-option>
+                </mat-select>
+                <!-- Agrega mensajes de error según sea necesario -->
               </mat-form-field>
               
             </div>

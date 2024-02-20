@@ -75,7 +75,7 @@
 
                         </div>
                         <div class="col-sm-6">
-                            <p>
+                            <p *ngIf="plan && plan.length > 0; else noServicios">
                                 <label>Membresías:</label>
                                 <mat-form-field appearance="outline" style="width: 95%;" required>
                                     <mat-label>Selecciona una membresía</mat-label>
@@ -86,6 +86,11 @@
                                     </mat-select>
                                   </mat-form-field>
                             </p>
+
+                            <ng-template #noServicios>
+                                <p>No hay membresías disponibles.</p>
+                                <p>Agrega tu membresía: <a href="javascript:void(0)" (click)="openDialog()">Aquí</a></p>
+                              </ng-template>
 
                         </div>
                        

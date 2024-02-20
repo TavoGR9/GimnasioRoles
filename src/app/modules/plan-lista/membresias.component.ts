@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
 import { plan } from 'src/app/models/plan';
-import { PlanService } from 'src/app/service/plan.service';
+import { PlanService } from '../../service/plan.service';
 import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
@@ -71,13 +71,26 @@ export class planComponent implements OnInit {
     
   }
   
-  listaTabla(){
-    this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
-      this.plan = respuesta;
-      this.dataSource = new MatTableDataSource(this.plan);
-      this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+  listaTabla() {
+    this.planService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
+      console.log("respuestaaaa", respuesta);
+      if (respuesta.success === 1) {
+        // Verificar si la propiedad 'data' está presente y es un array
+        if (respuesta.data && Array.isArray(respuesta.data)) {
+          this.plan = respuesta.data;  // Asignar el array 'data' a 'plan'
+          this.dataSource = new MatTableDataSource(this.plan);
+          this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+        } else {
+          console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
+        }
+      } else if (respuesta.warning) {
+        console.log('Advertencia:', respuesta.warning);
+      } else {
+        console.error('Error en la respuesta del servicio:', respuesta.error);
+      }
     });
-}
+  }
+  
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
@@ -93,27 +106,6 @@ export class planComponent implements OnInit {
     });
   }
 
-  borrarPlan(idMem: any) {
-    this.dialog.open(MensajeEliminarComponent, {
-      data: `¿Desea eliminar esta membresía?`,
-    })
-    .afterClosed()
-      .subscribe((confirmado: Boolean) => {
-        if (confirmado) {
-          this.planService.borrarPlan(idMem).subscribe((respuesta) => {    
-            this.ngOnInit();
-          },
-          (error) => {
-            this.message = "¡Error al eliminar! Hay clientes inscritos en esta membresía";
-            setTimeout(() => {
-              this.message = ''; // Ocultar el mensaje de error después de 20 segundos
-            }, 7000); // 20000 milisegundos = 20 segundos
-          });
-        } else {
-          
-        }
-      });
-   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -156,10 +148,21 @@ export class planComponent implements OnInit {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
-        this.plan = respuesta;
-        this.dataSource = new MatTableDataSource(this.plan);
-        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+      this.planService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
+        if (respuesta.success === 1) {
+          // Verificar si la propiedad 'data' está presente y es un array
+          if (respuesta.data && Array.isArray(respuesta.data)) {
+            this.plan = respuesta.data;  // Asignar el array 'data' a 'plan'
+            this.dataSource = new MatTableDataSource(this.plan);
+            this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+          } else {
+            console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
+          }
+        } else if (respuesta.warning) {
+          console.log('Advertencia:', respuesta.warning);
+        } else {
+          console.error('Error en la respuesta del servicio:', respuesta.error);
+        }
       });
     });
   }

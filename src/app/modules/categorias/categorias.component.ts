@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator'; 
-import { CategoriaService } from 'src/app/service/categoria.service';
+import { CategoriaService } from '../../service/categoria.service';
 import { Categorias } from 'src/app/models/categorias';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from 'src/app/service/auth.service';
@@ -65,11 +65,13 @@ export class CategoriasComponent implements OnInit {
 
 
   cargarCategorias() {
+  
     this.categoriaService.consultarCategoriaGym(this.idGym).subscribe({
       next: (resultData) => {
         this.categorias = resultData;
         this.dataSource = new MatTableDataSource(this.categorias);
         this.dataSource.paginator = this.paginator;
+        console.log(resultData, "resultData");
       }
     });
   }

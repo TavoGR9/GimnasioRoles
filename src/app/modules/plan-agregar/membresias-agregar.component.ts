@@ -10,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PlanService } from 'src/app/service/plan.service';
 import { plan } from 'src/app/models/plan';
 import { NgxSpinnerService } from "ngx-spinner";
-
+import { DialogSelectMembershipComponent } from '../dialog-select-membership/dialog-select-membership.component';
 @Component({
   selector: 'app-membresias-agregar',
   templateUrl: './membresias-agregar.component.html',
@@ -24,6 +24,7 @@ export class planAgregarComponent {
   selectedMembresia: any;
   idGym: number = 0;
   plan: plan[] = [];
+  noServicios: boolean = false; 
 
   constructor(
     public dialogo: MatDialogRef<planAgregarComponent>,
@@ -159,4 +160,17 @@ export class planAgregarComponent {
       return {};
     }
   }
+
+  openDialog(): void {
+    this.planService.optionShow.next(1);
+    this.planService.optionShow.subscribe((option) => {});
+    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+      width: "70%",
+      height: "90%",
+      disableClose: true,
+      data: { name: "¿Para quién es esta membresía?" },
+    });
+  
+  }
+  
 }

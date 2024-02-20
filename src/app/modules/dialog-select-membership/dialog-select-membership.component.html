@@ -83,7 +83,7 @@
                             <label>Duración:</label>
                         </div>
                         <div class="col-sm-6">
-                            <label class="large-text">Elige tus servicios:</label>
+                            <label class="large-text"  *ngIf="servicios && servicios.length > 0">Elige tus servicios:</label>
                         </div>
                     </div>
                     <div class="row">
@@ -132,7 +132,7 @@
                                       </mat-error>
                                 </mat-form-field>
                             </p>-->
-                            <p>
+                            <p *ngIf="servicios && servicios.length > 0; else noServicios">
                                 <mat-form-field required appearance="outline" style="width: 95%;">
                                   <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar servicio</mat-label>
                                   
@@ -146,16 +146,20 @@
                                     El servicio es requerido.
                                   </mat-error>
                                 </mat-form-field>
+                                
                               </p>
+                        
+                              <p *ngIf="servicios && servicios.length > 0">Agrega otro servicio:<a href="javascript:void(0)" (click)="abrirDialogo()">Agregar</a></p>
+                               
+                       
+                              <!-- Mensaje cuando no hay servicios -->
+                              <ng-template #noServicios>
+                                <p>No hay servicios disponibles.</p>
+                                <p>Agrega tu servicio: <a href="javascript:void(0)" (click)="abrirDialogo()">Agregar</a></p>
+                              </ng-template>
                               
-                              
-                            <div class="services_selected">
-                                <p><strong><label  class="large-text">Servicios seleccionados:</label></strong></p>
-                                <ul *ngFor="let selected of servicioSeleccionado">
-                                    <li>{{selected.nombre_servicio}}</li>
-                                </ul>
-                            </div>
 
+<br>
                             <p><label  class="large-text">Estatus:</label></p>
                             <p>
                                     <mat-radio-group aria-label="Select an option" formControlName="status">

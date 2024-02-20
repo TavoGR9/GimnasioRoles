@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { plan } from "src/app/models/plan";
-import { PlanService } from "src/app/service/plan.service";
+import { PlanService } from "../../service/plan.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { GimnasioService } from "src/app/service/gimnasio.service";
 import { AuthService } from "src/app/service/auth.service";
@@ -79,38 +79,22 @@ export class MembresiasComponent implements OnInit {
   }
 
   listaTabla() {
-    this.planService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
-      this.plan = respuesta;
-      this.dataSource = new MatTableDataSource(this.plan);
-      this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
-    });
-  }
-
-  borrarPlan(idMem: any) {
-    this.dialog
-      .open(MensajeEliminarComponent, {
-        data: `¿Desea eliminar esta membresía?`,
-      })
-      .afterClosed()
-      .subscribe((confirmado: Boolean) => {
-        if (confirmado) {
-          this.planService.borrarPlan(idMem).subscribe(
-            (respuesta) => {
-              this.ngOnInit();
-            },
-            (error) => {
-              this.message =
-                "¡Error al eliminar! Hay clientes inscritos en esta membresía";
-              setTimeout(() => {
-                this.message = ""; // Ocultar el mensaje de error después de 20 segundos
-              }, 7000); // 20000 milisegundos = 20 segundos
-            }
-          );
+    this.planService.consultarPlanIdMem(this.idGym).subscribe(
+      (respuesta) => {
+        if (respuesta) {
+          this.plan = respuesta;
+          this.dataSource = new MatTableDataSource(this.plan);
+          this.dataSource.paginator = this.paginator;
         } else {
+    
         }
-      });
+      },
+      (error) => {
+        console.error('Error al obtener los datos del servicio:', error);
+      }
+    );
   }
-
+  
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -150,17 +134,27 @@ export class MembresiasComponent implements OnInit {
       width: "70%",
       height: "90%",
       disableClose: true,
-      data: { name: "¿para quien es esta membresia?" },
+      data: { name: "¿Para quién es esta membresía?" },
     });
-
+  
     dialogRef.afterClosed().subscribe((result) => {
-      this.planService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
-        this.plan = respuesta;
-        this.dataSource = new MatTableDataSource(this.plan);
-        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
-      });
+      this.planService.consultarPlanIdMem(this.idGym).subscribe(
+        (respuesta) => {
+          if (respuesta) {
+            this.plan = respuesta;
+            this.dataSource = new MatTableDataSource(this.plan);
+            this.dataSource.paginator = this.paginator;
+          } else {
+      
+          }
+        },
+        (error) => {
+          console.error('Error al obtener los datos del servicio:', error);
+        }
+      );
     });
   }
+  
 
   openDialogService(idMem: number, tipo_membresia: number) {
     this.planService.optionShow.next(2);
