@@ -18,11 +18,13 @@ export class CategoriasComponent implements OnInit {
 
   currentUser: string = '';
   displayedColumns: string[] = [
-    'idCategoria',
-    'nombre',
-    'descripcion',
-    'estatus',
-    'fechaCreacion'
+    //'idCategoria',
+    'Nombre',
+    'Descripción',
+    'Status',
+    'Fecha Creación',
+    'Acciones',
+    'Activar'
   ];
 
   public categorias: any;
@@ -53,14 +55,34 @@ export class CategoriasComponent implements OnInit {
   }
 
   listaTabla(){
-    this.categoriaService.consultarCategoriaGym(this.idGym).subscribe({
-      next: (resultData) => {
-        this.categorias = resultData;
-        this.dataSource = new MatTableDataSource(this.categorias);
+    this.categoriaService.consultarCategoriaGym(this.idGym).subscribe( resultData => {
+      //next: (resultData) => {
+        console.log("la lista es: ", resultData);
+        if (Array.isArray(resultData) && resultData.length > 0 && resultData[0].msg === 'No hay registros') {
+          this.categoryData = [];
+          this.dataSource = new MatTableDataSource(this.categoryData);
+          this.dataSource.paginator = this.paginator;
+          console.log('No hay categorias.');
+          //this.toastr.info('No hay clientes activos en este rango de fechas.', 'Info!!!');
+        } else if (resultData) {
+          this.categoryData = resultData;
+          this.dataSource = new MatTableDataSource(this.categoryData);
+          this.dataSource.paginator = this.paginator;
+          this.cargarCategorias();
+        }  
+      }, error => {
+        console.error('Error en la solicitud:', error);
+        // Manejo de errores adicional si es necesario
+        this.categoryData = [];
+        this.dataSource = new MatTableDataSource(this.categoryData);
         this.dataSource.paginator = this.paginator;
-        this.cargarCategorias();
+        console.log('Ocurrio un error.');
+        //this.toastr.error('Ocurrio un error.', 'Error!!!');
+      },
+      () => {
+        console.log('La solicitud se completó.');
       }
-    });
+    );
   }
 
 
@@ -69,7 +91,7 @@ export class CategoriasComponent implements OnInit {
     this.categoriaService.consultarCategoriaGym(this.idGym).subscribe({
       next: (resultData) => {
         this.categorias = resultData;
-        this.dataSource = new MatTableDataSource(this.categorias);
+        this.dataSource = new MatTableDataSource(this.categorias);     //categorias esta como tipo any, al hacer un registro puede que haya error (tratar cambiarlo por this.categoryData)
         this.dataSource.paginator = this.paginator;
         console.log(resultData, "resultData");
       }
@@ -102,11 +124,11 @@ export class CategoriasComponent implements OnInit {
   }
 
 
-  editarCategoria(idCategoria: string): void {
+  editarCategoria(categoria: any): void {
     const dialogRef = this.dialog.open(EditarCategoriaComponent, {
       width: '60%',
       height: '90%',
-      data: { idCategoria: idCategoria },
+      data: { idCategoria: categoria.idCategoria },
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
