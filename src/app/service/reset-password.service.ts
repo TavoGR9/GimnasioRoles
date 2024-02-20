@@ -20,9 +20,9 @@ export class ResetPasswordService {
    * @returns
    */
   enviarMail(email: string): Observable<any> {
-    return this.clienteHttp.post(this.API + '?solicitaNuevaPass', email, {
-      headers: this.httpHeaders,
-    });
+    console.log(this.API + '?solicitaNuevaPass', email);
+    
+    return this.clienteHttp.post(this.API + '?solicitaNuevaPass', email);
   }
 
   /**

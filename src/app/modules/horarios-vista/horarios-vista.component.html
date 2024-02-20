@@ -314,7 +314,7 @@
     
     <div style="margin: auto; display: block; text-align: center;" mat-dialog-actions>
       <!--<button *ngIf="optionToShow === 2" mat-raised-button type="submit" (click)="enviarFormularios()" (click)="enviarMensajeWhatsApp()" style="background-color: #fd9727; font-size: 20px; margin-top: 50px; height: 40px; width: 120px;">Aceptar</button>-->   <!--(click)="enviarFormularios()" -->
-      <button *ngIf="optionToShow === 2 && !mostrarFormularioAdministrador && formularioSucursales.valid" (click)="mostrarFormulario(); enviarSucursal(); actualizarSelect()" mat-raised-button type="submit" style="background-color: #fd9727; font-size: 20px;height: 40px; width: 120px;">Aceptar</button>   <!--(click)="enviarSucursal()"" sera el envio de sucursal-->
+      <button *ngIf="optionToShow === 2 && !mostrarFormularioAdministrador" (click)="enviarSucursal()" mat-raised-button type="submit" style="background-color: #fd9727; font-size: 20px;height: 40px; width: 120px;">Aceptar</button>   <!--(click)="enviarSucursal()"" sera el envio de sucursal-->
       <button *ngIf="optionToShow === 2 && mostrarFormularioAdministrador && personaForm.valid" (click)="enviarEmpleado(); enviarMensajeWhatsApp()" mat-raised-button type="submit" style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 120px;">Aceptar</button>   <!--(click)="enviarEmpleado()" (click)="enviarMensajeWhatsApp()"" serael envio del empleado y del whatsapp-->
       <button *ngIf="optionToShow === 3" mat-raised-button type="submit" (click)="confirmarEdicion()" style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 120px;">Aceptar</button>
   

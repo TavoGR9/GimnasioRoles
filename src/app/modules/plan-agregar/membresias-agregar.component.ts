@@ -170,6 +170,19 @@ export class planAgregarComponent {
       disableClose: true,
       data: { name: "¿Para quién es esta membresía?" },
     });
+
+    dialogRef.afterClosed().subscribe((nuevoServicio) => {
+      console.log(nuevoServicio, "nuevoServicio");
+      if (nuevoServicio) {
+        if (!Array.isArray(this.plan)) {
+          this.plan = [];
+        }
+        this.plan.push(nuevoServicio);
+        this.formulariodePlan.get('servicioseleccionado')?.setValue(this.plan);
+        console.log("this.servicios", this.plan);
+      }
+    });
+
   
   }
   

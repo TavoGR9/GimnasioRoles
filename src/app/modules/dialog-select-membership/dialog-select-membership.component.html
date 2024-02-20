@@ -147,19 +147,15 @@
                                   </mat-error>
                                 </mat-form-field>
                                 
-                              </p>
+                            </p>
                         
-                              <p *ngIf="servicios && servicios.length > 0">Agrega otro servicio:<a href="javascript:void(0)" (click)="abrirDialogo()">Agregar</a></p>
-                               
-                       
-                              <!-- Mensaje cuando no hay servicios -->
-                              <ng-template #noServicios>
+                            <p *ngIf="servicios && servicios.length > 0">Agrega otro servicio:<a href="javascript:void(0)" (click)="abrirDialogo()">Agregar</a></p>
+                            <ng-template #noServicios>
                                 <p>No hay servicios disponibles.</p>
                                 <p>Agrega tu servicio: <a href="javascript:void(0)" (click)="abrirDialogo()">Agregar</a></p>
-                              </ng-template>
-                              
+                            </ng-template>                       
+                     
 
-<br>
                             <p><label  class="large-text">Estatus:</label></p>
                             <p>
                                     <mat-radio-group aria-label="Select an option" formControlName="status">
