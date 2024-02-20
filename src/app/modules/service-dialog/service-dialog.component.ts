@@ -110,11 +110,11 @@ export class ServiceDialogComponent implements OnInit {
                   data: `¡Servicio agregado con éxito!`,
                 }
               );
-              this.serviceForm.reset();
               dialogRefConfirm.afterClosed().subscribe((result) => {
                 this.planService.confirmButton.next(true);
-                this.dialogRef.close();
+                this.dialogRef.close(this.serviceForm.value);
               });
+              
             }
           } else {
           }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { ResetPasswordService } from 'src/app/service/reset-password.service';
+import { ResetPasswordService } from '../../service/reset-password.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -27,29 +27,43 @@ export class ForgotPasswordComponent implements OnInit {
   onSubmit(): void {
     console.log('Hiciste clic en enviar');
     console.log(this.resetForm.value);
+    console.log(this.resetForm.valid, "this.resetForm.valid");
+  
     if (this.resetForm.valid) {
+      console.log("pasa");
+  
       this.resetPass.enviarMail(this.resetForm.value).subscribe({
         next: (respuesta) => {
-          console.log('llego respuest del api');
+          console.log('llego respuesta del api');
           console.log(respuesta);
-          if (respuesta.success) {
-            this.toastr.success(respuesta.message, 'Exito', {
+  
+          if (respuesta && respuesta.success) {
+            this.toastr.success(respuesta.message, '¡Éxito! Hemos enviado un correo electrónico con instrucciones para recuperar tu contraseña', {
               positionClass: 'toast-bottom-left',
             });
           } else {
-            this.toastr.error(respuesta.message, 'Error', {
+            this.toastr.error('Respuesta del servidor no válida', 'Error', {
               positionClass: 'toast-bottom-left',
             });
           }
         },
         error: (paramError) => {
-          this.toastr.error(paramError.error.message, 'Error', {
-            positionClass: 'toast-bottom-left',
-          });
+          console.error('Error en la solicitud:', paramError);
+  
+          if (paramError.error && paramError.error.message) {
+            this.toastr.error(paramError.error.message, 'Error', {
+              positionClass: 'toast-bottom-left',
+            });
+          } else {
+            this.toastr.error('Error desconocido', 'Error', {
+              positionClass: 'toast-bottom-left',
+            });
+          }
         },
       });
     }
   }
+  
 
   getErrorMessage() {
     const usernameControl = this.resetForm.get('username');

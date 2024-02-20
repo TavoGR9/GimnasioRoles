@@ -226,10 +226,19 @@ export class DialogSelectMembershipComponent implements OnInit {
       data: { name: "¿para quien es esta membresia?" },
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('El diálogo se cerró', result);
-      this.formPlan.get('servicioseleccionado')?.updateValueAndValidity();
+
+    dialogRef.afterClosed().subscribe((nuevoServicio) => {
+      console.log(nuevoServicio, "nuevoServicio");
+      if (nuevoServicio) {
+        if (!Array.isArray(this.servicios)) {
+          this.servicios = [];
+        }
+        this.servicios.push(nuevoServicio);
+        this.formPlan.get('servicioseleccionado')?.setValue(this.servicios);
+        console.log("this.servicios", this.servicios);
+      }
     });
+    
   }
 
   
@@ -278,8 +287,9 @@ export class DialogSelectMembershipComponent implements OnInit {
         ) {
           formValue.servicioseleccionado = [formValue.servicioseleccionado];
         }
+
         this.planService.agregarPlan(formValue).subscribe((respuesta) => {
-          console.log(respuesta, "respuesta");
+          
           if (respuesta) {
             if (respuesta.success == 1) {
               this.spinner.hide();
@@ -288,13 +298,15 @@ export class DialogSelectMembershipComponent implements OnInit {
                 height: "200px",
                 data: "La membresía se ha insertado correctamente",
               });
-
               dialogRef.afterClosed().subscribe((result) => {
-                this.dialogo.close(true);
+                this.planService.confirmButton.next(true);
+                this.dialogo.close(this.formPlan.value);
               });
             }
           }
         });
+       
+       
       }
       if (this.optionToShow == 3) {
         this.formPlan.setValue({

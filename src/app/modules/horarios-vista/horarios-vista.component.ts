@@ -544,8 +544,8 @@ enviarSucursal(): void {
     this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe(
       (respuestaSucursal) => {
         if (respuestaSucursal && respuestaSucursal.success === 1) {
-          console.log(this.formularioSucursales.value);
-          console.log('el gimnasio es: ', this.formularioSucursales.value.nombreGym);
+          this.mostrarFormulario();
+          this.actualizarSelect();
         } else {
           // Manejo de errores en la respuesta de agregarSucursal
         }
@@ -557,7 +557,21 @@ enviarSucursal(): void {
     );
   } else {
     this.message = "Por favor, complete todos los campos requeridos.";
+    this.marcarCamposInvalidos(this.formularioSucursales);
   }
+}
+
+marcarCamposInvalidos(formGroup: FormGroup) {
+  Object.keys(formGroup.controls).forEach((campo) => {
+    const control = formGroup.get(campo);
+    if (control instanceof FormGroup) {
+      this.marcarCamposInvalidos(control);
+    } else {
+      if (control) {
+        control.markAsTouched();
+      };
+    }
+  });
 }
 
 enviarEmpleado(): void {
