@@ -72,15 +72,18 @@
                         <div class="col-sm-6">
                             <p>
                                 <label>Membresías:</label>
-                                <mat-form-field appearance="outline"  style="width: 95%;" required>
+                                <mat-form-field appearance="outline" style="width: 95%;" required>
                                     <mat-label>Selecciona una membresía</mat-label>
-                                    <mat-select [(value)]="selectedMembresia" multiple formControlName="membresias"> 
-                                      <mat-option *ngFor="let membresia of memberships" [value]="membresia">
+                                    <mat-select multiple formControlName="membresias"> 
+
+                                        <mat-option *ngFor="let membresia of servicios" [value]="membresia">
                                         {{ membresia.titulo }} - {{ membresia.duracion }} días
                                       </mat-option>
+
                                     </mat-select>
                                   </mat-form-field>
-                            </p>
+                              </p>
+                              
                         </div>
                     </div>   
                 </div>

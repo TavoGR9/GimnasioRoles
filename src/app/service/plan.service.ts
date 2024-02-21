@@ -39,6 +39,10 @@ export class PlanService {
     return this.clienteHttp.get(this.API+"?consultar="+id);
   }
 
+  consultarPlanM():Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarPlanM");
+  }
+
   consultarPlanIdMem(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultarGYMMem="+id);
   }
