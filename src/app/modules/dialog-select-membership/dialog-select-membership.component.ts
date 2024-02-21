@@ -89,7 +89,7 @@ export class DialogSelectMembershipComponent implements OnInit {
       titulo: [""],
       duracion: ["", [Validators.required, Validators.pattern(/^\d+$/)]],
       precio: ["",[Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],],
-      detalles: [""],  //,[Validators.required]
+      detalles: ["",[Validators.required]],  //,[Validators.required]
       servicioseleccionado: [[], Validators.required],
       status: ["1", [Validators.pattern(/^\d+$/)]],
       tipo_membresia: ["1", [Validators.required, Validators.pattern(/^\d+$/)]],
