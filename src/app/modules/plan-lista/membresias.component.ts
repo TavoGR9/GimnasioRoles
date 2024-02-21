@@ -73,7 +73,6 @@ export class planComponent implements OnInit {
   
   listaTabla() {
     this.planService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
-      console.log("respuestaaaa", respuesta);
       if (respuesta.success === 1) {
         // Verificar si la propiedad 'data' está presente y es un array
         if (respuesta.data && Array.isArray(respuesta.data)) {
@@ -190,10 +189,21 @@ export class planComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.planService.consultarPlanIdPlan(this.idGym).subscribe(respuesta => {
-        this.plan = respuesta;
-        this.dataSource = new MatTableDataSource(this.plan);
-        this.dataSource.paginator = this.paginator; 
+      this.planService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
+        if (respuesta.success === 1) {
+          // Verificar si la propiedad 'data' está presente y es un array
+          if (respuesta.data && Array.isArray(respuesta.data)) {
+            this.plan = respuesta.data;  // Asignar el array 'data' a 'plan'
+            this.dataSource = new MatTableDataSource(this.plan);
+            this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+          } else {
+            console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
+          }
+        } else if (respuesta.warning) {
+          console.log('Advertencia:', respuesta.warning);
+        } else {
+          console.error('Error en la respuesta del servicio:', respuesta.error);
+        }
       });
     });
   }

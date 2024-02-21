@@ -135,7 +135,7 @@ export class DialogSelectMembershipComponent implements OnInit {
                       if (this.dataToUpdate.id == respuesta[0].idMem) {
                         this.sucursalServices = respuesta;
                         this.dataSource = new MatTableDataSource<MyElement>(
-                          this.sucursalServices[0].servicios
+                        this.sucursalServices[0].servicios
                         );
                       } else {
                       }
