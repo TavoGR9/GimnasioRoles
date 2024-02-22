@@ -510,8 +510,13 @@ export class RegistroComponent implements OnInit {
       });
     } else {
       // El formulario no es válido, muestra un mensaje de error
-      this.message = "Por favor, complete todos los campos requeridos.";
+      this.toastr.error('Llenar los campos requeridos', 'Error');
       this.marcarCamposInvalidos(this.form);
+
+      if (!this.form.value.fotoUrl || this.form.value.fotoUrl.length === 0) {
+        this.toastr.error('Agregar o sube una imagen', 'Error');
+      }
+
     }
   }
 

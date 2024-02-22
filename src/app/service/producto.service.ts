@@ -28,7 +28,6 @@ export class ProductoService {
       return this.clienteHttp.get<any[]>(this.API+"?listaProductoGym="+id)
       .pipe(
         tap((nuevosProductos: any[]) => {
-          // Emite el valor al subject después de recibir la respuesta
           this.productoSubject.next(nuevosProductos);
         })
       );

@@ -67,8 +67,8 @@ export class EditarColaboradorComponent implements OnInit{
       telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
       //rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/), Validators.minLength(12),Validators.maxLength(13)])],
       Gimnasio_idGimnasio: ['', Validators.compose([ Validators.required])],
-      turnoLaboral: ['', Validators.compose([ Validators.required])],
-      salario: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      turnoLaboral: [''],
+      salario: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])]
     });
   }

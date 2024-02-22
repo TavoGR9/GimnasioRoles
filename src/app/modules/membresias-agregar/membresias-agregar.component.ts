@@ -8,6 +8,7 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-membresias-agregar',
@@ -28,6 +29,7 @@ export class MembresiasAgregarComponent {
     private router: Router,
     private membresiaService: MembresiaService,
     private auth: AuthService,
+    private toastr: ToastrService,
    // private gimnasioService: GimnasioService,
     public dialog: MatDialog,
     private spinner: NgxSpinnerService) {
@@ -55,12 +57,9 @@ export class MembresiasAgregarComponent {
   }
 
   
-  enviar(): any {
-    console.log(this.formulariodePlan.value);
-    // Verifica si el formulario es válido
- 
+  enviar(): any { 
     if (this.formulariodePlan.valid) {
-      
+
       this.membresiaService.agregarPlan(this.formulariodePlan.value).subscribe((respuesta) => {
       
           this.dialog
@@ -76,8 +75,7 @@ export class MembresiasAgregarComponent {
             });
         });
     } else {
-      // El formulario no es válido, muestra un mensaje de error
-      this.message = 'Por favor, complete todos los campos requeridos.';
+      this.toastr.error('Llenar los campos requeridos', 'Error');
     }
   }
 

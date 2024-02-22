@@ -86,7 +86,7 @@ export class DialogSelectMembershipComponent implements OnInit {
   ) {
     this.formPlan = this.formulario.group({
       idMem: [0, [Validators.required, Validators.pattern(/^\d+$/)]],
-      titulo: [""],
+      titulo: ["", Validators.required],
       duracion: ["", [Validators.required, Validators.pattern(/^\d+$/)]],
       precio: ["",[Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],],
       detalles: ["",[Validators.required]],  //,[Validators.required]
@@ -263,6 +263,7 @@ export class DialogSelectMembershipComponent implements OnInit {
       if (!this.formPlan.value.servicioseleccionado || this.formPlan.value.servicioseleccionado.length === 0) {
         this.toastr.error('Agregar o seleccionar primero un servicio', 'Error');
       }
+
       if (!this.formPlan.value.precio || !this.formPlan.value.duracion) {
         this.toastr.error('Llenar los campos requeridos', 'Error');
       }
