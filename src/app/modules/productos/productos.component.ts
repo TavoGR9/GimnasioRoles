@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ListaProductos } from 'src/app/models/listaProductos';
-import { ProductoService } from 'src/app/service/producto.service';
+import { ListaProductos } from '../../models/listaProductos';
+import { ProductoService } from '../../service/producto.service';
 import { MatTableDataSource } from '@angular/material/table'; 
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
 //import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
@@ -49,8 +49,8 @@ export class ProductosComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
-      this.actualizarTabla();
-      this.cargarProductos();
+      //this.actualizarTabla();
+      //this.cargarProductos();
     }); 
     
   }
@@ -69,7 +69,6 @@ export class ProductosComponent implements OnInit {
     });
   }
 
-
   listaTabla(){
     this.productoService.consultarProductoId(this.idGym).subscribe({
       next: (resultData: any) => {
@@ -78,7 +77,7 @@ export class ProductosComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.productos);
         if (this.paginator) {
         this.dataSource.paginator = this.paginator;
-        this.cargarProductos();
+      //  this.cargarProductos();
         }
       } else {
         console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
@@ -90,44 +89,7 @@ export class ProductosComponent implements OnInit {
     })
   }
 
-  private cargarProductos() {
-    this.productoService.consultarProductoId(this.idGym).subscribe({
-      next: (resultData: any) => {
 
-        if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
-
-        this.productos = Array.isArray(resultData) ? resultData : [];
-        this.dataSource = new MatTableDataSource(this.productos);
-        if (this.paginator) {
-          this.dataSource.paginator = this.paginator;
-          this.cargarProductos();
-          }
-        } else {
-          console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
-        }
-      },
-      error: (error) => {
-        console.error('Error al cargar categorías:', error);
-      }
-    });
-  }
-
-  private actualizarTabla() {
-    if (!this.dataSource) {
-      // Asegúrate de que this.dataSource esté definido antes de actualizar
-      this.cargarProductos();
-    } else {
-      this.productoService.consultarProductoId(this.idGym).subscribe({
-        next: (resultData) => {
-          this.productos = resultData;
-          this.dataSource.data = this.productos;
-        },
-        error: (error) => {
-          console.error('Error al actualizar categorías:', error);
-        }
-      });
-    }
-  }
 
   crearProducto(): void {
     const dialogRef = this.dialog.open(CrearProductoComponent, {
@@ -136,20 +98,55 @@ export class ProductosComponent implements OnInit {
       disableClose: true,   
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.actualizarTabla();
+      this.productoService.consultarProductoId(this.idGym).subscribe({
+        next: (resultData: any) => {
+  
+          if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
+  
+          this.productos = Array.isArray(resultData) ? resultData : [];
+          this.dataSource = new MatTableDataSource(this.productos);
+          if (this.paginator) {
+            this.dataSource.paginator = this.paginator;
+            //this.cargarProductos();
+            }
+          } else {
+            console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar categorías:', error);
+        }
+      });
     });
   }
 
   editarProducto(idProducto: number): void {
     const dialogRef = this.dialog.open(EditarProductoComponent, {
+      data: { idProducto: idProducto },
       width: '65%',
       height: '90%', 
       disableClose: true,  
-      data: { idProducto: idProducto }
+      
     });
   
     dialogRef.afterClosed().subscribe(() => {
-      this.actualizarTabla();
+      this.productoService.consultarProductoId(this.idGym).subscribe({
+        next: (resultData: any) => {
+          if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
+          this.productos = Array.isArray(resultData) ? resultData : [];
+          this.dataSource = new MatTableDataSource(this.productos);
+          if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
+        //  this.cargarProductos();
+          }
+        } else {
+          console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
+        }
+        },
+        error: (error) => {
+          console.error('Error al consultar categorías:', error);
+        }
+      })
     });
   }
 

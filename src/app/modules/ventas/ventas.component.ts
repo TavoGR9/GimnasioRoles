@@ -514,7 +514,7 @@ export class VentasComponent implements OnInit {
           });
       });
     } else {
-      this.toastr.error("Ingresa el pago");
+      this.toastr.error("Pago incorrecto, verifica");
     }
 
 

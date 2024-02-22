@@ -15,6 +15,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { PlanService } from "src/app/service/plan.service";
 import { plan } from "src/app/models/plan";
 import { NgxSpinnerService } from "ngx-spinner";
+import { ToastrService } from 'ngx-toastr';
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
 @Component({
   selector: "app-membresias-agregar",
@@ -41,6 +42,7 @@ export class planAgregarComponent {
     private auth: AuthService,
     private planService: PlanService,
     private spinner: NgxSpinnerService,
+    private toastr: ToastrService,
     // private gimnasioService: GimnasioService,
     public dialog: MatDialog
   ) {
@@ -85,7 +87,6 @@ export class planAgregarComponent {
   enviar(): any {
     if (this.formulariodePlan.valid) {
       this.spinner.show();
-
       this.membresiaService
         .agregarPlan(this.formulariodePlan.value)
         .subscribe((respuesta) => {
@@ -97,7 +98,6 @@ export class planAgregarComponent {
                 duracion: m.duracion,
                 idPlan: respuesta.id,
               };
-
               this.membresiaService.agregarPlanMem(datosMembresias).subscribe(
                 (respuestaAgregarPlanMem) => {
                   this.spinner.hide();
@@ -124,7 +124,13 @@ export class planAgregarComponent {
           }
         });
     } else {
-      this.message = "Por favor, complete todos los campos requeridos.";
+      if(!this.formulariodePlan.value.membresias || this.formulariodePlan.value.membresias.length === 0){
+        this.toastr.error('Agregar o seleccionar primero un servicio', 'Error');
+      }
+      if(!this.formulariodePlan.value.precio || !this.formulariodePlan.value.fechaInicio|| !this.formulariodePlan.value.fechaFin || !this.formulariodePlan.value.titulo){
+        this.toastr.error('Llenar los campos requeridos', 'Error');
+      }
+      //this.toastr.error('Llenar los campos requeridos', 'Error');
       this.marcarCamposInvalidos(this.formulariodePlan);
     }
   }

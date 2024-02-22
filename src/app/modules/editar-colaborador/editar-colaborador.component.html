@@ -79,9 +79,7 @@
                             <mat-option value="Matutino">Matutino</mat-option>
                             <mat-option value="Vespertino">Vespertino</mat-option>
                           </mat-select>
-                          <mat-error *ngIf="form.get('turnoLaboral')?.hasError('required')">
-                            <strong class="txt_msg">**Campo requerido</strong>
-                          </mat-error>
+                         
                         </mat-form-field>
                       </div>
                       <div class="col-sm-6">
@@ -92,7 +90,7 @@
                           <mat-error *ngIf="form.get('salario')?.hasError('pattern') && !form.get('salario')?.hasError('required')">
                             <strong class="txt_msg">**Formato no valido...</strong>
                           </mat-error>
-                          <mat-error *ngIf="form.get('salario')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                         
                         </mat-form-field>
                       </div>
                     </div>

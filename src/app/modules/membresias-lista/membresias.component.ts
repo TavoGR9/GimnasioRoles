@@ -46,7 +46,6 @@ export class MembresiasComponent implements OnInit {
     "details",
     "price",
     "duration",
-    "servicios",
     "actions",
   ];
 
