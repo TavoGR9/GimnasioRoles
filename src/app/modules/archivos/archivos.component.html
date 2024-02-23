@@ -1,0 +1,34 @@
+<br>
+<div class="container mt-4">
+    <h1>Carga de documentos</h1>
+    <div>
+        <!-- Botón para seleccionar archivos -->
+        <button mat-raised-button style="background-color: #F9A640; color: white;" (click)="archivoInput.click()">Seleccionar Archivos</button>
+
+        <!-- Input oculto de tipo file -->
+        <input type="file" #archivoInput style="display: none;" (change)="onArchivoSeleccionado($event)">
+    </div>
+    <br>
+    <div *ngIf="archivosSeleccionados.length > 0">
+        <table>
+            <thead>
+              <tr>
+                <th>Nombre del Archivo</th>
+                <th>Tipo de Archivo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let archivo of archivosSeleccionados">
+                <td>{{ archivo.name }}</td>
+                <td>{{ archivo.type }}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+      <br>
+      <div>
+        <!-- Botón para guardar archivos -->
+        <button mat-raised-button style="background-color: #4CAF50; color: white;" (click)="guardarArchivos()">Guardar</button>
+      </div>
+</div>
+

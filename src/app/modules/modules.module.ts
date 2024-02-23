@@ -106,6 +106,7 @@ import { planEditarComponent } from './plan-editar/membresias-editar.component';
 
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
+import { ArchivosComponent } from './archivos/archivos.component';
 
 @NgModule({
   declarations: [
@@ -173,7 +174,8 @@ import { NgxSpinnerModule } from "ngx-spinner";
     EmergenteAperturaPuertoSerialComponent,
     planComponent,
     planAgregarComponent,
-    planEditarComponent
+    planEditarComponent,
+    ArchivosComponent
     //InventarioComponent
   ],
   imports: [

@@ -35,6 +35,7 @@ import { EditarColaboradorComponent } from './editar-colaborador/editar-colabora
 import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
 import { planComponent } from './plan-lista/membresias.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
+import { ArchivosComponent } from './archivos/archivos.component';
 
 const routes: Routes = [
   {
@@ -54,7 +55,8 @@ const routes: Routes = [
           { path: 'editar-sucursal', component:SucursalEditarComponent},
           { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
           { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
-          { path: 'estadisticas', component: ReportsComponent}
+          { path: 'estadisticas', component: ReportsComponent},
+          { path: 'archivos', component: ArchivosComponent}
         ]
       },
       {
