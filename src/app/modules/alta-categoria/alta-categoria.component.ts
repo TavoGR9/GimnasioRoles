@@ -1,15 +1,13 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CategoriaService } from './../../service/categoria.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Observable, Subject } from 'rxjs';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
-
 
 @Component({
   selector: 'app-alta-categoria',
@@ -24,7 +22,7 @@ export class AltaCategoriaComponent implements OnInit {
   fechaRegistro: string = '';
 
   constructor(
-    public dialogo: MatDialogRef<AltaCategoriaComponent>,
+    public dialogRef: MatDialogRef<AltaCategoriaComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
     public formulario: FormBuilder,
     private router: Router,
@@ -71,17 +69,12 @@ enviar(): any {
     this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
       // Cierra el diálogo después de agregar la categoría y notificar el cambio
       this.spinner.hide();
-      this.dialog.open(MensajeEmergentesComponent, {
+      const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
         data: `Categoria agregada exitosamente`,
-      })
-      .afterClosed()
-      .subscribe((cerrarDialogo: Boolean) => {
-        if (cerrarDialogo) {
-          this.categoriasSubject.next();
-          this.dialogo.close(true);
-        } else {
-          // Hacer algo si no se quiere cerrar el diálogo
-        }
+      });
+      dialogRefConfirm.afterClosed().subscribe((result) => {
+       // this.planService.confirmButton.next(true);
+        this.dialogRef.close(this.formularioCategoria.value);
       });
 
     });
@@ -92,7 +85,7 @@ enviar(): any {
 }
 
 cerrarDialogo(): void {
-  this.dialogo.close(true);
+  this.dialogRef.close(true);
 }
 
 marcarCamposInvalidos(formGroup: FormGroup) {

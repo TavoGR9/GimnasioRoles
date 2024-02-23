@@ -61,7 +61,7 @@ export class HorariosVistaComponent implements OnInit{
       codigoPostal: ['', Validators.compose([Validators.required,Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.maxLength(5)])],
       estado: ['', Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       ciudad: ['', Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
-      colonia: ['', Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
+      colonia: ['', Validators.compose([Validators.required])],
       calle: ['', Validators.compose([Validators.required])],
       numExt: ['', Validators.compose([Validators.required,Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       numInt: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
@@ -84,7 +84,7 @@ export class HorariosVistaComponent implements OnInit{
       area: [2],
       turnoLaboral: ['Matutino'],
       salario: [0],
-      Gimnasio_idGimnasio: ['', Validators.required], 
+      Gimnasio_idGimnasio: ["", Validators.required], 
     });
 
  /*   this.postalCodeControl.valueChanges.subscribe((postalCode) => {
@@ -131,6 +131,11 @@ export class HorariosVistaComponent implements OnInit{
         this.http.comboDatosGymByNombre(this.formularioSucursales.value.nombreGym).subscribe({
           next: (dataResponse) => {
             console.log('Las sucursales disponibles son: ', dataResponse);
+            if (Array.isArray(dataResponse) && dataResponse.length > 0 && dataResponse[0].idGimnasio) {
+              this.personaForm.patchValue({
+                Gimnasio_idGimnasio: dataResponse[0].idGimnasio,
+              });
+            }
             this.sucursales = dataResponse;
           }
         });
@@ -196,6 +201,13 @@ enviarMensajeWhatsApp() {
       this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe((respuesta) => {
         if(respuesta){
           console.log(respuesta);
+          const idGimnasioInsertado = respuesta.idGimnasio; // Ajusta esto según la estructura de tu respuesta
+
+          // Usa el idGimnasioInsertado en tu otro formulario
+          this.personaForm.patchValue({
+            Gimnasio_idGimnasio: idGimnasioInsertado,
+          });
+
           if(respuesta.success === 1){
             this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, {
@@ -422,25 +434,6 @@ verHorario(idGimnasio: string): void {
     data: { idGimnasio: idGimnasio },
   });
 }
-
-
-borrarPlan(id: any) {
-  console.log(id);
-  this.dialog.open(MensajeEliminarComponent, {
-    data: `¿Desea eliminar este horario?`,
-  })
-  .afterClosed()
-    .subscribe((confirmado: Boolean) => {
-      if (confirmado) {
-        this.HorarioService.borrarHorario(id).subscribe((respuesta) => {
-          console.log("si entro") 
-          window.location.reload();       
-        });
-      } else {
-        
-      }
-    });
- }
 
  email: string = '';
  pass: string = '';

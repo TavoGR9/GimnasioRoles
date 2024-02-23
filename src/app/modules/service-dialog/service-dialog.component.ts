@@ -111,10 +111,11 @@ export class ServiceDialogComponent implements OnInit {
                 }
               );
               dialogRefConfirm.afterClosed().subscribe((result) => {
-                this.planService.confirmButton.next(true);
+                //this.planService.confirmButton.next(true);
                 this.dialogRef.close(this.serviceForm.value);
               });
               
+
             }
           } else {
           }
@@ -150,7 +151,6 @@ export class ServiceDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 }
-
 interface Service {
   id_servicios_individuales: number;
   nombre_servicio: string;

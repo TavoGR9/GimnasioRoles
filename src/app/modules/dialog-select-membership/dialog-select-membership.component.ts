@@ -227,7 +227,7 @@ export class DialogSelectMembershipComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((nuevoServicio) => {
-      console.log(nuevoServicio, "nuevoServicio");
+     // console.log(nuevoServicio, "nuevoServicio");
       if (nuevoServicio) {
         if (!Array.isArray(this.servicios)) {
           this.servicios = [];
@@ -239,7 +239,6 @@ export class DialogSelectMembershipComponent implements OnInit {
     });
     
   }
-
   
   getIdGym() {
     this.AuthService.idGym.subscribe((respuesta) => {

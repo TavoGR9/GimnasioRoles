@@ -11,9 +11,11 @@
   </div>
   
   </div>
+
+
   <div *ngIf="!horarioExistente">
-  <label  style="margin: auto; display: block; text-align: center; font-size: 20px; font-weight: bold;">AGREGA EL HORARIO DE TU GIMNASIO</label>
-  <form [formGroup]="formularioHorarios" >
+  <label class="title" mat-dialog-title>AGREGA EL HORARIO DE TU GIMNASIO</label>
+  <form [formGroup]="formularioHorarios"  mat-dialog-content>
       <div formArrayName="horarios">
          
           <table>
@@ -34,12 +36,13 @@
             </table>
       </div>
       <br/>
-     <div style="margin: auto; display: block; text-align: center;">
+     
+    <br/>
+    </form>
+    <div style="margin: auto; display: block; text-align: center;" mat-dialog-actions>
       <button  style=" background-color: #4f9c1c; margin-right: 30px;" (click)="enviarHorario()">Enviar</button>
       <button style ="background-color: #000000; " (click)="cancelar()">Cancelar</button>
     </div>
-    <br/>
-    </form>
   </div>
     
     
