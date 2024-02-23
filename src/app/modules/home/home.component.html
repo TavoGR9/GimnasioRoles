@@ -98,19 +98,7 @@
                </div>
             </div>
          </div>
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Categorias</h4>
-                  <p class="card-text"> Consulta las categorias de producto de la Franquicia</p>
-                  <a class="btn btn-gym" routerLink="../categorias">Consultar</a>
-               </div>
-            </div>
-         </div>
-      
-      </div>
 
-      <div class="row mt-4" *ngIf="isAdmin()">
          <div class="col-md-6">
             <div class="card">
                <div class="card-body">
@@ -120,26 +108,44 @@
                </div>
             </div>
          </div>
+
+        <!-- <div class="col-md-6">
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Categorias</h4>
+                  <p class="card-text"> Consulta las categorias de producto de la Franquicia</p>
+                  <a class="btn btn-gym" routerLink="../categorias">Consultar</a>
+               </div>
+            </div>
+         </div>-->
+      
+      </div>
+
+      <div class="row mt-4" *ngIf="isAdmin()">
          <div class="col-md-6">
             <div class="card">
                <div class="card-body">
-                  <h4 class="card-title">Entradas</h4>
-                  <p class="card-text"> Configura las entradas de producto para tu gimnasio</p>
+                  <h4 class="card-title">Compras</h4>
+                  <p class="card-text"> Configura las compras de producto para tu gimnasio</p>
                   <a class="btn btn-gym" (click)="entradas()">Configurar</a>
                </div>
             </div>
          </div>
-      </div>
-      <div class="row mt-4" >
-         <div class="col-md-6" *ngIf="isAdmin()">
+         <div class="col-md-6" >
             <div class="card">
                <div class="card-body">
-                  <h4 class="card-title">Listado de productos vendidos</h4>
-                  <p class="card-text">Consulta los productos vendidos</p>
-                  <a class="btn btn-gym" routerLink="../productosVendidos">Consultar</a>
+                  <h4 class="card-title">Ventas</h4>
+                  <p class="card-text">Consultar las ventas de tu gimnasio</p>
+                  <a class="btn btn-gym" routerLink="../verCorte">Consultar</a>
                </div>
             </div>
-         </div>
+         </div>   
+        
+         
+        
+      </div>
+      <div class="row mt-4" >
+         
 
          <div class="col-md-6" *ngIf="isAdmin()">
             <div class="card">
@@ -150,8 +156,17 @@
                </div>
             </div>
          </div>
+         <div class="col-md-6" >
+            <div class="card">
+               <div class="card-body">
+                  <h4 class="card-title">Listado de productos vendidos</h4>
+                  <p class="card-text">Consulta los productos vendidos</p>
+                  <a class="btn btn-gym" routerLink="../productosVendidos">Consultar</a>
+               </div>
+            </div>
+         </div>
 
-         
+                 
       </div>
 
       <!--Apartados de RECEPCIONISTA--->
@@ -191,20 +206,11 @@
          
       </div>
 
-      <div class="row mt-4" *ngIf="isAdmin()">
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Ventas</h4>
-                  <p class="card-text">Consultar las ventas de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../verCorte">Consultar</a>
-               </div>
-            </div>
-         </div>
-      </div>
+      
       
       <div >
          <div class="row mt-4" >
+           
             <div class="col-md-6" *ngIf="isRecep()">
                <div class="card">
                   <div class="card-body">

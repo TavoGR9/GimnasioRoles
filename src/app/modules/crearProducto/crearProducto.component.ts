@@ -11,16 +11,17 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { MessageService } from 'primeng/api'; /**siempre debes importarlo */
 import { ToastrService } from 'ngx-toastr';
-import { CategoriaService } from 'src/app/service/categoria.service';
+import { CategoriaService } from '../../service/categoria.service';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from 'src/app/service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
-import { ProductoService } from 'src/app/service/producto.service';
+import { ProductoService } from '../../service/producto.service';
 import { Observable, Subject } from 'rxjs';
 import { NgxSpinnerService } from "ngx-spinner";
+import { AltaCategoriaComponent } from '../alta-categoria/alta-categoria.component';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -52,6 +53,8 @@ export class CrearProductoComponent implements OnInit {
   private idGym: number = 0;
   message: string = '';
   currentUser: string = '';
+  categorias: any[] = [];
+  //sabores: any[] = [];
 
   constructor(
     public dialogo: MatDialogRef<CrearProductoComponent>,
@@ -73,11 +76,11 @@ export class CrearProductoComponent implements OnInit {
       nombre: [ '',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),]),],
       descripcion: [''],
       fechaCreacion: [this.fechaCreacion],
-      codigoBarra: ['', [Validators.minLength(12), Validators.maxLength(15)]],
+      codigoBarra: [''],
       idCategoria: ['', Validators.compose([Validators.required])],
       Gimnasio_idGimnasio: [this.auth.idGym.getValue()],
       unidadMedicion: ['NA', Validators.compose([Validators.required])],
-      cantidadUnidades: [0,Validators.compose([Validators.required,Validators.pattern(/^[0-9]+$/)])],
+      cantidadUnidades: [0,Validators.compose([Validators.required])],
       color: ['NA',Validators.compose([Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
       longitud: ['NA'],
       sabor: ['NA',Validators.compose([Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
@@ -95,6 +98,7 @@ export class CrearProductoComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
+  
     });  
     
   }
@@ -113,13 +117,74 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
+  altaCategoria(): void {
+    const dialogRef = this.dialog.open(AltaCategoriaComponent, {
+      width: '60%',
+      height: '70%',
+      disableClose: true,
+    });
+  
+    dialogRef.afterClosed().subscribe((nuevoServicio) => {
+      if (nuevoServicio) {
+        if (!this.listaCategorias || !Array.isArray(this.listaCategorias)) {
+          this.listaCategorias = [];
+        }
+        this.listaCategorias.push(nuevoServicio);
+        this.listaCategorias = [...this.listaCategorias]; // Forzar la actualización
+  
+        // Espera un ciclo de detección de cambios antes de seleccionar la nueva categoría
+        setTimeout(() => {
+          this.form.get('idCategoria')?.setValue(nuevoServicio.idCategoria);
+        });
+      }
+    });
+  }
+  
+  
+  
+  
+
+  validarNumeroDecimal(event: any) {
+    const input = event.target.value;
+    // Patrón para aceptar números decimales
+    const pattern = /^\d+(\.\d{0,2})?$/;
+    
+    if (!pattern.test(input)) {
+      // Si el valor no coincide con el patrón, se elimina el último carácter
+      this.form.get('cantidadUnidades')?.setValue(input.slice(0, -1));
+    }
+  }
+  
+
+
+// Declarar la propiedad sabores con un tipo de arreglo de cadenas
+sabores: string[] = [];
+filteredSabores: string[] = [];
+
+
+buscarSabores() {
+  const saborIngresado = this.form.get('sabor')?.value;
+//  console.log(`Buscando sabores para: ${saborIngresado}`);
+  this.productoService.consultarsabores(this.idGym).subscribe({
+    next: (respuesta) => {
+      const saboresUnicos = new Set(respuesta.sabores.map((sabor: any) => sabor.sabor));
+      this.sabores = Array.from(saboresUnicos) as string[];
+
+      this.filteredSabores = this.sabores.filter(sabor =>
+        !saborIngresado || sabor.toLowerCase().includes(saborIngresado.toLowerCase())
+      );
+    }
+  });
+}
+
+
   listaTabla(){
     this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
       },
       error: (error) => {
-        console.error(error);
+        //console.log(error);
       },
     });
 
@@ -162,7 +227,7 @@ export class CrearProductoComponent implements OnInit {
             if (respuesta.success) {
               this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, {
-              data: `Categoria agregada exitosamente`,
+              data: `Producto agregada exitosamente`,
             }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
                 this.productoSubject.next();
@@ -174,11 +239,11 @@ export class CrearProductoComponent implements OnInit {
               this.toastr.error(respuesta.message, 'Error', {
                 positionClass: 'toast-bottom-left',
               });
-              console.error(respuesta.error);
+              //console.error(respuesta.error);
             }
           },
           error: (paramError) => {
-            console.error(paramError); // Muestra el error del api en la consola para diagnóstico
+           // console.error(paramError); // Muestra el error del api en la consola para diagnóstico
             //accedemos al atributo error y al key
             this.toastr.error(paramError.error.message, 'Error', {
               positionClass: 'toast-bottom-left',

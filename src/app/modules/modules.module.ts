@@ -103,6 +103,7 @@ import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-pue
 import { planComponent } from './plan-lista/membresias.component';
 import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -209,6 +210,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
     FileUploadModule,
     RecepMaterialModule,
     WebcamModule,
+    MatAutocompleteModule,
     NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
 
   ]

@@ -112,4 +112,8 @@ export class ProductoService {
       return this.clienteHttp.get<any[]>(url);
     }
 
+    consultarsabores(idGym:any):Observable<any>{
+      return this.clienteHttp.get(this.API+"?consultarSabores="+idGym);
+    }
+
 }
