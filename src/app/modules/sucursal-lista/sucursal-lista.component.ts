@@ -11,6 +11,7 @@ import { ListarSucursalesPipe } from './../../pipes/listar-sucursales.pipe';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator'; 
 import { AuthService } from 'src/app/service/auth.service';
+import { ArchivosComponent } from '../archivos/archivos.component';
 
 @Component({
   selector: 'app-sucursal-lista',
@@ -36,7 +37,7 @@ export class SucursalListaComponent implements OnInit {
     private auth: AuthService,
   ){}
 
-  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'horario', 'ubicacion', 'activar'];
+  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'horario', 'ubicacion', 'activar', 'documentacion'];
 
   /*onToggle(event: Event, idGimnasio: any) {
 
@@ -361,6 +362,16 @@ export class SucursalListaComponent implements OnInit {
       width: '60%',
       height: '90%',
       data: { idGimnasio: idGimnasio },
+    });
+  }
+
+
+  agregarDocumentos(idGimnasio: string, nombreGym: string): void {
+    const dialogRef = this.dialog.open(ArchivosComponent, {
+      width: '60%',
+      height: '60%',
+      data: { idGimnasio: idGimnasio, nombreGym: nombreGym},
+      disableClose: true
     });
   }
 
