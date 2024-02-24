@@ -1,34 +1,80 @@
-<br>
-<div class="container mt-4">
-    <h1>Carga de documentos</h1>
-    <div>
-        <!-- Botón para seleccionar archivos -->
-        <button mat-raised-button style="background-color: #F9A640; color: white;" (click)="archivoInput.click()">Seleccionar Archivos</button>
+<div>
+  <h1 class="title" mat-dialog-title>Carga de documentos</h1>
 
-        <!-- Input oculto de tipo file -->
-        <input type="file" #archivoInput style="display: none;" (change)="onArchivoSeleccionado($event)">
-    </div>
-    <br>
-    <div *ngIf="archivosSeleccionados.length > 0">
-        <table>
-            <thead>
-              <tr>
-                <th>Nombre del Archivo</th>
-                <th>Tipo de Archivo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let archivo of archivosSeleccionados">
-                <td>{{ archivo.name }}</td>
-                <td>{{ archivo.type }}</td>
-              </tr>
-            </tbody>
-          </table>
-      </div>
-      <br>
-      <div>
-        <!-- Botón para guardar archivos -->
-        <button mat-raised-button style="background-color: #4CAF50; color: white;" (click)="guardarArchivos()">Guardar</button>
-      </div>
+
+      <mat-tab-group mat-dialog-content>
+          <mat-tab label="Agregar archivo">
+              <br>
+              <div>
+                  <button mat-raised-button style="background-color: #000000; color: white;" (click)="archivoInput.click()">
+                      <mat-icon>attach_file</mat-icon> Seleccionar Archivos
+                  </button>
+                  <input type="file" multiple  #archivoInput style="display: none;" (change)="seleccionarArchivo($event)">
+              </div>
+              <div *ngIf="archivosSeleccionados.length > 0">
+                  <br>
+                  <label>Documentos cargados</label>
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Nombre del Archivo</th>
+                              <th>Tipo de Archivo</th>
+                              <th>Acciones</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let archivo of archivosSeleccionados; let i = index">
+                              <td>{{ archivo.name }}</td>
+                              <td>{{ archivo.type }}</td>
+                              <td>
+                                  <button mat-icon-button (click)="quitarArchivo(i)">
+                                      <mat-icon>delete</mat-icon>
+                                  </button>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </mat-tab>
+
+          <mat-tab label="Ver documentación">
+            <div *ngIf="archivos.length > 0; else noArchivos">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre del Archivo</th>
+                    <th>Contenido del Archivo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let archivo of archivos">
+                    <td>{{ archivo.nombreArchivo }}</td>
+                    <td>
+                      <button (click)="openURL(archivo.contenidoArchivo)" class="boton-llamativo">
+                        <i class="fas fa-download"></i> Descargar archivo
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <ng-template #noArchivos>
+              <br>
+              <p>
+                <i class="fas fa-exclamation-triangle fa-3x" style="vertical-align: middle; color: orange;"></i>
+                &nbsp; Datos no disponibles. Actualmente no se han subido archivos.
+              </p>              
+              
+            </ng-template>
+            
+          </mat-tab>
+      </mat-tab-group>
+
+
+  <div mat-dialog-actions class="centro-horizontal">
+    <button *ngIf="archivosSeleccionados.length > 0" mat-raised-button style="background-color: #F9A640; color: white;" (click)="subirArchivo()">Guardar</button>
+    <button mat-raised-button style="background-color: #000000; color: white;" (click)="cancelar()">Cancelar</button>
 </div>
 
+</div>
