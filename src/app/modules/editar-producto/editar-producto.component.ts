@@ -37,6 +37,7 @@ export class EditarProductoComponent implements OnInit{
   listaCategorias: any;
   idProducto: any;
   fechaCreacion: string;
+  private idGym: number = 0;
 
   constructor( public dialogo: MatDialogRef<EditarProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -54,6 +55,7 @@ export class EditarProductoComponent implements OnInit{
     //llamar al servicio datos empleado - pasando el parametro capturado por url
     this.productoService.consultarProductosJ(this.idProducto).subscribe(
       respuesta=>{
+        console.log("respuesta", respuesta);
         this.form.setValue({
           nombre:respuesta [0]['nombre'],
           descripcion:respuesta [0]['descripcion'],
@@ -83,7 +85,7 @@ export class EditarProductoComponent implements OnInit{
       idCategoria: ['', Validators.compose([Validators.required])],
       Gimnasio_idGimnasio: [this.auth.idGym.getValue()],
       unidadMedicion: ['NA', Validators.compose([Validators.required])],
-      cantidadUnidades: [0,Validators.compose([Validators.required,Validators.pattern(/^[0-9]+$/)])],
+      cantidadUnidades: [0,Validators.compose([Validators.required])],
       color: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
       longitud: ['NA'],
       sabor: ['NA',Validators.compose([Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u)])],
@@ -92,6 +94,17 @@ export class EditarProductoComponent implements OnInit{
     });
   }
 
+
+  validarNumeroDecimal(event: any) {
+    const input = event.target.value;
+    // Patrón para aceptar números decimales
+    const pattern = /^\d+(\.\d{0,2})?$/;
+    
+    if (!pattern.test(input)) {
+      // Si el valor no coincide con el patrón, se elimina el último carácter
+      this.form.get('cantidadUnidades')?.setValue(input.slice(0, -1));
+    }
+  }
   //insanciar objeto para manejar el tipo de error en las validaciones
   matcher = new MyErrorStateMatcher();
 
@@ -104,6 +117,24 @@ export class EditarProductoComponent implements OnInit{
       error: (error) => {
         console.error(error);
       },
+    });
+  }
+
+  sabores: string[] = [];
+filteredSabores: string[] = [];
+
+  buscarSabores() {
+    const saborIngresado = this.form.get('sabor')?.value;
+  //  console.log(`Buscando sabores para: ${saborIngresado}`);
+    this.productoService.consultarsabores(this.idGym).subscribe({
+      next: (respuesta) => {
+        const saboresUnicos = new Set(respuesta.sabores.map((sabor: any) => sabor.sabor));
+        this.sabores = Array.from(saboresUnicos) as string[];
+  
+        this.filteredSabores = this.sabores.filter(sabor =>
+          !saborIngresado || sabor.toLowerCase().includes(saborIngresado.toLowerCase())
+        );
+      }
     });
   }
 

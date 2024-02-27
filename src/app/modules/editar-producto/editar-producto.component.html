@@ -87,31 +87,48 @@
                      </div>
                      <div class="row">
                         <div class="col-sm-6">
+
+
                            <p>
-                              <label >Tipo de producto:</label>
-                              <mat-form-field appearance="outline" style="width: 100%;">
-                                 <mat-label>Categoria de producto</mat-label>
-                                 <mat-select
-                                 id="idCategoria"
-                                 name="idCategoria"
-                                 formControlName="idCategoria"
-                                 (ngModelChange)="infoCategoria(+showCategoria.value)"
-                                 #showCategoria
-                                 >
-                                 <mat-option
-                                 *ngFor="let item of listaCategorias"
-                                 [value]="+item.idCategoria"
-                                 >{{ item.nombre }}</mat-option
-                                    >
-                                 </mat-select>
-                                 <mat-error *ngIf="form.get('idCategoria')?.hasError('required')">
-                                    <strong class="txt_msg">**Campo requerido </strong>
-                                 </mat-error>
-                              </mat-form-field>
+                               <label >Categoria de producto:</label>
+                        <mat-form-field appearance="outline" style="width: 100%;">
+                           <mat-label>Categoria de producto</mat-label>
+                           <mat-select formControlName="idCategoria" multiple="false">
+                             <mat-option *ngFor="let categoria of listaCategorias" [value]="categoria.idCategoria">
+                               {{ categoria.nombre}}
+                             </mat-option>
+                           </mat-select>
+                           
+                           <mat-error *ngIf="form.get('idCategoria')?.hasError('required')">
+                             <strong class="txt_msg">**Campo requerido </strong>
+                           </mat-error>
+                         </mat-form-field>
                            </p>
-                           <fieldset *ngIf="showCategoria.value"
-                              >
+
+
+
+
+
+                           <ng-container *ngIf="form.get('idCategoria')?.value">
+                           <fieldset>
                               <strong>Características de consumibles</strong>
+                              <mat-form-field appearance="outline" class="inputs_properties">
+                                 <mat-label>Cantidad de medición</mat-label>
+                                 <input
+                                   type="text"
+                                   matInput
+                                   placeholder="¿cuántos l. o ml. tiene?"
+                                   autocomplete="off"
+                                   formControlName="cantidadUnidades"
+                                   id="cantidadUnidades"
+                                   [errorStateMatcher]="matcher"
+                                   (input)="validarNumeroDecimal($event)"
+                                 />
+                                 <mat-error *ngIf="form.get('cantidadUnidades')?.hasError('required')">
+                                   <strong class="txt_msg">**Campo requerido</strong>
+                                 </mat-error>
+                               </mat-form-field>
+
                               <mat-form-field appearance="outline" class="inputs_properties">
                                  <mat-label>Unidad de medicion</mat-label>
                                  <mat-select
@@ -131,57 +148,23 @@
                                     <strong class="txt_msg">**Campo requerido</strong>
                                  </mat-error>
                               </mat-form-field>
+                             
                               <mat-form-field appearance="outline" class="inputs_properties">
-                                 <mat-label>Cantidad de medición</mat-label>
                                  <input
-                                    type="number"
-                                    min="0"
-                                    matInput
-                                    placeholder="¿cuantos l. o ml. tiene?"
-                                    autocomplete="off"
-                                    formControlName="cantidadUnidades"
-                                    id="cantidadUnidades"
-                                    [errorStateMatcher]="matcher"
-                                    />
-                                 <mat-error
-                                    *ngIf="
-                                    form.get('cantidadUnidades')?.hasError('pattern') &&
-                                    !form.get('cantidadUnidades')?.hasError('required')
-                                    "
-                                    >
-                                    <strong class="txt_msg"
-                                       >**Solo se admiten numeros enteros</strong
-                                       >
-                                 </mat-error>
-                                 <mat-error
-                                    *ngIf="form.get('cantidadUnidades')?.hasError('required')"
-                                    ><strong class="txt_msg">**Campo requerido</strong></mat-error
-                                    >
-                              </mat-form-field>
-                              <mat-form-field appearance="outline" class="inputs_properties">
-                                 <mat-label>Sabor</mat-label>
-                                 <input
-                                    type="text"
-                                    matInput
-                                    placeholder="Marca comercial"
-                                    autocomplete="off"
-                                    formControlName="sabor"
-                                    id="sabor"
-                                    [errorStateMatcher]="matcher"
-                                    />
-                                 <mat-error
-                                    *ngIf="
-                                    form.get('sabor')?.hasError('pattern') &&
-                                    !form.get('sabor')?.hasError('required')
-                                    "
-                                    >
-                                    <strong class="txt_msg">**Solo se admiten letras</strong>
-                                 </mat-error>
-                                 <mat-error *ngIf="form.get('sabor')?.hasError('required')"
-                                    ><strong class="txt_msg">**Campo requerido</strong></mat-error
-                                    >
-                              </mat-form-field>
-                              <mat-form-field appearance="outline" class="inputs_properties">
+                                   matInput
+                                   formControlName="sabor"
+                                   placeholder="Escribe un sabor"
+                                   [matAutocomplete]="auto"
+                                   (input)="buscarSabores()"
+                                 />
+                                 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="buscarSabores()">
+                                   <mat-option *ngFor="let sabor of filteredSabores" [value]="sabor">
+                                     {{ sabor }}
+                                   </mat-option>
+                                 </mat-autocomplete>
+                               </mat-form-field>
+                               
+                            <!--  <mat-form-field appearance="outline" class="inputs_properties">
                                  <mat-label>Color</mat-label>
                                  <input
                                     type="text"
@@ -204,7 +187,7 @@
                                     ><strong class="txt_msg">**Campo requerido</strong></mat-error
                                     >
                               </mat-form-field>
-                              <mat-form-field appearance="outline" class="inputs_properties">
+                           <mat-form-field appearance="outline" class="inputs_properties">
                                  <mat-label>Talla</mat-label>
                                  <mat-select
                                     id="talla"
@@ -219,8 +202,9 @@
                                  <mat-error *ngIf="form.get('talla')?.hasError('required')">
                                     <strong class="txt_msg">**Campo requerido</strong>
                                  </mat-error>
-                              </mat-form-field>
+                              </mat-form-field>-->
                            </fieldset>
+                        </ng-container>
                         </div>
                         <div class="col-sm-6">
                            <p>

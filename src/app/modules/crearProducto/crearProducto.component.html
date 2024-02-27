@@ -92,9 +92,6 @@
 
                  <div class="row">
 
-
-
-
                     <div class="col-sm-6">
                        <p  *ngIf="listaCategorias && listaCategorias.length > 0; else noServicios">
                         <label >Categoria de producto:</label>
@@ -102,7 +99,7 @@
                            <mat-label>Categoria de producto</mat-label>
                            <mat-select formControlName="idCategoria" multiple="false">
                              <mat-option *ngFor="let categoria of listaCategorias" [value]="categoria.idCategoria">
-                               {{ categoria.nombre }}
+                               {{ categoria.nombre}}
                              </mat-option>
                            </mat-select>
                            
@@ -110,7 +107,6 @@
                              <strong class="txt_msg">**Campo requerido </strong>
                            </mat-error>
                          </mat-form-field>
- 
                        </p>
                        <ng-template #noServicios>
                         <p>No hay categorias disponibles.</p>

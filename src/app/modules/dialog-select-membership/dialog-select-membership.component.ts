@@ -62,10 +62,10 @@ export class DialogSelectMembershipComponent implements OnInit {
   serviciosSeleccionadosFilters: any[] = [];
   prices: any[] = [];
   totalPlanPersolnalized: number = 0;
-  data = {
+  /*data = {
     fk_idMem: 0,
     id_servicios_individuales: [""],
-  };
+  };*/
   sucursalServices: any[] = [];
   dataToUpdate: any = {};
   plan: any[] = [];
@@ -228,11 +228,11 @@ export class DialogSelectMembershipComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((nuevoServicio) => {
      // console.log(nuevoServicio, "nuevoServicio");
-      if (nuevoServicio) {
+      if (nuevoServicio.registroInsertado) {
         if (!Array.isArray(this.servicios)) {
           this.servicios = [];
         }
-        this.servicios.push(nuevoServicio);
+        this.servicios.push(nuevoServicio.registroInsertado);
         //this.formPlan.get('servicioseleccionado')?.setValue(this.servicios);
         //console.log("this.servicios", this.servicios);
       }
@@ -308,7 +308,7 @@ export class DialogSelectMembershipComponent implements OnInit {
               });
               dialogRef.afterClosed().subscribe((result) => {
                 this.planService.confirmButton.next(true);
-                this.dialogo.close(this.formPlan.value);
+                this.dialogo.close(respuesta);
               });
             }
           }

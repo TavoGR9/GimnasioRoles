@@ -22,6 +22,8 @@ import { ProductoService } from '../../service/producto.service';
 import { Observable, Subject } from 'rxjs';
 import { NgxSpinnerService } from "ngx-spinner";
 import { AltaCategoriaComponent } from '../alta-categoria/alta-categoria.component';
+import { ChangeDetectorRef } from '@angular/core';
+import { NgZone } from '@angular/core';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -53,13 +55,16 @@ export class CrearProductoComponent implements OnInit {
   private idGym: number = 0;
   message: string = '';
   currentUser: string = '';
+  
   categorias: any[] = [];
   //sabores: any[] = [];
 
   constructor(
     public dialogo: MatDialogRef<CrearProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
+    private cdr: ChangeDetectorRef,
     private toastr: ToastrService,
+    private ngZone: NgZone,
     private datePipe: DatePipe,
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
@@ -98,10 +103,21 @@ export class CrearProductoComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
-  
     });  
     
   }
+
+  listaTabla(){
+    this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
+      next: (respuesta) => {
+        this.listaCategorias = respuesta;
+      },
+      error: (error) => {
+        //console.log(error);
+      },
+    });
+
+  };
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
@@ -123,27 +139,16 @@ export class CrearProductoComponent implements OnInit {
       height: '70%',
       disableClose: true,
     });
-  
     dialogRef.afterClosed().subscribe((nuevoServicio) => {
-      if (nuevoServicio) {
-        if (!this.listaCategorias || !Array.isArray(this.listaCategorias)) {
-          this.listaCategorias = [];
-        }
-        this.listaCategorias.push(nuevoServicio);
-        this.listaCategorias = [...this.listaCategorias]; // Forzar la actualización
-  
-        // Espera un ciclo de detección de cambios antes de seleccionar la nueva categoría
-        setTimeout(() => {
-          this.form.get('idCategoria')?.setValue(nuevoServicio.idCategoria);
-        });
-      }
-    });
+       if (nuevoServicio.registroInsertado) {
+         if (!Array.isArray(this.listaCategorias)) {
+           this.listaCategorias = [];
+         }
+         this.listaCategorias.push(nuevoServicio.registroInsertado);
+       }
+     });
   }
   
-  
-  
-  
-
   validarNumeroDecimal(event: any) {
     const input = event.target.value;
     // Patrón para aceptar números decimales
@@ -178,26 +183,14 @@ buscarSabores() {
 }
 
 
-  listaTabla(){
-    this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
-      next: (respuesta) => {
-        this.listaCategorias = respuesta;
-      },
-      error: (error) => {
-        //console.log(error);
-      },
-    });
-
-  };
+ 
 
   obtenerFechaActual(): string {
     const fechaActual = new Date();
     return this.datePipe.transform(fechaActual, 'yyyy-MM-dd HH:mm:ss') || '';
   }
 
-  infoCategoria(event: number) {
-    this.idCategoria = event;
-  }
+
 
   cerrarDialogo(): void {
     this.dialogo.close(true);
@@ -219,12 +212,17 @@ buscarSabores() {
 
   private productoSubject = new Subject<void>();
 
-  registrar(): any {
+  /*registrar(): any {
     if (this.form.valid) { 
       this.spinner.show();
+      this.form.setValue({
+        idCategoria: this.form.value.idCategoria,
+      });
+      console.log(this.form.value, "this.form.value")
       this.productoService.creaProducto(this.form.value).subscribe({
           next: (respuesta) => {
             if (respuesta.success) {
+              idPlan: respuesta.id,
               this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, {
               data: `Producto agregada exitosamente`,
@@ -275,11 +273,53 @@ buscarSabores() {
             });
           },
         });*/
-    } else {
+  /*  } else {
       this.message = 'Por favor, complete todos los campos requeridos.';
     this.marcarCamposInvalidos(this.form);
     }
+  }*/
+
+  registrar(): any {
+    if (this.form.valid) { 
+      this.spinner.show();
+      this.productoService.creaProducto(this.form.value).subscribe({
+        next: (respuesta) => {
+          if (respuesta.success) {
+            // Aquí hay un error, debería ser una coma en lugar de dos puntos
+            // idPlan: respuesta.id,
+            this.spinner.hide();
+  
+            this.dialog.open(MensajeEmergentesComponent, {
+              data: `Producto agregado exitosamente`,
+            }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
+              if (cerrarDialogo) {
+                this.productoSubject.next();
+                this.dialogo.close(true);
+              } else {
+                // Puedes agregar lógica adicional aquí si es necesario
+              }
+            });
+          } else {
+            this.toastr.error(respuesta.message, 'Error', {
+              positionClass: 'toast-bottom-left',
+            });
+            //console.error(respuesta.error);
+          }
+        },
+        error: (paramError) => {
+          //console.error(paramError); // Muestra el error del api en la consola para diagnóstico
+          // Accedemos al atributo error y al key
+          this.toastr.error(paramError.error.message, 'Error', {
+            positionClass: 'toast-bottom-left',
+          });
+        },
+      });
+    } else {
+      this.message = 'Por favor, complete todos los campos requeridos.';
+      this.marcarCamposInvalidos(this.form);
+    }
   }
+  
 
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
