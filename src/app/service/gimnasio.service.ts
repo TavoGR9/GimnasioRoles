@@ -49,6 +49,10 @@ export class GimnasioService {
     return this.clienteHttp.post(this.API+"?insertar", datosGym);
   }
 
+  consultarArchivos(id: any):Observable<any>{
+    return this.clienteHttp.get(this.API+"?consultarArchivos="+id);
+  }
+
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
     return this.clienteHttp.post(this.APIGym+"?actualizar="+id,datosPlan);
   }

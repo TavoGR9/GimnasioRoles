@@ -66,9 +66,8 @@ table {
 
 /**propiedades por inputs **/
 .inputs_properties {
-  width: 250px;
+  width: 90%;
   padding: 10px;
-
 }
 
 /**propiedades del resumen de los productos seleccionados para la transferencia **/

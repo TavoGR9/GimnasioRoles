@@ -14,8 +14,24 @@ export class MembresiaService {
   constructor(private clienteHttp:HttpClient) {
   }
 
+  private datosPlan: any;
+
+  setDatosPlan(datos: any): void {
+    console.log(datos, "datos")
+    this.datosPlan = datos;
+  }
+
+  getDatosPlan(): any {
+    console.log(this.datosPlan, "this.datosPlan");
+    return this.datosPlan;
+  }
+
   agregarPlan(datosPlan:membresia):Observable<any>{
     return this.clienteHttp.post(this.API+"?insertarplan",datosPlan);
+  }
+
+  agregarPlanMem(datosPlanM:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"?insertarPlanM",datosPlanM);
   }
 
   obternerPlan(){
@@ -47,10 +63,21 @@ export class MembresiaService {
     return this.clienteHttp.post(this.API+"?actualizar="+id,datosPlan);
   }  
 
+  borrarPlanM(id:any):Observable<any>{
+    console.log("el id", id);
+    return this.clienteHttp.get(this.API+"?eliminarPlanM="+id)
+    //this.message = "¡Error al eliminar!, Restricción en la base de datos";
+  }
+
 
   updateMembresiaStatus(id: number, estado: { status: number }): Observable<any> {
     console.log("status",estado,"id",id);
     return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
+  }
+
+  eliminarEInsertarNuevoPlanM(planData: any): Observable<any> {
+    console.log(planData, "planData");
+    return this.clienteHttp.post(`${this.API}/membresia.php`, planData);
   }
 
 }

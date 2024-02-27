@@ -28,7 +28,6 @@ export class ProductoService {
       return this.clienteHttp.get<any[]>(this.API+"?listaProductoGym="+id)
       .pipe(
         tap((nuevosProductos: any[]) => {
-          // Emite el valor al subject después de recibir la respuesta
           this.productoSubject.next(nuevosProductos);
         })
       );
@@ -111,6 +110,10 @@ export class ProductoService {
     consultarProductosJ(idProducto: number | null): Observable<any[]> {
       const url = `${this.API2}?idProducto=${idProducto}`;
       return this.clienteHttp.get<any[]>(url);
+    }
+
+    consultarsabores(idGym:any):Observable<any>{
+      return this.clienteHttp.get(this.API+"?consultarSabores="+idGym);
     }
 
 }

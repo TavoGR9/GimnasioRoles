@@ -79,5 +79,19 @@ export class VerConfiguracionComponent implements OnInit {
       height: '90%',
       data: { idGimnasio: idGimnasio },
     });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.gimnasioService.consultarPlan(this.idGym).subscribe(respuesta => {
+        this.gimnasio = respuesta;
+      });
+      this.HorarioService.consultarHorario(this.idGym).subscribe(
+        (data) => {
+          this.datosHorario = data; 
+        },
+        (error) => {
+          this.message = "Horario no disponible";
+        }
+      );
+    });
   }
 }

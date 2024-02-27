@@ -2,6 +2,7 @@ import { Component, OnInit, Inject,TemplateRef } from "@angular/core";
 import { AuthService } from "src/app/service/auth.service";
 import { HttpClient } from "@angular/common/http";
 import { GimnasioService } from "src/app/service/gimnasio.service";
+import { ToastrService } from 'ngx-toastr';
 import {
   FormBuilder,
   FormControl,
@@ -61,10 +62,10 @@ export class DialogSelectMembershipComponent implements OnInit {
   serviciosSeleccionadosFilters: any[] = [];
   prices: any[] = [];
   totalPlanPersolnalized: number = 0;
-  data = {
+  /*data = {
     fk_idMem: 0,
     id_servicios_individuales: [""],
-  };
+  };*/
   sucursalServices: any[] = [];
   dataToUpdate: any = {};
   plan: any[] = [];
@@ -78,19 +79,17 @@ export class DialogSelectMembershipComponent implements OnInit {
     private http: HttpClient,
     private GimnasioService: GimnasioService,
     private formulario: FormBuilder,
+    private toastr: ToastrService,
     private planService: PlanService,
     public dialog: MatDialog,
     public dialogRefConfirm: MatDialogRef<MensajeEmergentesComponent>
   ) {
     this.formPlan = this.formulario.group({
       idMem: [0, [Validators.required, Validators.pattern(/^\d+$/)]],
-      titulo: [""],
+      titulo: ["", Validators.required],
       duracion: ["", [Validators.required, Validators.pattern(/^\d+$/)]],
-      precio: [
-        "",
-        [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
-      ],
-      detalles: [""],
+      precio: ["",[Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],],
+      detalles: ["",[Validators.required]],  //,[Validators.required]
       servicioseleccionado: [[], Validators.required],
       status: ["1", [Validators.pattern(/^\d+$/)]],
       tipo_membresia: ["1", [Validators.required, Validators.pattern(/^\d+$/)]],
@@ -136,7 +135,7 @@ export class DialogSelectMembershipComponent implements OnInit {
                       if (this.dataToUpdate.id == respuesta[0].idMem) {
                         this.sucursalServices = respuesta;
                         this.dataSource = new MatTableDataSource<MyElement>(
-                          this.sucursalServices[0].servicios
+                        this.sucursalServices[0].servicios
                         );
                       } else {
                       }
@@ -228,19 +227,18 @@ export class DialogSelectMembershipComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((nuevoServicio) => {
-      console.log(nuevoServicio, "nuevoServicio");
-      if (nuevoServicio) {
+     // console.log(nuevoServicio, "nuevoServicio");
+      if (nuevoServicio.registroInsertado) {
         if (!Array.isArray(this.servicios)) {
           this.servicios = [];
         }
-        this.servicios.push(nuevoServicio);
-        this.formPlan.get('servicioseleccionado')?.setValue(this.servicios);
-        console.log("this.servicios", this.servicios);
+        this.servicios.push(nuevoServicio.registroInsertado);
+        //this.formPlan.get('servicioseleccionado')?.setValue(this.servicios);
+        //console.log("this.servicios", this.servicios);
       }
     });
     
   }
-
   
   getIdGym() {
     this.AuthService.idGym.subscribe((respuesta) => {
@@ -260,6 +258,16 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   validarFormulario() {
     if (this.formPlan.invalid) {
+      //console.log(this.formPlan.value.servicioseleccionado);
+      if (!this.formPlan.value.servicioseleccionado || this.formPlan.value.servicioseleccionado.length === 0) {
+        this.toastr.error('Agregar o seleccionar primero un servicio', 'Error');
+      }
+
+      if (!this.formPlan.value.precio || !this.formPlan.value.duracion) {
+        this.toastr.error('Llenar los campos requeridos', 'Error');
+      }
+
+      //this.toastr.error('Formulario inválido', 'Error');
       Object.values(this.formPlan.controls).forEach((control) => {
         control.markAsTouched();
       });
@@ -300,7 +308,7 @@ export class DialogSelectMembershipComponent implements OnInit {
               });
               dialogRef.afterClosed().subscribe((result) => {
                 this.planService.confirmButton.next(true);
-                this.dialogo.close(this.formPlan.value);
+                this.dialogo.close(respuesta);
               });
             }
           }

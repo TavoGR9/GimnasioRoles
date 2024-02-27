@@ -92,13 +92,13 @@
                                 <mat-form-field style="width: 95%;" required appearance="outline">
                                     <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar dias</mat-label>
                                     <mat-select formControlName="duracion" multiple="false" >
-                                        <mat-option  value="1">1 día</mat-option>
-                                        <mat-option  value="15">15 días</mat-option>
-                                        <mat-option  value="30">1 mes</mat-option>
-                                        <mat-option  value="365">1 año</mat-option>
+                                        <mat-option  value="1">Visita</mat-option>
+                                        <mat-option  value="15">Quincena</mat-option>
+                                        <mat-option  value="30">Mensualidad </mat-option>
+                                        <mat-option  value="365">Anualidad</mat-option>
                                       </mat-select>
                                     <mat-error *ngIf="isFieldInvalid('duracion', 'required')">
-                                        la duracion es requerida.
+                                        La duracion es requerida.
                                       </mat-error>
                                 </mat-form-field>
 
@@ -110,7 +110,9 @@
                                 <mat-form-field style="display: inline-block; width: 95%; height: 110px;" required appearance="outline">
                                     <mat-label>Detalles</mat-label>
                                     <textarea class="textarea" matInput rows="4" placeholder="Detalles" cols="50" style="display: inline-block; width: 100%;height: 100%;" id="detalles" formControlName="detalles"> </textarea>
-                                    
+                                    <mat-error *ngIf="isFieldInvalid('detalles', 'required')">
+                                        Los detalles son requeridos.
+                                      </mat-error>
                                 </mat-form-field>
                             </p>
                         </div>
@@ -148,7 +150,6 @@
                                 </mat-form-field>
                                 
                             </p>
-                        
                             <p *ngIf="servicios && servicios.length > 0">Agrega otro servicio:<a href="javascript:void(0)" (click)="abrirDialogo()">Agregar</a></p>
                             <ng-template #noServicios>
                                 <p>No hay servicios disponibles.</p>

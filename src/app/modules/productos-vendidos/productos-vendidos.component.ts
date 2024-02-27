@@ -130,13 +130,13 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
           this.productosVendidos = response;
           this.dataSource = new MatTableDataSource(this.productosVendidos);
           this.dataSource.paginator = this.paginator;
-          this.toastr.success('Datos encontrados.', 'Success!!!');
+        //  this.toastr.success('Datos encontrados.', 'Success!!!');
         } else {
           // Si no hay datos, resetea la tabla
           this.productosVendidos = [];
           this.dataSource = new MatTableDataSource(this.productosVendidos);
           this.dataSource.paginator = this.paginator;
-          this.toastr.info('No hay productos vendidos en este rango de fechas.', 'Info!!!');
+       //   this.toastr.info('No hay productos vendidos en este rango de fechas.', 'Info!!!');
           //console.log('No hay datos para mostrar.');
         }
       },
@@ -147,7 +147,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
         this.dataSource = new MatTableDataSource(this.productosVendidos);
         this.dataSource.paginator = this.paginator;
        // console.log('No hay productos comprados en este rango de fechas');
-        this.toastr.info('No hay productos vendidos en este rango de fechas.', 'Info!!!');
+      //  this.toastr.info('No hay productos vendidos en este rango de fechas.', 'Info!!!');
 
       },
       () => {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { PlanService } from "src/app/service/plan.service";
+import { PlanService } from "../../service/plan.service";
 import { AuthService } from "src/app/service/auth.service";
 import { MatDialogRef, MatDialog } from "@angular/material/dialog";
 import { RouterLink, Router } from "@angular/router";
@@ -111,10 +111,10 @@ export class ServiceDialogComponent implements OnInit {
                 }
               );
               dialogRefConfirm.afterClosed().subscribe((result) => {
-                this.planService.confirmButton.next(true);
-                this.dialogRef.close(this.serviceForm.value);
+                this.dialogRef.close(respuesta);
               });
               
+
             }
           } else {
           }
@@ -150,7 +150,6 @@ export class ServiceDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 }
-
 interface Service {
   id_servicios_individuales: number;
   nombre_servicio: string;

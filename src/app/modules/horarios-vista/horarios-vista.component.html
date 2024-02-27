@@ -37,7 +37,7 @@
 
           <div class="row">
             <div class="col-sm-6">
-              <label for="nombreColonia" class="large-text" >Nombre:</label>
+              <label for="nombreColonia" class="large-text" >Nombre de la sucursal:</label>
                 <mat-form-field appearance="outline"  style="width: 95%;" required>
                   <mat-label>Nombre</mat-label>
                   <input type="text" matInput placeholder="Nombre sucursal" autocomplete="off" id="nombreGym" formControlName="nombreGym" />
@@ -63,7 +63,7 @@
               <label for="nombreColonia" class="large-text" >Codigo postal:</label>
               <mat-form-field appearance="outline"  style="width: 95%;" required>
                 <mat-label>Codigo postal</mat-label>
-                <input type="text" placeholder="codigoPostal" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" (blur)="consultarCodigoPostal()" />
+                <input type="text" placeholder="codigoPostal" minlength="5" maxlength="5" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" (blur)="consultarCodigoPostal()" />
                 <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('maxlength') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
                   <strong class="txt_msg">**Maximo 5 carácteres</strong>
                </mat-error>
@@ -265,17 +265,6 @@
             </mat-form-field>
           </div>
           <div class="col-sm-6">
-            <mat-form-field appearance="outline" style="width: 95%;">
-              <mat-label>Sucursal</mat-label>
-              <mat-select id="sucursal" formControlName="Gimnasio_idGimnasio" id="Gimnasio_idGimnasio" [errorStateMatcher]="matcher">
-                <mat-option *ngFor="let sucursal of sucursales" value="{{sucursal.idGimnasio}}">{{sucursal.nombreGym}}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="personaForm.get('Gimnasio_idGimnasio')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-          </mat-form-field>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
 
             <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
               <mat-label>Telefono:</mat-label>
@@ -291,6 +280,19 @@
                 </mat-error>
             </mat-form-field>
           </div>
+         
+         <!--<div class="col-sm-6">
+            <mat-form-field appearance="outline" style="width: 95%;">
+              <mat-label>Sucursal</mat-label>
+              <mat-select id="sucursal" formControlName="Gimnasio_idGimnasio" id="Gimnasio_idGimnasio" [errorStateMatcher]="matcher">
+                <mat-option *ngFor="let sucursal of sucursales" value="{{sucursal.idGimnasio}}">{{sucursal.nombreGym}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="personaForm.get('Gimnasio_idGimnasio')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+          </mat-form-field>
+          </div>--> 
+        </div>
+        <div class="row">
+          
           <div class="col-sm-6">
 
             <mat-form-field  appearance="outline" style="width: 95%;">
@@ -298,15 +300,12 @@
               <input matInput [value]="email" disabled />
             </mat-form-field>
           </div>
-        </div>
-        <div class="row">
+
           <div class="col-sm-6">
             <mat-form-field  appearance="outline" style="width: 95%;">
               <mat-label>Contraseña:</mat-label>
               <input matInput [value]="pass" disabled />
             </mat-form-field>
-          </div>
-          <div class="col-sm-6">  
           </div>
         </div>
       </form>

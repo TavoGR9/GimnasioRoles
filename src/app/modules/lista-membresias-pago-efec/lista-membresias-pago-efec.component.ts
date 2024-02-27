@@ -219,7 +219,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     console.log('Fecha de fin cambiada:', this.formatDate(event));
   }
 
-  @Input() notificacionMostrada: boolean = false;
+  //@Input() notificacionMostrada: boolean = false;
 
   private formatDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
@@ -245,8 +245,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
           //console.log('No hay clientes activos en este rango de fechas.');
-          this.toastr.info('No hay clientes activos en este rango de fechas.', 'Info!!!');
-          this.notificacionMostrada = true; // Marca la notificación como mostrada
+          //this.toastr.info('No hay clientes activos en este rango de fechas.', 'Info!!!');
+          //this.notificacionMostrada = true; // Marca la notificación como mostrada
 
         } else if(response){
           // Si hay datos, actualiza la tabla
