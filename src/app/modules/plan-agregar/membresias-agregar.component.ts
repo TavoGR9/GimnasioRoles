@@ -201,11 +201,11 @@ export class planAgregarComponent {
     });
 
     dialogRef.afterClosed().subscribe((nuevoServicio) => {
-      if (nuevoServicio) {
+      if (nuevoServicio.registroInsertado) {
         if (!Array.isArray(this.plan)) {
           this.plan = [];
         }
-        this.plan.push(nuevoServicio);
+        this.plan.push( nuevoServicio.registroInsertado);
         this.formulariodePlan.get("servicioseleccionado")?.setValue(this.plan);
       }
     });

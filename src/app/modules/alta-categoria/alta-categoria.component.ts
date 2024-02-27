@@ -74,7 +74,7 @@ enviar(): any {
       });
       dialogRefConfirm.afterClosed().subscribe((result) => {
        // this.planService.confirmButton.next(true);
-        this.dialogRef.close(this.formularioCategoria.value);
+        this.dialogRef.close(respuesta);
       });
 
     });

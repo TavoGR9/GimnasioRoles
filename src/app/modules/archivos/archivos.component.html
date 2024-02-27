@@ -1,7 +1,5 @@
 <div>
-  <h1 class="title" mat-dialog-title>Carga de documentos</h1>
-
-
+  <h1 mat-dialog-title class="title">Carga de documentos</h1>
       <mat-tab-group mat-dialog-content>
           <mat-tab label="Agregar archivo">
               <br>
@@ -37,7 +35,7 @@
               </div>
           </mat-tab>
 
-          <mat-tab label="Ver documentación">
+         <mat-tab label="Ver documentación">
             <div *ngIf="archivos.length > 0; else noArchivos">
               <table>
                 <thead>
