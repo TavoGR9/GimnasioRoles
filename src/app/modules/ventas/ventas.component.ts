@@ -23,7 +23,7 @@ import { ClienteService } from "src/app/service/cliente.service";
 import { Ventas } from "src/app/models/ventas";
 import { VentasService } from "src/app/service/ventas.service";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
-import { JoinDetalleVentaService } from "src/app/service/JoinDetalleVenta";
+import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { inventarioService } from "src/app/service/inventario.service";
 import { ErrorStateMatcher } from "@angular/material/core";

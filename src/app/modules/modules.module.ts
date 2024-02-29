@@ -108,6 +108,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
 import { ArchivosComponent } from './archivos/archivos.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+
 
 @NgModule({
   declarations: [
@@ -176,7 +179,8 @@ import { ArchivosComponent } from './archivos/archivos.component';
     planComponent,
     planAgregarComponent,
     planEditarComponent,
-    ArchivosComponent
+    ArchivosComponent,
+    SidebarComponent
     //InventarioComponent
   ],
   imports: [
@@ -213,6 +217,7 @@ import { ArchivosComponent } from './archivos/archivos.component';
     RecepMaterialModule,
     WebcamModule,
     MatAutocompleteModule,
+    MatSidenavModule,
     NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
 
   ]

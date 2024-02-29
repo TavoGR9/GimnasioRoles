@@ -64,8 +64,8 @@ export class EntradasComponent implements OnInit {
 
   constructor(
 
-    public dialogo: MatDialogRef<EntradasComponent>,
-    @Inject(MAT_DIALOG_DATA) public mensaje: string,
+   // public dialogo: MatDialogRef<EntradasComponent>,
+    //@Inject(MAT_DIALOG_DATA) public mensaje: string,
 
     private fb: FormBuilder,
     private auth: AuthService,
@@ -246,7 +246,7 @@ export class EntradasComponent implements OnInit {
               .afterClosed()
               .subscribe((cerrarDialogo: Boolean) => {
                 if (cerrarDialogo) {
-                  this.dialogo.close(true);
+                  
                 } else {
                 }
               });
@@ -291,7 +291,7 @@ export class EntradasComponent implements OnInit {
 
 
   cerrarDialogo(): void {
-    this.dialogo.close(true);
+    
   }
  
 }

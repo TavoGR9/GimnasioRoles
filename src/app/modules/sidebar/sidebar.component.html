@@ -1,0 +1,101 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav [mode]="modoBarraLateral" [opened]="mostrarBarraLateral">
+        <br>
+        <div class="logo-container" mat-dialog-title>
+            <img src="../../../../../assets/img/logo3.png"  alt="Logo de la aplicación" width="100%">
+          </div>
+        <br>
+
+      <mat-nav-list >
+        <button mat-button routerLink="./home" class="hover-orange" style="width: 100%; color: #CCCCCC; font-size: 16px; font-family: sans-serif; margin-top: 4%; border-radius: 0%; line-height: normal;">
+            <mat-icon>home</mat-icon> 
+            Inicio 
+          </button>
+          
+        
+        
+        <button mat-button *ngIf="isSupadmin()" routerLink="./listaSucursales" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>location_on</mat-icon> 
+            Sucursales 
+        </button>
+        
+        <button mat-button *ngIf="isSupadmin()" routerLink="./lista-productoLinea" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>store</mat-icon> 
+            Productos en línea 
+        </button>
+        
+        <button mat-button *ngIf="isSupadmin()" routerLink="./estadisticas" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;">  
+            <mat-icon>bar_chart</mat-icon> 
+            Reportes 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin()" (click)="navigateToServicios()" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>settings</mat-icon> 
+            Servicios 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin()" (click)="navigateToMembresias()" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>people</mat-icon> 
+            Membresías 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin()" routerLink="./plan" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>date_range</mat-icon> 
+            Planes 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin()" routerLink="./productos" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>shopping_cart</mat-icon> 
+            Productos 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin()" routerLink="./entradas" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>shopping_basket</mat-icon> 
+            Compras 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin() || isRecep()" routerLink="./verCorte" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>attach_money</mat-icon> 
+            Ventas 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin()" routerLink="./colaboradores" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>group</mat-icon> 
+            Colaborador 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin()" routerLink="./productosVendidos" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>local_grocery_store</mat-icon> 
+            Productos vendidos 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin() || isRecep()" routerLink="./inventarios" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>storage</mat-icon> 
+            Inventario 
+        </button>
+        
+        <button mat-button *ngIf="isAdmin() || isRecep()" routerLink="./listaMembresias" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>person</mat-icon> 
+            Socios 
+        </button>
+
+        <button mat-button *ngIf="isAdmin() || isRecep()" (click)="AbrirRegistro()" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; display: flex; align-items: center;font-family:sans-serif;margin-top: 4%;border-radius: 0%;"> 
+            <mat-icon>person</mat-icon> 
+            Registro 
+        </button>
+        
+        <button mat-button (click)="logoutBS()" class="hover-orange" style="width: 100%;color: #CCCCCC; font-size: 16px; font-family:sans-serif;margin-top: 4%;border-radius: 0%;">  
+            <mat-icon>power_settings_new</mat-icon> 
+            Cerrar sesión 
+        </button>
+    </mat-nav-list>
+    
+    </mat-sidenav>
+
+  
+    <mat-sidenav-content>
+        <app-header></app-header>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  
