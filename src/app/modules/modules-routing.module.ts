@@ -36,6 +36,7 @@ import { planAgregarComponent } from './plan-agregar/membresias-agregar.componen
 import { planComponent } from './plan-lista/membresias.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
 import { ArchivosComponent } from './archivos/archivos.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,7 @@ const routes: Routes = [
       //Rutas Admin
       { path: 'home', component: HomeComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
+     // { path: 'eje', component: SidebarComponent},
       {
         path: '',
         canActivate: [RoleGuard], 
@@ -57,6 +59,7 @@ const routes: Routes = [
           { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
           { path: 'estadisticas', component: ReportsComponent},
           { path: 'archivos', component: ArchivosComponent}
+          
         ]
       },
       {

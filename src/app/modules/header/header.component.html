@@ -1,25 +1,49 @@
+<div class="main-container">
+<div class="header-container fixed-header">
+  <div class="left-buttons">
+    <button mat-icon-button (click)="toggleSidebar()" style="margin-left: 570%;"> 
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+
+  <div class="right-buttons">
+    <button mat-icon-button *ngIf="isAdmin()" routerLink="./verConfiguracion">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <button mat-icon-button (click)="logoutBS()">
+      <mat-icon>power_settings_new</mat-icon>
+    </button>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+<!--
 <nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
     <img class="logo_h" src="../../../../../assets/img/logo.jpeg" />
 
-    <!-- Utiliza el botón de menú en pantallas pequeñas -->
+
     <button mat-icon-button [matMenuTriggerFor]="menu" style="background: #FD9727; color: white;" class="d-block d-lg-none">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <!-- Utiliza los elementos del menú como botones en pantallas grandes -->
+
     <div class="d-none d-lg-flex">
       <button class="btn" id="ops" routerLink="./home">Inicio</button>
-      <!--<button class="btn" id="ops" routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>-->
       <button class="btn" id="ops" routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
       <button class="btn" id="ops" routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
-      <button class="btn" id="ops" (click)="AbrirRegistro()" *ngIf="isAdmin() || isRecep()">Registro</button>  <!--routerLink="./registrar" -->
+      <button class="btn" id="ops" (click)="AbrirRegistro()" *ngIf="isAdmin() || isRecep()">Registro</button>  
       <button class="btn" id="op" (click)="logoutBS()">
         <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
       </button>
     </div>
 
-    <!-- Define el menú desplegable con matMenu -->
+
     <mat-menu #menu="matMenu" class="d-lg-none">
       <button mat-menu-item routerLink="./home">Inicio</button>
       <button mat-menu-item routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
@@ -31,4 +55,4 @@
       </button>
     </mat-menu>
   </div>
-</nav>
+</nav>-->

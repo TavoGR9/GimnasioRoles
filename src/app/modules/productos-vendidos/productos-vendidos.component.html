@@ -1,6 +1,6 @@
-<br>
-<div class="grid-menu" style=" justify-content: center;">
-    <h1>Productos vendidos</h1> <!--de: "Nombre Sucursal"-->
+<div style="margin-top: 60px;">
+<div class="container mt-4">
+    <h2>PRODUCTOS VENDIDOS</h2> <!--de: "Nombre Sucursal"-->
 
     <!--<mat-form-field class="full-width">
         <mat-label>Buscar</mat-label>
@@ -8,7 +8,7 @@
     </mat-form-field>-->
     <div class="grid-input-date" >
         <div style="display: flex; justify-content: flex-end;">
-            <mat-form-field>
+            <mat-form-field appearance="outline">
                 <mat-label>Fecha Inicio</mat-label>
                 <input matInput [matDatepicker]="pickerInicio" [(ngModel)]="fechaInicio" (ngModelChange)="onFechaInicioChange($event)" readonly>
                 <mat-hint>MM/DD/YYYY</mat-hint>
@@ -20,7 +20,7 @@
         <div></div>
 
         <div style="display: flex; justify-content: flex-start;">
-            <mat-form-field>
+            <mat-form-field appearance="outline">
                 <mat-label>Fecha Fin</mat-label>
                 <input matInput [matDatepicker]="pickerFin" [(ngModel)]="fechaFin" (ngModelChange)="onFechaFinChange($event)" readonly>
                 <mat-hint>MM/DD/YYYY</mat-hint>
@@ -46,7 +46,7 @@
         </div>
     </div>
     <br>
-    <mat-form-field class="full-width">
+    <mat-form-field class="full-width" style="width: 100%;">
       <mat-label>Buscar</mat-label>
       <input matInput (keyup)="applyFilter($event)"placeholder="Buscar" #input/>
     </mat-form-field>
@@ -87,4 +87,5 @@
       </table>
     </div>
       <mat-paginator #paginatorProductos [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+</div>
 </div>

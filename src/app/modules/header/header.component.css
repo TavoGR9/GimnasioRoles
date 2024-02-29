@@ -1,55 +1,29 @@
-
-.logo_h {
-    width: 35%;
-    margin-right: 80px;
-  }
-
-  /*propiedades grid padre toolbar*/
-.grid_tool {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-#ops {
-    display: flex; 
-    align-items: center;
-    justify-content: center; /* Centra horizontalmente */
-    background: #FD9727;
-    margin: 10px;
-    width: 140px;
-    height: 45px;
-    border-radius: 10px;
-    color: black;
-    line-height: 45px; /* Alinea verticalmente */
-    text-align: center; /* Centra horizontalmente */
-  }
-
-  #op {
-    display: flex; 
-    align-items: center;
-    justify-content: center; /* Centra horizontalmente */
-    background: #DF7E54;
-    margin: 10px;
-    width: 140px;
-    height: 45px;
-    border-radius: 10px;
-    color: black;
-    line-height: 45px; /* Alinea verticalmente */
-    text-align: center; /* Centra horizontalmente */
-  }
-  
-
-nav {
-    border-bottom: #FD9727 solid;
-    border-width: 7px;
+.left-buttons,
+.right-buttons {
+  display: flex;
+  align-items: center;
 }
 
-#navbarNav {
-    text-align: right;
-    padding-right: 15px;
+.right-buttons {
+  margin-left: auto; /* Empuja los botones hacia la derecha */
 }
 
-.img_logo {
-    max-height: 149px;
+.main-container {
+  position: relative;
 }
 
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff; /* Puedes ajustar el color de fondo según tu diseño */
+  z-index: 1000; /* Ajusta el índice z para asegurarte de que esté sobre otros elementos */
+  border-bottom: 1px solid #ccc; /* Otras propiedades de estilo según sea necesario */
+}

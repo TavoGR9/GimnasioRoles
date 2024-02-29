@@ -5,6 +5,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { EntradasComponent } from '../entradas/entradas.component';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
+import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 
 @Component({
   selector: 'app-home',
@@ -14,10 +15,18 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit{
   // Almacenar el usuario en sesion
   currentUser: string = '';
+  detallesCaja: any[] = [];
+  fechaFiltro: string = "";
+  idGym: number = 0;
+  fechaActual: Date = new Date();
+  
+  constructor(private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
 
-  constructor(private auth: AuthService, public dialog: MatDialog, private router: Router) {}
+   
+  }
 
   ngOnInit(): void {
+   
     // Manejar ocultar ruta - eliminiar historial
     /*const stateObj = { id: 'home' };
     const title = 'Home';
@@ -37,7 +46,8 @@ export class HomeComponent implements OnInit{
     
     this.auth.idGym.subscribe((data) => {
       if(data) {
-        console.log("ESTE ES EL ID:", data);
+        this.idGym = data;
+        this.listaTablas();
       }
     });
   }
@@ -89,5 +99,45 @@ export class HomeComponent implements OnInit{
     });
   }
 
-   
+  private obtenerFechaActual(): Date {
+    return new Date();
+  }
+  
+
+  totalVentas: number = 0;
+totalProductosVendidos: number = 0;
+
+listaTablas() {
+  this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
+    (data) => {
+      this.detallesCaja = data;
+      console.log(this.detallesCaja, "this.detallesCaja");
+      const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
+      this.fechaFiltro = fechaActual;
+
+      // Calcular el total de ventas y productos vendidos para la fecha actual
+      const { totalVentas, totalProductosVendidos } = this.detallesCaja.reduce((acumulador, detalle) => {
+        const cantidadElegida = parseFloat(detalle.cantidadElegida);
+        const precioUnitario = parseFloat(detalle.precioUnitario);
+        const totalVentaPorProducto = cantidadElegida * precioUnitario;
+
+        // Verificar si la fecha de venta coincide con la fecha actual
+        if (detalle.fechaVenta === fechaActual) {
+          acumulador.totalVentas += totalVentaPorProducto;
+          acumulador.totalProductosVendidos += cantidadElegida;
+        }
+
+        return acumulador;
+      }, { totalVentas: 0, totalProductosVendidos: 0 });
+
+      this.totalVentas = totalVentas;
+      this.totalProductosVendidos = totalProductosVendidos;
+    },
+    (error) => {
+      console.error("Error al obtener detalles de la caja:", error);
+    }
+  );
 }
+  
+}
+
