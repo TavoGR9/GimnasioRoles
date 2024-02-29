@@ -22,6 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AddPasswordComponent } from './components/add-password/reset-password.component';
+
 @NgModule({
   declarations: [
     AppComponent,

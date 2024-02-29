@@ -1,256 +1,107 @@
-<!DOCTYPE html>
-<body>
-   <div class="container mt-4">
-      <!-- <h1 class="mb-3">Bienvenido {{ rol }} sucursal: {{ubicacion}}</h1>
-         <div class="row justify-content-center">
-          <div class="col-md-4">
-            <div class="card custom-border mx-auto">
-              <div class="card-body">
-               <h4 class="card-title">Top 5 de los productos más vendidos</h4>
-                <strong class="txt_msg"> {{ mesActual }} - {{ anioActual}}</strong>
-                <div *ngIf="topProductos && topProductos.length > 0">
-                  <ol>
-                    <li *ngFor="let producto of topProductos">
-                      {{ producto.nombreProducto }}
-                    </li>
-                  </ol>
+<div style="margin-top: 60px;">
+
+ <!-- dashboard.component.html -->
+<mat-card>
+   <mat-card-content>
+     <div class="dashboard-cards">
+       <!-- Tarjeta 1: Naranja -->
+       <mat-card class="orange-card">
+         <mat-card-header>
+           <mat-card-title>Total de ventas del dia:</mat-card-title>
+           <!--<mat-card-title>VENTAS DEL DIA - {{ fechaActual | date:'yyyy-MM-dd' }}</mat-card-title>-->
+         </mat-card-header>
+         <mat-card-content>
+            <br>
+            <div class="row">
+            <div class="col-sm-6">
+               
+               <img src="../../../../../assets/img/ventas.png" alt="Imagen Naranja" class="card-image">
+             </div>
+             <div class="col-sm-6">
+              
+               <p style="color: rgb(0, 0, 0); font-size: 50px; font-family:Verdana, Geneva, Tahoma, sans-serif; margin-top: 20%;">{{ totalVentas }}</p>
+             </div>
+            </div>
+         </mat-card-content>
+       </mat-card>
+       
+ 
+       <!-- Tarjeta 3: Blanco -->
+      <!-- <mat-card class="white-card">
+         <mat-card-header>
+           <mat-card-title>Socios del dia:</mat-card-title>
+         </mat-card-header>
+         <mat-card-content>
+            <br>
+            <div class="row">
+               <div class="col-sm-6">
+                  
+                  <img src="../../../../../assets/img/socios.png" alt="Imagen Blanca" class="card-image">
                 </div>
-                <div *ngIf="!topProductos || topProductos.length === 0">
-                  <strong class="txt_msg">**Aún no hay productos vendidos en este mes.</strong>
-                </div>
-                <a class="btn btn-gym" routerLink="../proveedores">Consultar</a>
-              </div>
-            </div>
-          </div>
-         </div>-->
-      <div class="row mt-4" *ngIf="isSupadmin()">
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Sucursales</h4>
-                  <p class="card-text">Consulta la información acerca de tus sucursales</p>
-                  <a class="btn btn-gym" routerLink="../listaSucursales">Consultar</a>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Productos</h4>
-                  <p class="card-text">Agregar productos correspondientes a tu carrito</p>
-                  <a class="btn btn-gym" routerLink="../lista-productoLinea">Consultar</a>
-               </div>
-            </div>
-         </div>
-         
-      </div>
-
-      <div class="row mt-4" *ngIf="isSupadmin()">
-         <!--<div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Colaboradores</h4>
-                  <p class="card-text">Registrar o editar colaboadores</p>
-                  <a class="btn btn-gym" routerLink="../colaboradores">Alta colaborador</a>
-               </div>
-            </div>
-         </div>-->
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Reportes</h4>
-                  <p class="card-text">Ver reportes por sucursal</p>
-                  <a class="btn btn-gym" routerLink="../estadisticas">Consultar</a>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <div class="row mt-4" *ngIf="isAdmin()">
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Servicios</h4>
-                  <p class="card-text">Consulta los servicios de tu sucursal</p>
-                  <a class="btn btn-gym" routerLink="../misServicios">Consultar</a>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Mis membresias</h4>
-                  <p class="card-text">Consulta la información acerca de las membresías de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../misMembresias">Consultar</a>
-               </div>
-            </div>
-         </div>
-
-      </div>
-
-      <div class="row mt-4" *ngIf="isAdmin()">
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Mis planes</h4>
-                  <p class="card-text">Consulta la información acerca de los planes de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../plan">Consultar</a>
-               </div>
-            </div>
-         </div>
-
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Productos</h4>
-                  <p class="card-text"> Consulta el catalogo de productos de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../productos">Consultar</a>
-               </div>
-            </div>
-         </div>
-
-        <!-- <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Categorias</h4>
-                  <p class="card-text"> Consulta las categorias de producto de la Franquicia</p>
-                  <a class="btn btn-gym" routerLink="../categorias">Consultar</a>
-               </div>
-            </div>
-         </div>-->
-      
-      </div>
-
-      <div class="row mt-4" *ngIf="isAdmin()">
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Compras</h4>
-                  <p class="card-text"> Configura las compras de producto para tu gimnasio</p>
-                  <a class="btn btn-gym" (click)="entradas()">Configurar</a>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-6" >
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Ventas</h4>
-                  <p class="card-text">Consultar las ventas de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../verCorte">Consultar</a>
-               </div>
-            </div>
-         </div>   
-        
-         
-        
-      </div>
-      <div class="row mt-4" >
-         
-
-         <div class="col-md-6" *ngIf="isAdmin()">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Colaboradores</h4>
-                  <p class="card-text">Registrar o editar colaboadores</p>
-                  <a class="btn btn-gym" routerLink="../colaboradores">Alta colaborador</a>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-6" *ngIf="isAdmin()">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Listado de productos vendidos</h4>
-                  <p class="card-text">Consulta los productos vendidos</p>
-                  <a class="btn btn-gym" routerLink="../productosVendidos">Consultar</a>
-               </div>
-            </div>
-         </div>
-
+                <div class="col-sm-6">
+                  <p style="font-size: large;">Total:</p>
                  
-      </div>
+                </div>
+               </div>
+         </mat-card-content>
+       </mat-card>-->
 
-      <!--Apartados de RECEPCIONISTA--->
-      <div class="row mt-4" >
-         <div class="col-md-6" *ngIf="isAdmin() || isRecep()">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Inventario</h4>
-                  <p class="card-text">Consulta el inventario de tu sucursal</p>
-                  <a class="btn btn-gym" routerLink="../inventarios">Consultar</a>
+       <mat-card class="navy-card">
+         <mat-card-header>
+           <mat-card-title style="color: white;">Total de roductos vendidos del dia:</mat-card-title>
+         </mat-card-header>
+         <mat-card-content>
+            <br>
+            <div class="row">
+               <div class="col-sm-6">
+                  <img src="../../../../../assets/img/producto.png" alt="Imagen Azul Marino" class="card-image">
+                </div>
+                <div class="col-sm-6">
+                  <br><br>
+                  <p style="color: white; font-size: 50px; font-family:Verdana, Geneva, Tahoma, sans-serif;">{{ totalProductosVendidos }}</p>
+                </div>
                </div>
-            </div>
-         </div>
-         <div class="col-md-6" *ngIf="isAdmin() || isRecep()">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Socios</h4>
-                  <p class="card-text">Consulta y/o realiza el pago de reenovación de membresias.</p>
-                  <a class="btn btn-gym" routerLink="../listaMembresias">Acceder</a>
-               </div>
-            </div>
-         </div>
-
-         
-         <br>
-
-         
-        <!-- <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Ventas</h4>
-                  <p class="card-text">Consultar las ventas de tu gimnasio</p>
-                  <a class="btn btn-gym" (click)="ventas()">Consultar</a>
-               </div>
-            </div>
-         </div>-->
-         
-      </div>
-
-      
-      
-      <div >
-         <div class="row mt-4" >
-           
-            <div class="col-md-6" *ngIf="isRecep()">
-               <div class="card">
-                  <div class="card-body">
-                     <h4 class="card-title">Ventas</h4>
-                     <p class="card-text">Consultar las ventas de tu gimnasio</p>
-                     <a class="btn btn-gym" routerLink="../verCorte">Consultar</a>
-                  </div>
-               </div>
-            </div>
-         </div>
-
-         <!--<div class="col-md-6" *ngIf="isRecep()">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Registro</h4>
-                  <p class="card-text">Registrar a un cliente</p>
-                  <a class="btn btn-gym" routerLink="../registrar">Registrar Ahora</a>
-               </div>
-            </div>
-         </div>-->
-         
-        <!-- <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Inventarios</h4>
-                  <p class="card-text">Configura los inventarios de tu gimnasio</p>
-                  <a class="btn btn-gym" routerLink="../inventarios">Configurar</a>
-               </div>
-            </div>
-         </div>
-         <div class="col-md-6">
-            <div class="card">
-               <div class="card-body">
-                  <h4 class="card-title">Registro</h4>
-                  <p class="card-text">Registrar a un cliente</p>
-                  <a class="btn btn-gym" routerLink="../registrar">Registrar Ahora</a>
-               </div>
-            </div>
-         </div>-->
-      </div> 
-   </div>
-</body>
-<br><br>
+         </mat-card-content>
+       </mat-card>
+     </div>
+   </mat-card-content>
+ </mat-card>
+ 
+ <!-- dashboard.component.html -->
+<mat-card>
+   <mat-card-content>
+     <div class="dashboard-cardss">
+       <!-- Tarjeta 1: Mitad del ancho -->
+       <mat-card class="half-width-card" routerLink="../misMembresias">
+         <mat-card-header>
+           <mat-card-title>Administra tus membresias aquí</mat-card-title>
+         </mat-card-header>
+         <mat-card-content>
+            <img src="../../../../../assets/img/mem.png" alt="Imagen Azul Marino" class="card-imagenesU">
+         </mat-card-content>
+       </mat-card>
+ 
+       <!-- Tarjeta 2: Un cuarto del ancho -->
+       <mat-card class="quarter-width-card" routerLink="../productos">
+         <mat-card-header>
+           <mat-card-title>Administra tus productos aquí</mat-card-title>
+         </mat-card-header>
+         <mat-card-content>
+            <img src="../../../../../assets/img/productos.png" alt="Imagen Azul Marino" class="card-imagenesD"> 
+         </mat-card-content>
+       </mat-card>
+ 
+       <!-- Tarjeta 3: Un cuarto del ancho -->
+       <mat-card class="quarter-width-card" routerLink="../listaMembresias">
+         <mat-card-header>
+           <mat-card-title>Administra tus socios aquí</mat-card-title>
+         </mat-card-header>
+         <mat-card-content>
+            <img src="../../../../../assets/img/socios.png" alt="Imagen Blanca" class="card-imagenesT">
+            
+         </mat-card-content>
+       </mat-card>
+     </div>
+   </mat-card-content>
+ </mat-card>
+</div>

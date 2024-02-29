@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { RegistroComponent } from '../registro/registro.component';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { SidebarService } from '../../service/sidebar.service';
 
 @Component({
   selector: 'app-header',
@@ -9,7 +10,12 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angu
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  constructor(private auth: AuthService, public dialog: MatDialog,) {}
+  constructor(private auth: AuthService, public dialog: MatDialog,private sidebarService: SidebarService) {}
+
+ 
+  toggleSidebar() {
+    this.sidebarService.toggleMostrarBarraLateral();
+  }
 
   ngOnInit(): void {}
 

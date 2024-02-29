@@ -1,9 +1,8 @@
+<div style="margin-top: 60px;">
+  <div class="container mt-4">
 
-  
-      <label class="title" mat-dialog-title>ENTRADAS</label>
-
-    
-    <div mat-dialog-content>
+    <h2>ENTRADAS</h2>
+    <div >
       <br>
       <form [formGroup]="form">
          <div style="color:red">{{message}}</div>
@@ -165,13 +164,15 @@
       </button>
     </div>-->
 
-    <div style="display: flex; justify-content: center;" mat-dialog-actions>
+    <div style="display: flex; justify-content: center;" >
       <button mat-raised-button (click)="registrar()" style="background-color: #fd9727;font-size: 20px;"
        >
         Guardar
       </button>
-      <button  mat-raised-button style="background-color: #000000;margin-left: 51px;font-size: 20px;color: rgb(255, 255, 255);"
+     <!-- <button  mat-raised-button style="background-color: #000000;margin-left: 51px;font-size: 20px;color: rgb(255, 255, 255);"
           (click)="cerrarDialogo()">Cancelar
-      </button>
+      </button>-->
     </div>
     
+   </div>
+</div> 
