@@ -1,11 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import Chart from 'chart.js/auto';
-import { format } from 'date-fns';
-import { AuthService } from './../../service/auth.service';
-import { SerialService } from './../../service/serial.service';
-import * as SerialPort from 'serialport';
-import { ToastrService } from 'ngx-toastr';
+import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { VentasComponent } from '../ventas/ventas.component';
+import { MatDialog } from "@angular/material/dialog";
+import { EntradasComponent } from '../entradas/entradas.component';
+import { AuthService } from 'src/app/service/auth.service';
+import { Router } from '@angular/router';
+import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { format } from "date-fns";
+import { ToastrService } from "ngx-toastr";
+import { ChartOptions, ChartType, ChartDataset } from "chart.js";
+
 
 @Component({
   selector: 'app-reports',
@@ -13,262 +23,231 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./reports.component.css']
 })
 export class ReportsComponent implements OnInit{
+
+  //graficas
   form: FormGroup;
-  listaSucursales: any;
-  existe_grtafica!: Chart;
-  esSupAdmin: boolean = false;
-  contenedorChart: boolean = false;
+  opcionSeleccionada: string = "0";
+  sucursales: DatosGrafico[] = [];
+  sucursaless: Graficoss[] = [];
+  sucursalesP: DatosGraficoss[] = [];
+  public barChartDataArray: { data: number[]; label: string }[] = [];
+  barChartLabels: string[] = [];
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+  public barChartType: ChartType = "bar";
+  public barChartLegend = true;
+  public barChartData: ChartDataset[] = [];
+  public coloresPersonalizados: string[] = ['#fd9727'];
+  datosGraficosPorGimnasio: { [key: string]: { chartLabels: string[], chartData: any[] } } = {};
 
-  constructor(private fb: FormBuilder, private service: AuthService, 
-    private serialService: SerialService, private toastr: ToastrService) {
-    this.form = this.fb.group({
-      sucursal: [""],
-      p_inicial: ["", Validators.required],
-      p_final: ["", Validators.required],
-      tipo: ["", Validators.required]
-    });
 
-  }
+
+  // Agrega estas propiedades al componente
+doughnutChartOptions: ChartOptions = {
+  // Configuración del gráfico de dona
+};
+
+doughnutChartLegend = true; // o false según tus necesidades
+doughnutChartType: ChartType = 'doughnut';
+
+constructor(private fb: FormBuilder,private toastr: ToastrService,private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
+  this.form = this.fb.group({
+    p_inicial: ["", Validators.required],
+    p_final: ["", Validators.required],
+    tipo: ["", Validators.required],
+  });
+}
 
   ngOnInit(): void {
-    if ("serial" in navigator) {
-      // The Web Serial API is supported.
-      //console.log("Es compatible...")
-    }
-
-    //Traer lista de sucursales 
-    this.service.list_sucursales().subscribe({
-      next: (resultData) => {
-        this.listaSucursales = resultData;
-      }, error: (error) => { console.log(error); }
-    });
-
-    // Validar el tipo de rol p/ mostrar contenido
-    this.esSupAdmin = this.service.isSupadmin();
-
+    this.obtenerDatosParaGrafico1();
+    this.obtenerDatosParaGrafico2();
   }
+ 
+////////////////////////////////////////////GRAFICAS/////////////////////////7777777
+formatearFecha(fechaOriginal: string): string {
+  const fechaObj = new Date(fechaOriginal);
+  // Formatear la fecha en el formato YYYY/MM/DD
+  const fechaFormateada = format(fechaObj, "yyyy-MM-dd");
+  return fechaFormateada;
+}
 
-  //Dar formato a fecha
-  formatearFecha(fechaOriginal: string): string {
-    // Convertir la fecha a un objeto Date
-    const fechaObj = new Date(fechaOriginal);
+obtenerDatosParaGrafico1() {
+  let inicial = this.formatearFecha(this.form.value.p_inicial);
+  let final = this.formatearFecha(this.form.value.p_final);
 
-    // Formatear la fecha en el formato YYYY/MM/DD
-    const fechaFormateada = format(fechaObj, 'yyyy-MM-dd');
-    return fechaFormateada;
-  }
+  // Asignar la respuesta a las propiedades de rango de fecha
+  this.form.value.p_inicial = inicial;
+  this.form.value.p_final = final;
 
-  //Consultar reporte
-  consult(): void {
-    // Llamar funcion para dar formato a fecha
-    let inicial = this.formatearFecha(this.form.value.p_inicial);
-    let final = this.formatearFecha(this.form.value.p_final);
+  this.auth.chart_sucursales(this.form.value).subscribe({
+    next: (resultData: DatosGrafico[]) => {
+      if (resultData.length === 0 || resultData[0].nombre === "No_result") {
+        this.toastr.error(
+          "No hay resultados disponibles...",
+          "No hay resultados",
+          {
+            positionClass: "toast-bottom-left",
+          }
+        );
+        return;
+      }
 
-    // Asignar la respuesta a las propiedades de rango de fecha
-    this.form.value.p_inicial = inicial;
-    this.form.value.p_final = final;
+      this.sucursales = resultData;
 
-    // Validar que tipo de rol y asignar un valor al campo sucursal
-    if(!this.esSupAdmin){
-      this.form.value.sucursal = this.service.idGym.getValue();
-    }
+      this.barChartDataArray = [];
+      for (const sucursal of resultData) {
+        const chartData = {
+          data: [sucursal.ventas],
+          label: sucursal.nombre,
+          backgroundColor: this.coloresPersonalizados[0], // Accede al miembro de la clase
+          borderColor: this.coloresPersonalizados[0],
+        };
+        this.barChartDataArray.push(chartData);
+      }
 
-    console.log(this.form.value);
-    this.service.chart_sucursales(this.form.value).subscribe({
-      next: (resultData) => {
-        if(resultData.nombre == 'No_result'){
-          this.toastr.error('No hay resultados disponibles...', 'No hay resultados', {
-            positionClass: 'toast-bottom-left',
-          });
-          return;
-        }
-        // Extraer los nombres de gimnasios y las ventas
-        const sucursalesResult = resultData.map((item: any) => item.nombre);
-        const ventasResult = resultData.map((item: any) => item.ventas);
+      console.log(this.barChartDataArray, "barChartDataArray");
+    },
+    error: (error) => {
+      console.log(error);
+    },
+  });
+}
 
-        this.setContenedorChartAndShow(sucursalesResult, ventasResult);
-      }, error: (error) => { console.log(error); }
-    });
-  }
+obtenerDatosParaGrafico2() {
+  let inicial = this.formatearFecha(this.form.value.p_inicial);
+  let final = this.formatearFecha(this.form.value.p_final);
 
-  //Graficar datos
-  showChart(sucursales: any, ventas: any): void {
-    this.contenedorChart = true;
-    if (this.existe_grtafica) {
-      this.existe_grtafica.destroy();
-    }
+  // Asignar la respuesta a las propiedades de rango de fecha
+  this.form.value.p_inicial = inicial;
+  this.form.value.p_final = final;
 
-    this.existe_grtafica = new Chart("myChart", {
-      type: 'bar',
-      data: {
-        labels: sucursales,
-        datasets: [{
-          label: 'Periodo: ' + this.form.value.p_inicial + ' - ' + this.form.value.p_final,
-          data: ventas,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(255, 205, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(201, 203, 207, 0.2)'
+  console.log(this.form.value, "formulario");
+  // Simulando datos, puedes reemplazar esto con tu lógica de obtención de datos
+  this.auth.chart_sucursales(this.form.value).subscribe({
+    next: (resultData: DatosGraficoss[]) => {
+      if (resultData.length === 0 || resultData[0].nombre === "No_result") {
+        this.toastr.error(
+          "No hay resultados disponibles...",
+          "No hay resultados",
+          {
+            positionClass: "toast-bottom-left",
+          }
+        );
+        return;
+      }
+
+      this.sucursalesP = resultData;
+
+      // Limpiar datos anteriores
+      this.barChartDataArray = [];
+
+      // Procesar los datos para cada sucursal
+      resultData.forEach((sucursal, i) => {
+        const chartData = {
+          data: [
+            sucursal.visita,
+            sucursal.quincena,
+            sucursal.mensualidad,
+            sucursal.anualidad,
           ],
-          borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(255, 159, 64)',
-            'rgb(255, 205, 86)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-            'rgb(153, 102, 255)',
-            'rgb(201, 203, 207)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
+          label: sucursal.nombre,
+          backgroundColor: this.coloresPersonalizados[0], // Accede al miembro de la clase
+          borderColor: this.coloresPersonalizados[0],
+        };
+        this.barChartDataArray.push(chartData);
+      });
+      
+      
+
+      console.log(this.barChartDataArray, "barChartDataArray");
+    },
+    error: (error) => {
+      console.log(error);
+    },
+  });
+}
+
+obtenerDatosParaGrafico5() {
+  // Obtener fechas formateadas
+  const inicial = this.formatearFecha(this.form.value.p_inicial);
+  const final = this.formatearFecha(this.form.value.p_final);
+
+  // Asignar fechas formateadas al formulario
+  this.form.patchValue({ p_inicial: inicial, p_final: final });
+
+  console.log(this.form.value, "formulario");
+
+  // Obtener datos del servicio
+  this.auth.chart_sucursales(this.form.value).subscribe({
+    next: (resultData: Graficoss[]) => {
+      // Manejar caso sin resultados
+      if (resultData.length === 0 || resultData[0].nombreGimnasio === "No_result") {
+        this.toastr.error("No hay resultados disponibles...", "No hay resultados", {
+          positionClass: "toast-bottom-left",
+        });
+        return;
       }
-    });
-  }
 
-  // Puerto SERIAL - eventos .... Puerto SERIAL - eventos .... Puerto SERIAL - eventos .... Puerto SERIAL
+      // Inicializar la estructura de datos para almacenar la información del gráfico
+      const datosGraficosPorGimnasio: DatosGraficosPorGimnasio = {};
 
-  //Pruebas para manejar el puerto serial - version 3.2 - es de chocolate.
-  async onConnectButtonClick(): Promise<void> {
-    await this.serialService.connectAndSendData();
-  }
-
-  selectedPort: any = null;
-  writer: any = null;
-  reader: any = null;
-  // Apertura del puerto 
-  async requestSerialPort() {
-    if ('serial' in navigator) {
-      try {
-        if (!this.selectedPort) {
-          // Solicita al usuario seleccionar un puerto
-          const port = await (navigator as any).serial.requestPort();
-          // Abrir puerto
-          await port.open({ baudRate: 9600 }); // Cambiar 'baudrate' a 'baudRate'
-  
-          // Almacenar el puerto seleccionado
-          this.selectedPort = port;
-  
-          // Obtener el escritor (writer) para enviar datos
-          const writer = port.writable.getWriter();
-  
-          // Función para enviar datos
-          async function enviarDatos(texto: string) {
-            const encoder = new TextEncoder();
-            await writer.write(encoder.encode(texto));
-            console.log("dato enviado");
-          }
-  
-          // Enviar un texto a través del puerto serie
-          enviarDatos("1");
-  
-          // Obtener el lector (reader) para recibir datos
-          const reader = port.readable.getReader();
-  
-          // Función para leer los datos entrantes
-          async function leerDatos() {
-            try {
-              while (true) {
-                const { value, done } = await reader.read();
-                if (done) {
-                  console.log('Lector finalizado');
-                  break;
-                }
-                console.log('Datos recibidos:', new TextDecoder().decode(value));
-              }
-            } catch (error) {
-              console.error('Error al leer los datos:', error);
-            } finally {
-              reader.releaseLock();
-            }
-          }
-  
-          // Iniciar la lectura de datos
-          leerDatos();
-  
+      // Procesar datos
+      resultData.forEach((dato) => {
+        if (!datosGraficosPorGimnasio[dato.nombreGimnasio]) {
+          datosGraficosPorGimnasio[dato.nombreGimnasio] = {
+            chartLabels: [],
+            chartData: [{ data: [], label: 'Ventas' }],
+            
+          };
         }
-      } catch (error) {
-        console.error('Error al interactuar con el puerto serie:', error);
-      }
-    }
-  }
 
-  // Apeertura del puerto
-  async openSerialPort() {
-    if ('serial' in navigator) {
-      try {
-        if (!this.selectedPort) {
-          const port = await (navigator as any).serial.requestPort();
-          await port.open({ baudRate: 9600 });
+        datosGraficosPorGimnasio[dato.nombreGimnasio].chartLabels.push(String(dato.nombreProducto));
+        datosGraficosPorGimnasio[dato.nombreGimnasio].chartData[0].data.push(dato.totalVentas);
+        
+      });
 
-          this.selectedPort = port;
-          this.writer = port.writable.getWriter();
-          this.reader = port.readable.getReader();
-        }
-      } catch (error) {
-        console.error('Error al interactuar con el puerto serie:', error);
-      }
-    }
-  }
-
-  // Enviar datos al puerto abierto
-  async enviarDatos(texto: string) {
-    const encoder = new TextEncoder();
-    await this.writer.write(encoder.encode(texto));
-    console.log("enviado");
-  }
-
-  // Leer respuesta de dispositivo conectado al puerto serial
-  async leerDatos() {
-    try {
-      while (true) {
-        const { value, done } = await this.reader.read();
-        if (done) {
-          console.log('Lector finalizado');
-          break;
-        }
-        console.log('Datos recibidos:', new TextDecoder().decode(value));
-      }
-    } catch (error) {
-      console.error('Error al leer los datos:', error);
-    } finally {
-      this.reader.releaseLock();
-    }
-  }
-
-  // Enviar informacion al puerto serial
-  enviarDatosPorPuertoSerial() {
-    //this.openSerialPort();
-    if (this.selectedPort) {
-      this.enviarDatos("1");
-    } else {
-      console.error('El puerto serie no está abierto');
-    }
-  }
-
-  eventoX(){
-    this.openSerialPort();
-  }
-
-  setContenedorChartAndShow(sucursalesResult: any[], ventasResult: any[]) {
-    this.contenedorChart = true;
-    // Usamos setTimeout para asegurarnos de que el cambio de detección de Angular se ha ejecutado
-    // y el elemento canvas se ha renderizado antes de intentar crear el gráfico.
-    setTimeout(() => {
-      this.showChart(sucursalesResult, ventasResult);
-    }, 0);
-  }
+      // Asignar la estructura de datos a una propiedad del componente
+      this.datosGraficosPorGimnasio = datosGraficosPorGimnasio;
+      
+      // Ahora 'datosGraficosPorGimnasio' tiene la estructura necesaria para mostrar los gráficos
+      console.log(this.datosGraficosPorGimnasio);
+    },
+    error: (error) => {
+      console.error(error);
+      this.toastr.error("Error al obtener datos.", "Error", {
+        positionClass: "toast-bottom-left",
+      });
+    },
+  });
+}
 
 }
   
 
+interface DatosGrafico {
+  nombre: string;
+  ventas: number;
+}
+
+interface DatosGraficoss {
+  nombre: string;
+  visita: number;
+  quincena: number;
+  mensualidad: number;
+  anualidad: number;
+}
+
+interface Graficoss{
+  nombreGimnasio: string;
+  nombreProducto: number;
+  totalVentas: number;
+}
+
+interface DatosGraficosPorGimnasio {
+  [nombreGimnasio: string]: {
+    chartLabels: string[];
+    chartData: { data: number[]; label: string }[];
+  };
+}

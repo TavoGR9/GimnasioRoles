@@ -56,12 +56,10 @@
         <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
           <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
           <td mat-cell *matCellDef="let prod">
-            <ng-container *ngIf="column === 'Nombre'">
+            <!--<ng-container *ngIf="column === 'Nombre'">
                 {{ prod.Nombre }}
-              </ng-container>
-              <ng-container *ngIf="column === 'Sucursal'">
-                {{ prod.Sucursal }}
-              </ng-container>
+              </ng-container>-->
+             
               <ng-container *ngIf="column === 'Producto'">
                 {{ prod.Producto }}
               </ng-container>
@@ -69,16 +67,16 @@
                 {{ prod.Cantidad }}
               </ng-container>
               <ng-container *ngIf="column === 'Precio unitario'">
-                {{ prod.Precio_Unitario }}
+                ${{ prod.Precio_Unitario }}
               </ng-container>
               <ng-container *ngIf="column === 'Importe por producto'">
-                {{ prod.Importe_x_Producto }}
+                ${{ prod.Importe_x_Producto }}
               </ng-container>
               <ng-container *ngIf="column === 'Fecha venta'">
                 {{ prod.Fecha_Venta }}
               </ng-container>
               <ng-container *ngIf="column === 'Total'">
-                {{ prod.Total }}
+               $ {{ prod.Total }}
               </ng-container>
           </td>
         </ng-container>

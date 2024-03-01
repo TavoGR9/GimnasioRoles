@@ -55,7 +55,6 @@ export class CrearProductoComponent implements OnInit {
   private idGym: number = 0;
   message: string = '';
   currentUser: string = '';
-  
   categorias: any[] = [];
   //sabores: any[] = [];
 

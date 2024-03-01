@@ -35,9 +35,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
-/**
- * DEBES COLOCAR EL Providers o no se visualizan los input del formulario
- */
 @Component({
   selector: 'app-entradas',
   templateUrl: './entradas.component.html',
@@ -51,22 +48,20 @@ export class EntradasComponent implements OnInit {
   ubicacion: string; //nombre del gym
   id: number; // id gym
   idUsuario: number;
-  fechaRegistro: string; //fecha de ingreso del producto
-  //Variables para guardar las lista de productos
+  fechaRegistro: string; 
   listaProductos: any;
   listaProducto: Producto[] = [];
   idProducto: number = 0;
   message: string = '';
-
-  //guardar lista proveedores y id
   listaProveedores: any;
   idProveedor: number = 0;
+  currentUser: string = '';
+  idGym: number = 0;
+  tablaDatos: any[] = [];
 
   constructor(
-
    // public dialogo: MatDialogRef<EntradasComponent>,
     //@Inject(MAT_DIALOG_DATA) public mensaje: string,
-
     private fb: FormBuilder,
     private auth: AuthService,
     private toastr: ToastrService,
@@ -111,6 +106,7 @@ export class EntradasComponent implements OnInit {
   }
 
   @HostListener('document:keydown.enter', ['$event'])
+  
   handleEnterKey(event: KeyboardEvent): void {
     if (this.form.valid) {
     // Verifica que el evento se produzca dentro del formulario antes de agregar a la tabla
@@ -119,12 +115,37 @@ export class EntradasComponent implements OnInit {
       event.preventDefault(); // Evita la acción predeterminada del Enter
     }}
   }
-  /**
-   * Llenar los mat select
-   */
+
   ngOnInit(): void {
-    //Traer la lista de productos para mat select
-    this.entrada.listaProductos(this.auth.idGym.getValue()).subscribe({
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    
+    this.auth.idGym.subscribe((data) => {
+      if(data) {
+        this.idGym = data;
+        this.listaTablas();
+      }
+    });
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
+
+  listaTablas(){
+    this.entrada.listaProductos(this.idGym).subscribe({
       next: (resultData) => {
         this.listaProductos = resultData;
       },
@@ -132,45 +153,11 @@ export class EntradasComponent implements OnInit {
         console.error(error);
       },
     });
-
-    //lista de proveedores mat select
-    this.proveedor.obternerProveedor().subscribe({
-      next: (resulData) => {
-        // Transformar los nombres de propiedades para poder mostrar en mat select (no acepta espacios)
-        if (Array.isArray(resulData)) {
-          this.listaProveedores = resulData.map((proveedor: { [x: string]: any }) => {
-            return {
-              ...proveedor,
-              nombreEmpresa: proveedor['razon social'],
-            };
-          });
-        } else {
-          console.error('resulData is not an array.');
-        }
-        
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
   }
 
-  /**
-   * Metodo que se invoca cada que selecionas una opcion del select
-   * @param event
-   */
   infoProducto(event: number) {
     console.log('Opción seleccionada:', event);
     this.idProducto = event;
-  }
-
-  /**
-   * Metodo que se invoca cada que selecionas una opcion del select
-   * @param event
-   */
-  infoProveedor(event: number) {
-    console.log('Opción seleccionada proveedor:', event);
-    this.idProveedor = event;
   }
 
   obtenerFechaActual(): string {
@@ -178,15 +165,9 @@ export class EntradasComponent implements OnInit {
     return this.datePipe.transform(fechaActual, 'yyyy-MM-dd') || '';
   }
 
-  // Función para limpiar el formulario
   limpiarFormulario(): void {
     this.form.reset();
-    
   }
-
-
-  tablaDatos: any[] = [];
-  
 
   agregarATabla() {
     if (this.form.valid) { 
@@ -289,9 +270,7 @@ export class EntradasComponent implements OnInit {
     });
   }
 
-
-  cerrarDialogo(): void {
-    
+  cerrarDialogo(): void { 
   }
  
 }

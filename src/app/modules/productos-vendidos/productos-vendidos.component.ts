@@ -38,8 +38,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   productosVendidos: Producto[] = [];
   dataSource: any; 
   displayedColumns: string[] = [
-    'Nombre',
-    'Sucursal',
+
     'Producto',
     'Cantidad',
     'Precio unitario',

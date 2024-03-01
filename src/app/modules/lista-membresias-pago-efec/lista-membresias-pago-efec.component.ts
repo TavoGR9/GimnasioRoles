@@ -81,14 +81,14 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ];
   //titulos de columnas de la tabla clientes activos
   displayedColumnsActivos: string[] = [
-    'ID',
+
     'Nombre',
-    'Sucursal',
+  
     'Membresia',
     'Precio',
     'Fecha Inicio',
     'Fecha Fin',
-    'Status',
+    'Estatus',
     //'Dinero Recibido',
     //'Pagar',
     'Reenovación',
@@ -363,6 +363,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                 foto: `${prod.foto}`,
                 action:`${prod.accion}`
               },
+              width: '80%',
+              height: '90%',
+              disableClose: true,
               //data: `Mi nombre es: ${prod.Nombre}`,
             })
             .afterClosed()
@@ -444,8 +447,12 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         idMem: `${prod.Membresia_idMem}`,
         detMemID: `${prod.idDetMem}`
       },
+      width: '50%',
+      height: '80%',
+      disableClose: true,
     });
 
+   
     // Suscríbete al evento actualizarTablas del diálogo
     dialogRef.componentInstance.actualizarTablas.subscribe(
       (actualizar: boolean) => {

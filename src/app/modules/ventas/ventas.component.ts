@@ -14,7 +14,7 @@ import {
   NgForm,
 } from "@angular/forms";
 import { CajaService } from "src/app/service/caja.service";
-import { DetalleVentaService } from "src/app/service/detalle-venta.service";
+import { DetalleVentaService } from "../../service/detalle-venta.service";
 import { listarClientesService } from "src/app/service/listarClientes.service";
 import { Router } from "@angular/router";
 import { MensajeListaComponent } from "../ListaClientes/mensaje-cargando.component";

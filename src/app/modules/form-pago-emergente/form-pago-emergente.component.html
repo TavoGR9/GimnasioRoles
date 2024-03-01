@@ -1,60 +1,66 @@
 
-<h1 mat-dialog-title>Pagar Membresia</h1>
+<h1 mat-dialog-title class="title">Pagar Membresia</h1>
+
+
+
 <div mat-dialog-content>
     <form>
         <br>
-        <div class="grid">
-            <div class="column">
-                <mat-form-field appearance="outline">
-                    <mat-label>Nombre</mat-label>
-                    <input matInput [value]="data.nombre" [disabled]='true'>
-                </mat-form-field>
-            </div>
-            <div class="column">
-                <mat-form-field appearance="outline">
-                    <mat-label>Sucursal</mat-label>
-                    <input matInput [value]="data.sucursal" [disabled]='true'>
-                </mat-form-field>
-            </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div>
+                    <mat-form-field appearance="outline" style="width: 100%;" class="disabled-input" >
+                        <mat-label>Nombre del cliente:</mat-label>
+                        <input matInput [value]="data.nombre" [disabled]="true" >
+                    </mat-form-field>
+                </div>
+                
 
-            <div class="column">
-                <mat-form-field appearance="outline">
-                    <mat-label for="membresiaSelect">Membresía</mat-label>
-                    <!-- Si this.data.action es 'Online', mostrar un input -->
-                    <!--<input matInput *ngIf="this.data.action === 'Online'" type="text" [value]="this.data.membresia" [disabled]='true'>-->
-
-                    <!-- Si this.data.action no es 'Online', mostrar el mat-select -->
-                    <mat-select id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaSeleccionada" (ngModelChange)="onMembresiaChange()"> <!---id="membresiaSelect"; *ngIf="this.data.action !== 'Online'"-->
-                        <mat-option *ngFor="let membresia of membresias" [value]="membresia.IDmembresia">
-                        {{ membresia.Membresia }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
             </div>
-            <div class="column">
-                <mat-form-field appearance="outline">
+            <div class="col-sm-6">
+                <div >
+                    <mat-form-field appearance="outline" style="width: 100%;">
+                        <mat-label for="membresiaSelect">Membresía</mat-label>
+                        <!-- Si this.data.action es 'Online', mostrar un input -->
+                        <!--<input matInput *ngIf="this.data.action === 'Online'" type="text" [value]="this.data.membresia" [disabled]='true'>-->
+    
+                        <!-- Si this.data.action no es 'Online', mostrar el mat-select -->
+                        <mat-select id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaSeleccionada" (ngModelChange)="onMembresiaChange()"> <!---id="membresiaSelect"; *ngIf="this.data.action !== 'Online'"-->
+                            <mat-option *ngFor="let membresia of membresias" [value]="membresia.IDmembresia">
+                            {{ membresia.Membresia }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <mat-form-field appearance="outline" style="width: 100%;">
                     <mat-label>Precio</mat-label>
                     <input matInput [value]="this.precio" [disabled]='true'>
                 </mat-form-field>
             </div>
-            <div class="column">
-                <mat-form-field appearance="outline">
+            <div class="col-sm-6">
+                <mat-form-field appearance="outline" style="width: 100%;">
                     <mat-label>Duración</mat-label>
                     <input matInput [value]="this.duracion" [disabled]='true'>
                 </mat-form-field>
             </div>
-            <div class="column">
-                <mat-form-field appearance="outline">
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6" >
+                <mat-form-field appearance="outline" style="width: 100%;">
                     <mat-label>Dinero recibido</mat-label>
                     <input matInput [(ngModel)]="this.moneyRecibido" [ngModelOptions]="{standalone: true}" type="number" min="0" placeholder="0">
                 </mat-form-field>
             </div>
-            <div class="column" mat-dialog-actions fxLayoutAlign="center center">
-                <button style="background-color: #F9A640" mat-button (click)="successDialog()"><mat-icon>attach_money</mat-icon>Pagar</button>
-            </div>
-            <div class="column" mat-dialog-actions fxLayoutAlign="center center">
-                <button  style="background-color: #000000; color: #ffffff" mat-button (click)="cancelDialogo()"><mat-icon>cancel</mat-icon>Cerrar</button>
-            </div>
         </div>
       </form>
+      <div style="display: flex; justify-content: center;" mat-dialog-actions>
+        <button mat-stroked-button (click)="successDialog()"style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 30%; margin-right: 90px;"><mat-icon>attach_money</mat-icon>Pagar</button>
+        <button mat-stroked-button (click)="cancelDialogo()" style="background-color: #000000; font-size: 20px;  height: 40px;width: 30%; color: white;"><mat-icon>cancel</mat-icon>Cancelar</button>
+     </div>
 </div>
