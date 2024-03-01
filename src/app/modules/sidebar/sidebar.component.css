@@ -59,3 +59,31 @@
     margin-top: 4%;
     border-radius: 0%;
   }
+
+  .transparent-button {
+    border: none;
+    background-color: transparent;
+    color: #CCCCCC;
+    font-size: 18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 4%;
+    border-radius: 0%;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    padding-left: 30px; /* Ajusta el margen izquierdo del texto */
+    padding-top: 8px;
+    padding-bottom: 8px;
+    height: 40%;
+    
+  }
+  
+  .transparent-button mat-icon {
+    margin-right: 10px;
+  }
+  
+  .transparent-button:hover {
+    /* Estilos adicionales al pasar el mouse sobre el botón, si es necesario */
+  }
+  

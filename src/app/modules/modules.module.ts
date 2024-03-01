@@ -110,6 +110,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { ArchivosComponent } from './archivos/archivos.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { NgChartsModule } from 'ng2-charts';
 
 
 @NgModule({
@@ -219,6 +220,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatAutocompleteModule,
     MatSidenavModule,
     NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
+    NgChartsModule
 
   ]
 })

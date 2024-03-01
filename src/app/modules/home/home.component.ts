@@ -6,6 +6,16 @@ import { EntradasComponent } from '../entradas/entradas.component';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { format } from "date-fns";
+import { ToastrService } from "ngx-toastr";
+import { ChartOptions, ChartType, ChartDataset } from "chart.js";
+import { AnalyticsService } from '../../service/analytics.service';
 
 @Component({
   selector: 'app-home',
@@ -13,35 +23,39 @@ import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit{
+
+
+  public barChartDataArray: { data: number[]; label: string }[] = [];
+  barChartLabels: string[] = [];
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+  };
+  public barChartType: ChartType = "bar";
+  public barChartLegend = true;
+  public barChartData: ChartDataset[] = [];
+  public coloresPersonalizados: string[] = ['#FF5733', '#33FF57', '#5733FF'];
+  datosGraficosPorGimnasio: { [key: string]: { chartLabels: string[], chartData: any[] } } = {};
   // Almacenar el usuario en sesion
   currentUser: string = '';
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
   idGym: number = 0;
   fechaActual: Date = new Date();
+  totalVentas: number = 0;
+  totalProductosVendidos: number = 0;
+  datosProductosVendidos: any;
+  datosRecientesVentas: any;
+  datosClientesActivos: any;
+  clientesActivos: any;
   
-  constructor(private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
-
-   
+  constructor(private analyticsService: AnalyticsService,private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
   }
 
   ngOnInit(): void {
-   
-    // Manejar ocultar ruta - eliminiar historial
-    /*const stateObj = { id: 'home' };
-    const title = 'Home';
-    const url = '/home';
-
-    window.history.pushState(stateObj, title, url);
-
-    window.addEventListener('popstate', () => {
-      window.history.pushState(stateObj, title, url);
-    });*/
-
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
-      //console.log("Mira aqui perro: " + JSON.stringify(this.currentUser));
     }
     
     this.auth.idGym.subscribe((data) => {
@@ -52,9 +66,7 @@ export class HomeComponent implements OnInit{
     });
   }
 
-  // Metodo traer datos desde la variable se sesion storage
   getSSdata(data: any){
-    //console.log("Mira aqui perro: " + JSON.stringify(data));
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
         this.auth.loggedIn.next(true);
@@ -64,12 +76,10 @@ export class HomeComponent implements OnInit{
           this.auth.nombreGym.next(resultData.nombreGym);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
-          //console.log("exito... quiero llorar de la emocion");
       }, error: (error) => { console.log(error); }
     });
   }
 
-  
   /* roles de usuario */
   isAdmin(): boolean {
     return this.auth.isAdmin();
@@ -102,16 +112,11 @@ export class HomeComponent implements OnInit{
   private obtenerFechaActual(): Date {
     return new Date();
   }
-  
 
-  totalVentas: number = 0;
-totalProductosVendidos: number = 0;
-
-listaTablas() {
+  listaTablas() {
   this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
     (data) => {
       this.detallesCaja = data;
-      console.log(this.detallesCaja, "this.detallesCaja");
       const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
       this.fechaFiltro = fechaActual;
 
@@ -137,7 +142,26 @@ listaTablas() {
       console.error("Error al obtener detalles de la caja:", error);
     }
   );
-}
+
+
+  this.analyticsService.getAnalyticsData(this.idGym).subscribe((data) => {
+    this.datosProductosVendidos = data;
+  });
+
+
+  this.analyticsService.getARecientesVentas(this.idGym).subscribe((data) => {
+    this.datosRecientesVentas = data;
+  });
+
+
+  this.analyticsService.getClientesActivos(this.idGym).subscribe((data) => {
+    this.datosClientesActivos = data;
+    const cantidadClientesActivos = this.datosClientesActivos.length;
+    this.clientesActivos = cantidadClientesActivos;  
+  });
   
+
 }
 
+
+}

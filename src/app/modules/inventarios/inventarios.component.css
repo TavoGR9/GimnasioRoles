@@ -13,4 +13,12 @@ table {
   }
   
   
+  .cantidad-disponible-bajo {
+    background-color: red;
+  }
+  
+  .cantidad-disponible-suficiente {
+    background-color: green;
+  }
+  
   

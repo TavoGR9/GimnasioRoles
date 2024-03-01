@@ -13,8 +13,11 @@ export class HeaderComponent implements OnInit {
   constructor(private auth: AuthService, public dialog: MatDialog,private sidebarService: SidebarService) {}
 
  
+  public isBarraLateralVisible: boolean = true;
+
   toggleSidebar() {
     this.sidebarService.toggleMostrarBarraLateral();
+    this.isBarraLateralVisible = !this.isBarraLateralVisible;
   }
 
   ngOnInit(): void {}

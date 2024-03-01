@@ -23,7 +23,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #fff; /* Puedes ajustar el color de fondo según tu diseño */
+  background-color: #e6e6e6; /* Puedes ajustar el color de fondo según tu diseño */
   z-index: 1000; /* Ajusta el índice z para asegurarte de que esté sobre otros elementos */
-  border-bottom: 1px solid #ccc; /* Otras propiedades de estilo según sea necesario */
+  border-bottom: 0px solid #fd9727; /* Otras propiedades de estilo según sea necesario */
 }

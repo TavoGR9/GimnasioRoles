@@ -1,6 +1,6 @@
 import { MatTableDataSource } from "@angular/material/table";
 import { AuthService } from "src/app/service/auth.service";
-import { JoinDetalleVentaService } from "src/app/service/JoinDetalleVenta";
+import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit  } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { CajaService } from "src/app/service/caja.service";

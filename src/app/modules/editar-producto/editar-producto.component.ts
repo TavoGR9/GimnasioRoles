@@ -38,6 +38,9 @@ export class EditarProductoComponent implements OnInit{
   idProducto: any;
   fechaCreacion: string;
   private idGym: number = 0;
+  currentUser: string = '';
+  sabores: string[] = [];
+  filteredSabores: string[] = [];
 
   constructor( public dialogo: MatDialogRef<EditarProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -55,7 +58,7 @@ export class EditarProductoComponent implements OnInit{
     //llamar al servicio datos empleado - pasando el parametro capturado por url
     this.productoService.consultarProductosJ(this.idProducto).subscribe(
       respuesta=>{
-        console.log("respuesta", respuesta);
+        console.log("respuesta", respuesta[0].Categoria_idCategoria);
         this.form.setValue({
           nombre:respuesta [0]['nombre'],
           descripcion:respuesta [0]['descripcion'],
@@ -110,18 +113,41 @@ export class EditarProductoComponent implements OnInit{
 
   //mandar a llamar el sevicio correspondiente al llenado del combo sucursal
   ngOnInit(): void {
-    this.categoriaService.obternerCategoria().subscribe({
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    });  
+  }
+
+  listaTabla(){
+    this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
       },
       error: (error) => {
-        console.error(error);
+        //console.log(error);
       },
     });
-  }
 
-  sabores: string[] = [];
-filteredSabores: string[] = [];
+  };
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
 
   buscarSabores() {
     const saborIngresado = this.form.get('sabor')?.value;

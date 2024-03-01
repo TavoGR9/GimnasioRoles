@@ -1,77 +1,134 @@
 <div style="margin-top: 60px;">
 
- <!-- dashboard.component.html -->
-<mat-card>
+<mat-card *ngIf="isAdmin() || isRecep()">
    <mat-card-content>
      <div class="dashboard-cards">
        <!-- Tarjeta 1: Naranja -->
        <mat-card class="orange-card">
          <mat-card-header>
-           <mat-card-title>Total de ventas del dia:</mat-card-title>
+           <mat-card-title>Ventas del dia:</mat-card-title>
            <!--<mat-card-title>VENTAS DEL DIA - {{ fechaActual | date:'yyyy-MM-dd' }}</mat-card-title>-->
          </mat-card-header>
          <mat-card-content>
             <br>
             <div class="row">
-            <div class="col-sm-6">
-               
-               <img src="../../../../../assets/img/ventas.png" alt="Imagen Naranja" class="card-image">
+            <div class="col-sm-5">
+               <img src="../../../../../assets/img/ventasPro.png" alt="Imagen Naranja" class="card-image">
              </div>
-             <div class="col-sm-6">
-              
-               <p style="color: rgb(0, 0, 0); font-size: 50px; font-family:Verdana, Geneva, Tahoma, sans-serif; margin-top: 20%;">{{ totalVentas }}</p>
+             <div class="col-sm-7">
+              <br>
+               <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ totalVentas }}</p>
              </div>
             </div>
          </mat-card-content>
        </mat-card>
-       
- 
-       <!-- Tarjeta 3: Blanco -->
-      <!-- <mat-card class="white-card">
-         <mat-card-header>
-           <mat-card-title>Socios del dia:</mat-card-title>
-         </mat-card-header>
-         <mat-card-content>
-            <br>
-            <div class="row">
-               <div class="col-sm-6">
-                  
-                  <img src="../../../../../assets/img/socios.png" alt="Imagen Blanca" class="card-image">
-                </div>
-                <div class="col-sm-6">
-                  <p style="font-size: large;">Total:</p>
-                 
-                </div>
-               </div>
-         </mat-card-content>
-       </mat-card>-->
 
        <mat-card class="navy-card">
          <mat-card-header>
-           <mat-card-title style="color: white;">Total de roductos vendidos del dia:</mat-card-title>
+           <mat-card-title style="color: rgb(0, 0, 0);">Productos vendidos del dia:</mat-card-title>
          </mat-card-header>
          <mat-card-content>
             <br>
             <div class="row">
-               <div class="col-sm-6">
-                  <img src="../../../../../assets/img/producto.png" alt="Imagen Azul Marino" class="card-image">
+               <div class="col-sm-5">
+                  <img src="../../../../../assets/img/ventas.png" alt="Imagen Azul Marino" class="card-image">
                 </div>
-                <div class="col-sm-6">
-                  <br><br>
-                  <p style="color: white; font-size: 50px; font-family:Verdana, Geneva, Tahoma, sans-serif;">{{ totalProductosVendidos }}</p>
+                <div class="col-sm-7">
+                  <br>
+                  <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif;">{{ totalProductosVendidos }}</p>
                 </div>
                </div>
          </mat-card-content>
        </mat-card>
+
+       <mat-card class="white-card">
+        <mat-card-header>
+          <mat-card-title>Clientes activos:</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+           <br>
+           <div class="row">
+              <div class="col-sm-5">
+                 <img src="../../../../../assets/img/cliente.png" alt="Imagen Blanca" class="card-image">
+               </div>
+               <div class="col-sm-7">
+                 <br>
+                 <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif;">{{ clientesActivos }}</p>
+               </div>
+               
+              </div>
+        </mat-card-content>
+      </mat-card>
      </div>
    </mat-card-content>
- </mat-card>
+</mat-card>
  
- <!-- dashboard.component.html -->
-<mat-card>
+<mat-card *ngIf="isAdmin() || isRecep()">
+  <mat-card-content>
+    <div class="dashboard-cardss">
+      <mat-card class="ancho-1">
+        <mat-card-header>
+          <h3 class="icon-title">
+            <mat-icon class="icon">grid_view</mat-icon>
+            PRODUCTOS MÁS VENDIDOS
+          </h3>
+        </mat-card-header>
+        <mat-card-content>
+          <p style="border-top: 2px solid orange;"></p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Total Ventas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let producto of datosProductosVendidos">
+                <td>{{ producto.nombreProducto }}</td>
+                <td>{{ producto.totalVentas }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-card-content>
+      </mat-card>
+
+
+      <mat-card class="ancho-2">
+        <mat-card-header>
+          <h3 class="icon-title">
+            <mat-icon class="icon">grid_view</mat-icon>
+            ÚLTIMAS VENTAS
+          </h3>
+        </mat-card-header>
+        <mat-card-content>
+          <p style="border-top: 2px solid orange;"></p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Fecha</th>
+                <th>Venta total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let venta of datosRecientesVentas">
+                <td>{{ venta.nombreProducto }}</td>
+                <td>{{ venta.fechaVenta }}</td>
+                <td>{{ venta.precioUnitario * venta.cantidadElegida}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+ <!-- dashboard.component.html 
+<mat-card *ngIf="isAdmin()">
    <mat-card-content>
      <div class="dashboard-cardss">
-       <!-- Tarjeta 1: Mitad del ancho -->
+ 
        <mat-card class="half-width-card" routerLink="../misMembresias">
          <mat-card-header>
            <mat-card-title>Administra tus membresias aquí</mat-card-title>
@@ -81,7 +138,7 @@
          </mat-card-content>
        </mat-card>
  
-       <!-- Tarjeta 2: Un cuarto del ancho -->
+    
        <mat-card class="quarter-width-card" routerLink="../productos">
          <mat-card-header>
            <mat-card-title>Administra tus productos aquí</mat-card-title>
@@ -91,7 +148,7 @@
          </mat-card-content>
        </mat-card>
  
-       <!-- Tarjeta 3: Un cuarto del ancho -->
+
        <mat-card class="quarter-width-card" routerLink="../listaMembresias">
          <mat-card-header>
            <mat-card-title>Administra tus socios aquí</mat-card-title>
@@ -104,4 +161,41 @@
      </div>
    </mat-card-content>
  </mat-card>
+-->
+
+
+    
+      <div class="row">
+        <!-- Primera tarjeta -->
+        <div class="col-sm-9">
+          <mat-card *ngIf="isSupadmin()" class="sup-card" routerLink="../listaSucursales" >
+            <mat-card-header>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="row">
+                <div class="col-sm-2">
+                  <img src="../../../../../assets/img/sucursal.png" alt="Imagen Azul Marino" class="card-imagenesU">
+                </div>
+                <div class="col-sm-10">
+                  <P style="font-size: 20px;">BIENVENIDO SUPER ADMINISTRADOR</P>
+                  <P style="font-size: 17px;">Puedes administrar las sucursales desde aquí</P>
+                  <div style="display: flex; justify-content: flex-end; align-items: center;">
+                    <button mat-button style="background-color: #fd9727; border: 0px; width: 30%;height: 35px;">
+                     CONSULTA AQUÍ
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card> 
+        </div>
+      
+        <!-- Segunda tarjeta -->
+        <div class="col-sm3">
+          <mat-card *ngIf="isSupadmin()" class="sup-card" routerLink="../otraRuta">
+            <!-- ... (Contenido de la segunda tarjeta) ... -->
+          </mat-card>
+        </div>
+      </div>
+      
 </div>

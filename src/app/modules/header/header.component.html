@@ -1,7 +1,7 @@
 <div class="main-container">
 <div class="header-container fixed-header">
   <div class="left-buttons">
-    <button mat-icon-button (click)="toggleSidebar()" style="margin-left: 570%;"> 
+    <button mat-icon-button (click)="toggleSidebar()" [style.marginLeft]="isBarraLateralVisible ? '570%' : '0'"> 
       <mat-icon>menu</mat-icon>
     </button>
   </div>
