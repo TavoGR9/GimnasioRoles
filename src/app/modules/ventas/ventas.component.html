@@ -104,9 +104,8 @@
                      {{ prod[column] }}
                   </ng-container>
                   <ng-container *ngIf="column === 'cantidad'">
-                     <mat-form-field class="custom-mat-form-field">
-                        <input matInput [(ngModel)]="prod.cantidad" type="number" min="0" class="custom-input" (keyup.enter)="validarYAgregarProducto(prod)" />
-                     </mat-form-field>
+                  
+                        <input matInput [(ngModel)]="prod.cantidad" type="number" min="0" class="custom-input custom-mat-form-field" (keyup.enter)="validarYAgregarProducto(prod)" />
                   </ng-container>
                   <ng-container *ngIf="column === 'acciones'">
                      <button (click)="validarYAgregarProducto(prod)" style="background-color: #000000; color: #ffffff; border: none; padding: 10px; height: 40px; border-radius: 5px; cursor: pointer; display: flex; align-items: center;">

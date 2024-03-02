@@ -148,6 +148,8 @@ export class planAgregarComponent {
     });
   }
 
+  
+
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }

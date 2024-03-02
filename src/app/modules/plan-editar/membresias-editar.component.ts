@@ -70,23 +70,33 @@ export class planEditarComponent {
       if (data) {
         this.dataToUpdate = data;
       }
+ 
     });
 
     this.planService
       .consultarPlanIdMem(this.auth.idGym.getValue())
       .subscribe((respuesta) => {
+     
         this.servicios = respuesta;
+        
         this.planService
           .consultarPlan(this.dataToUpdate.id)
           .subscribe((respuesta) => {
+    
             if (respuesta) {
               this.serviceToUpdate = respuesta;
+
               const serviciosPlan = this.serviceToUpdate[0].servicios.map(
                 (servicio: any) => servicio.nombreMem
               );
+
+            console.log("serviciosPlan", serviciosPlan);
+
               const serviciosCoincidentes = this.servicios.filter((servicio) =>
                 serviciosPlan.includes(servicio.titulo)
               );
+
+              console.log(serviciosCoincidentes, "serviciosCoincidentes pr");
 
               serviciosCoincidentes.forEach((servicio) => {});
 
@@ -103,12 +113,16 @@ export class planEditarComponent {
                 fechaFin: this.serviceToUpdate[0].fechaFin,
                 membresias: serviciosCoincidentes,
               });
+
+              console.log(serviciosCoincidentes, "serviciosCoincidentes");
             }
           });
       });
   }
 
-  actualizar() {
+  /*actualizar() {
+    console.log(this.formulariodePlan.setValue, "this.formulariodePlan.setValue");
+    console.log(this.formulariodePlan.value, "form");
     if(this.formulariodePlan.valid){
     this.spinner.show();
     this.membresiaService
@@ -128,6 +142,7 @@ export class planEditarComponent {
             const observableEliminar = this.membresiaService.borrarPlanM(
               this.idMem
             );
+
             const observableAgregar =
               this.membresiaService.agregarPlanMem(datosMembresias);
 
@@ -160,7 +175,49 @@ export class planEditarComponent {
         }
       );
     }
+  }*/
+
+
+
+  actualizar() {
+    console.log(this.formulariodePlan.value, "form");
+  
+    if (this.formulariodePlan.valid) {
+      this.spinner.show();
+      console.log("llega?");
+  
+      this.membresiaService
+        .actualizarPlan(this.idMem, this.formulariodePlan.value)
+        .subscribe(
+          (respuesta) => {
+           
+            this.spinner.hide();
+            this.dialog
+              .open(MensajeEmergentesComponent, {
+                data: `Membresía actualizada exitosamente`,
+              })
+              .afterClosed()
+              .subscribe((cerrarDialogo: Boolean) => {
+                if (cerrarDialogo) {
+                  this.dialogo.close(true);
+                } else {
+                  // Hacer algo si es necesario
+                }
+              });
+          },
+          (error) => {
+            console.error("Error al actualizar membresía:", error);
+            this.spinner.hide();
+            // Puedes mostrar un mensaje al usuario o manejar el error de alguna manera
+            // Por ejemplo, puedes usar Toastr para mostrar un mensaje de error.
+           
+          }
+        );
+    }
   }
+  
+  
+  
 
   cerrarDialogo() {
     this.dialogo.close(true);

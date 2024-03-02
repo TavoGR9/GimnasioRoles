@@ -57,7 +57,13 @@ export class LoginComponent implements OnInit {
             this.auth.email.next(resultData.email);
             this.auth.encryptedMail.next(resultData.encryptedMail);
             this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
-            this.router.navigate(['/home']);
+            if(resultData.rolUser= 'supAdmin'){
+              this.router.navigate(['/listaSucursales']);
+
+            }else{
+              this.router.navigate(['/home']);
+            }
+           
             console.log('Tu rol es: ' + resultData.rolUser);
           } else {
             this.toastr.error('Por favor, verifica las credenciales proporcionadas....', 'Error', {
