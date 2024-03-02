@@ -177,7 +177,6 @@ obtenerDatosParaGrafico5() {
   // Asignar fechas formateadas al formulario
   this.form.patchValue({ p_inicial: inicial, p_final: final });
 
-  console.log(this.form.value, "formulario");
 
   // Obtener datos del servicio
   this.auth.chart_sucursales(this.form.value).subscribe({
@@ -201,7 +200,10 @@ obtenerDatosParaGrafico5() {
             chartData: [{ data: [], label: 'Ventas' }],
             
           };
+          
+          
         }
+        
 
         datosGraficosPorGimnasio[dato.nombreGimnasio].chartLabels.push(String(dato.nombreProducto));
         datosGraficosPorGimnasio[dato.nombreGimnasio].chartData[0].data.push(dato.totalVentas);
@@ -243,6 +245,7 @@ interface Graficoss{
   nombreGimnasio: string;
   nombreProducto: number;
   totalVentas: number;
+  
 }
 
 interface DatosGraficosPorGimnasio {

@@ -227,11 +227,12 @@ export class EntradasComponent implements OnInit {
               .afterClosed()
               .subscribe((cerrarDialogo: Boolean) => {
                 if (cerrarDialogo) {
-                  
+                  this.form.reset();
+                  this.tablaDatos = [];
                 } else {
                 }
               });
-            this.limpiarFormulario();
+            
           } else {
             this.toastr.error(respuesta.message, 'Error', {
               positionClass: 'toast-bottom-left',

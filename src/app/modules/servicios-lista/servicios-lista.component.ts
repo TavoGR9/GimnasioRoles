@@ -125,16 +125,13 @@ export class ServiciosListaComponent {
       data: { name: "¿para quien es esta membresia?" },
       disableClose: true,
     });
-
     dialogRef.afterClosed().subscribe((result) => {
-      this.planService.confirmButton.subscribe((res) => {
-        if (res) {
-          this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
-            this.services = res;
-            this.dataSource = new MatTableDataSource(this.services);
-            this.dataSource.paginator = this.paginator;
-          });
-        }
+      
+      this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
+        console.log(result, "result");
+        this.services = res;
+        this.dataSource = new MatTableDataSource(this.services);
+        this.dataSource.paginator = this.paginator;
       });
       this.planService.confirmButton.next(false);
       this.planService.confirmButton.subscribe((res) => {
