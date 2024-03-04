@@ -158,7 +158,7 @@ export class planComponent implements OnInit {
             console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
           }
         } else if (respuesta.warning) {
-          console.log('Advertencia:', respuesta.warning);
+     
         } else {
           console.error('Error en la respuesta del servicio:', respuesta.error);
         }
@@ -200,7 +200,7 @@ export class planComponent implements OnInit {
             console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
           }
         } else if (respuesta.warning) {
-          console.log('Advertencia:', respuesta.warning);
+          
         } else {
           console.error('Error en la respuesta del servicio:', respuesta.error);
         }

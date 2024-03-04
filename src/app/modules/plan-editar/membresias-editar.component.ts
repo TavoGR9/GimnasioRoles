@@ -90,13 +90,10 @@ export class planEditarComponent {
                 (servicio: any) => servicio.nombreMem
               );
 
-            console.log("serviciosPlan", serviciosPlan);
 
               const serviciosCoincidentes = this.servicios.filter((servicio) =>
                 serviciosPlan.includes(servicio.titulo)
               );
-
-              console.log(serviciosCoincidentes, "serviciosCoincidentes pr");
 
               serviciosCoincidentes.forEach((servicio) => {});
 
@@ -114,7 +111,6 @@ export class planEditarComponent {
                 membresias: serviciosCoincidentes,
               });
 
-              console.log(serviciosCoincidentes, "serviciosCoincidentes");
             }
           });
       });
@@ -179,18 +175,10 @@ export class planEditarComponent {
 
 
 
-  actualizar() {
-    console.log(this.formulariodePlan.value, "form");
-  
+  actualizar() {  
     if (this.formulariodePlan.valid) {
       this.spinner.show();
-      console.log("llega?");
-  
-      this.membresiaService
-        .actualizarPlan(this.idMem, this.formulariodePlan.value)
-        .subscribe(
-          (respuesta) => {
-           
+      this.membresiaService.actualizarPlan(this.idMem, this.formulariodePlan.value).subscribe((respuesta) => {
             this.spinner.hide();
             this.dialog
               .open(MensajeEmergentesComponent, {

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductoService } from 'src/app/service/producto.service';
+import { ProductoService } from '../../service/producto.service';
 import { CategoriaService } from 'src/app/service/categoria.service';
+import { CrearProductoLineaComponent } from '../crearProductoLinea/crearProducto.component';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-lista-producto',
@@ -11,9 +13,16 @@ export class ListaProductoLineaComponent implements OnInit {
   public productos: any;
   public page: number = 0;
   public search: string = '';
-  constructor(private productoService: ProductoService, private categoriaService: CategoriaService){}
+  constructor(private productoService: ProductoService, private categoriaService: CategoriaService,
+    public dialog: MatDialog){}
 
   ngOnInit():void{
+    this.productoService.obternerProductoenLinea().subscribe({
+      next: (resultData) => {
+        console.log('productos',resultData);
+        this.productos = resultData;
+      }
+    })
   }
   
   getCategoria(idCategoria: number) {
@@ -45,4 +54,15 @@ getTamano(producto: any): string {
     this.search = search.toLowerCase();
   }
 
+
+  AbrirDialogo(): void {
+    const dialogRef = this.dialog.open(CrearProductoLineaComponent, {
+      width: '60%',
+      height: '90%',
+      disableClose: true,
+    });
+    dialogRef.afterClosed().subscribe(() => {
+     
+    });
+  }
 }
