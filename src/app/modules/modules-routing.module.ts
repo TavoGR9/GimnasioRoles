@@ -50,7 +50,7 @@ const routes: Routes = [
       {
         path: '',
         canActivate: [RoleGuard], 
-        data: { expectedRole: 'SuperAdmin' },
+        data: { expectedRole: 'SuperAdmin'},
         children: [
           { path: 'listaSucursales', component:SucursalListaComponent},
           { path: 'alta-sucursal', component:SucursalAltaComponent},
@@ -58,14 +58,13 @@ const routes: Routes = [
           { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
           { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
           { path: 'estadisticas', component: ReportsComponent},
-          { path: 'archivos', component: ArchivosComponent}
-          
+          { path: 'archivos', component: ArchivosComponent},
         ]
       },
       {
         path: '',
         canActivate: [RoleGuard], 
-        data: { expectedRole: 'Administrador' },
+        data: { expectedRole: 'Administrador'},
         children: [
           { path: 'misMembresias', component: MembresiasComponent },
           { path: 'agregarMembresias', component: MembresiasAgregarComponent },
@@ -87,7 +86,6 @@ const routes: Routes = [
           { path: 'misServicios', component: ServiciosListaComponent},
           { path: 'alta-colaborador', component:AltaColaboradoresComponent},
           { path: 'editar-colaborador', component:EditarColaboradorComponent}, 
-          
           { path: 'agregar-plan', component:planAgregarComponent}, 
           { path: 'plan', component:planComponent}, 
           { path: 'editar-plan', component:planEditarComponent},
@@ -96,7 +94,7 @@ const routes: Routes = [
       {
         path: '',
         canActivate: [RoleGuard], 
-        data: { expectedRole: 'Recepcionista' },
+        data: { expectedRole: 'Recepcionista'},
         children: [
           { path: 'listaMembresias', component: ListaMembresiasPagoEfecComponent},
           { path: 'inventarios', component: InventariosComponent},

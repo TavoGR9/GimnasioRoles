@@ -8,7 +8,7 @@ import {
   FormGroup,
 } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
-import { ClienteService } from "src/app/service/cliente.service";
+import { ClienteService } from "../../service/cliente.service";
 import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { ErrorStateMatcher } from "@angular/material/core";

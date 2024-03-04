@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit,Inject } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -12,7 +12,8 @@ import { DatePipe } from '@angular/common';
 import { MessageService } from 'primeng/api'; /**siempre debes importarlo */
 import { ToastrService } from 'ngx-toastr';
 import { CategoriaService } from 'src/app/service/categoria.service';
-
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { UploadService } from '../../service/UploadService.service';
 import { HttpClient } from '@angular/common/http';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -45,11 +46,13 @@ export class CrearProductoLineaComponent implements OnInit {
   uploadedFiles: File[] = [];
 
   constructor(
+    public dialogRef: MatDialogRef<CrearProductoLineaComponent>,
+    @Inject(MAT_DIALOG_DATA) public mensaje: string,
     private toastr: ToastrService,
     private datePipe: DatePipe,
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
-
+    private uploadService: UploadService,
     private httpClient: HttpClient
   ) {
     this.fechaCreacion = this.obtenerFechaActual();
@@ -147,9 +150,7 @@ export class CrearProductoLineaComponent implements OnInit {
    * @param event
    */
   infoCategoria(event: number) {
-    console.log('Opción seleccionada:', event);
-   // this.idCategoria = event;
-   // console.log('valor idCategoria:', this.idCategoria);
+    this.idCategoria = event;
   }
 
   onFileSelect(event: any) {
@@ -191,64 +192,58 @@ export class CrearProductoLineaComponent implements OnInit {
     //     },
     //   });
 
-   /* if (this.form.valid) {
-      console.log('Formulario:', this.form.value);
-      this.uploadService
-        .creaProducto(this.form.value)
-        .subscribe({
-          next: (respuesta) => {
-            console.log(respuesta);
-
-            if (respuesta.success) {
-              this.toastr.success(respuesta.message, 'Exito', {
-                positionClass: 'toast-bottom-left',
-              });
-            } else {
-              this.toastr.error(respuesta.message, 'Error', {
-                positionClass: 'toast-bottom-left',
-              });
-            }
-          },
-          error: (paramError) => {
-            console.error(paramError); // Muestra el error del api en la consola para diagnóstico
-            //accedemos al atributo error y al key
-            this.toastr.error(paramError.error.message, 'Error', {
+    if (this.form.valid) {
+    
+      this.uploadService.creaProducto(this.form.value).subscribe({
+        next: (respuesta) => {
+    
+          if (respuesta.success) {
+            this.toastr.success(respuesta.message, 'Éxito', {
               positionClass: 'toast-bottom-left',
             });
-          },
-        });
-
-        this.uploadService
-        .subirImagenes(this.uploadedFiles)
-        .subscribe({
-          next: (respuesta) => {
-            console.log(respuesta);
-
-            if (respuesta.success) {
-              this.toastr.success(respuesta.message, 'Exito', {
-                positionClass: 'toast-bottom-left',
-              });
-            } else {
-              this.toastr.error(respuesta.message, 'Error', {
-                positionClass: 'toast-bottom-left',
-              });
-            }
-          },
-          error: (paramError) => {
-            console.error(paramError); // Muestra el error del api en la consola para diagnóstico
-            //accedemos al atributo error y al key
-            this.toastr.error(paramError.error.message, 'Error', {
+    
+            // Luego de crear el producto, sube las imágenes
+            this.uploadService.subirImagenes(respuesta.idProducto,this.uploadedFiles).subscribe({
+              next: (respuestaImagenes) => {
+    
+                if (respuestaImagenes.success) {
+                  this.toastr.success(respuestaImagenes.message, 'Éxito', {
+                    positionClass: 'toast-bottom-left',
+                  });
+                } else {
+                  this.toastr.error(respuestaImagenes.message, 'Error', {
+                    positionClass: 'toast-bottom-left',
+                  });
+                }
+              },
+              error: (errorImagenes) => {
+                this.toastr.error(errorImagenes.error.message, 'Error', {
+                  positionClass: 'toast-bottom-left',
+                });
+              },
+            });
+          } else {
+            this.toastr.error(respuesta.message, 'Error', {
               positionClass: 'toast-bottom-left',
             });
-          },
-        });
- 
-
-
+          }
+        },
+        error: (error) => {
+          this.toastr.error(error.error.message, 'Error', {
+            positionClass: 'toast-bottom-left',
+          });
+        },
+      });
     } else {
       this.toastr.error('Completa el formulario', 'Error', {
         positionClass: 'toast-bottom-left',
       });
-    }*/
+    }
+    
+  }
+
+  cancelar(){
+    this.dialogRef.close(true);
+
   }
 }

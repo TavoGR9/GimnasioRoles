@@ -140,4 +140,10 @@ testSpringBoot(data: any):Observable<any> {
   return this.clienteHttp.post<msgResult>(this.APIv2 + 'fingerAuth.php', data, { headers: this.httpHeaders});
 }
 
+
+hasAnyRole(expectedRoles: string[]): boolean {
+  const userRole = this.role.getValue();
+  return expectedRoles.includes(userRole);
+}
+
 }

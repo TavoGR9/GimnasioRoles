@@ -37,7 +37,7 @@ export class SucursalListaComponent implements OnInit {
     private auth: AuthService,
   ){}
 
-  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'horario', 'ubicacion', 'activar', 'documentacion'];
+  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'ubicacion', 'activar', 'horario', 'documentacion'];
 
   /*onToggle(event: Event, idGimnasio: any) {
 
