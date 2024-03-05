@@ -115,6 +115,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   IDvalid: number = 0;
   currentUser: string = '';
   idGym: number = 0;
+  private fechaInicioAnterior: Date | null = null;
+  private fechaFinAnterior: Date | null = null;
 
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorPagoOnline', { static: true }) paginator!: MatPaginator;
@@ -141,7 +143,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
     //obtener id del cliente
     this.clienteService.data$.subscribe((data: any) => {
-      console.log('Datos recibidos:', data);
       if (data && data.idCliente) {
         this.obtenerCliente(data.idCliente); // Obtener cliente usando el ID recibido
         this.id = data.idCliente;
@@ -153,24 +154,11 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   ngOnInit(): void {
     this.pagoService.obternerDataMem().subscribe((respuesta) => {
-      console.log(respuesta);
       this.clientePago = respuesta;
       this.dataSource = new MatTableDataSource(this.clientePago);
       this.dataSource.paginator = this.paginator;
     });
-
-    /*this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                    this.formatDate(this.fechaFin,
-                                    this.auth.idGym.getValue()
-                                    ).subscribe((response) => {
-      console.log(response);
-      this.clienteActivo = response;
-      this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-      this.dataSourceActivos.paginator = this.paginatorActivos;
-    });*/
-
     this.pagoService.clientesMemReenovar().subscribe((data) => {
-      console.log(data);
       this.clienteReenovacion = data;
       this.dataSourceReenovacion = new MatTableDataSource(this.clienteReenovacion);
       this.dataSourceReenovacion.paginator = this.paginatorReenovacion;
@@ -210,13 +198,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   onFechaInicioChange(event: any): void {
-    // Manejar el cambio de la fecha de inicio
-    console.log('Fecha de inicio cambiada:', this.formatDate(event));
   }
 
   onFechaFinChange(event: any): void {
-    // Manejar el cambio de la fecha de fin
-    console.log('Fecha de fin cambiada:', this.formatDate(event));
   }
 
   //@Input() notificacionMostrada: boolean = false;
@@ -227,11 +211,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   private updateDateLogs(): void {
     this.fechaInicioAnterior = this.fechaInicio;
-    this.fechaFinAnterior = this.fechaFin;
-  
-    //console.log('Fecha de inicio seleccionada:', this.formatDate(this.fechaInicio));
-    //console.log('Fecha de fin seleccionada:', this.formatDate(this.fechaFin));
-  
+    this.fechaFinAnterior = this.fechaFin;  
     this.pagoService.obtenerActivos(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
@@ -240,20 +220,14 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     ).subscribe(
       response => {
         if (response.msg == 'No hay resultados') {
-          // Si no hay datos, resetea la tabla
           this.clienteActivo = [];
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
-          //console.log('No hay clientes activos en este rango de fechas.');
-          //this.toastr.info('No hay clientes activos en este rango de fechas.', 'Info!!!');
-          //this.notificacionMostrada = true; // Marca la notificación como mostrada
-
         } else if(response){
           // Si hay datos, actualiza la tabla
           this.clienteActivo = response;
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
-          //this.toastr.success('Datos encontrados.', 'Success!!!');
         }
       }, error => {
         console.error('Error en la solicitud:', error);
@@ -261,19 +235,13 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         this.clienteActivo = [];
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
         this.dataSourceActivos.paginator = this.paginatorActivos;
-        //console.log('Ocurrio un error.');
         this.toastr.error('Ocurrio un error.', 'Error!!!');
       },
       () => {
-        console.log('La solicitud se completó.');
       }
     );
   }
 
-  private fechaInicioAnterior: Date | null = null;
-  private fechaFinAnterior: Date | null = null;
-
-  //Filtrar la informacion que escribe el usuario
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -292,16 +260,10 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   pagarMismaMembresia(prod: any): void{
     if (prod.cash >= prod.Precio) {
       prod.PrecioCalcular = prod.cash - prod.Precio;
-      console.log(prod.PrecioCalcular)
-      console.log(prod.ID)
-      console.log(prod.idDetMem)
-
       this.pagoService
         .idPagoSucursal(prod.ID, prod.idDetMem)
         //.pagoMemOpcion1(prod.ID)
         .subscribe((dataResponse: any) => {
-          console.log(dataResponse.msg);
-
           // Proceso de actualizacion de datos
           const index = this.dataSourceActivos.data.indexOf(prod);
           if (index !== -1) {
@@ -314,7 +276,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                                           this.formatDate(this.fechaFin),
                                           this.auth.idGym.getValue()
                                           ).subscribe((respuesta) => {
-            console.log(respuesta);
             this.clienteActivo = respuesta;
             // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
             this.dataSourceActivos.data = this.clienteActivo.slice();
@@ -383,14 +344,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   realizarPago(updMem: any): void {
     if (updMem.moneyRecibido >= updMem.Precio) {
       updMem.PrecioCalcular = updMem.moneyRecibido - updMem.Precio;
-      console.log(updMem.PrecioCalcular);
-      console.log(updMem.ID);
-
       this.pagoService
         .pagoMemOpcion1(updMem.ID)
         .subscribe((dataResponse: any) => {
-          console.log(dataResponse.msg);
-
           // Eliminar la fila de la tabla uno
           const index = this.dataSourceReenovacion.data.indexOf(updMem);
           if (index !== -1) {
@@ -403,7 +359,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                                           this.formatDate(this.fechaFin),
                                           this.auth.idGym.getValue()
                                           ).subscribe((respuesta) => {
-            console.log(respuesta);
             this.clienteActivo = respuesta;
             // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
             this.dataSourceActivos.data = this.clienteActivo.slice();
@@ -470,7 +425,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                                           this.formatDate(this.fechaFin),
                                           this.auth.idGym.getValue()
                                           ).subscribe((respuesta) => {
-            console.log(respuesta);
             this.clienteActivo = respuesta;
             // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
             this.dataSourceActivos.data = this.clienteActivo.slice();
@@ -495,13 +449,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   realizarCalculo(prod: any): void {
     if (prod.dineroRecibido >= prod.Precio) {
       prod.PrecioCalculado = prod.dineroRecibido - prod.Precio;
-      console.log(prod.PrecioCalculado);
-
       this.pagoService
         .idPagoSucursal(prod.ID, prod.idDetMem)
         .subscribe((response: any) => {
-          console.log(response.msg);
-
           // Eliminar la fila de la tabla uno
           const index = this.dataSource.data.indexOf(prod);
           if (index !== -1) {
@@ -514,7 +464,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                                           this.formatDate(this.fechaFin),
                                           this.auth.idGym.getValue()
                                           ).subscribe((response) => {
-            console.log(response);
             this.clienteActivo = response;
             // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
             this.dataSourceActivos.data = this.clienteActivo.slice();
@@ -562,43 +511,30 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.ListarClientesService.consultarCliente(idCliente).subscribe(
       (data: any[]) => {
         if (data && data.length > 0) {
-          console.log('Datos del cliente:', data[0]);
-          this.cliente = data[0]; // Asigna el primer elemento del array como cliente
+          this.cliente = data[0]; 
         }
       }
     );
   }
 
   RegistrarHuella(idCliente: number): void {
-    //console.log(idCliente);
     this.huellasService
       .registroHuella(idCliente)
       .subscribe((dataResponse: any) => {
-        console.log(dataResponse);
         if (dataResponse) {
-          console.log(
-            'Mi ID es: ',
-            dataResponse.ID_Cliente,
-            'Y mi nombre es: ',
-            dataResponse.nombre
-          );
         } else {
-          console.log('No existe el cliente');
         }
       });
   }
 
   mandaInstruccionTorniquete() {
-    console.log(this.form.value);
     this.huellasService.insertarInstruccion(this.form.value).subscribe({
       next: (respuesta) => {
-        console.log(respuesta);
         this.toastr.success(respuesta.message, 'Exito', {
           positionClass: 'toast-bottom-left',
         });
       },
       error: (paramError) => {
-        console.log(paramError);
           this.toastr.error(paramError.message, 'Error', {
             positionClass: 'toast-bottom-left',
           });

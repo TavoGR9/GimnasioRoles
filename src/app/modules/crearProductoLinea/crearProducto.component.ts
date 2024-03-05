@@ -132,7 +132,6 @@ export class CrearProductoLineaComponent implements OnInit {
     this.categoriaService.obternerCategoria().subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
-        console.log('lista de categorias:', this.listaCategorias);
       },
       error: (error) => {
         console.error(error);
@@ -171,41 +170,16 @@ export class CrearProductoLineaComponent implements OnInit {
     this.form.patchValue({ files: updatedFiles });
   }
   registrar(): any {
-    // const formData = new FormData();
-
-    // for (const file of this.uploadedFiles) {
-    //   formData.append('files[]', file, file.name);
-    // }
-
-    // this.httpClient
-    //   .post(
-    //     'http://localhost/uploadFiles/creaProductoV2.php?creaProducto',
-    //     formData
-    //   )
-    //   .subscribe({
-    //     next: (response) => {
-    //       console.log('Respuesta del servidor:', response);
-    //       // Puedes manejar la respuesta del servidor según tus necesidades
-    //     },
-    //     error: (error) => {
-    //       console.error('Error al enviar archivos al servidor:', error);
-    //     },
-    //   });
-
     if (this.form.valid) {
-    
       this.uploadService.creaProducto(this.form.value).subscribe({
         next: (respuesta) => {
-    
           if (respuesta.success) {
             this.toastr.success(respuesta.message, 'Éxito', {
               positionClass: 'toast-bottom-left',
             });
-    
             // Luego de crear el producto, sube las imágenes
             this.uploadService.subirImagenes(respuesta.idProducto,this.uploadedFiles).subscribe({
-              next: (respuestaImagenes) => {
-    
+              next: (respuestaImagenes) => {    
                 if (respuestaImagenes.success) {
                   this.toastr.success(respuestaImagenes.message, 'Éxito', {
                     positionClass: 'toast-bottom-left',
@@ -244,6 +218,5 @@ export class CrearProductoLineaComponent implements OnInit {
 
   cancelar(){
     this.dialogRef.close(true);
-
   }
 }

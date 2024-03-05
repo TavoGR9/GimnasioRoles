@@ -6,8 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AnalyticsService {
-    private apiUrl = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/estadisticasGym.php';  // 
-
+  private apiUrl = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/estadisticasGym.php';  // 
 
   constructor(private http: HttpClient) {}
 

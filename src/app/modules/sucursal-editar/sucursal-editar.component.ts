@@ -65,7 +65,6 @@ export class SucursalEditarComponent implements OnInit {
 
   ngOnInit(): void {
     this.franquiciaService.obternerFran().subscribe((respuesta) => {
-      console.log(respuesta);
       if (Array.isArray(respuesta)) {
         this.franquicia = respuesta.map((dato) => ({
           value: dato.idFranquicia, // Valor que se enviará al seleccionar
@@ -101,7 +100,6 @@ export class SucursalEditarComponent implements OnInit {
   }
 
   actualizar() {
-    console.log(this.formularioSucursales.value);
     this.gimnasioService.actualizarPlan(this.idGimnasio, this.formularioSucursales.value).subscribe(() => {
       this.dialog.open(MensajeEmergentesComponent, {
         data: 'Membresía actualizada exitosamente',

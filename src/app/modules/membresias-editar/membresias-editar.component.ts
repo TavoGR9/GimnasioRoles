@@ -23,10 +23,8 @@ export class MembresiasEditarComponent {
     public dialog: MatDialog){
 
     this.elID=this.activeRoute.snapshot.paramMap.get('id');
-    console.log(this.elID);
     this.membresiaService.consultarPlan(this.elID).subscribe(
       respuesta=>{
-        console.log(respuesta);
         this.formularioPlan.setValue({
           titulo:respuesta [0]['titulo'],
           detalles:respuesta [0]['detalles'],

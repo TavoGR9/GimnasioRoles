@@ -168,7 +168,6 @@ export class VentasComponent implements OnInit {
     /* --------------------------------------------------------------*/
     //obtener id del cliente
     this.clienteService.data$.subscribe((data) => {
-      console.log("Datos recibidos:", data);
       if (data && data.idCliente) {
         this.obtenerCliente(data.idCliente); // Obtener cliente usando el ID recibido
       }
@@ -286,7 +285,6 @@ export class VentasComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-    console.log("this.dataSource.filter", this.dataSource.filter);
   }
 
   mostrarInput() {
@@ -303,7 +301,6 @@ export class VentasComponent implements OnInit {
   }
 
   mostrarOcultarBoton(fechaCierre: string) {
-    console.log("fechaCierre", fechaCierre);
     if (fechaCierre === "0000-00-00 00:00:00") {
       this.botonProductos = true;
       this.botonDeshabilitado = false;
@@ -324,17 +321,12 @@ export class VentasComponent implements OnInit {
 
   mostrarCaja() {
     this.formularioCaja.get("fechaApertura")?.enable();
-    console.log("this.formularioCaja.value", this.formularioCaja.value);
     if (this.formularioCaja.valid) {
-      console.log("ID insertado caja:", this.formularioCaja.value);
       this.cajaService
         .agregarCaja(this.formularioCaja.value)
         .subscribe((respuesta) => {
-          console.log("pasa");
           if (respuesta.success === 1) {
             this.lastInsertedId = respuesta.lastInsertedId;
-
-            console.log("ID insertado caja:", this.lastInsertedId);
             this.mostrarProductos = true;
 
             const userId = this.auth.userId.getValue(); // Aquí debes obtener el ID del usuario actual
@@ -343,18 +335,15 @@ export class VentasComponent implements OnInit {
               this.lastInsertedId.toString()
             );
           } else {
-            console.log("Error al insertar la caja");
           }
         });
     } else {
-      console.log("Formulario no válido");
     }
     this.botonDeshabilitado = false;
     // Guardamos el registro del usuario en el local storage (en formato cadena)
   }
 
   enviarDatosYDetallesVenta() {
-    console.log("total", this.totalAPagar <= this.dineroRecibido);
     if (this.totalAPagar <= this.dineroRecibido) {
       const userId = this.auth.userId.getValue(); //ID del usuario actual
       const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
@@ -387,10 +376,8 @@ export class VentasComponent implements OnInit {
             importe: producto.cantidad * producto.precio,
           };
         });
-        console.log("Detalles de venta", detallesVenta);
         this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
           (response) => {
-            console.log("Detalles de ventas guardados correctamente");
           }
         );
         this.dialog.open(MensajeEmergentesComponent, {
@@ -440,7 +427,6 @@ export class VentasComponent implements OnInit {
           const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
           const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
           this.cajaService.actualizarCaja(lastInsertedId, this.formularioCaja.value).subscribe((respuesta) => {
-              console.log("Caja actualizada");
               this.mostrarInputFlag = true;
               this.cerrarCaja = false;
               this.botonProductos = false;
@@ -459,7 +445,6 @@ export class VentasComponent implements OnInit {
   }
 
   imprimirResumen() {
-    console.log("total", this.totalAPagar <= this.dineroRecibido);
     if (this.totalAPagar <= this.dineroRecibido) {
       const userId = this.auth.userId.getValue(); //ID del usuario actual
       const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
@@ -478,8 +463,6 @@ export class VentasComponent implements OnInit {
         fechaVenta: fechaVenta,
         total: totalAPagar,
       };
-
-      console.log(datosVentas, "datosVentas");
       this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
         const lastInsertedId3 = response.lastInsertedId3;
         // Enviar detalles de ventas
@@ -494,11 +477,8 @@ export class VentasComponent implements OnInit {
             importe: producto.cantidad * producto.precio,
           };
         });
-        console.log("Detalles de venta", detallesVenta);
         this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
           (response) => {
-            console.log("response",response);
-            console.log("Detalles de ventas guardados correctamente");
           }
         );
         this.dialog.open(MensajeEmergentesComponent, {
@@ -908,8 +888,6 @@ export class VentasComponent implements OnInit {
     this.InventarioService.obtenerProductoPorId(id, idGimnasio).subscribe({
       next: (data) => {
         this.producto = data; // Almacena el producto obtenido en la variable 'producto'
-        console.log("Producto obtenido:", this.producto);
-        console.log("aca", data[0].cantidadDisponible);
         if (data[0].cantidadDisponible < cantidadSolicitada) {
           console.error(
             "No hay suficiente stock disponible para esta cantidad."
@@ -956,7 +934,6 @@ export class VentasComponent implements OnInit {
   }
 
   validarYAgregarProducto(producto: Producto) {
-    console.log(producto, "producto");
    this.InventarioService.obtenerProductoPorId(producto.id, this.auth.idGym.getValue()).subscribe(
     //this.InventarioService.obtenerProductoPorId(producto.id, 1).subscribe(
       (data) => {
@@ -974,11 +951,8 @@ export class VentasComponent implements OnInit {
           this.toastr.error("No hay suficiente stock disponible para esta cantidad");
           return;
         }
-        console.log("cantidadDisponible",cantidadDisponible);
   
         if (cantidadDisponible < 5) {
-
-          console.log("entra aca");
           this.toastr.warning(`Quedan solo ${cantidadDisponible} productos disponibles`);
         }
         

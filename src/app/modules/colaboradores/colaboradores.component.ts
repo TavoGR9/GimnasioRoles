@@ -20,12 +20,12 @@ export class ColaboradoresComponent {
   currentUser: string = '';
   idGym: number = 0;
   dataSource: any;
+  colaboradores: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   
   constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService,){}
 
   ngOnInit():void{
-
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -50,17 +50,13 @@ export class ColaboradoresComponent {
     if (this.isAdmin()){
       this.http.listaRecepcionistas(this.idGym).subscribe({
         next: (dataResponse) => {
-          console.log("debe entrar aqui");
           this.empleados = dataResponse;
           this.dataSource = new MatTableDataSource(this.empleados);
         this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
         }
       })
     }
-
   }
-
-  colaboradores: any;
   
   cargarCategorias() {
     this.http.listaRecepcionistas(this.idGym).subscribe({
@@ -127,7 +123,6 @@ export class ColaboradoresComponent {
     dialogConfig.width = '70%';
     dialogConfig.height = '90%';
     dialogConfig.disableClose = true;
-  
     this.dialog.open(AltaColaboradoresComponent, dialogConfig)
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
@@ -160,7 +155,6 @@ export class ColaboradoresComponent {
           // Hacer algo cuando se cancela el diálogo
         }
       });
-     
   }
 
 }

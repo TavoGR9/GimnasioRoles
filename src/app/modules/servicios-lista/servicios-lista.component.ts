@@ -126,9 +126,7 @@ export class ServiciosListaComponent {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe((result) => {
-      
       this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
-        console.log(result, "result");
         this.services = res;
         this.dataSource = new MatTableDataSource(this.services);
         this.dataSource.paginator = this.paginator;

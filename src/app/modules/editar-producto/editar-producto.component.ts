@@ -58,7 +58,6 @@ export class EditarProductoComponent implements OnInit{
     //llamar al servicio datos empleado - pasando el parametro capturado por url
     this.productoService.consultarProductosJ(this.idProducto).subscribe(
       respuesta=>{
-        console.log("respuesta", respuesta[0].Categoria_idCategoria);
         this.form.setValue({
           nombre:respuesta [0]['nombre'],
           descripcion:respuesta [0]['descripcion'],

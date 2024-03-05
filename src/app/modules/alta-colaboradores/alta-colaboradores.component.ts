@@ -9,7 +9,6 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialo
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { NgxSpinnerService } from "ngx-spinner";
 
-
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = formulario && formulario.submitted;
@@ -26,6 +25,8 @@ export class AltaColaboradoresComponent {
   form: FormGroup;
   sucursales: any;
   message: string = '';
+  currentUser: string = '';
+  idGym: number = 0;
 
   constructor (private fb: FormBuilder, 
     public dialog: MatDialog,
@@ -43,9 +44,9 @@ export class AltaColaboradoresComponent {
       //Validators.maxLength(13)])],
       Gimnasio_idGimnasio: ['', Validators.compose([ Validators.required])],
       area: ['', Validators.compose([ Validators.required])],
-      turnoLaboral: ['', Validators.compose([ Validators.required])],
+      turnoLaboral: ['N/A'],
       telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
-      salario: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      salario: [0, Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
       pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])]
     })    
@@ -55,8 +56,10 @@ export class AltaColaboradoresComponent {
   ngOnInit():void{
     if (this.isAdmin()){
       this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
-        next: (resultData) => {
+        next: (resultData: any) => {
           this.sucursales = resultData;
+          const idGimnasio = resultData[0].idGimnasio;
+          this.form.get('Gimnasio_idGimnasio')?.setValue(idGimnasio);
         }
       });
     }
@@ -69,6 +72,20 @@ export class AltaColaboradoresComponent {
     }
   }
 
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
+
   enviarMensajeWhatsApp() {
     // Número de teléfono al que se enviará el mensaje
     const telefono = this.form.value.telefono;
@@ -78,7 +95,6 @@ export class AltaColaboradoresComponent {
     const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
     // Crear la URL para abrir WhatsApp con el mensaje predefinido
     const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-  
     // Abrir WhatsApp en una nueva ventana o pestaña
     window.open(url, '_blank');
   }
@@ -98,7 +114,6 @@ export class AltaColaboradoresComponent {
   registrar():any{
     if (this.form.valid) {
       this.spinner.show();
-
       this.http.agregarEmpleado(this.form.value).subscribe({
         next: (resultData) => {
           //mensaje de error - generado apartir de la existencia previa del rfc en la bd
@@ -128,8 +143,6 @@ export class AltaColaboradoresComponent {
         
                 }
               });
-              
-            
             this.form.markAsPristine(); 
             //  marcar un control de formulario como no tocado, indicando que el usuario no ha interactuado con él.
             this.form.markAsUntouched();

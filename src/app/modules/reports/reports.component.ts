@@ -106,11 +106,8 @@ obtenerDatosParaGrafico1() {
         };
         this.barChartDataArray.push(chartData);
       }
-
-      console.log(this.barChartDataArray, "barChartDataArray");
     },
     error: (error) => {
-      console.log(error);
     },
   });
 }
@@ -122,8 +119,6 @@ obtenerDatosParaGrafico2() {
   // Asignar la respuesta a las propiedades de rango de fecha
   this.form.value.p_inicial = inicial;
   this.form.value.p_final = final;
-
-  console.log(this.form.value, "formulario");
   // Simulando datos, puedes reemplazar esto con tu lógica de obtención de datos
   this.auth.chart_sucursales(this.form.value).subscribe({
     next: (resultData: DatosGraficoss[]) => {
@@ -158,10 +153,6 @@ obtenerDatosParaGrafico2() {
         };
         this.barChartDataArray.push(chartData);
       });
-      
-      
-
-      console.log(this.barChartDataArray, "barChartDataArray");
     },
     error: (error) => {
       console.log(error);
@@ -212,12 +203,8 @@ obtenerDatosParaGrafico5() {
 
       // Asignar la estructura de datos a una propiedad del componente
       this.datosGraficosPorGimnasio = datosGraficosPorGimnasio;
-      
-      // Ahora 'datosGraficosPorGimnasio' tiene la estructura necesaria para mostrar los gráficos
-      console.log(this.datosGraficosPorGimnasio);
     },
     error: (error) => {
-      console.error(error);
       this.toastr.error("Error al obtener datos.", "Error", {
         positionClass: "toast-bottom-left",
       });

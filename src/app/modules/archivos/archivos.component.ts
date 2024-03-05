@@ -9,8 +9,6 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { GimnasioService } from '../../service/gimnasio.service';
 import { OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-
 @Component({
   selector: 'app-archivos',
   templateUrl: './archivos.component.html',
@@ -23,6 +21,7 @@ export class ArchivosComponent implements OnInit{
   idGimnasio : any;
   nombreGym : any;
   mostrarBoton: boolean = false;
+  archivos: any[] = [];
 
   constructor(
     public dialogo: MatDialogRef<ArchivosComponent>,
@@ -46,8 +45,6 @@ export class ArchivosComponent implements OnInit{
     });
    }
 
-   archivos: any[] = [];
-
    ngOnInit(): void {
     this.gimnasio.consultarArchivos(this.idGimnasio).subscribe(
       (archivos) => {
@@ -60,34 +57,16 @@ export class ArchivosComponent implements OnInit{
   }
   
   openURL(url: string): void {
-    console.log(url, "url");
-    
-    // Agregar el protocolo si no está presente
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'http://' + url;
     }
-  
     window.open(url, '_blank', 'noopener,noreferrer');
   }
   
-  
- // En tu componente
-descargarArchivo(url: string, nombreArchivo: string): void {
-  // Crear un enlace temporal
+  descargarArchivo(url: string, nombreArchivo: string): void {
   const enlaceTemporal = document.createElement('a');
   enlaceTemporal.href = url;
-  console.log(url, "url");
-  //enlaceTemporal.target = '_blank'; // Abre en una nueva pestaña
-  //enlaceTemporal.download = nombreArchivo; // Forzar descarga con el nombre del archivo
-  //document.body.appendChild(enlaceTemporal);
-
-  // Simular un clic en el enlace para iniciar la descarga
- // enlaceTemporal.click();
-
-  // Eliminar el enlace temporal después de la descarga
-  //document.body.removeChild(enlaceTemporal);
 }
-
 
    seleccionarArchivo(event: any) {
     const archivos: FileList = event.target.files;

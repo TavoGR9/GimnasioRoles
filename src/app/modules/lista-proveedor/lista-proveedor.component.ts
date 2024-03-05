@@ -15,7 +15,6 @@ export class ListaProveedorComponent {
   ngOnInit():void{
     this.proveedorService.obternerProveedor().subscribe({
       next: (resultData) => {
-        console.log(resultData);
         this.proveedores = resultData;
       }
     })

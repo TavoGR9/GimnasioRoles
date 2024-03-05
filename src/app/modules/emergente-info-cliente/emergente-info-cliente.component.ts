@@ -72,8 +72,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
   ngOnInit() {
     this.duracion = this.data.duracion + ' ' + 'días';
     this.photo = this.img+this.data.foto;
-    //console.log('idclienteeeee:',this.data.idCliente)
-    console.log("Esto viene del componente padre: "+this.data.peso);
     this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
       //console.log('historial:',respuesta);
       this.membresiaHisto = respuesta;
@@ -151,14 +149,12 @@ export class EmergenteInfoClienteComponent implements OnInit{
   // Actualizar datos de cliente
   actualizar(): void {
     if(!this.form.valid){
-      console.log("Formulario invalido...");
       return;
     }
 
     this.spinner.show();
     this.pagoService.actualizaDatosCliente(this.form.value).subscribe({
       next: (resultData) => {
-        console.log(resultData);
         this.spinner.hide();
         this.cerrarDialogo();
         this.dialog.open(MensajeEmergenteComponent, {

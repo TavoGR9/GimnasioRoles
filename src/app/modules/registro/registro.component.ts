@@ -103,7 +103,6 @@ export class RegistroComponent implements OnInit {
     return this.trigger.asObservable();
   }
   public handleImage(webcamImage: WebcamImage): void {
-    console.info('received webcam image', webcamImage);
     this.webcamImage = webcamImage;
     // Almacenar la imagen en el objeto Archivo
     this.archivo.base64textString = this.webcamImage.imageAsBase64;
@@ -195,11 +194,9 @@ export class RegistroComponent implements OnInit {
 
   obtenerValorMembresia(respuesta: any[]): Observable<any> {
     return new Observable((observer) => {
-      console.log(respuesta);
       if (Array.isArray(respuesta) && respuesta.length > 0) {
         const primerPlan = respuesta[0]; // Obtener el primer objeto del arreglo
         this.idMemGlobal = primerPlan.idMem; // Asignar el valor a la variable global
-        console.log('ID del primer plan:', this.idMemGlobal);
         this.planes = respuesta.map((dato) => ({
           value: dato.idMem, // Valor que se enviará al seleccionar
           label: dato.titulo, // Etiqueta que se mostrará en el combo
@@ -317,7 +314,6 @@ export class RegistroComponent implements OnInit {
   }
 
   public cameraWasSwitched(deviceId: string): void {
-    console.log('active device: ' + deviceId);
     this.deviceId = deviceId;
   }
 
@@ -360,7 +356,6 @@ export class RegistroComponent implements OnInit {
   }
 
   show_option(option: string) {
-    console.log("hola");
     this.actualizar_imagen = option;
     if (option === 'take') {
       this.showWebcam = true;
@@ -376,14 +371,12 @@ export class RegistroComponent implements OnInit {
         // Validar si el archivo seleccionado es una imagen
         if (!file.type.startsWith('image/')) {
           this.not_format = true;
-          console.log('Tipo de archivo no permitido. Solo se permiten imágenes.');
           this.toastr.error('El archivo seleccionado no es una imagen', 'Error');
           return;
         }
         // Validar si el archivo excede el tamaño máximo permitido de 1mb
         if (file.size > 1024 * 1024) {
           this.not_size = true;
-          console.log('El archivo es demasiado grande. Máximo 1 MB permitido.');
           this.toastr.error('El tamaño de la imagen debe ser menor a 1MB', 'Error');
           return;
         }
@@ -464,7 +457,6 @@ export class RegistroComponent implements OnInit {
                   this.dialogo.close(true);
                   this.add.enviarMail(respuesta.email).subscribe(
                     (response) => {
-                      console.log('Respuesta exitosa:', response);
                     },
                     (error) => {
                       console.error('Error al enviar el correo:', error);
@@ -519,55 +511,5 @@ export class RegistroComponent implements OnInit {
 
     }
   }
-
-  /*registrar(): any {
-    console.log(this.form.value);
-    this.email = this.form.value.email;
-    console.log(this.email);
-  
-    if (this.form.valid) {
-      this.clienteService.consultarEmail(this.email).subscribe((resultData) => {
-        console.log(resultData.msg);
-        if (resultData.msg == "emailExist") {
-          this.toastr.warning("El correo ingresado ya existe.", "Alerta!!!");
-        }
-        if (resultData.msg == "emailNotExist") {
-          this.clienteService.guardarCliente(this.form.value).subscribe(
-            (respuesta) => {
-              // El registro fue exitoso
-              this.dialog
-                .open(MensajeEmergentesComponent, {
-                  data: `Usuario registrado exitosamente`,
-                })
-                .afterClosed()
-                .subscribe((cerrarDialogo: Boolean) => {
-                  if (cerrarDialogo) {
-                    this.router.navigateByUrl(`/recepcion/home`);
-                  }
-                });
-            },
-            (error) => {
-              // Manejar errores de solicitud HTTP
-              if (error.status === 400) {
-                if (error.error && error.error.msg === 'error_tipo_archivo_no_soportado') {
-                  // Manejar el error específico 'error_tipo_archivo_no_soportado'
-                  console.error('Error: Tipo de archivo no soportado');
-                } else {
-                  // Otro tipo de error 400
-                  console.error('Error 400: Bad Request');
-                }
-              } else {
-                // Otro tipo de error diferente a 400
-                console.error('Error: Otro tipo de error');
-              }
-            }
-          );
-        }
-      });
-    } else {
-      this.message = "Por favor, complete todos los campos requeridos.";
-    }
-  }*/
-  
 
 }

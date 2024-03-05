@@ -65,18 +65,14 @@ export class NotificacionesComponent implements OnInit {
     const inputElement = event.target as HTMLInputElement;
     if (inputElement?.files?.length) {
       const archivo: File = inputElement.files[0];
-      console.log(archivo); // Verificar si el archivo se está obteniendo correctamente
     }
   }
 
   onSubmit(): void {
     if (this.form.get('opcion')?.value === 'Clientes') {
     if (this.form.valid && !this.enviandoCorreo) {
-      console.log('entra a clientes');
       const { nombre, texto, archivo } = this.form.value;
       this.enviandoCorreo = true; // Iniciar el estado de envío
-      console.log('entra', this.form.value);
-      console.log('true?', this.enviandoCorreo);
       // Mostrar el indicador de carga
       /*const dialogRef = this.dialog.open(MensajeCargandoComponent, {
         width: '400px',
@@ -86,10 +82,6 @@ export class NotificacionesComponent implements OnInit {
 
       this.noti.enviarMail(nombre, texto, archivo).subscribe(
         (respuesta) => {
-          // Cerrar el diálogo después de haber procesado la respuesta
-          //dialogRef.close();
-           console.log("noti",this.noti.enviarMail);
-           console.log(respuesta, "respuesta");
           this.dialog.open(MensajeEmergentesComponent, {
             data: `Notificacion enviada exitosamente`
           }).afterClosed().subscribe((cerrarDialogo: boolean) => {
@@ -100,9 +92,6 @@ export class NotificacionesComponent implements OnInit {
           this.enviandoCorreo = false; // Restablecer el estado de envío
         },
         (error) => {
-          // Cerrar el diálogo en caso de error
-          //dialogRef.close();
-
           console.error('Error al enviar el correo:', error);
           this.enviandoCorreo = false; // Restablecer el estado de envío
         }
@@ -110,14 +99,10 @@ export class NotificacionesComponent implements OnInit {
     }
     }else{
       if (this.form.get('opcion')?.value === 'Trabajadores') {
-      console.log('Hiciste clic en enviar');
   
       if (this.form.valid && !this.enviandoCorreo) {
-        console.log('entra a trabajadores');
         const { nombre, texto, archivo,opcion } = this.form.value;
         this.enviandoCorreo = true; // Iniciar el estado de envío
-        console.log('entra', this.form.value);
-        console.log('true?', this.enviandoCorreo);
         // Mostrar el indicador de carga
         /*const dialogRef = this.dialog.open(MensajeCargandoComponent, {
           width: '400px',

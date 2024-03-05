@@ -56,14 +56,10 @@ export class CategoriasComponent implements OnInit {
 
   listaTabla(){
     this.categoriaService.consultarCategoriaGym(this.idGym).subscribe( resultData => {
-      //next: (resultData) => {
-        console.log("la lista es: ", resultData);
         if (Array.isArray(resultData) && resultData.length > 0 && resultData[0].msg === 'No hay registros') {
           this.categoryData = [];
           this.dataSource = new MatTableDataSource(this.categoryData);
           this.dataSource.paginator = this.paginator;
-          console.log('No hay categorias.');
-          //this.toastr.info('No hay clientes activos en este rango de fechas.', 'Info!!!');
         } else if (resultData) {
           this.categoryData = resultData;
           this.dataSource = new MatTableDataSource(this.categoryData);
@@ -76,31 +72,25 @@ export class CategoriasComponent implements OnInit {
         this.categoryData = [];
         this.dataSource = new MatTableDataSource(this.categoryData);
         this.dataSource.paginator = this.paginator;
-        console.log('Ocurrio un error.');
-        //this.toastr.error('Ocurrio un error.', 'Error!!!');
       },
       () => {
-        console.log('La solicitud se completó.');
       }
     );
   }
 
 
   cargarCategorias() {
-  
     this.categoriaService.consultarCategoriaGym(this.idGym).subscribe({
       next: (resultData) => {
         this.categorias = resultData;
         this.dataSource = new MatTableDataSource(this.categorias);     //categorias esta como tipo any, al hacer un registro puede que haya error (tratar cambiarlo por this.categoryData)
         this.dataSource.paginator = this.paginator;
-        console.log(resultData, "resultData");
       }
     });
   }
   
   actualizarTabla() {
     if (!this.dataSource) {
-      // Asegúrate de que this.dataSource esté definido antes de actualizar
       this.cargarCategorias();
     } else {
       this.categoriaService.consultarCategoriaGym(this.idGym).subscribe({
@@ -122,7 +112,6 @@ export class CategoriasComponent implements OnInit {
       this.actualizarTabla();
     });
   }
-
 
   editarCategoria(categoria: any): void {
     const dialogRef = this.dialog.open(EditarCategoriaComponent, {

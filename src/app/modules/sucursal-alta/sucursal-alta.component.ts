@@ -82,7 +82,6 @@ export class SucursalAltaComponent implements OnInit {
  matcher = new MyErrorStateMatcher();
   ngOnInit(): void {
     this.FranquiciaService.obternerFran().subscribe((respuesta) => {
-      console.log(respuesta);
       if (Array.isArray(respuesta)) {
         this.franquicia = respuesta.map((dato) => ({
           value: dato.idFranquicia, // Valor que se enviará al seleccionar
@@ -99,8 +98,6 @@ export class SucursalAltaComponent implements OnInit {
   }
 
   enviarForm(): void {
-    console.log(this.formularioSucursales.value);
-    // Verifica si el formulario de sucursales es válido
     if (this.formularioSucursales.valid) {
       // Llama al servicio para agregar la sucursal
       this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe((respuesta) => {

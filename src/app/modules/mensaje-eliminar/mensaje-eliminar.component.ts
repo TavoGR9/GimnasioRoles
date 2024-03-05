@@ -18,8 +18,8 @@ export class MensajeEliminarComponent {
       this.dialogo.close(true);
     }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
 }
 

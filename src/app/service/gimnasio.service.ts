@@ -14,8 +14,7 @@ export class GimnasioService {
   gimnasioSeleccionado = new BehaviorSubject<number>(0);
   botonEstado = new Subject<{respuesta: boolean, idGimnasio: any}>();
   optionSelected = new BehaviorSubject<number>(0);
-  Api_home: string =
-    'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
+  Api_home: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio2.php'
   APIGym: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
   APISERVICE: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/serviciosGym.php';
@@ -66,15 +65,10 @@ export class GimnasioService {
   }
 
   borrarSucursal(id:any):Observable<any>{
-    console.log("si entro aca") 
     return this.clienteHttp.get(this.API+"?borrar="+id)
-    //this.message = "¡Error al eliminar!, Restricción en la base de datos";
   }
 
   actualizarPlanes(id:any,datosPlan:any):Observable<any>{
-    console.log("datosPlan",id,datosPlan);
-
-    // Crear los datos como x-www-form-urlencoded
     let body = new URLSearchParams();
     body.set('nombreGym', datosPlan.nombreGym);
     body.set('codigoPostal', datosPlan.codigoPostal);
@@ -123,7 +117,5 @@ getAllServices(): Observable<any> {
 getServicesForId(id: any): Observable<any> {
   return this.clienteHttp.post(this.APISERVICE, { id: id });
 }
-
-
 
 }

@@ -15,6 +15,7 @@ import { NgxSpinnerService } from "ngx-spinner";
   styleUrls: ['./alta-categoria.component.css']
 })
 export class AltaCategoriaComponent implements OnInit {
+  private categoriasSubject = new Subject<void>();
   formularioCategoria: FormGroup;
   message: string = '';
   hide = true;
@@ -46,7 +47,6 @@ export class AltaCategoriaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   
   }
 
   obtenerFechaActual(): string {
@@ -54,20 +54,15 @@ export class AltaCategoriaComponent implements OnInit {
     const dia = fechaActual.getDate();
     const mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0
     const año = fechaActual.getFullYear();
-
     // Formatea la fecha como "07/02/2024" para mostrar en la interfaz de usuario
     const fechaFormateada = `${dia < 10 ? '0' + dia : dia}/${mes < 10 ? '0' + mes : mes}/${año}`;
-
     return fechaFormateada;
   }  
 
-  private categoriasSubject = new Subject<void>();
-
-enviar(): any {
+  enviar(): any {
   if (this.formularioCategoria.valid) {
     this.spinner.show();
     this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
-      // Cierra el diálogo después de agregar la categoría y notificar el cambio
       this.spinner.hide();
       const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
         data: `Categoria agregada exitosamente`,
@@ -76,7 +71,6 @@ enviar(): any {
        // this.planService.confirmButton.next(true);
         this.dialogRef.close(respuesta);
       });
-
     });
   } else {
     this.message = 'Por favor, complete todos los campos requeridos.';
@@ -99,7 +93,5 @@ marcarCamposInvalidos(formGroup: FormGroup) {
       };
     }
   });
-}
-
-  
+} 
 }

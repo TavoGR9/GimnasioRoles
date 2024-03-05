@@ -135,8 +135,6 @@ export class ConfiguracionComponent  implements OnInit{
     );
   }
 
-  
-
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -158,9 +156,7 @@ export class ConfiguracionComponent  implements OnInit{
   
     // Realizar las solicitudes de actualización
     const actualizarPlan = this.gimnasioService.actualizarPlan(idGym, planData);
-    const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData);
-    console.log(actualizarPlan, "actualizarPlan");
-  
+    const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData);  
     // Realizar las solicitudes concurrentemente con forkJoin
     forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
       next: ([planResponse, horariosResponse]) => {
