@@ -14,11 +14,6 @@ export class notificaciones {
 
   constructor(private clienteHttp: HttpClient) {}
 
-  /**
-   * Metodo para enviar mail con link de reset password
-   * @param email
-   * @returns
-   */
   enviarMail(nombre: string, texto: string, archivo: File): Observable<any> {
     const formData = new FormData();
     formData.append('nombre', nombre);

@@ -56,7 +56,9 @@ export class CrearProductoComponent implements OnInit {
   message: string = '';
   currentUser: string = '';
   categorias: any[] = [];
-  //sabores: any[] = [];
+  sabores: string[] = [];
+  filteredSabores: string[] = [];
+  private productoSubject = new Subject<void>();
 
   constructor(
     public dialogo: MatDialogRef<CrearProductoComponent>,
@@ -103,7 +105,6 @@ export class CrearProductoComponent implements OnInit {
       this.idGym = data;
       this.listaTabla();
     });  
-    
   }
 
   listaTabla(){
@@ -152,44 +153,30 @@ export class CrearProductoComponent implements OnInit {
     const input = event.target.value;
     // Patrón para aceptar números decimales
     const pattern = /^\d+(\.\d{0,2})?$/;
-    
     if (!pattern.test(input)) {
       // Si el valor no coincide con el patrón, se elimina el último carácter
       this.form.get('cantidadUnidades')?.setValue(input.slice(0, -1));
     }
   }
-  
 
+  buscarSabores() {
+    const saborIngresado = this.form.get('sabor')?.value;
+    this.productoService.consultarsabores(this.idGym).subscribe({
+      next: (respuesta) => {
+        const saboresUnicos = new Set(respuesta.sabores.map((sabor: any) => sabor.sabor));
+        this.sabores = Array.from(saboresUnicos) as string[];
 
-// Declarar la propiedad sabores con un tipo de arreglo de cadenas
-sabores: string[] = [];
-filteredSabores: string[] = [];
-
-
-buscarSabores() {
-  const saborIngresado = this.form.get('sabor')?.value;
-//  console.log(`Buscando sabores para: ${saborIngresado}`);
-  this.productoService.consultarsabores(this.idGym).subscribe({
-    next: (respuesta) => {
-      const saboresUnicos = new Set(respuesta.sabores.map((sabor: any) => sabor.sabor));
-      this.sabores = Array.from(saboresUnicos) as string[];
-
-      this.filteredSabores = this.sabores.filter(sabor =>
-        !saborIngresado || sabor.toLowerCase().includes(saborIngresado.toLowerCase())
-      );
-    }
-  });
-}
-
-
- 
+        this.filteredSabores = this.sabores.filter(sabor =>
+          !saborIngresado || sabor.toLowerCase().includes(saborIngresado.toLowerCase())
+        );
+      }
+    });
+  }
 
   obtenerFechaActual(): string {
     const fechaActual = new Date();
     return this.datePipe.transform(fechaActual, 'yyyy-MM-dd HH:mm:ss') || '';
   }
-
-
 
   cerrarDialogo(): void {
     this.dialogo.close(true);
@@ -208,75 +195,6 @@ buscarSabores() {
     // Actualiza el valor del control 'files' en el formulario con la nueva lista de archivos
     this.form.patchValue({ files: updatedFiles });
   }
-
-  private productoSubject = new Subject<void>();
-
-  /*registrar(): any {
-    if (this.form.valid) { 
-      this.spinner.show();
-      this.form.setValue({
-        idCategoria: this.form.value.idCategoria,
-      });
-      console.log(this.form.value, "this.form.value")
-      this.productoService.creaProducto(this.form.value).subscribe({
-          next: (respuesta) => {
-            if (respuesta.success) {
-              idPlan: respuesta.id,
-              this.spinner.hide();
-            this.dialog.open(MensajeEmergentesComponent, {
-              data: `Producto agregada exitosamente`,
-            }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
-              if (cerrarDialogo) {
-                this.productoSubject.next();
-                this.dialogo.close(true);
-              } else {
-              }
-            });
-            } else {
-              this.toastr.error(respuesta.message, 'Error', {
-                positionClass: 'toast-bottom-left',
-              });
-              //console.error(respuesta.error);
-            }
-          },
-          error: (paramError) => {
-           // console.error(paramError); // Muestra el error del api en la consola para diagnóstico
-            //accedemos al atributo error y al key
-            this.toastr.error(paramError.error.message, 'Error', {
-              positionClass: 'toast-bottom-left',
-            });
-          },
-        });
-
-       /* this.uploadService
-        .subirImagenes(this.uploadedFiles)
-        .subscribe({
-          next: (respuesta) => {
-            console.log(respuesta);
-
-            if (respuesta.success) {
-              this.toastr.success(respuesta.message, 'Exito', {
-                positionClass: 'toast-bottom-left',
-              });
-            } else {
-              this.toastr.error(respuesta.message, 'Error', {
-                positionClass: 'toast-bottom-left',
-              });
-            }
-          },
-          error: (paramError) => {
-            console.error(paramError); // Muestra el error del api en la consola para diagnóstico
-            //accedemos al atributo error y al key
-            this.toastr.error(paramError.error.message, 'Error', {
-              positionClass: 'toast-bottom-left',
-            });
-          },
-        });*/
-  /*  } else {
-      this.message = 'Por favor, complete todos los campos requeridos.';
-    this.marcarCamposInvalidos(this.form);
-    }
-  }*/
 
   registrar(): any {
     if (this.form.valid) { 
@@ -306,8 +224,6 @@ buscarSabores() {
           }
         },
         error: (paramError) => {
-          //console.error(paramError); // Muestra el error del api en la consola para diagnóstico
-          // Accedemos al atributo error y al key
           this.toastr.error(paramError.error.message, 'Error', {
             positionClass: 'toast-bottom-left',
           });
@@ -319,7 +235,6 @@ buscarSabores() {
     }
   }
   
-
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);

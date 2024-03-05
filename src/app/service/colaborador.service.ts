@@ -47,7 +47,6 @@ export class ColaboradorService {
         return this.categoriasSubject.asObservable();
       }
 
-
     listaRecepcionistas(idGym: any):Observable<any[]>{
         return this.clienteHttp.get<any[]>(this.API+"?tEmpRec="+idGym)
         .pipe(

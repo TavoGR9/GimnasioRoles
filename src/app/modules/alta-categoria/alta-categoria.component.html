@@ -1,10 +1,8 @@
 <div>
    <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
-
    <div class="title" mat-dialog-title>
       <label>CATEGORIAS</label>
    </div>
-
     <div mat-dialog-content>
              <form [formGroup]="formularioCategoria">
                 <div>
@@ -61,7 +59,6 @@
                         <p>
                           <mat-form-field appearance="outline" style="width: 100%;" required>
                             <mat-label>Fecha creación</mat-label>
-                            <!-- Utiliza el formato yyyy-MM-dd para el input date -->
                             <input type="date" matInput formControlName="fechaCreacion">
                           </mat-form-field>
                         </p>
@@ -70,7 +67,6 @@
                 </div>
              </form>
     </div>
-    
     <div style="display: flex; justify-content: center;" mat-dialog-actions>
       <button mat-stroked-button (click)="enviar()" style="background-color: #fd9727; font-size: 20px;  height: 40px; margin-right: 90px;">Aceptar</button>
       <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px;  height: 40px;color: white;">Cancelar</button>

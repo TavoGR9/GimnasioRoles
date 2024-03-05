@@ -156,7 +156,6 @@ export class EntradasComponent implements OnInit {
   }
 
   infoProducto(event: number) {
-    console.log('Opción seleccionada:', event);
     this.idProducto = event;
   }
 

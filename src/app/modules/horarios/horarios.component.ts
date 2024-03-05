@@ -42,8 +42,6 @@ export class HorariosComponent implements OnInit {
     public dialog: MatDialog,
   ) {
     this.idGimnasio = data.idGimnasio; // Accede a idGimnasio desde los datos
-    console.log(this.idGimnasio);
-
     this.formularioHorarios = this.formularioHorario.group({
       horarios: this.formularioHorario.array([]),
     });
@@ -71,8 +69,7 @@ export class HorariosComponent implements OnInit {
 
     this.HorarioService.consultarHorario(this.idGimnasio).subscribe(
       (data) => {
-        this.datosHorario = data;  // Asigna los datos a la propiedad
-        console.log('Datos del horario:', this.datosHorario);
+        this.datosHorario = data;  
         this.horarioExistente = data && data.length > 0;
       },
       (error) => {
@@ -91,7 +88,6 @@ export class HorariosComponent implements OnInit {
   
   
   enviarHorario(): void {
-    console.log("entro");
     const horarios: Horario[] = this.formularioHorarios.value.horarios;
   
     // Itera sobre los horarios y establece los valores predeterminados si las horas están en blanco
@@ -104,7 +100,6 @@ export class HorariosComponent implements OnInit {
         horario.horaSalida = '00:00:00';
       }
     });
-  console.log(this.formularioHorarios.value, "this.formularioHorarios.valid");
     // Verifica si el formulario es válido
     if (this.formularioHorarios.valid) {
       this.spinner.show();

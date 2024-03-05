@@ -14,13 +14,6 @@ export class EntradasService {
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/entradas.php';
   constructor(private clienteHttp: HttpClient) {}
 
-  /**
-   * Metodo para insertar una entrada de producto
-   * @param datosEntradaProducto datos del modelo
-   * @returns un observable de tipo any
-   */
-
-
   agregarEntradaProducto(entradaProductos:any):Observable<any>{
     console.log("entradaProductos", entradaProductos);
     return this.clienteHttp.post(this.API+"?registraEntrada",entradaProductos);

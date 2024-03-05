@@ -17,7 +17,6 @@ export class ListaProductoComponent implements OnInit {
   ngOnInit():void{
     this.productoService.consultarProductoId(2).subscribe({
       next: (resultData) => {
-        console.log('productos',resultData);
         this.productos = resultData;
       }
     })

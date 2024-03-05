@@ -36,6 +36,7 @@ export class HorariosVistaComponent implements OnInit{
   idGimnasio: number = 0; // Asegúrate de obtener el ID de alguna manera, por ejemplo, a través de ActivatedRoute
   datosHorario: any[] = [];
   message: string = "";
+  sucursales: any;
   optionToShow: number = 0;
   franquicia: any;
   formularioSucursales: FormGroup;
@@ -43,6 +44,8 @@ export class HorariosVistaComponent implements OnInit{
   mostrarFormularioAdministrador: boolean = false;
   postalCodeControl = new FormControl('');
   addressControl = new FormControl('');
+  asentamientosUnicos: Set<string> = new Set<string>();
+  matcher = new MyErrorStateMatcher();
 
   constructor(private gimnasioService: GimnasioService, private spinner: NgxSpinnerService,private HorarioService: HorarioService,private route: ActivatedRoute,
     public dialogo: MatDialogRef<HorariosVistaComponent>,
@@ -53,7 +56,6 @@ export class HorariosVistaComponent implements OnInit{
     // Obtén el ID del parámetro de la URL
     this.idGimnasio = this.route.snapshot.params['id'];
     this.idGimnasio = data.idGimnasio; // Accede a idGimnasio desde los datos
-    console.log("id",this.idGimnasio);
 
     //Creacion del formulario:
     this.formularioSucursales = this.formulario.group({
@@ -85,24 +87,12 @@ export class HorariosVistaComponent implements OnInit{
       turnoLaboral: ['Matutino'],
       salario: [0],
       Gimnasio_idGimnasio: ["", Validators.required], 
-    });
-
- /*   this.postalCodeControl.valueChanges.subscribe((postalCode) => {
-      // Check if postalCode is not null before calling the function
-      if (postalCode !== null) {
-        this.handlePostalCodeChange(postalCode);
-      }
-    });*/
-    
+    });    
   }
-
-  matcher = new MyErrorStateMatcher();
 
   isSupadmin(): boolean {
     return this.auth.isSupadmin();
   }
-
-  sucursales: any;
 
   ngOnInit(): void {
     this.gimnasioService.optionSelected.subscribe((data) => {
@@ -116,21 +106,17 @@ export class HorariosVistaComponent implements OnInit{
         }
         else if(this.optionToShow === 3){
           this.consultarFranquicia();
-         
           this.editarCosa();
         }
       }
     });
-
   }
 
   actualizarSelect() {
     if (this.isSupadmin()) {
-      console.log('Las sucursales que se muestran son: ', this.formularioSucursales.value.nombreGym);
       setTimeout(() => {
         this.http.comboDatosGymByNombre(this.formularioSucursales.value.nombreGym).subscribe({
           next: (dataResponse) => {
-            console.log('Las sucursales disponibles son: ', dataResponse);
             if (Array.isArray(dataResponse) && dataResponse.length > 0 && dataResponse[0].idGimnasio) {
               this.personaForm.patchValue({
                 Gimnasio_idGimnasio: dataResponse[0].idGimnasio,
@@ -164,14 +150,11 @@ enviarMensajeWhatsApp() {
   // Abrir WhatsApp en una nueva ventana o pestaña
   window.open(url, '_blank');
 }
-
-
   /*-----------HORARIOS METHODS---------- */
   consultarHorario() {
     this.HorarioService.consultarHorario(this.idGimnasio).subscribe(
       (data) => {
-        this.datosHorario = data;  // Asigna los datos a la propiedad
-        console.log('Datos del horario:', this.datosHorario);
+        this.datosHorario = data;  
       },
       (error) => {
         this.message = "Horario no disponible. El administrador aún no ha registrado información";
@@ -185,13 +168,11 @@ enviarMensajeWhatsApp() {
     this.franquiciaService.obternerFran().subscribe((data) => {
       if(data) {
         this.franquicia = data;
-        console.log(data);
       }
     });
   }
 
   onSelectionChange(event: any) {
-    console.log(event.value); 
   }
 
   enviarForm(): void {
@@ -200,7 +181,6 @@ enviarMensajeWhatsApp() {
       // Llama al servicio para agregar la sucursal
       this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe((respuesta) => {
         if(respuesta){
-          console.log(respuesta);
           const idGimnasioInsertado = respuesta.idGimnasio; // Ajusta esto según la estructura de tu respuesta
 
           // Usa el idGimnasioInsertado en tu otro formulario
@@ -220,7 +200,6 @@ enviarMensajeWhatsApp() {
               }
             });
         } else {
-          console.log(respuesta.error);
         }
       }
       });
@@ -229,54 +208,9 @@ enviarMensajeWhatsApp() {
     }
   }
 
- /* private handlePostalCodeChange(postalCode: string): void {
-    if (postalCode) {
-      this.postalCodeService.getAddressByPostalCode(postalCode).subscribe(
-        (response) => {
-          if (response && response.length > 0) {
-            const address = response[0].display_name;
-            this.addressControl.setValue(address);
-          }
-        },
-        (error) => {
-          console.error('Error fetching address:', error);
-        }
-      );
-    }
-  }*/
-
   getAddressFromPostalCode() {
-   /* if (this.formularioSucursales) {
-    const postalCode = this.formularioSucursales.get('codigoPostal')?.value;
-  
-    if (postalCode) {
-      // Llama al servicio para obtener la dirección basada en el código postal
-      this.postalCodeService.getAddressByPostalCode(postalCode).subscribe((addressInfo) => {
-        // Verifica que addressInfo y display_name estén definidos antes de continuar
-        console.log(addressInfo[0].display_name, "addressInfo");
-        if (addressInfo && addressInfo[0].display_name) {
-          console.log("hola")
-          const display_name_parts = addressInfo[0].display_name.split(', ');
-          
-          if (display_name_parts.length >= 4) {
-            // Establece los campos del formulario basados en la estructura de display_name
-            this.formularioSucursales.get('estado')?.setValue(display_name_parts[3]);
-           
-            this.formularioSucursales.get('ciudad')?.setValue(display_name_parts[0]);
-            // Otros campos según la estructura de tu formulario y la respuesta de la API
-          } else {
-            console.error('La cadena display_name no tiene la estructura esperada.');
-          }
-        } else {
-          console.error('La respuesta de la API no tiene la estructura esperada o display_name es undefined.');
-        }
-      }, (error) => {
-        console.error('Error al obtener la dirección desde el código postal:', error);
-      });
-    }
-  }*/
   }
-  asentamientosUnicos: Set<string> = new Set<string>();
+
   consultarCodigoPostal(): void {
     const codigoPostal = this.formularioSucursales.get('codigoPostal')?.value;
   
@@ -290,17 +224,14 @@ enviarMensajeWhatsApp() {
             this.asentamientosUnicos.add(resultado.asentamiento);
           });
         } else {
-          console.log('No se encontraron asentamientos para el código postal.');
         }
-  
-        console.log(response, "response");
+
         if (response.length > 0) {
           // Mostrar solo el primer resultado
           const primerResultado = response[0];
           this.formularioSucursales.get('estado')?.setValue(primerResultado.estado);
           this.formularioSucursales.get('ciudad')?.setValue(primerResultado.municipio);
         } else {
-          console.log('Código postal no encontrado o sin datos de estado.');
         }
       },
       (error) => {
@@ -323,7 +254,6 @@ enviarMensajeWhatsApp() {
         this.idGimnasio = data;
         this.gimnasioService.consultarPlan(this.idGimnasio).subscribe((data) => {
           if(data) {
-            console.log(data);
             this.formularioSucursales.setValue({
               nombreGym: data[0].nombreGym,
               codigoPostal: data[0].codigoPostal,
@@ -376,7 +306,6 @@ enviarMensajeWhatsApp() {
         this.idGimnasio = data;
         this.gimnasioService.consultarPlan(this.idGimnasio).subscribe((data) => {
           if(data) {
-            console.log(data);
             this.formularioSucursales.setValue({
               nombreGym: data[0].nombreGym,
               codigoPostal: data[0].codigoPostal,
@@ -420,7 +349,6 @@ enviarMensajeWhatsApp() {
             }
           });
       } else {
-        console.log(respuesta.error);
       }
     }
     });
@@ -473,12 +401,8 @@ enviarFormulario() {
   datosFormulario.email = this.email;
   datosFormulario.pass = this.pass;
 
-  console.log("datosFormulario", datosFormulario)
-
   this.http.agregarEmpleado(datosFormulario).subscribe(
     (respuesta) => {
-      // Manejo de la respuesta del backend
-      console.log('Respuesta del servidor:', respuesta);
     },
     (error) => {
       // Manejo de errores
@@ -496,10 +420,6 @@ enviarFormularios(): void {
           const datosFormulario = this.personaForm.value;
           datosFormulario.email = this.email;
           datosFormulario.pass = this.pass;
-
-          console.log("datosFormulario", datosFormulario);
-
-          // Retorna un observable del segundo servicio
           return this.http.agregarEmpleado(datosFormulario);
         } else {
           // Si la operación anterior falla, retornar un observable de error
@@ -508,9 +428,6 @@ enviarFormularios(): void {
       })
     ).subscribe(
       (respuestaEmpleado) => {
-        // Manejo de la respuesta del backend para agregarEmpleado
-        console.log('Respuesta del servidor para agregarEmpleado:', respuestaEmpleado);
-
         this.dialog.open(MensajeEmergentesComponent, {
           data: `Operaciones completadas exitosamente`,
         }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
@@ -571,15 +488,10 @@ enviarEmpleado(): void {
   if (this.personaForm.valid) {
     const datosFormulario = this.personaForm.value;
     datosFormulario.email = this.email;
-    datosFormulario.pass = this.pass;
-    console.log('datos del empleado: ', datosFormulario)
-    
+    datosFormulario.pass = this.pass;    
     this.http.agregarEmpleado(datosFormulario).subscribe(
       (respuestaEmpleado) => {
         if (respuestaEmpleado && respuestaEmpleado.msg === 'Success' ) {
-          console.log('Respuesta del servidor para agregarEmpleado:', respuestaEmpleado);
-          console.log('segunda de datos del empleado: ', datosFormulario)
-
           this.dialog.open(MensajeEmergentesComponent, {
             data: `Empleado agregado exitosamente`,
             disableClose: true

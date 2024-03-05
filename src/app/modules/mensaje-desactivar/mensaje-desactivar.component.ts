@@ -43,7 +43,6 @@ export class MensajeDesactivarComponent {
 
 
   ngOnInit() {
-    console.log(this.data.mensaje); // Esto debería imprimir "¿Deseas desactivar esta sucursal?"
   }
 
 }

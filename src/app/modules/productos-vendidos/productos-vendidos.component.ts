@@ -92,13 +92,9 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   }
 
   onFechaInicioChange(event: any): void {
-    // Manejar el cambio de la fecha de inicio
-    console.log('Fecha de inicio cambiada:', this.formatDate(event));
   }
 
   onFechaFinChange(event: any): void {
-    // Manejar el cambio de la fecha de fin
-    console.log('Fecha de fin cambiada:', this.formatDate(event));
   }
 
   private formatDate(date: Date): string {
@@ -112,18 +108,12 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   private updateDateLogs(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
-  
-    console.log('Fecha de inicio seleccionada:', this.formatDate(this.fechaInicio));
-    console.log('Fecha de fin seleccionada:', this.formatDate(this.fechaFin));
-  
     this.prodVendidosService.obtenerListaProduct(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
       this.idGym
     ).subscribe(
       response => {
-        console.log(response);
-  
         if (response) {
           // Si hay datos, actualiza la tabla
           this.productosVendidos = response;
@@ -150,7 +140,6 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
 
       },
       () => {
-        console.log('La solicitud se completó.');
       }
     );
   }

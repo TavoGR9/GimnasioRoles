@@ -42,7 +42,6 @@ export class DetalleVentaService {
 
   borrarVentaDetalle(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?borrar="+id)
-    //this.message = "¡Error al eliminar!, Restricción en la base de datos";
   }
 
 }

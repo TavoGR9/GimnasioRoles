@@ -110,7 +110,6 @@ export class SucursalListaComponent implements OnInit {
         this.gimnasioService.actualizarEstatus(idGimnasio, nuevoEstatus).subscribe(
           (response) => {
             if (response && response.success === 1) {
-              console.log('Estatus actualizado correctamente');
               gimnasio.estatus = nuevoEstatus;
             } else if (response) {
               console.error('Error al actualizar el estatus: ', response.error);
@@ -124,7 +123,6 @@ export class SucursalListaComponent implements OnInit {
         );
   
       } else {
-        console.log('Has cancelado la operación');
       }
     });
   }
@@ -195,7 +193,6 @@ export class SucursalListaComponent implements OnInit {
 
     this.gimnasioService.botonEstado.subscribe((data) => {
       if(data.respuesta){
-        console.log("HAS DADO EN ACEPTAR");
         // Buscar la sucursal correcta
         let gimnasio = this.gimnasio.find((g: { idGimnasio: any }) => g.idGimnasio === data.idGimnasio);
         // Verificar si encontramos la sucursal
@@ -203,7 +200,6 @@ export class SucursalListaComponent implements OnInit {
           console.error('No se encontró la sucursal con id: ', data.idGimnasio);
           return;
         }
-        console.log('Estatus actual: ', gimnasio.estatus);  // Agrega esta línea
         let datosPlan = {
           estatus: gimnasio.estatus === 1 ? 0 : 1,
         };
@@ -212,8 +208,6 @@ export class SucursalListaComponent implements OnInit {
             if (response && response.success === 1) {
               // Actualizar el estado de la sucursal en el cliente
               gimnasio.estatus = datosPlan.estatus;
-              console.log('Estatus después de actualizar: ', gimnasio.estatus);
-              // Actualizar this.gimnasio
               this.gimnasioService.obternerPlan().subscribe((data) => {
                 this.gimnasio = data;
               });
@@ -228,13 +222,9 @@ export class SucursalListaComponent implements OnInit {
           }
         );
       }else if(!data.respuesta){
-        console.log("HAS DADO EN CANCELAR");
       }
     });
   }
-
-  
-
 
   private cargarCategorias() {
     this.gimnasioService.obternerPlan().subscribe(
@@ -268,7 +258,6 @@ export class SucursalListaComponent implements OnInit {
   }
   
   borrarSucursal(idGimnasio: any) {
-    console.log(idGimnasio);
     this.dialog.open(MensajeDesactivarComponent,{
       data: `¿Deseas desactivar esta sucursal?`,
     })
@@ -277,16 +266,13 @@ export class SucursalListaComponent implements OnInit {
       if (confirmado) {
         this.gimnasioService.borrarSucursal(idGimnasio).subscribe(
           (respuesta) => {
-            console.log("Eliminado exitosamente");
             window.location.reload();
           },
           (error) => {
-            console.log("Error al eliminar:", error);
             this.message = "¡Error al eliminar!, Restricción en la base de datos";
           }
         );
       } else {
-        console.log("No se confirmó la eliminación");
       }
     });
   }
@@ -297,7 +283,6 @@ export class SucursalListaComponent implements OnInit {
     if(data) {
       this.optionToShow = data;
       if(this.optionToShow === 1) {
-        console.log("MOSTRAREMOS HORARIOS");
       }
     }
   });
@@ -314,7 +299,6 @@ export class SucursalListaComponent implements OnInit {
       if (data) {
         this.optionToShow = data;
         if (this.optionToShow === 2) {
-          console.log("MOSTRAREMOS FORMULARIO DE AGREGAR SUCURSAL");
         }
       }
     });
@@ -332,14 +316,12 @@ export class SucursalListaComponent implements OnInit {
   }
 
   editarSucursal(idGimnasio: number) {
-    console.log("EL id de la sucursal es: ", idGimnasio);
     this.gimnasioService.gimnasioSeleccionado.next(idGimnasio);
     this.gimnasioService.optionSelected.next(3);
     this.gimnasioService.optionSelected.subscribe((data) => {
       if(data){
         this.optionToShow = data;
         if(this.optionToShow === 3){
-          console.log("MOSTRAREMOS FORMULARIO DE EDITAR SUCURSAL");
         }
       }
     });

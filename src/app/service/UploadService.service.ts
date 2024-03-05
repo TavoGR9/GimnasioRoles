@@ -26,6 +26,7 @@ export class UploadService {
    * @returns
    */
   subirImagenes(idPrducto:number, imagenes: File[]): Observable<any> {
+    console.log("entra");
     const formData: FormData = new FormData();
     // !es muy importante que el nombre tenga llaves files[] , de lo contrario php no lo reconoce
     for (let i = 0; i < imagenes.length; i++) {

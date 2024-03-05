@@ -75,13 +75,9 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   }
 
   onFechaInicioChange(event: any): void {
-    // Manejar el cambio de la fecha de inicio
-    console.log('Fecha de inicio cambiada:', this.formatDate(event));
   }
 
   onFechaFinChange(event: any): void {
-    // Manejar el cambio de la fecha de fin
-    console.log('Fecha de fin cambiada:', this.formatDate(event));
   }
 
   private formatDate(date: Date): string {
@@ -101,8 +97,6 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       this.auth.idGym.getValue()
     ).subscribe(
       response => {
-        console.log(response);
-  
         if (response.msg == 'No hay resultados') {
           // Si no hay datos, resetea la tabla
           this.dataHistorial = [];
@@ -121,8 +115,6 @@ export class EmergenteHistorialProductosComponent implements OnInit{
         }
       },
       error => {
-        console.error('Error en la solicitud:', error);
-        // Manejo de errores adicional si es necesario
         this.dataHistorial = [];
         this.dataSource = new MatTableDataSource(this.dataHistorial);
         this.dataSource.paginator = this.paginatorHistorial;
@@ -130,7 +122,6 @@ export class EmergenteHistorialProductosComponent implements OnInit{
         this.toastr.error('Ocurrio un error.', 'Error!!!');
       },
       () => {
-        console.log('La solicitud se completó.');
       }
     );
   }

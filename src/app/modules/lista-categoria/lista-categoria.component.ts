@@ -16,8 +16,6 @@ export class ListaCategoriaComponent {
   ngOnInit():void{
     this.categoriaService.obternerCategoria().subscribe({
       next: (resultData) => {
-        console.log(resultData);
-        //this.categorias = resultData;
         this.categorias = Array.isArray(resultData) ? resultData : [resultData];
       }
     })

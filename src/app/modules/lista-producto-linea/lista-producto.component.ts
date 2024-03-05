@@ -19,7 +19,6 @@ export class ListaProductoLineaComponent implements OnInit {
   ngOnInit():void{
     this.productoService.obternerProductoenLinea().subscribe({
       next: (resultData) => {
-        console.log('productos',resultData);
         this.productos = resultData;
       }
     })
@@ -35,10 +34,9 @@ export class ListaProductoLineaComponent implements OnInit {
     return parseInt(idCategoria, 10); // Convertir el string a número
   }
   
-  
-getTamano(producto: any): string {
-  return producto && producto.tamaño ? producto.tamaño : ''; // Verifica si la propiedad existe y la devuelve, o devuelve una cadena vacía si no existe
-}
+  getTamano(producto: any): string {
+    return producto && producto.tamaño ? producto.tamaño : ''; // Verifica si la propiedad existe y la devuelve, o devuelve una cadena vacía si no existe
+  }
 
   nextPage() {
     this.page += 5;

@@ -29,10 +29,8 @@ export class MensajeListaComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     this.DetalleVenta.obternerVentaDetalle().subscribe({
       next: (resultData) => {
-        console.log(resultData);
         this.detalle= resultData;
       }
     }) 
@@ -48,7 +46,6 @@ export class MensajeListaComponent implements OnInit {
   obtenerClientesLista() {
     this.ListarClientesService.obternerCliente().subscribe(
       (data: any) => {
-        console.log("segundo",this.clientes);
         this.clientes = data as Cliente[]; // Asigna datos si coinciden con la estructura de Cliente[]
         this.clientesFiltrados = this.clientes; // O inicializa con data
       },
@@ -58,7 +55,6 @@ export class MensajeListaComponent implements OnInit {
     );
   }
   
-
   filtrarClientes(event: Event) {
     const searchValue = (event.target as HTMLInputElement).value.toLowerCase();
     // Filtra los clientes basándote en el valor de búsqueda
@@ -73,13 +69,8 @@ export class MensajeListaComponent implements OnInit {
   }
 
   seleccionarCliente(idCliente: number) {
-    // Aquí puedes implementar la lógica para manejar la selección del cliente
     this.selectedClient = idCliente;
-    console.log('ID del cliente seleccionado:', idCliente);
-
-    // O cualquier otra lógica que necesites hacer al seleccionar un cliente
   }
-  // ... Importaciones y código previo
 
   enviarDatosAlOtroComponente() {
     const dataToSend = {  idCliente: this.selectedClient };

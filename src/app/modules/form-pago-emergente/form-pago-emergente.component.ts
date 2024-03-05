@@ -42,20 +42,16 @@ export class FormPagoEmergenteComponent implements OnInit{
       this.idMembresiaSelec = this.data.idMem;
       console.log('membresia seleccionada: ', this.idMembresiaSelec);
     }*/
-   //this.membresiaSeleccionada;
-   console.log('membresia seleccionada: ', this.membresiaSeleccionada);
 
     //console.log('ID del cliente:', this.data.idCliente);
 
     this.getMembresiasLista(this.data.idSucursal);
-    console.log('ID de la sucursal:', this.data.idSucursal);
   }
 
   getMembresiasLista(idgimnasio: number): void {
     this.membresiaService.membresiasLista(idgimnasio)
       .subscribe(data => {
         this.membresias = data;
-        console.log(this.membresias);
       }, error => {
         console.error('Error al obtener la lista de membresías:', error);
       });
@@ -63,11 +59,9 @@ export class FormPagoEmergenteComponent implements OnInit{
 
   onMembresiaChange(): void {
     this.membresiaService.membresiasInfo(this.membresiaSeleccionada).subscribe((resultado)=> {
-      console.log('Membresia seleccionada:', this.membresiaSeleccionada);
       this.duracion = `${resultado.Duracion} días`;
       this.precio = `${resultado.Precio}`;
       this.nombreMembresia = `${resultado.Membresia}`;
-      console.log('Nombre de la membresia: ', resultado.Membresia);
     });
   }
 
@@ -174,20 +168,12 @@ export class FormPagoEmergenteComponent implements OnInit{
       return palabras;
     }
   
-    imprimirResumen() {
-      console.log("total", this.precio <= this.moneyRecibido); 
-       
+    imprimirResumen() {       
       if (this.precio <= this.moneyRecibido) {
         const PrecioCalcular = this.moneyRecibido - this.precio ;
-        
         this.membresiaService.ticketPagoInfo(this.data.idCliente).subscribe((respuesta) => {
-          console.log('Informacion del ticket a pagar antes del if:',respuesta);
-
           if (respuesta && respuesta.length > 0) {
             const ticketInfo = respuesta[0];
-              //this.ticketInfo = respuesta;
-              console.log('Informacion del ticket a pagar despues del if:',ticketInfo);
-
             const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.precio);
             const totalEnPesosRecibido = this.convertirNumeroAPalabrasPesos(this.moneyRecibido);
             const totalEnPesosCambio = this.convertirNumeroAPalabrasPesos(PrecioCalcular);
@@ -336,12 +322,8 @@ export class FormPagoEmergenteComponent implements OnInit{
       if (this.membresiaSeleccionada != undefined){
         //console.log('membresia seleccionada antes de pagar:', this.membresiaSeleccionada );
         if(this.moneyRecibido >= this.precio){
-          const PrecioCalcular = this.moneyRecibido - this.precio ;
-          console.log(PrecioCalcular);
-        
+          const PrecioCalcular = this.moneyRecibido - this.precio;
           this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, this.data.detMemID).subscribe((dataResponse: any)=> {
-          console.log(dataResponse.msg)
-  
           this.actualizarTablas.emit(true);
           
           this.dialogo.close(true);

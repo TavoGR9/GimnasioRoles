@@ -38,12 +38,9 @@ export class EditarCategoriaComponent {
     private router:Router,
     public dialog: MatDialog,
     private spinner: NgxSpinnerService){
-    this.idCategoria = data.idCategoria; // Accede a idGimnasio desde los datos
-   
-    //llamar al servicio datos empleado - pasando el parametro capturado por url
+    this.idCategoria = data.idCategoria; 
     this.categoriaService.consultarCategoria(this.idCategoria).subscribe(
       respuesta=>{
-        //asignar valor a los campos correspondientes al fomulario
         this.formularioCategoria.setValue({
           nombre:respuesta [0]['nombre'],
           descripcion:respuesta [0]['descripcion'],
@@ -53,8 +50,6 @@ export class EditarCategoriaComponent {
       }
     );
 
-
-    //asignar validaciones a los campos de fomulario
     this.formularioCategoria = this.formulario.group({
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required],
@@ -64,7 +59,6 @@ export class EditarCategoriaComponent {
   }
 
   ngOnInit(): void {
-
   }
 
   cerrarDialogo(): void {
@@ -74,12 +68,10 @@ export class EditarCategoriaComponent {
   actualizar(){
     if (this.formularioCategoria.valid) {
       this.spinner.show();
-
-    this.categoriaService.actualizarCategoria(this.idCategoria,this.formularioCategoria.value).subscribe(()=>{
+      this.categoriaService.actualizarCategoria(this.idCategoria,this.formularioCategoria.value).subscribe(()=>{
       this.spinner.hide();
       this.dialog.open(MensajeEmergentesComponent, {
         data: `Categoria actualizada exitosamente`,
-
       })
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
@@ -90,7 +82,6 @@ export class EditarCategoriaComponent {
       });
     });
   } else {
-    // El formulario no es válido, muestra un mensaje de error
     this.message = 'Por favor, complete todos los campos requeridos.';
   }
 }

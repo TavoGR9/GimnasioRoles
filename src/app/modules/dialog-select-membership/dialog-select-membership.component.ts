@@ -227,14 +227,11 @@ export class DialogSelectMembershipComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((nuevoServicio) => {
-     // console.log(nuevoServicio, "nuevoServicio");
       if (nuevoServicio.registroInsertado) {
         if (!Array.isArray(this.servicios)) {
           this.servicios = [];
         }
         this.servicios.push(nuevoServicio.registroInsertado);
-        //this.formPlan.get('servicioseleccionado')?.setValue(this.servicios);
-        //console.log("this.servicios", this.servicios);
       }
     });
     
@@ -258,7 +255,6 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   validarFormulario() {
     if (this.formPlan.invalid) {
-      //console.log(this.formPlan.value.servicioseleccionado);
       if (!this.formPlan.value.servicioseleccionado || this.formPlan.value.servicioseleccionado.length === 0) {
         this.toastr.error('Agregar o seleccionar primero un servicio', 'Error');
       }
@@ -266,8 +262,6 @@ export class DialogSelectMembershipComponent implements OnInit {
       if (!this.formPlan.value.precio || !this.formPlan.value.duracion) {
         this.toastr.error('Llenar los campos requeridos', 'Error');
       }
-
-      //this.toastr.error('Formulario inválido', 'Error');
       Object.values(this.formPlan.controls).forEach((control) => {
         control.markAsTouched();
       });
@@ -297,7 +291,6 @@ export class DialogSelectMembershipComponent implements OnInit {
         }
 
         this.planService.agregarPlan(formValue).subscribe((respuesta) => {
-          
           if (respuesta) {
             if (respuesta.success == 1) {
               this.spinner.hide();

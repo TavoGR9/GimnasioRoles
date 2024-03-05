@@ -30,10 +30,7 @@
                           <mat-error *ngIf="form.get('apPaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                         </mat-form-field>
                       </div>
-                      
-
                     </div>
-
                     <div class="row">
                       <div class="col-sm-6">
                         <mat-label>Apellido materno: </mat-label>
@@ -45,9 +42,22 @@
                           </mat-error>
                           <mat-error *ngIf="form.get('apMaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                       </mat-form-field>
-                      
                       </div>
                       <div class="col-sm-6">
+                        <mat-label>Telefono: </mat-label>
+                        <mat-form-field appearance="outline" style="width: 90%;">
+                          <mat-label>Telefono </mat-label>
+                        <input matInput placeholder="Número de celular" autocomplete="off" formControlName="telefono" minlength="10" maxlength="10" [errorStateMatcher]="matcher"/>
+                          <mat-error *ngIf="form.get('telefono')?.touched && form.get('telefono')?.hasError('required')">
+                            <strong class="txt_msg">**Campo requerido</strong>
+                          </mat-error>
+                          <mat-error *ngIf="form.get('telefono')?.hasError('pattern') && !form.get('telefono')?.hasError('required')">
+                            <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                          </mat-error>
+                          <mat-error *ngIf="form.get('telefono')?.hasError('minlength') && !form.get('telefono')?.hasError('required')">
+                            <strong class="txt_msg">**Minimo 10 carácteres</strong>
+                          </mat-error>
+                        </mat-form-field>
                         <!--<mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>RFC</mat-label>
                           <input type="text" placeholder="RFC" minlength="12" maxlength="13" matInput autocomplete="off" formControlName="rfc" id="rfc" [errorStateMatcher]="matcher">                  
@@ -59,7 +69,7 @@
                             <strong class="txt_msg">**Minimo 12 y máximo 13 caracteres</strong>
                           </mat-error>
                       </mat-form-field>-->
-                      <mat-label>Sucursal: </mat-label>
+                     <!-- <mat-label>Sucursal: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Sucursal</mat-label>
                           <mat-select id="sucursal" formControlName="Gimnasio_idGimnasio" id="Gimnasio_idGimnasio" [errorStateMatcher]="matcher">
@@ -68,11 +78,9 @@
                           <mat-error *ngIf="form.get('Gimnasio_idGimnasio')?.hasError('required')">
                             <strong class="txt_msg">**Campo requerido</strong>
                           </mat-error>
-                        </mat-form-field>
+                        </mat-form-field>-->
                       </div>
-
                     </div>
-
                     <div class="row">
                       <div class="col-sm-6">
                         <mat-label>Áreas: </mat-label>
@@ -101,8 +109,6 @@
                         </mat-form-field>
                       </div>
                     </div>
-
-
                     <div class="row">
                       <div class="col-sm-6">
                         <mat-label>Salario: </mat-label>
@@ -116,26 +122,6 @@
                         </mat-form-field>
                       </div>
                       <div class="col-sm-6">
-                        <mat-label>Telefono: </mat-label>
-                        <mat-form-field appearance="outline" style="width: 90%;">
-                          <mat-label>Telefono </mat-label>
-                        <input matInput placeholder="Número de celular" autocomplete="off" formControlName="telefono" minlength="10" maxlength="10" [errorStateMatcher]="matcher"/>
-                          <mat-error *ngIf="form.get('telefono')?.touched && form.get('telefono')?.hasError('required')">
-                            <strong class="txt_msg">**Campo requerido</strong>
-                          </mat-error>
-                          <mat-error *ngIf="form.get('telefono')?.hasError('pattern') && !form.get('telefono')?.hasError('required')">
-                            <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                          </mat-error>
-                          <mat-error *ngIf="form.get('telefono')?.hasError('minlength') && !form.get('telefono')?.hasError('required')">
-                            <strong class="txt_msg">**Minimo 10 carácteres</strong>
-                          </mat-error>
-                        </mat-form-field>
-                      </div>
-                    </div>
-
-
-                    <div class="row">
-                      <div class="col-sm-6">
                         <mat-label>Email: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                             <mat-label>Email:</mat-label>
@@ -146,9 +132,10 @@
                             <mat-error *ngIf="form.get('email')?.hasError('required')">
                                 <strong class="txt_msg">**Campo requerido</strong>
                             </mat-error>
-                        </mat-form-field>
+                        </mat-form-field>  
+                      </div>
                     </div>
-                    
+                    <div class="row">
                       <div class="col-sm-6">
                         <mat-label>Contraseña: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
@@ -163,8 +150,7 @@
                           <mat-error *ngIf="form.get('pass')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                         </mat-form-field>
                       </div>
-                    </div>
-                              
+                    </div>            
                     </div>
                 </form>
             </div>

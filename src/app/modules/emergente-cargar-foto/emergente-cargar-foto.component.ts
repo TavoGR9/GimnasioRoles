@@ -46,7 +46,6 @@ export class EmergenteCargarFotoComponent implements OnInit{
   not_format: boolean = false;
   not_size: boolean = false;
   public handleImage(webcamImage: WebcamImage): void {
-    console.info('received webcam image', webcamImage);
     this.webcamImage = webcamImage;
     // Almacenar la imagen en el objeto Archivo
     this.archivo.base64textString = this.webcamImage.imageAsBase64;
@@ -82,7 +81,6 @@ export class EmergenteCargarFotoComponent implements OnInit{
     this.nextWebcam.next(directionOrDeviceId);
   }
   public cameraWasSwitched(deviceId: string): void {
-    console.log('active device: ' + deviceId);
     this.deviceId = deviceId;
   }
   public handleInitError(error: WebcamInitError): void {
@@ -130,14 +128,12 @@ export class EmergenteCargarFotoComponent implements OnInit{
         // Validar si el archivo seleccionado es una imagen
         if (!file.type.startsWith('image/')) {
           this.not_format = true;
-          console.log('Tipo de archivo no permitido. Solo se permiten imágenes.');
           this.toastr.error('El archivo seleccionado no es una imagen', 'Error');
           return;
         }
         // Validar si el archivo excede el tamaño máximo permitido de 1mb
         if (file.size > 1024 * 1024) {
           this.not_size = true;
-          console.log('El archivo es demasiado grande. Máximo 1 MB permitido.');
           this.toastr.error('El tamaño de la imagen debe ser menor a 1MB', 'Error');
           return;
         }
@@ -175,19 +171,15 @@ export class EmergenteCargarFotoComponent implements OnInit{
 
   // Subir la imagen al servidor
   uploadPhoto() {
-    console.log(this.archivo);
     if (this.archivo.base64textString === '' || this.archivo.nombreArchivo === '' || this.archivo.id === 0) {
-      console.log('Selecciona una imagen antes de querer subir la imagen.');
       this.toastr.error('Aún no haz seleccionado una imagen valida...', 'Error');
       return;
     }
-    
     this.ServiceCliente.updatePhoto(this.archivo).subscribe({
-      next: (resultData) => { console.log(resultData); }, error: (error) => { console.log(error); }
+      next: (resultData) => { }, error: (error) => { console.log(error); }
     });
     this.toastr.success('Se guardo la foto exitosamente...', 'Éxito');
     this.dialogo.close(true);
-    
   }
 
   mostrarInformacion(boton: string): void {
