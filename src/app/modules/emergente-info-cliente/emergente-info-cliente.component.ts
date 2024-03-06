@@ -18,6 +18,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 })
 
 export class EmergenteInfoClienteComponent implements OnInit{
+  url: string = `Finger://?id=${this.data.idCliente}`;
   currentDate: Date = new Date();
   duracion: any;
   photo: any;
@@ -70,10 +71,11 @@ export class EmergenteInfoClienteComponent implements OnInit{
   }*/
 
   ngOnInit() {
+    console.log("URL QUE SE PASA: ",this.url);
     this.duracion = this.data.duracion + ' ' + 'días';
     this.photo = this.img+this.data.foto;
     this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
-      //console.log('historial:',respuesta);
+    console.log("ID DEL CLIENTE: ", this.data.idCliente);
       this.membresiaHisto = respuesta;
       this.dataSource = new MatTableDataSource(this.membresiaHisto);
       this.dataSource.paginator = this.paginator;
@@ -170,5 +172,9 @@ export class EmergenteInfoClienteComponent implements OnInit{
         });
       }, error: (error) => { console.log(error); }
     });
+  }
+
+  capturarHuella(): void {
+    console.log("URL QUE ABRE EL BOTON DE CAPTURAR HUELLA: ",this.url);
   }
 }

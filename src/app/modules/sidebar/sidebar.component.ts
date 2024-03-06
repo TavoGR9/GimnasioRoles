@@ -6,6 +6,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { MatDrawerMode } from '@angular/material/sidenav';
 import { RegistroComponent } from '../registro/registro.component';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { EmergenteAccesosComponent } from '../emergente-accesos/emergente-accesos.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -81,6 +82,22 @@ export class SidebarComponent {
           // Aquí puedes realizar acciones si se desea cerrar el diálogo
         } else {
           // Aquí puedes realizar acciones si se cancela el cierre del diálogo
+        }
+      });
+  }
+
+  abrirAcceso() {
+    this.dialog
+      .open(EmergenteAccesosComponent, {
+        //data: `Membresía agregada exitosamente`,
+        width: '500px',
+        height: '500px',
+      })
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+          //this.router.navigateByUrl('/admin/listaMembresias');
+        } else {
         }
       });
   }

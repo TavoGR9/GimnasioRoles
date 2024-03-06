@@ -112,6 +112,7 @@ import { ArchivosComponent } from './archivos/archivos.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgChartsModule } from 'ng2-charts';
+import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos.component';
 
 
 
@@ -184,7 +185,8 @@ import { NgChartsModule } from 'ng2-charts';
     planEditarComponent,
     ArchivosComponent,
     SidebarComponent,
-    EditarProductoLineaComponent
+    EditarProductoLineaComponent,
+    EmergenteAccesosComponent
     //InventarioComponent
   ],
   imports: [
