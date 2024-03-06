@@ -80,6 +80,11 @@
             <mat-icon>person</mat-icon> 
             Registro 
         </button>
+
+        <button *ngIf="isAdmin() || isRecep()" (click)="abrirAcceso()" class="hover-orange transparent-button"> 
+            <mat-icon>person</mat-icon> 
+            Acceso manual
+        </button>
         
         <button (click)="logoutBS()" class="hover-orange transparent-button">  
             <mat-icon>power_settings_new</mat-icon> 
