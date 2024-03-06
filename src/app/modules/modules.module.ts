@@ -104,6 +104,7 @@ import { planComponent } from './plan-lista/membresias.component';
 import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { EditarProductoLineaComponent } from './editar-productoLinea/editar-producto.component';
 
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -182,7 +183,8 @@ import { NgChartsModule } from 'ng2-charts';
     planAgregarComponent,
     planEditarComponent,
     ArchivosComponent,
-    SidebarComponent
+    SidebarComponent,
+    EditarProductoLineaComponent
     //InventarioComponent
   ],
   imports: [
