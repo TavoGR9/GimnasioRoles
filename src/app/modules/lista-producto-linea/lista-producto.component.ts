@@ -3,6 +3,7 @@ import { ProductoService } from '../../service/producto.service';
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { CrearProductoLineaComponent } from '../crearProductoLinea/crearProducto.component';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { EditarProductoLineaComponent } from '../editar-productoLinea/editar-producto.component';
 
 @Component({
   selector: 'app-lista-producto',
@@ -62,5 +63,16 @@ export class ListaProductoLineaComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
      
     });
+  }
+
+  abrirDialogoEditar(id: any){
+    console.log(id, "este es el id que llega");
+    const dialogRef = this.dialog.open(EditarProductoLineaComponent, {
+      width: '60%',
+      height: '90%',
+      disableClose: true,
+      data: {idProducto: id},
+    });
+
   }
 }

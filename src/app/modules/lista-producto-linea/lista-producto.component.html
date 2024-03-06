@@ -36,9 +36,12 @@
                   </td>                 
                   <td>{{ producto.Categoria_idCategoria }}</td>
                   <td> 
-                    <button mat-icon-button color="primary" routerLink="/admin/editar-producto/{{ producto.idProducto}}">
+                   <!-- <button mat-icon-button color="primary" routerLink="/admin/editar-producto/{{ producto.idProducto}}">
                         <mat-icon>edit</mat-icon>
-                      </button>    
+                      </button>  -->  
+                      <button mat-icon-button color="primary" (click)="abrirDialogoEditar(producto.idProducto)">
+                        <mat-icon>edit</mat-icon>
+                      </button>  
                     </td>
                 </tr>
               </tbody>

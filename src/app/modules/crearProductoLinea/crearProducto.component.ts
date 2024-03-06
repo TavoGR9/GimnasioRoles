@@ -196,6 +196,7 @@ export class CrearProductoLineaComponent implements OnInit {
                 });
               },
             });
+            this.dialogRef.close(true);
           } else {
             this.toastr.error(respuesta.message, 'Error', {
               positionClass: 'toast-bottom-left',

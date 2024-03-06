@@ -15,6 +15,7 @@ export class ProductoService {
    API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/joinDetalleProducto.php';
    API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/productoSucursal.php';
    API3: string =  'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/producto2.php';
+   API4: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/ventaProductos.php';
 
    
    //API2: string = 'http://localhost/plan/joinDetalleProducto.php'
@@ -114,6 +115,11 @@ export class ProductoService {
 
     consultarProductosJ(idProducto: number | null): Observable<any[]> {
       const url = `${this.API2}?idProducto=${idProducto}`;
+      return this.clienteHttp.get<any[]>(url);
+    }
+
+    consultarProductos(idProducto: number | null): Observable<any[]> {
+      const url = `${this.API4}?idProducto=${idProducto}`;
       return this.clienteHttp.get<any[]>(url);
     }
 
