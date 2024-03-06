@@ -18,7 +18,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 })
 
 export class EmergenteInfoClienteComponent implements OnInit{
-  url: string = `huellA://?id=${this.data.idCliente}`;
+  url: string = `Finger://?id=${this.data.idCliente}`;
   currentDate: Date = new Date();
   duracion: any;
   photo: any;
