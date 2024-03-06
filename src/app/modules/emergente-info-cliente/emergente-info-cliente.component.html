@@ -139,11 +139,12 @@
   </div>
   <mat-paginator #paginatorHistorialMembre [pageSizeOptions]="[5, 10, 25, 50, 100]"
     showFirstLastButtons></mat-paginator>
-
 </div>
 <div mat-dialog-actions fxLayoutAlign="center center">
   <button mat-button (click)="abrirPuertoSerial(data)" (click)="cerrarDialogo()">Acceso manual</button>
   <button mat-button (click)="abrirDialogFoto(data)" (click)="cerrarDialogo()">Tomar Foto</button>
-  <button mat-button (click)="abrirDialogCapturarHuella(data)" (click)="cerrarDialogo()">Capturar huella</button>
+  <!--<button mat-button (click)="cerrarDialogo()">Capturar huella</button>-->
+  <button mat-button (click)="capturarHuella()"><a href="{{url}}">Capturar huella</a></button> 
+  <!--<a href="#">{{url}}</a>-->
   <button mat-button (click)="cerrarDialogo()">Cerrar</button>
 </div>
