@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { PagoMembresiaEfectivoService } from 'src/app/service/pago-membresia-efectivo.service';
+import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
 import { MatTableDataSource } from '@angular/material/table'; //para controlar los datos del api y ponerlos en una tabla
 import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { FormPagoEmergenteComponent } from '../form-pago-emergente/form-pago-emergente.component';
 import { MensajeListaComponent } from '../ListaClientes/mensaje-cargando.component';
-import { listarClientesService } from 'src/app/service/listarClientes.service';
+import { listarClientesService } from '../../service/listarClientes.service';
 import { ClienteService } from 'src/app/service/cliente.service';
 import { HuellaService } from 'src/app/service/huella.service';
 import * as XLSX from 'xlsx';
@@ -318,6 +318,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                 sucursal: `${prod.Sucursal}`,
                 membresia: `${prod.Membresia}`,
                 precio: `${prod.Precio}`,
+                huella: `${prod.huella}`,
                 duracion: `${prod.Duracion}`,
                 idSucursal: `${prod.Gimnasio_idGimnasio}`,
                 infoMembresia: `${prod.Info_Membresia}`,

@@ -15,7 +15,8 @@ import {
 import { format } from "date-fns";
 import { ToastrService } from "ngx-toastr";
 import { ChartOptions, ChartType, ChartDataset } from "chart.js";
-import { AnalyticsService } from '../../service/analytics.service';
+import { HomeService } from '../../service/home.service';
+import { convertToObject } from 'typescript';
 
 @Component({
   selector: 'app-home',
@@ -48,8 +49,10 @@ export class HomeComponent implements OnInit{
   datosRecientesVentas: any;
   datosClientesActivos: any;
   clientesActivos: any;
+  homeCard: any;
   
-  constructor(private analyticsService: AnalyticsService,private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
+  constructor(private homeService: HomeService,
+    private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
   }
 
   ngOnInit(): void {
@@ -80,7 +83,6 @@ export class HomeComponent implements OnInit{
     });
   }
 
-  /* roles de usuario */
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
@@ -114,54 +116,17 @@ export class HomeComponent implements OnInit{
   }
 
   listaTablas() {
-  this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
-    (data) => {
-      this.detallesCaja = data;
-      const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
-      this.fechaFiltro = fechaActual;
+    this.homeService.consultarHome(this.idGym).subscribe(respuesta => {
+      this.homeCard = respuesta
+    });
 
-      // Calcular el total de ventas y productos vendidos para la fecha actual
-      const { totalVentas, totalProductosVendidos } = this.detallesCaja.reduce((acumulador, detalle) => {
-        const cantidadElegida = parseFloat(detalle.cantidadElegida);
-        const precioUnitario = parseFloat(detalle.precioUnitario);
-        const totalVentaPorProducto = cantidadElegida * precioUnitario;
+    this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
+      this.datosProductosVendidos = data;
+    });
 
-        // Verificar si la fecha de venta coincide con la fecha actual
-        if (detalle.fechaVenta === fechaActual) {
-          acumulador.totalVentas += totalVentaPorProducto;
-          acumulador.totalProductosVendidos += cantidadElegida;
-        }
-
-        return acumulador;
-      }, { totalVentas: 0, totalProductosVendidos: 0 });
-
-      this.totalVentas = totalVentas;
-      this.totalProductosVendidos = totalProductosVendidos;
-    },
-    (error) => {
-      console.error("Error al obtener detalles de la caja:", error);
-    }
-  );
-
-
-  this.analyticsService.getAnalyticsData(this.idGym).subscribe((data) => {
-    this.datosProductosVendidos = data;
-  });
-
-
-  this.analyticsService.getARecientesVentas(this.idGym).subscribe((data) => {
-    this.datosRecientesVentas = data;
-  });
-
-
-  this.analyticsService.getClientesActivos(this.idGym).subscribe((data) => {
-    this.datosClientesActivos = data;
-    const cantidadClientesActivos = this.datosClientesActivos.length;
-    this.clientesActivos = cantidadClientesActivos;  
-  });
-  
-
+    this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
+      this.datosRecientesVentas = data;
+    });
 }
-
 
 }

@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class notificaciones {
+
+  //Servicio para enviar notificaciones.
  
   API: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/enviarNotificacion.php';
   APITra: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/enviarNotificacionTrabajador.php';

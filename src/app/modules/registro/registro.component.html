@@ -28,7 +28,7 @@
               <div class="row">
                  <div class="col-md-6">
                   <div >
-                     <h2><strong> Sube tu imagen.</strong></h2>
+                     <h2><strong> Sube tu foto.</strong></h2>
                      <input accept="image/*" type="file" name="image" class="d-none" (change)="onPhotoSelected($event)" #photoInput />
                      <img
                        [src]="photoSelected || 'https://images.vexels.com/media/users/3/137047/isolated/lists/5831a17a290077c646a48c4db78a81bb-icono-de-perfil-de-usuario-azul.png'"
@@ -49,7 +49,6 @@
                    </div>
                    
                     <div>
-                       <br>
                        <button mat-menu-item (click)="show_option('up')" >
                           <mat-icon>add_photo_alternate</mat-icon>
                           <span (click)="photoInput.click()">Subir imagen</span>
@@ -57,14 +56,15 @@
                        <button mat-menu-item (click)="show_option('take')">
                           <mat-icon>add_a_photo</mat-icon>
                           <span>Tomar foto</span>
-                          <br>
                        </button>
-                       <div class="card-body content_profile_img">
-                          <div class="content_take_picture" *ngIf="actualizar_imagen === 'take'">
-                             <div *ngIf="showWebcam" class="mb-3 mt-3">
+
+                       <div >
+                        <br>
+                          <div *ngIf="actualizar_imagen === 'take'">
+                             <div *ngIf="showWebcam">
                                 <webcam
-                                [height]="500"
-                                [width]="500"
+                                [height]="400"
+                                [width]="400"
                                 [trigger]="triggerObservable"
                                 (imageCapture)="handleImage($event)"
                                 *ngIf="showWebcam"
@@ -77,11 +77,21 @@
                                 >
                                 </webcam>
                              </div>
-                             <button (click)="triggerSnapshot()" class="btn btn-primary" *ngIf="!webcamImage">Tomar foto</button>
+                             <button (click)="triggerSnapshot()" *ngIf="!webcamImage">Tomar foto</button>
                           </div>
                        </div>
                     </div>
                  </div>
+
+
+
+
+
+
+
+
+
+                 
                  <div class="col-sm-6">
                     <div class="row">
                        <div class="col-sm-6">

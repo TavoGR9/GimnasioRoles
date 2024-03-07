@@ -8,6 +8,9 @@ import { tap } from 'rxjs/operators';
 })
 
 export class ColaboradorService {
+
+    //Servicio para la manipulacion de datos de un colaborador.
+
     private categoriasSubject = new BehaviorSubject<any[]>([]);
 
     API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/empleado.php';
@@ -23,29 +26,23 @@ export class ColaboradorService {
         return this.clienteHttp.get(this.API+"?nameGym="+gimName);
     }
 
-    
-
     //servicio correspondiente al registro-alta de nuevo colaborador
     agregarEmpleado(datosEmpleado: registrarEmpleado):Observable<any>{
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         return this.clienteHttp.post<msgResult>(this.API+"?addEmpleado",datosEmpleado, {headers})
     }
 
-
-
     comboDatosAllGym(){
         return this.clienteHttp.get(this.API+"?nomAllGym");
     }
 
-
     listaColaboradores():Observable<any[]>{
-        return this.clienteHttp.get<any[]>(this.API+"?tEmp");
-        
+        return this.clienteHttp.get<any[]>(this.API+"?tEmp");   
     }
 
-      getCategoriasSubject() {
+    getCategoriasSubject() {
         return this.categoriasSubject.asObservable();
-      }
+    }
 
     listaRecepcionistas(idGym: any):Observable<any[]>{
         return this.clienteHttp.get<any[]>(this.API+"?tEmpRec="+idGym)
@@ -65,7 +62,6 @@ export class ColaboradorService {
     actualizaEmpleado(id: any, datosEmpleado: listaEmpleados):Observable<any>{
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         return this.clienteHttp.post<msgResult>(this.API+"?actEmp="+id,datosEmpleado, {headers});
-    }
-    
+    }   
   }
   

@@ -9,8 +9,8 @@ export class PlanService {
  
   //API: string ="http://localhost/plan/membresia.php";
   API: string ="https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/membresia.php";
-  API2: string = "https://olympus.arvispace.com/conPrincipal/Membresia.php";
-  API3: string = "https://olympus.arvispace.com/conPrincipal/servicesMembresia.php";
+  API2: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/Membresia.php";
+  API3: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/servicesMembresia.php";
 
   public optionShow: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public showServices: BehaviorSubject<any> = new BehaviorSubject<any>([]);
@@ -32,9 +32,7 @@ export class PlanService {
   obternerPlan(){
     return this.clienteHttp.get(this.API)
   }
-
-
-
+  
   consultarPlan(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultar="+id);
   }

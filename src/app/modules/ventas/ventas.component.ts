@@ -37,8 +37,7 @@ import { takeUntil } from 'rxjs/operators';
 import { HomeComponent } from "../home/home.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { detalleVenta } from "src/app/models/detalleVenta";
-
-
+import { DialogStateService } from "../../service/dialogState.service";
 interface Cliente {
   ID_Cliente: number;
   nombre: string;
@@ -52,6 +51,7 @@ interface Cliente {
   styleUrls: ["./ventas.component.css"],
 })
 export class VentasComponent implements OnInit {
+  isMaximized = false;
   formularioCaja: FormGroup;
   productosArray: FormArray;
   formularioDetalleVenta: FormGroup;
@@ -132,6 +132,7 @@ export class VentasComponent implements OnInit {
     private productoService: ProductoService,
     private InventarioService: inventarioService,
     private changeDetectorRef: ChangeDetectorRef,
+    private dialogStateService: DialogStateService,
     private ListarClientesService: listarClientesService,
     private joinDetalleVentaService: JoinDetalleVentaService,
   ) {
@@ -185,6 +186,11 @@ export class VentasComponent implements OnInit {
   ejecutarServicio(): void {
     this.DetalleVenta.obternerEstatus().subscribe((result) => {
     });
+  }
+
+  toggleMaximize() {
+    this.isMaximized = !this.isMaximized;
+    this.dialogStateService.updateMaximizeState(this.isMaximized);
   }
   
   private destroy$: Subject<void> = new Subject<void>();

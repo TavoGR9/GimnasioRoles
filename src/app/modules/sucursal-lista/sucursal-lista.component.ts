@@ -105,7 +105,8 @@ export class SucursalListaComponent implements OnInit {
       if (result) {
         // Invertir el valor del estatus
         const nuevoEstatus = gimnasio.estatus == 1 ? 0 : 1;
-  
+        
+        console.log(nuevoEstatus, "nuevoEstatus");
         // Actualizar la base de datos y refrescar los datos
         this.gimnasioService.actualizarEstatus(idGimnasio, nuevoEstatus).subscribe(
           (response) => {
@@ -183,7 +184,7 @@ export class SucursalListaComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit(): void {
-
+   
     this.gimnasioService.obternerPlan().subscribe((data) => {
       this.gimnasio = data;
       this.dataSource = new MatTableDataSource(this.gimnasio);
@@ -366,9 +367,9 @@ export class SucursalListaComponent implements OnInit {
       this.page -= 5;
   }
 
-  onSearchPokemon( search: string ) {
-    this.page = 0;
-    this.search = search.toLowerCase();
+  onSearchPokemon( search: Event ) {
+    const filterValue = (search.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   pageNumber = 0; // Valor inicial de la página

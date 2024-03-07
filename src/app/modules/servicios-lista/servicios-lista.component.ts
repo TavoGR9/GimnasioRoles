@@ -12,6 +12,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 //import { DialogSelectMembershipComponent } from '../dialog-select-membership/dialog-select-membership.component';
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
+import { DialogStateService } from "../../service/dialogState.service";
 
 @Component({
   selector: "app-servicios-lista",
@@ -33,6 +34,7 @@ export class ServiciosListaComponent {
   confirmButton: boolean = false;
   membresiaActiva: boolean = true; 
   displayedColumns: string[] = ["title", "details", "price", "actions"];
+  dialogRef: any;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -43,6 +45,7 @@ export class ServiciosListaComponent {
     private cd: ChangeDetectorRef,
     private planService: PlanService,
     private gimnasioService: GimnasioService,
+    private dialogStateService: DialogStateService
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +57,16 @@ export class ServiciosListaComponent {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
+    });
+
+    this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
+      if (this.dialogRef) {
+        if (isMaximized) {
+          this.dialogRef.updateSize('100vw', '100vh');
+        } else {
+          this.dialogRef.updateSize('auto', 'auto');
+        }
+      }
     });
   }
 
@@ -119,13 +132,14 @@ export class ServiciosListaComponent {
   openDialog(): void {
     this.seleccionado = 1;
     this.planService.seleccionado.next(this.seleccionado);
-    const dialogRef = this.dialog.open(ServiceDialogComponent, {
+    this.dialogRef = this.dialog.open(ServiceDialogComponent, {
       width: "55%",
       height: "60%",
       data: { name: "¿para quien es esta membresia?" },
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result) => {
+    
+   this.dialogRef.afterClosed().subscribe((result: any) => {
       this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
         this.services = res;
         this.dataSource = new MatTableDataSource(this.services);

@@ -17,7 +17,7 @@ export class GimnasioService {
   Api_home: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio2.php'
   APIGym: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
-  APISERVICE: string = 'https://olympus.arvispace.com/puntoDeVenta/conf/serviciosGym.php';
+  APISERVICE: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/serviciosGym.php';
 
   //para guardar los headers que manda el API
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });

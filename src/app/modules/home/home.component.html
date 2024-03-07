@@ -1,66 +1,27 @@
 <div style="margin-top: 60px;">
-
 <mat-card *ngIf="isAdmin() || isRecep()">
-   <mat-card-content>
-     <div class="dashboard-cards">
-       <!-- Tarjeta 1: Naranja -->
-       <mat-card class="orange-card">
-         <mat-card-header>
-           <mat-card-title>Ventas del dia:</mat-card-title>
-           <!--<mat-card-title>VENTAS DEL DIA - {{ fechaActual | date:'yyyy-MM-dd' }}</mat-card-title>-->
-         </mat-card-header>
-         <mat-card-content>
-            <br>
-            <div class="row">
-            <div class="col-sm-5">
-               <img src="../../../../../assets/img/ventasPro.png" alt="Imagen Naranja" class="card-image">
-             </div>
-             <div class="col-sm-7">
-              <br>
-               <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ totalVentas }}</p>
-             </div>
-            </div>
-         </mat-card-content>
-       </mat-card>
-
-       <mat-card class="navy-card">
-         <mat-card-header>
-           <mat-card-title style="color: rgb(0, 0, 0);">Productos vendidos del dia:</mat-card-title>
-         </mat-card-header>
-         <mat-card-content>
-            <br>
-            <div class="row">
-               <div class="col-sm-5">
-                  <img src="../../../../../assets/img/ventas.png" alt="Imagen Azul Marino" class="card-image">
-                </div>
-                <div class="col-sm-7">
-                  <br>
-                  <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif;">{{ totalProductosVendidos }}</p>
-                </div>
-               </div>
-         </mat-card-content>
-       </mat-card>
-
-       <mat-card class="white-card">
+  <mat-card-content>
+    <div class="dashboard-cards">
+      <mat-card class="orange-card" *ngFor="let card of homeCard">
         <mat-card-header>
-          <mat-card-title>Clientes activos:</mat-card-title>
+          <mat-card-title>{{card.titulo}}</mat-card-title>
+          <!--<mat-card-title>VENTAS DEL DIA - {{ fechaActual | date:'yyyy-MM-dd' }}</mat-card-title>-->
         </mat-card-header>
         <mat-card-content>
-           <br>
-           <div class="row">
-              <div class="col-sm-5">
-                 <img src="../../../../../assets/img/cliente.png" alt="Imagen Blanca" class="card-image">
-               </div>
-               <div class="col-sm-7">
-                 <br>
-                 <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif;">{{ clientesActivos }}</p>
-               </div>
-               
-              </div>
+          <br>
+          <div class="row">
+          <div class="col-sm-5">
+              <img src="https://olympus.arvispace.com/gimnasioRoles/assets/img/{{card.icono}}" alt="icnono" class="card-image">
+            </div>
+            <div class="col-sm-7">
+            <br>
+              <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
+            </div>
+          </div>
         </mat-card-content>
       </mat-card>
-     </div>
-   </mat-card-content>
+    </div>
+  </mat-card-content>
 </mat-card>
  
 <mat-card *ngIf="isAdmin() || isRecep()">
@@ -165,8 +126,8 @@
 
 
     
-      <div class="row">
-        <!-- Primera tarjeta -->
+     <!--<div class="row">
+  
         <div class="col-sm-9">
           <mat-card *ngIf="isSupadmin()" class="sup-card" routerLink="../listaSucursales" >
             <mat-card-header>
@@ -190,12 +151,12 @@
           </mat-card> 
         </div>
       
-        <!-- Segunda tarjeta -->
+ 
         <div class="col-sm3">
           <mat-card *ngIf="isSupadmin()" class="sup-card" routerLink="../otraRuta">
-            <!-- ... (Contenido de la segunda tarjeta) ... -->
+         
           </mat-card>
         </div>
-      </div>
+      </div>--> 
       
 </div>

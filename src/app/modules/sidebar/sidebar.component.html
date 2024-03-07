@@ -6,7 +6,7 @@
               <img src="../../../../../assets/img/logo3.png" alt="Logo de la aplicación" width="100%">
             </div>
         <mat-nav-list >
-        <button routerLink="./home" class="hover-orange transparent-button">
+        <button *ngIf="isAdmin() || isRecep()" routerLink="./home" class="hover-orange transparent-button">
             <mat-icon>home</mat-icon> 
             Inicio 
         </button>
@@ -16,10 +16,10 @@
             Sucursales 
         </button>
         
-        <button *ngIf="isSupadmin()" routerLink="./lista-productoLinea" class="hover-orange transparent-button"> 
+      <!-- <button *ngIf="isSupadmin()" routerLink="./lista-productoLinea" class="hover-orange transparent-button"> 
             <mat-icon>store</mat-icon> 
             Productos en línea 
-        </button>
+        </button>--> 
         
         <button *ngIf="isSupadmin()" routerLink="./estadisticas" class="hover-orange transparent-button">  
             <mat-icon>bar_chart</mat-icon> 

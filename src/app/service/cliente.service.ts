@@ -9,8 +9,10 @@ import { Cliente } from '../models/Cliente';
   providedIn: 'root'
 })
 export class ClienteService {
-  httpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
+  //Servicio para el registro y actualizaciones del cliente.
+
+  httpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
   URLServices: String = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/registros.php"; 
   URL: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/formaPago.php/";
   apiFoto: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/update_image.php";

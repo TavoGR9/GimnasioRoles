@@ -113,9 +113,9 @@ export class ColaboradoresComponent {
       this.page -= 5;
   }
 
-  onSearchPokemon( search: string ) {
-    this.page = 0;
-    this.search = search;
+  onSearchPokemon( search: Event ) {
+    const filterValue = (search.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   OpenAgregar() {

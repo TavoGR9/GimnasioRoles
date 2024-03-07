@@ -53,17 +53,25 @@ export class RoleGuard implements CanActivate {
     // Aquí obtén el rol del usuario utilizando el método getRole de AuthService
     const userRole = this.authService.getRole();
   
-    if (expectedRole === 'Administrador' || expectedRole === 'Recepcionista') {
+    if (expectedRole === 'Administrador' || expectedRole === 'Recepcionista' ) {
       // Permitir acceso para 'Administrador' y 'Recepcionista' a la ruta específica
       return true;
-    } else if (expectedRole === 'SuperAdmin' && this.authService.isSupadmin()) {
+    } 
+    else if (userRole === 'SuperAdmin' && expectedRole === 'SuperAdmin') {
       // Permitir acceso para 'SuperAdmin' si el usuario tiene ese rol
       return true;
-    } else {
-      // El usuario no tiene el rol esperado, redirigir a una página de acceso no autorizado o a la página principal
-      this.router.navigate(['/home']);
-      return false;
+    } 
+    else {
+      if(userRole === 'SuperAdmin'){
+        this.router.navigate(['/listaSucursales']);
+        return false; // Añade este retorno si el acceso es permitido
+      } else{
+        // El usuario no tiene el rol esperado, redirigir a una página de acceso no autorizado o a la página principal
+        this.router.navigate(['/home']);
+        return false;
+      }
     }
+    
   }
   
 

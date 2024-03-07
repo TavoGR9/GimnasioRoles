@@ -8,7 +8,7 @@ import { detalleVenta } from '../models/detalleVenta';
 })
 export class DetalleVentaService {
 
-  //API: string = 'https://localhost/plan/detalle_venta.php'
+  //Servicio que manipula los datos de las ventas y el estatus.
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/detalle_venta.php'
   API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/estatus.php'
 

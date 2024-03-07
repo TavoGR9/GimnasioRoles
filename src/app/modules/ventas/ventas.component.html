@@ -57,6 +57,9 @@
       </form>-->
    <div class="title"  mat-dialog-title>
       <label>VENTAS</label>
+      <button mat-icon-button (click)="toggleMaximize()">
+         <mat-icon>{{ isMaximized ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+       </button>
    </div>
    <div  mat-dialog-content>
       <!-- <div *ngIf="mostrarProductos && cerrarCaja">

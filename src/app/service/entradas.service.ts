@@ -11,6 +11,7 @@ import { ListaProductos } from '../models/listaProductos';
   providedIn: 'root',
 })
 export class EntradasService {
+  //Servicio que sirve para dar entrada a productos
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/entradas.php';
   constructor(private clienteHttp: HttpClient) {}
 

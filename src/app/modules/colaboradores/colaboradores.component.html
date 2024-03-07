@@ -9,7 +9,7 @@
       <mat-form-field class="example-full-width">
           <mat-label>Nombre de colaborador</mat-label>
           <span matPrefix class="icon_search"><mat-icon>search</mat-icon></span>
-          <input matInput placeholder="Nombre colaborador" #txtSearch (keyup)="onSearchPokemon( txtSearch.value )">
+          <input matInput placeholder="Nombre colaborador" #txtSearch (keyup)="onSearchPokemon($event)">
         </mat-form-field>
   </div>
   <div class="row">

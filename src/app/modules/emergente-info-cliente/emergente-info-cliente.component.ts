@@ -22,6 +22,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
   currentDate: Date = new Date();
   duracion: any;
   photo: any;
+  huella: any;
   img = 'https://';
   dataSource: any;
   //titulos de columnas de la tabla Reenovacion de membresias
@@ -71,11 +72,10 @@ export class EmergenteInfoClienteComponent implements OnInit{
   }*/
 
   ngOnInit() {
-    console.log("URL QUE SE PASA: ",this.url);
     this.duracion = this.data.duracion + ' ' + 'días';
     this.photo = this.img+this.data.foto;
+    this.huella = this.data.huella;
     this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
-    console.log("ID DEL CLIENTE: ", this.data.idCliente);
       this.membresiaHisto = respuesta;
       this.dataSource = new MatTableDataSource(this.membresiaHisto);
       this.dataSource.paginator = this.paginator;

@@ -10,15 +10,6 @@ export class AnalyticsService {
 
   constructor(private http: HttpClient) {}
 
-  getAnalyticsData(sucursalId: any): Observable<any> {
-    return this.http.get(this.apiUrl+"?consultarProductosVendidos="+sucursalId);
-  }
 
-  getARecientesVentas(sucursalId: any): Observable<any> {
-    return this.http.get(this.apiUrl+"?consultarVentasVendidas="+sucursalId);
-  }
-
-  getClientesActivos(sucursalId: any): Observable<any> {
-    return this.http.get(this.apiUrl+"?consultarClientesActivos="+sucursalId);
-  }
+ 
 }
