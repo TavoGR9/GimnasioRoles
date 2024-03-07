@@ -5,7 +5,6 @@
             <mat-form-field class="example-full-width">
               <mat-label>ID Cliente</mat-label>
               <input type="number" matInput [formControl]="IdFormControl" [errorStateMatcher]="matcher" placeholder="10">
-              <mat-error *ngIf="IdFormControl.hasError('required')">Campo <strong>requerido</strong></mat-error>
             </mat-form-field>
             <button class="container" mat-raised-button color="primary" (click)="buscarCliente()"><mat-icon >search</mat-icon>Buscar</button>
         </form>
