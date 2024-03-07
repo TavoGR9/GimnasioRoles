@@ -2,7 +2,13 @@
 <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true">
    <p style="color: white" > Cargando... </p>
 </ngx-spinner>
-<label class="title" mat-dialog-title>SERVICIOS</label>
+<div class="title" mat-dialog-title>
+   <!--<button mat-icon-button (click)="toggleMaximize()">
+      <mat-icon>{{ isMaximized ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+    </button>-->
+    <label >SERVICIOS</label>
+</div>
+
 <div mat-dialog-content>
    <form [formGroup]="serviceForm" >
       <br>

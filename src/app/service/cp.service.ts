@@ -9,6 +9,7 @@ import axios from 'axios';
 })
 export class PostalCodeService {
 
+  //Servicio que obtiene los datos mediante el codigo postal
   private apiUrl = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/cp.php';
 
   constructor(private http: HttpClient) { }

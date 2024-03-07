@@ -6,6 +6,7 @@ import { MatDialogRef, MatDialog } from "@angular/material/dialog";
 import { RouterLink, Router } from "@angular/router";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { NgxSpinnerService } from "ngx-spinner";
+import { DialogStateService } from "../../service/dialogState.service";
 
 @Component({
   selector: "app-service-dialog",
@@ -19,6 +20,7 @@ export class ServiceDialogComponent implements OnInit {
   service: Service | null = null;
   seleccionado: number = 0;
   message: string = "";
+  isMaximized = false;
 
   constructor(
     private router: Router,
@@ -26,6 +28,7 @@ export class ServiceDialogComponent implements OnInit {
     public dialog: MatDialog,
     private auth: AuthService,
     private planService: PlanService,
+    private dialogStateService: DialogStateService,
     private spinner: NgxSpinnerService,
     private dialogRef: MatDialogRef<ServiceDialogComponent>,
     private dialogRefConfirm: MatDialogRef<MensajeEmergentesComponent>,
@@ -38,6 +41,12 @@ export class ServiceDialogComponent implements OnInit {
       fk_idGimnasio: [0],
     });
   }
+
+  toggleMaximize() {
+    this.isMaximized = !this.isMaximized;
+    this.dialogStateService.updateMaximizeState(this.isMaximized);
+  }
+
 
   ngOnInit(): void {
     this.auth.idGym.subscribe((id) => {

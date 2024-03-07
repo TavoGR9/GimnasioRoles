@@ -8,9 +8,8 @@ import { caja } from '../models/caja';
 })
 export class CajaService {
 
-//API: string = 'https://localhost/plan/caja.php'
-
-API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/caja.php'
+  //Servicio que se utiliza para obtener y guardar los datos de una caja.
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/caja.php'
  
   constructor(private clienteHttp:HttpClient) {
   }
@@ -19,11 +18,8 @@ API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepci
     return this.clienteHttp.get(this.API)
   }
 
-  // Angular service method
   agregarCaja(datoscaja: caja):Observable<any>{
-    console.log("llega")
     return this.clienteHttp.post(this.API+"?insertar=1", datoscaja);
-    
   }
 
   actualizarCaja(id:any,datoscaja:any):Observable<any>{
@@ -36,7 +32,6 @@ API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepci
 
   borrarCaja(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?borrar="+id)
-    //this.message = "¡Error al eliminar!, Restricción en la base de datos";
   }
 
 }

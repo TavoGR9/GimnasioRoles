@@ -89,6 +89,7 @@ export class RegistroComponent implements OnInit {
   actualizar_imagen: string = '';
   photoSelected: string | ArrayBuffer | null;
   public errors: WebcamInitError[] = [];
+  selectedFile: File | null = null;
   idMemGlobal: any;
   imageUrl =
     "https://images.vexels.com/media/users/3/137047/isolated/preview/5831a17a290077c646a48c4db78a81bb-icono-de-perfil-de-usuario-azul.png"; // URL de la imagen por defecto
@@ -102,22 +103,9 @@ export class RegistroComponent implements OnInit {
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
   }
-  public handleImage(webcamImage: WebcamImage): void {
-    this.webcamImage = webcamImage;
-    // Almacenar la imagen en el objeto Archivo
-    this.archivo.base64textString = this.webcamImage.imageAsBase64;
-    // Agregar el nombre al archivo - como tal la foto tomada no tiene nombre - por lo que se le asigna uno
-    const timestamp = new Date().getTime();
-    this.archivo.nombreArchivo = `imagen_${timestamp}.png`;
+
+
   
-    // Asignar la URL de la imagen tomada a photoSelected
-    this.photoSelected = this.webcamImage.imageAsDataUrl;
-   
-  }
-  
-
-
-
   public get nextWebcamObservable(): Observable<boolean | string> {
     return this.nextWebcam.asObservable();
   }
@@ -228,7 +216,7 @@ export class RegistroComponent implements OnInit {
       this.dialogo.close(true);
     }
 
-  selectedFile: File | null = null;
+ 
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -245,9 +233,6 @@ export class RegistroComponent implements OnInit {
     }
   }
   
-
-
-
   takeSnapshot() {
     if (this.videoElement && this.defaultImage) {
       const video = this.videoElement.nativeElement;
@@ -326,6 +311,8 @@ export class RegistroComponent implements OnInit {
     // Ocultar la camaraweb despues de tomar la foto
     this.toggleWebcam();
   }
+
+
   public toggleWebcam(): void {
     this.showWebcam = !this.showWebcam;
   }
@@ -340,6 +327,7 @@ export class RegistroComponent implements OnInit {
     this.archivo.base64textString = '';
     this.archivo.nombreArchivo = '';
   }
+
   file: File;
   stopCamera() {
     if (this.videoElement) {
@@ -411,10 +399,28 @@ export class RegistroComponent implements OnInit {
   }
 
   // Codificar la imagen a base64
+
+  handleImage(webcamImage: WebcamImage): void {
+    this.webcamImage = webcamImage;
+    // Almacenar la imagen en el objeto Archivo
+    this.archivo.base64textString = this.webcamImage.imageAsBase64;
+    // Agregar el nombre al archivo - como tal la foto tomada no tiene nombre - por lo que se le asigna uno
+    const timestamp = new Date().getTime();
+    this.archivo.nombreArchivo = `imagen_${timestamp}.png`;
+  
+    // Asignar la URL de la imagen tomada a photoSelected
+    this.photoSelected = this.webcamImage.imageAsDataUrl;
+
+    this.form.patchValue({
+      base64textString: this.webcamImage.imageAsBase64,
+      nombreArchivo: this.archivo.nombreArchivo,
+      fotoUrl: this.archivo.nombreArchivo
+    });  
+  }
+
   _handleReaderLoaded(readerEvent: any) {
     var binaryString = readerEvent.target.result;
     this.archivo.base64textString = btoa(binaryString);
-    
     this.uploadPhoto();
   }
 
@@ -435,6 +441,7 @@ export class RegistroComponent implements OnInit {
 
 
   registrar(): any {
+    console.log(this.form.value, "formulario");
     this.email = this.form.value.email;
     if (this.form.valid) {
       this.spinner.show();
@@ -511,5 +518,4 @@ export class RegistroComponent implements OnInit {
 
     }
   }
-
 }

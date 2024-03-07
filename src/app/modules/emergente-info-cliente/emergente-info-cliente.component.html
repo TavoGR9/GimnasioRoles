@@ -4,6 +4,9 @@
 <div class="row">
   <div class="col-sm-5">
     <img [src]="photo" class="size_image" alt="Imagen del Cliente no disponible" style="width: 90%;">
+    <div *ngIf="huella !== null">
+      <img src="https://olympus.arvispace.com/gimnasioRoles/assets/img/huella.png"/>
+    </div>    
   </div>
   <div class="col-sm-7">
     <form [formGroup]="form">

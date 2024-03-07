@@ -7,21 +7,12 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class ArchivoService {
+
+//Servicio para guardar archivos.
 API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/archivos.php';
 
-constructor(private clienteHttp: HttpClient) {}
-
-/*guardarArchivos(formData: FormData): Observable<any> {
-  const url = `${this.API}?insertarDoc`;  
-
-  return this.clienteHttp.post<any>(url, formData)
-    .pipe(
-      catchError(error => {
-        console.error('Error en la solicitud:', error);
-        return throwError('Error en la solicitud. Consulta la consola para más detalles.');
-      })
-    );
-}*/
+constructor(private clienteHttp: HttpClient) {
+}
 
 guardarArchivos(formData: FormData) {
   return this.clienteHttp.post(this.API, formData);

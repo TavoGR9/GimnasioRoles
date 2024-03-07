@@ -9,9 +9,9 @@
    <div style="margin-left: 70px;color:red;font-size: 20px;">{{message}}</div>
    <div class="mb-3">
        <mat-form-field class="example-full-width">
-           <mat-label>Nombre de la sucursal</mat-label>
+           <mat-label>Busca por columnas</mat-label>
            <span matPrefix class="icon_search"><mat-icon>search</mat-icon></span>
-           <input matInput placeholder="Nombre de la sucursal" #txtSearch (keyup)="onSearchPokemon( txtSearch.value )">
+           <input matInput placeholder="Busca por columnas" #txtSearch (keyup)="onSearchPokemon($event)">
          </mat-form-field>
    </div>
    
@@ -19,7 +19,6 @@
        <div  class="table-container">
            <table mat-table  [dataSource]="dataSource">
                <!-- Título Column -->
-
                <ng-container matColumnDef="estatus">
                    <th mat-header-cell *matHeaderCellDef>Estatus</th>
                    <td mat-cell *matCellDef="let item">

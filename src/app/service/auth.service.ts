@@ -11,6 +11,7 @@ import { msgResult } from '../models/empleado';
   providedIn: 'root'
 })
 export class AuthService {
+  //Servicio para la autentificacion
   //Trabajar con BehaviourSubjects
   public loggedIn = new BehaviorSubject<boolean>(false);
   public role = new BehaviorSubject<string>('');
@@ -20,6 +21,9 @@ export class AuthService {
   public nombreGym = new BehaviorSubject<string>('');
   public encryptedMail = new BehaviorSubject<string>(''); // Varible a utilizar en Sesion Storage
   private readonly USER_KEY = 'olympus'; // Manejar la sesion por Sesion Storage
+  usuarioRegistrado: any[] = [];
+  public ubicacion!: string;
+  idUsuario:number =0;
   
    //variable que guarda el endpoint en el srver API: string = 'conf/';
    API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
@@ -33,11 +37,6 @@ export class AuthService {
       this.encryptedMail.next(encryptedMail);
     }
   }
-  //public idGym!: number;
-  usuarioRegistrado: any[] = [];
-  public ubicacion!: string;
-  idUsuario:number =0;
-  
 
   //Metodos de login usando BehaviourSubject
   loginBS(data: User): Observable<any> {
@@ -139,7 +138,6 @@ dataUser(data: any): Observable<any> {
 testSpringBoot(data: any):Observable<any> {
   return this.clienteHttp.post<msgResult>(this.APIv2 + 'fingerAuth.php', data, { headers: this.httpHeaders});
 }
-
 
 hasAnyRole(expectedRoles: string[]): boolean {
   const userRole = this.role.getValue();

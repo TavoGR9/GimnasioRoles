@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { VentasComponent } from "../ventas/ventas.component";
+import { DialogStateService } from "../../service/dialogState.service";
 @Component({
   selector: 'app-ver-corte',
   templateUrl: './ver-corte.component.html',
@@ -25,6 +26,7 @@ export class VerCorteComponent implements OnInit  {
     public formulario: FormBuilder,
     private cajaService: CajaService,
     private joinDetalleVentaService: JoinDetalleVentaService,
+    private dialogStateService: DialogStateService,
     private toastr: ToastrService
   ) {
     const userId = this.auth.userId.getValue(); // id del usuario
@@ -49,14 +51,23 @@ export class VerCorteComponent implements OnInit  {
     "precioUnitario",
     "fechaVenta",
   ];
-  
+  dialogRef: any;
+
+
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   DetallesCaja: any;
 
   ngOnInit(): void {
-   
-
+    this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
+      if (this.dialogRef) {
+        if (isMaximized) {
+          this.dialogRef.updateSize('100vw', '100vh');
+        } else {
+          this.dialogRef.updateSize('auto', 'auto');
+        }
+      }
+    });
 
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
@@ -401,12 +412,12 @@ export class VerCorteComponent implements OnInit  {
   }
 
   ventas(): void {
-    const dialogRef = this.dialog.open(VentasComponent, {
+    this.dialogRef = this.dialog.open(VentasComponent, {
       width: '80%',
       height: '90%',
       disableClose: true
     });
-    dialogRef.afterClosed().subscribe(() => {
+    this.dialogRef.afterClosed().subscribe(() => {
       this.actualizarTabla();
     });
   }

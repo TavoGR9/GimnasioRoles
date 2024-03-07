@@ -11,13 +11,12 @@ import { tap } from 'rxjs/operators';
 })
 export class CategoriaService {
 
+  //Servicio para obtener y manipular valores de las categorias
   private categoriasSubject = new BehaviorSubject<any[]>([]);
 
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/categoria.php'
   constructor(private clienteHttp:HttpClient) {
   }
-
-  //categoriaActualizada: EventEmitter<void> = new EventEmitter<void>();
 
   agregarCategoria(datosCategoria:proveedor):Observable<any>{
     return this.clienteHttp.post(this.API+"?insertar=1",datosCategoria);
@@ -25,10 +24,6 @@ export class CategoriaService {
 
   obternerCategoria(){
     return this.clienteHttp.get(this.API)
-  }
-
-  obternerCategorias(): Observable<Categorias[]>{
-    return this.clienteHttp.get<Categorias[]>(this.API)
   }
 
   consultarCategoria(id:any):Observable<any>{
@@ -55,14 +50,12 @@ export class CategoriaService {
         })
       );
   }
-  
 
   getCategoriasSubject() {
     return this.categoriasSubject.asObservable();
   }
 
   consultarListaCategoria(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarCategoriaId="+id);
-    
+    return this.clienteHttp.get(this.API+"?consultarCategoriaId="+id); 
   }
 }

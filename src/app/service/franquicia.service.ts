@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FranquiciaService {
-  //para guardar los headers que manda el API
+ 
+  //Servicio que muestra la franquicia Olympus
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/franquicia.php'

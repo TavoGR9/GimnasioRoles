@@ -26,6 +26,7 @@ export class ReportsComponent implements OnInit{
 
   //graficas
   form: FormGroup;
+  currentUser: string = '';
   opcionSeleccionada: string = "0";
   sucursales: DatosGrafico[] = [];
   sucursaless: Graficoss[] = [];
@@ -61,10 +62,12 @@ constructor(private fb: FormBuilder,private toastr: ToastrService,private auth: 
 }
 
   ngOnInit(): void {
+
+
     this.obtenerDatosParaGrafico1();
     this.obtenerDatosParaGrafico2();
   }
- 
+
 ////////////////////////////////////////////GRAFICAS/////////////////////////7777777
 formatearFecha(fechaOriginal: string): string {
   const fechaObj = new Date(fechaOriginal);
