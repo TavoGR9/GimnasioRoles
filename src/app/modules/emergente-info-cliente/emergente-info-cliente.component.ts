@@ -75,6 +75,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     this.duracion = this.data.duracion + ' ' + 'días';
     this.photo = this.img+this.data.foto;
     this.huella = this.data.huella;
+
     this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
       this.membresiaHisto = respuesta;
       this.dataSource = new MatTableDataSource(this.membresiaHisto);

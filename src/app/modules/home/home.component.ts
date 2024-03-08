@@ -50,6 +50,7 @@ export class HomeComponent implements OnInit{
   datosClientesActivos: any;
   clientesActivos: any;
   homeCard: any;
+  tablaHTML: string = '';
   
   constructor(private homeService: HomeService,
     private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
@@ -121,9 +122,10 @@ export class HomeComponent implements OnInit{
     });
 
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      this.datosProductosVendidos = data;
+      this.tablaHTML = `<table class="mi-tabla">${data.tablaHTML}</table>`;
+      // Resto del código...
     });
-
+    
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.datosRecientesVentas = data;
     });
