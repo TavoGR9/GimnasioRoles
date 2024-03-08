@@ -17,6 +17,8 @@ import { ToastrService } from "ngx-toastr";
 import { ChartOptions, ChartType, ChartDataset } from "chart.js";
 import { HomeService } from '../../service/home.service';
 import { convertToObject } from 'typescript';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-home',
@@ -50,9 +52,10 @@ export class HomeComponent implements OnInit{
   datosClientesActivos: any;
   clientesActivos: any;
   homeCard: any;
-  tablaHTML: string = '';
+  tablaHTML: SafeHtml | null = null;
+  tablaHTMLVentas: SafeHtml | null = null;
   
-  constructor(private homeService: HomeService,
+  constructor(private homeService: HomeService, private sanitizer: DomSanitizer,
     private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
   }
 
@@ -122,12 +125,16 @@ export class HomeComponent implements OnInit{
     });
 
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      this.tablaHTML = `<table class="mi-tabla">${data.tablaHTML}</table>`;
+      console.log(data, "data1");
+    this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTML}</table>`);
       // Resto del código...
     });
     
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
-      this.datosRecientesVentas = data;
+      
+      //this.datosRecientesVentas = data;
+      this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTMLVentas}</table>`);
+      console.log(this.tablaHTMLVentas, "data2");
     });
 }
 
