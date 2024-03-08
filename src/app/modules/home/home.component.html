@@ -24,10 +24,13 @@
   </mat-card-content>
 </mat-card>
  
+
+
 <mat-card *ngIf="isAdmin() || isRecep()">
   <mat-card-content>
     <div class="dashboard-cardss">
-      <mat-card class="ancho-1">
+      
+      <!--<mat-card class="ancho-1">
         <mat-card-header>
           <h3 class="icon-title">
             <mat-icon class="icon">grid_view</mat-icon>
@@ -51,7 +54,22 @@
             </tbody>
           </table>
         </mat-card-content>
-      </mat-card>
+      </mat-card>-->
+      <mat-card *ngIf="isAdmin() || isRecep()">
+        <mat-card-content>
+          <div class="dashboard-cardss">
+            <mat-card class="ancho-1">
+              <mat-card-header>
+                <h3 class="icon-title">
+                  <mat-icon class="icon">grid_view</mat-icon>
+                  PRODUCTOS MÁS VENDIDOS
+                </h3>
+              </mat-card-header>
+              <mat-card-content>
+                <p style="border-top: 2px solid orange;"></p>
+                <div *ngIf="tablaHTML" [innerHTML]="tablaHTML"></div>
+              </mat-card-content>
+            </mat-card>
 
 
       <mat-card class="ancho-2">
@@ -84,6 +102,37 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+<!--<mat-card *ngIf="isAdmin() || isRecep()">
+  <mat-card-content>
+    <div class="dashboard-cardss">
+      <mat-card class="ancho-1">
+        <mat-card-header>
+          <h3 class="icon-title">
+            <mat-icon class="icon">grid_view</mat-icon>
+            PRODUCTOS MÁS VENDIDOS
+          </h3>
+        </mat-card-header>
+        <mat-card-content>
+          <p style="border-top: 2px solid orange;"></p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Total Ventas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let producto of datosProductosVendidos">
+                <td>{{ producto.nombreProducto }}</td>
+                <td>{{ producto.totalVentas }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-card-content>
+      </mat-card>-->
+
+     
 
  <!-- dashboard.component.html 
 <mat-card *ngIf="isAdmin()">
@@ -160,3 +209,9 @@
       </div>--> 
       
 </div>
+
+
+<!-- tu-componente.component.html -->
+
+<!-- tu-componente.component.html -->
+

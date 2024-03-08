@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api'; /**siempre debes importarlo */
 //import { ToastrService } from 'ngx-toastr';
 //import { ColaboradorService } from 'src/app/service/colaborador.service';
-import { ProductoService } from 'src/app/service/producto.service';
+import { ProductoService } from '../../service/producto.service';
 
 import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -57,6 +57,7 @@ export class EditarProductoComponent implements OnInit{
     this.idProducto = data.idProducto;
     //llamar al servicio datos empleado - pasando el parametro capturado por url
     this.productoService.consultarProductosJ(this.idProducto).subscribe(
+     
       respuesta=>{
         this.form.setValue({
           nombre:respuesta [0]['nombre'],
