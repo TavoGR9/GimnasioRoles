@@ -37,6 +37,7 @@ export class EmergenteAccesosComponent implements OnInit{
     private serviceHuella: HuellaService) { }
 
   ngOnInit(): void {
+
     this.serviceHuella.ultimoAcceso()
         .subscribe(
           (data: any) => {
@@ -65,6 +66,8 @@ export class EmergenteAccesosComponent implements OnInit{
             console.log("info: ", this.cliente);
             // Ajusta el tamaño del diálogo después de que se han cargado los datos del cliente
             this.dialogo.updateSize('600px', 'auto');
+
+            this.abrirAppNativa();
           },
           error => {
             console.error('Error al buscar cliente:', error);
@@ -76,6 +79,10 @@ export class EmergenteAccesosComponent implements OnInit{
   //para mandar la solicitud para abrir torniquete
   accesoManual(): void {
 
+  }
+
+  abrirAppNativa(): void {
+    window.location.href = 'ValidacionHuella://';
   }
   
 
