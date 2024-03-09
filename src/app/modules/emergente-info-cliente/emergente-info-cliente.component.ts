@@ -177,5 +177,10 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
   capturarHuella(): void {
     console.log("URL QUE ABRE EL BOTON DE CAPTURAR HUELLA: ",this.url);
+    this.spinner.show();
+
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 550);
   }
 }

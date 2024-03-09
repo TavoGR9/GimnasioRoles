@@ -191,7 +191,7 @@
   <button mat-button (click)="abrirPuertoSerial(data)" (click)="cerrarDialogo()">Acceso manual</button>
   <button mat-button (click)="abrirDialogFoto(data)" (click)="cerrarDialogo()">Tomar Foto</button>
   <!--<button mat-button (click)="cerrarDialogo()">Capturar huella</button>-->
-  <button mat-button (click)="capturarHuella()"><a href="{{url}}">Capturar huella</a></button> 
+  <a href="{{url}}"><button mat-button (click)="capturarHuella()">Capturar huella</button></a>
   <!--<a href="#">{{url}}</a>-->
   <button mat-button (click)="cerrarDialogo()">Cerrar</button>
 </div>

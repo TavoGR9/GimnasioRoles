@@ -14,6 +14,7 @@ import { EmergenteAccesosComponent } from '../emergente-accesos/emergente-acceso
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
+  url: string = `ValidacionHuella://`;
   mostrarBarraLateral = false;
   mobileQuery: MediaQueryList;
 

@@ -86,4 +86,8 @@
   .transparent-button:hover {
     /* Estilos adicionales al pasar el mouse sobre el botón, si es necesario */
   }
+
+  .mat-sidenav a {
+    text-decoration: none;
+  }
   
