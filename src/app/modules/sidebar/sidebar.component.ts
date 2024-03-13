@@ -14,7 +14,7 @@ import { EmergenteAccesosComponent } from '../emergente-accesos/emergente-acceso
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
-  url: string = `ValidacionHuella://`;
+  url: string = `HuellaTorniquete://`;     //    ValidacionHuella
   mostrarBarraLateral = false;
   mobileQuery: MediaQueryList;
 
