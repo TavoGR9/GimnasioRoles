@@ -24,7 +24,7 @@
 					  <img src="../../../../../assets/img/gym.png" width="60px" alt="Icono gym" style="margin-right: 10px;margin-left: 10px; ">
 					  <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 9px;" required>
 						 <mat-label>Nombre</mat-label>
-						 <input type="text" matInput placeholder="Nombre" autocomplete="off" id="nombreGym" formControlName="nombreGym" />
+						 <input type="text" matInput placeholder="Nombre" autocomplete="off" id="nombreGym" formControlName="nombreBodega" />
 					  </mat-form-field>
 				   </li>
 				</div>
@@ -33,8 +33,8 @@
 					  <img src="../../../../../assets/img/telefono.png" width="60px" alt="Icono teléfono" style="margin-right: 10px;margin-left: 10px; " >
 					  <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 9px;" required>
 						 <mat-label>Telefono</mat-label>
-						 <input type="text" placeholder="telefono" matInput autocomplete="off" id="telefono" formControlName="telefono" />
-						 <mat-error *ngIf="formularioSucursales.get('telefono')?.hasError('pattern') && !formularioSucursales.get('telefono')?.hasError('required')">
+						 <input type="text" placeholder="telefono" matInput autocomplete="off" id="numeroTelefonico" formControlName="numeroTelefonico" />
+						 <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('pattern') && !formularioSucursales.get('numeroTelefonico')?.hasError('required')">
 							<strong class="txt_msg">** Formato no válido...</strong>
 						 </mat-error>
 					  </mat-form-field>

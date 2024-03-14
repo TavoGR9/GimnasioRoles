@@ -98,8 +98,8 @@
                         <mat-form-field appearance="outline" style="width: 100%;">
                            <mat-label>Categoria de producto</mat-label>
                            <mat-select formControlName="idCategoria" multiple="false">
-                             <mat-option *ngFor="let categoria of listaCategorias" [value]="categoria.idCategoria">
-                               {{ categoria.nombre}}
+                             <mat-option *ngFor="let categoria of listaCategorias" [value]="categoria.idCategoriaE">
+                               {{ categoria.nombreCategoria}}
                              </mat-option>
                            </mat-select>
                            

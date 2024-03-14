@@ -51,6 +51,7 @@ export class ServiceDialogComponent implements OnInit {
   ngOnInit(): void {
     this.auth.idGym.subscribe((id) => {
       if (id) {
+      
         this.idGym = id;
       }
     });

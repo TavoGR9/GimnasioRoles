@@ -255,6 +255,7 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   validarFormulario() {
     if (this.formPlan.invalid) {
+ 
       if (!this.formPlan.value.servicioseleccionado || this.formPlan.value.servicioseleccionado.length === 0) {
         this.toastr.error('Agregar o seleccionar primero un servicio', 'Error');
       }
@@ -279,6 +280,7 @@ export class DialogSelectMembershipComponent implements OnInit {
         Gimnasio_idGimnasio: this.idGym,
       });
 
+
       if (this.optionToShow == 1 || this.optionToShow == 2) {
         let formValue = this.formPlan.value;
 
@@ -289,7 +291,7 @@ export class DialogSelectMembershipComponent implements OnInit {
         ) {
           formValue.servicioseleccionado = [formValue.servicioseleccionado];
         }
-
+       
         this.planService.agregarPlan(formValue).subscribe((respuesta) => {
           if (respuesta) {
             if (respuesta.success == 1) {

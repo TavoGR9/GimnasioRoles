@@ -36,7 +36,7 @@ export class AltaCategoriaComponent implements OnInit {
     //this.fechaRegistro = this.obtenerFechaActual();
     const fechaActual = new Date().toISOString().split('T')[0];
     this.formularioCategoria = this.formulario.group({
-      nombre: ['', Validators.required],
+      nombreCategoria: ['', Validators.required],
       descripcion: ['', Validators.required],
       estatus: ['', Validators.required],
       //fechaCreacion: ['', Validators.required],

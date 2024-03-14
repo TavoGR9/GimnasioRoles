@@ -18,7 +18,6 @@ export class HorarioService {
 
   // Angular service method
   agregarHorario(datosHorario: horario):Observable<any>{
-    console.log("si")
     return this.clienteHttp.post(this.APIHorario+"?insertar=1", datosHorario);
   }
   
