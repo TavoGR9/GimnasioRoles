@@ -32,7 +32,7 @@
                </ng-container>
                <ng-container matColumnDef="nombre">
                    <th mat-header-cell *matHeaderCellDef>Nombre</th>
-                   <td mat-cell *matCellDef="let item">{{ item.nombreGym }}</td>
+                   <td mat-cell *matCellDef="let item">{{ item.nombreBodega }}</td>
                </ng-container>
                <ng-container matColumnDef="direccion">
                    <th mat-header-cell *matHeaderCellDef>Dirección</th>
@@ -45,7 +45,7 @@
                <!-- Entrenador Column -->
                <ng-container matColumnDef="telefono">
                    <th mat-header-cell *matHeaderCellDef>Teléfono</th>
-                   <td mat-cell *matCellDef="let item">{{ item.telefono }}</td>
+                   <td mat-cell *matCellDef="let item">{{ item.numeroTelefonico }}</td>
                </ng-container>
                <!-- Duración Column -->
                <ng-container matColumnDef="tipo">
@@ -122,23 +122,22 @@
                    <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Activar</th>
                    <td mat-cell *matCellDef="let item; let i = index">
                        <div class="toggle-container">
-                           <input type="checkbox" id="toggle{{item.idGimnasio}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.idGimnasio)">
-                           <label for="toggle{{item.idGimnasio}}{{i}}" class="toggle-label"></label>
+                           <input type="checkbox" id="toggle{{item.idBodega}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.idBodega)">
+                           <label for="toggle{{item.idBodega}}{{i}}" class="toggle-label"></label>
                        </div>
                    </td>
                </ng-container>
-               <ng-container matColumnDef="horario">
+               <!--<ng-container matColumnDef="horario">
                 <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Horario</th>
                 <td mat-cell *matCellDef="let item">
-                    <!--<button mat-raised-button style="background-color: #fd9727; font-size: 14px; margin-right: 10px;" (click)="agregarHorario(item.idGimnasio)">+Agregar horario</button>-->
                     <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: rgb(0, 0, 0); background-color: #fd9727;" (click)="verHorario(item.idGimnasio)">Ver horario</button>
                 </td>
-            </ng-container>
+            </ng-container>-->
                <ng-container matColumnDef="documentacion">
                 <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Documentación</th>
                 <td mat-cell *matCellDef="let item">
                     <!--<button mat-raised-button style="background-color: #fd9727; font-size: 14px; margin-right: 10px;" (click)="agregarHorario(item.idGimnasio)">+Agregar horario</button>-->
-                    <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: white;" (click)="agregarDocumentos(item.idGimnasio, item.nombreGym)">Agregar documentos</button>
+                    <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: white;" (click)="agregarDocumentos(item.idBodega, item.nombreBodega)">Agregar documentos</button>
                 </td>
             </ng-container>
 

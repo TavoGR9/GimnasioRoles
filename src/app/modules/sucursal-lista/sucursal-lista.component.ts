@@ -37,7 +37,7 @@ export class SucursalListaComponent implements OnInit {
     private auth: AuthService,
   ){}
 
-  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'ubicacion', 'activar', 'horario', 'documentacion'];
+  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'ubicacion', 'activar', 'documentacion'];
 
   /*onToggle(event: Event, idGimnasio: any) {
 
@@ -88,10 +88,10 @@ export class SucursalListaComponent implements OnInit {
     });
   }*/
   onToggle(event: Event, idGimnasio: any) {
-    let gimnasio = this.gimnasio.find((g: { idGimnasio: any }) => g.idGimnasio === idGimnasio);
-  
+    let gimnasio = this.gimnasio.find((g: { idBodega: any }) => g.idBodega === idGimnasio);
+
     if (!gimnasio) {
-      console.error('No se encontró la sucursal con id: ', idGimnasio);
+      console.error('No se encontró la sucursal con id: ', gimnasio);
       return;
     }
   
@@ -105,8 +105,6 @@ export class SucursalListaComponent implements OnInit {
       if (result) {
         // Invertir el valor del estatus
         const nuevoEstatus = gimnasio.estatus == 1 ? 0 : 1;
-        
-        console.log(nuevoEstatus, "nuevoEstatus");
         // Actualizar la base de datos y refrescar los datos
         this.gimnasioService.actualizarEstatus(idGimnasio, nuevoEstatus).subscribe(
           (response) => {
@@ -349,11 +347,11 @@ export class SucursalListaComponent implements OnInit {
   }
 
 
-  agregarDocumentos(idGimnasio: string, nombreGym: string): void {
+  agregarDocumentos(idBodega: string, nombreBodega: string): void {
     const dialogRef = this.dialog.open(ArchivosComponent, {
       width: '60%',
       height: '60%',
-      data: { idGimnasio: idGimnasio, nombreGym: nombreGym},
+      data: { idBodega: idBodega, nombreBodega: nombreBodega},
       disableClose: true
     });
   }

@@ -113,7 +113,7 @@ export class CrearProductoComponent implements OnInit {
         this.listaCategorias = respuesta;
       },
       error: (error) => {
-        //console.log(error);
+        console.log(error);
       },
     });
 
@@ -197,6 +197,7 @@ export class CrearProductoComponent implements OnInit {
   }
 
   registrar(): any {
+    console.log(this.form.value, "formulariooo");
     if (this.form.valid) { 
       this.spinner.show();
       this.productoService.creaProducto(this.form.value).subscribe({

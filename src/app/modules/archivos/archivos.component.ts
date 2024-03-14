@@ -18,8 +18,8 @@ export class ArchivosComponent implements OnInit{
   archivosSeleccionados: File[] = [];
   @ViewChild('archivoInput') archivoInput!: ElementRef;
   formularioArchivo: FormGroup;
-  idGimnasio : any;
-  nombreGym : any;
+  idBodega : any;
+  nombreBodega : any;
   mostrarBoton: boolean = false;
   archivos: any[] = [];
 
@@ -34,19 +34,19 @@ export class ArchivosComponent implements OnInit{
     private gimnasio: GimnasioService,
     private router: Router
   ) {
-    this.idGimnasio = data.idGimnasio;
-    this.nombreGym = data.nombreGym;
+    this.idBodega = data.idBodega;
+    this.nombreBodega = data.nombreBodega;
     this.formularioArchivo = this.form.group({
       nombreArchivo: ['', Validators.required],
       tipoArchivo: ['', Validators.required],
       contenidoArchivo: [''],
-      Gimnasio_idGimnasio: ['2', Validators.required],
+      Gimnasio_idGimnasio: ['', Validators.required],
       base64textString: [''],
     });
    }
 
    ngOnInit(): void {
-    this.gimnasio.consultarArchivos(this.idGimnasio).subscribe(
+    this.gimnasio.consultarArchivos(this.idBodega).subscribe(
       (archivos) => {
         this.archivos = archivos;
       },
@@ -66,7 +66,7 @@ export class ArchivosComponent implements OnInit{
   descargarArchivo(url: string, nombreArchivo: string): void {
   const enlaceTemporal = document.createElement('a');
   enlaceTemporal.href = url;
-}
+  }
 
    seleccionarArchivo(event: any) {
     const archivos: FileList = event.target.files;
@@ -108,7 +108,6 @@ export class ArchivosComponent implements OnInit{
     });
   }
     
-
   onArchivoSeleccionado(event: any): void {
     const archivos: FileList = event.target.files;
     // Agregar cada archivo al arreglo
@@ -168,12 +167,12 @@ export class ArchivosComponent implements OnInit{
         const fechaActual = new Date();
         // Formatea la fecha como YYYY-MM-DD
         const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1).toString().padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;
-        const nombreArchivo = this.nombreGym + '_' + fechaFormateada + '_archivos.zip';
+        const nombreArchivo = this.nombreBodega + '_' + fechaFormateada + '_archivos.zip';
   
         // Agregar tipoArchivo y Gimnasio_idGimnasio al FormData
         formData.append('nombreArchivo', nombreArchivo);
         formData.append('tipoArchivo', 'application/zip'); 
-        formData.append('Gimnasio_idGimnasio', this.idGimnasio); 
+        formData.append('Gimnasio_idGimnasio', this.idBodega); 
   
         this.archivoService.guardarArchivos(formData).subscribe(
           (respuesta) => {
@@ -204,8 +203,6 @@ export class ArchivosComponent implements OnInit{
     this.dialogo.close();
   }
   
-
- 
   private leerArchivoComoArrayBuffer(archivo: File): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
