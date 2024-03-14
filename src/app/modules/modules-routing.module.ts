@@ -37,6 +37,7 @@ import { planComponent } from './plan-lista/membresias.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
 import { ArchivosComponent } from './archivos/archivos.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
 
 const routes: Routes = [
   {
@@ -100,7 +101,8 @@ const routes: Routes = [
           { path: 'inventarios', component: InventariosComponent},
           { path: 'registrar', component: RegistroComponent},
           { path: 'Ventas', component: VentasComponent},
-          { path: 'verCorte', component: VerCorteComponent}
+          { path: 'verCorte', component: VerCorteComponent},
+          { path: 'AperturaManual', component: EmergenteAperturaPuertoSerialComponent},
         ]
       },
     ],

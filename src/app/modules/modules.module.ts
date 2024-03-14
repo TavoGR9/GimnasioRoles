@@ -226,7 +226,6 @@ import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos
     MatSidenavModule,
     NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
     NgChartsModule
-
   ]
 })
 export class ModulesModule {
