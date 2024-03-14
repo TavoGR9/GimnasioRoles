@@ -77,7 +77,7 @@
 </div>
 <div mat-dialog-actions fxLayoutAlign="center center">
     <div>
-        <button [disabled]="this.cliente && (this.cliente.accion === 'Update' || this.cliente.accion === 'Online')" mat-button style="background-color: #F9A640; color: #000000" (click)="sendSerialData()"><mat-icon >check_circle</mat-icon>Acceder</button>
+        <button [disabled]="this.cliente && (this.cliente.accion === 'Update' || this.cliente.accion === 'Online' || this.cliente.accion === 'NA')" mat-button style="background-color: #F9A640; color: #000000" (click)="sendSerialData()"><mat-icon >check_circle</mat-icon>Acceder</button>
         <button mat-button style="background-color: #000000; color: #ffffff" (click)="cerrarDialogo()"><mat-icon >cancel</mat-icon>Cerrar</button>
     </div>
 </div>

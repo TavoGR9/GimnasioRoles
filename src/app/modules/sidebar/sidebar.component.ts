@@ -15,7 +15,7 @@ import { EmergenteAperturaPuertoSerialComponent } from '../emergente-apertura-pu
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
-  url: string = `ValidacionHuella://`;
+  url: string = `HuellaTorniquete://`;     //    ValidacionHuella
   mostrarBarraLateral = false;
   mobileQuery: MediaQueryList;
 
