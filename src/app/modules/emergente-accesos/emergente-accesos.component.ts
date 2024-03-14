@@ -38,7 +38,6 @@ export class EmergenteAccesosComponent implements OnInit{
   private subscription: Subscription = new Subscription(); // Inicializar la propiedad subscription
   idGuardado: any; // Variable para almacenar el ID recibido la primera vez
   //realizandoBusqueda: boolean = false;
-  // En tu componente Angular, puedes usar ViewChild para obtener una referencia al elemento del input
   @ViewChild('inputField') inputField!: ElementRef;
 
   selectedPort: any = null;
@@ -190,6 +189,7 @@ export class EmergenteAccesosComponent implements OnInit{
           if(data){
             this.enviarDatosPorPuertoSerial();
             console.log("data: ", data);
+            this.IdFormControl.setValue('');
           }
           /*if(data.status == "success"){
             this.enviarDatosPorPuertoSerial();
