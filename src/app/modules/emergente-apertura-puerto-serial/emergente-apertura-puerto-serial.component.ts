@@ -26,14 +26,15 @@ export class EmergenteAperturaPuertoSerialComponent implements OnInit {
 
   constructor( private toastr: ToastrService, private pagoService: PagoMembresiaEfectivoService,
     public dialogo: MatDialogRef<EmergenteAperturaPuertoSerialComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+   //@Inject(MAT_DIALOG_DATA) public data: any
+   ) { }
     
   ngOnInit(): void {
-    console.log(this.data.clienteID);
-    this.pagoService.histoClienteMemb(this.data.clienteID).subscribe((respuesta) => {
+    //console.log(this.data.clienteID);
+    /*this.pagoService.histoClienteMemb().subscribe((respuesta) => {
       console.log('historial:',respuesta);
       this.membresiaHisto = respuesta;
-    });
+    });*/
     //this.showContent = this.estaEnRango(this.membresiaHisto.Fecha_Inicio, this.membresiaHisto.Fecha_Fin);
       //this.vStatus = this.membresiaHisto.Status;
   }

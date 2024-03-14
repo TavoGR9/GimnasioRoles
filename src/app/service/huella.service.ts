@@ -36,6 +36,10 @@ export class HuellaService {
 
   insertarInstruccion(dato: any):Observable<any>{
     return this.clienteHttp.post(this.URLServices,dato, { headers: this.httpHeaders });
-                                                /*+"?insertar=1" <- Nota: Colocarlo al cambiarlo a un servicio de php*/
+                                            /*+"?insertar=1" <- Nota: Colocarlo al cambiarlo a un servicio de php*/
+  }
+
+  insertarAsistencia(id:any):Observable<any>{
+    return this.clienteHttp.get(this.service+"?obtenerIdClienteHuella="+id);
   }
 }

@@ -7,6 +7,7 @@ import { MatDrawerMode } from '@angular/material/sidenav';
 import { RegistroComponent } from '../registro/registro.component';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { EmergenteAccesosComponent } from '../emergente-accesos/emergente-accesos.component';
+import { EmergenteAperturaPuertoSerialComponent } from '../emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -93,6 +94,7 @@ export class SidebarComponent {
         //data: `Membresía agregada exitosamente`,
         width: '500px',
         height: '500px',
+        disableClose: true
       })
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
@@ -102,5 +104,23 @@ export class SidebarComponent {
         }
       });
   }
+
+ /* openSerialPage(){
+    this.dialog
+      .open(EmergenteAperturaPuertoSerialComponent, {
+        data: {
+          clienteID: `45`
+        },
+        width: '500px',
+        height: '500px',
+      })
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+          //this.router.navigateByUrl('/admin/listaMembresias');
+        } else {
+        }
+      });
+  }*/
 
 }
