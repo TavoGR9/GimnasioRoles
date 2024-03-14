@@ -74,6 +74,7 @@ export class VerConfiguracionComponent implements OnInit {
   }
 
   agregarHorario(idGimnasio: number): void {
+  
     const dialogRef = this.dialog.open(HorariosComponent, {
       width: '60%',
       height: '90%',

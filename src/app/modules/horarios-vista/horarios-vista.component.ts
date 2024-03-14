@@ -54,12 +54,12 @@ export class HorariosVistaComponent implements OnInit{
     public dialog: MatDialog, private formulario: FormBuilder,  private auth: AuthService, private http: ColaboradorService,
     private franquiciaService: FranquiciaService, private router: Router, private postalCodeService: PostalCodeService) {
     // Obtén el ID del parámetro de la URL
-    this.idGimnasio = this.route.snapshot.params['id'];
-    this.idGimnasio = data.idGimnasio; // Accede a idGimnasio desde los datos
+    //this.idGimnasio = this.route.snapshot.params['id'];
+    //this.idGimnasio = data.idGimnasio; // Accede a idGimnasio desde los datos
 
     //Creacion del formulario:
     this.formularioSucursales = this.formulario.group({
-      nombreGym: ['', Validators.compose([Validators.required])],
+      nombreBodega: ['', Validators.compose([Validators.required])],
       codigoPostal: ['', Validators.compose([Validators.required,Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.maxLength(5)])],
       estado: ['', Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       ciudad: ['', Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
@@ -67,7 +67,7 @@ export class HorariosVistaComponent implements OnInit{
       calle: ['', Validators.compose([Validators.required])],
       numExt: ['', Validators.compose([Validators.required,Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       numInt: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
-      telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      numeroTelefonico: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       tipo: ["", Validators.required],
       Franquicia_idFranquicia: [1],
       estatus: [1, Validators.required],
@@ -114,12 +114,13 @@ export class HorariosVistaComponent implements OnInit{
 
   actualizarSelect() {
     if (this.isSupadmin()) {
+      console.log(this.formularioSucursales.value, "formulario de persona");
       setTimeout(() => {
-        this.http.comboDatosGymByNombre(this.formularioSucursales.value.nombreGym).subscribe({
+        this.http.comboDatosGymByNombre(this.formularioSucursales.value.nombreBodega).subscribe({
           next: (dataResponse) => {
-            if (Array.isArray(dataResponse) && dataResponse.length > 0 && dataResponse[0].idGimnasio) {
+            if (Array.isArray(dataResponse) && dataResponse.length > 0 && dataResponse[0].idBodega) {
               this.personaForm.patchValue({
-                Gimnasio_idGimnasio: dataResponse[0].idGimnasio,
+                Gimnasio_idGimnasio: dataResponse[0].idBodega,
               });
             }
             this.sucursales = dataResponse;
@@ -139,13 +140,13 @@ mostrarFormulario() {
 
 enviarMensajeWhatsApp() {
   // Número de teléfono al que se enviará el mensaje
-  const telefono = this.personaForm.value.telefono;
+  const numeroTelefonico = this.personaForm.value.numeroTelefonico;
   const nombre = this.personaForm.value.nombre;
   // Mensaje que se enviará
   const mensaje = `Hola ${nombre} estos son tus accesos... Correo: ${this.email}, Contraseña: ${this.pass}`;
 
   // Crear la URL para abrir WhatsApp con el mensaje predefinido
-  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+  const url = `https://wa.me/${numeroTelefonico}?text=${encodeURIComponent(mensaje)}`;
 
   // Abrir WhatsApp en una nueva ventana o pestaña
   window.open(url, '_blank');
@@ -176,12 +177,13 @@ enviarMensajeWhatsApp() {
   }
 
   enviarForm(): void {
+    
     if (this.formularioSucursales.valid) {
       this.spinner.show();
       // Llama al servicio para agregar la sucursal
       this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe((respuesta) => {
         if(respuesta){
-          const idGimnasioInsertado = respuesta.idGimnasio; // Ajusta esto según la estructura de tu respuesta
+          const idGimnasioInsertado = respuesta.idBodega; // Ajusta esto según la estructura de tu respuesta
 
           // Usa el idGimnasioInsertado en tu otro formulario
           this.personaForm.patchValue({
@@ -255,7 +257,7 @@ enviarMensajeWhatsApp() {
         this.gimnasioService.consultarPlan(this.idGimnasio).subscribe((data) => {
           if(data) {
             this.formularioSucursales.setValue({
-              nombreGym: data[0].nombreGym,
+              nombreBodega: data[0].nombreBodega,
               codigoPostal: data[0].codigoPostal,
               estado: data[0].estado,
               ciudad: data[0].ciudad,
@@ -263,7 +265,7 @@ enviarMensajeWhatsApp() {
               calle: data[0].calle,
               numExt: data[0].numExt,
               numInt: data[0].numInt,
-              telefono: data[0].telefono,
+              numeroTelefonico: data[0].numeroTelefonico,
               tipo: data[0].tipo,
               Franquicia_idFranquicia: data[0].Franquicia_idFranquicia,
               estatus: data[0].estatus,
@@ -307,7 +309,7 @@ enviarMensajeWhatsApp() {
         this.gimnasioService.consultarPlan(this.idGimnasio).subscribe((data) => {
           if(data) {
             this.formularioSucursales.setValue({
-              nombreGym: data[0].nombreGym,
+              nombreBodega: data[0].nombreBodega,
               codigoPostal: data[0].codigoPostal,
               estado: data[0].estado,
               ciudad: data[0].ciudad,
@@ -315,7 +317,7 @@ enviarMensajeWhatsApp() {
               calle: data[0].calle,
               numExt: data[0].numExt,
               numInt: data[0].numInt,
-              telefono: data[0].telefono,
+              numeroTelefonico: data[0].numeroTelefonico,
               tipo: data[0].tipo,
               Franquicia_idFranquicia: data[0].Franquicia_idFranquicia,
               estatus: data[0].estatus,
@@ -450,6 +452,7 @@ enviarFormularios(): void {
 }
 
 enviarSucursal(): void {
+  console.log(this.formularioSucursales.value, "formulario");
   if (this.formularioSucursales.valid) {
     this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe(
       (respuestaSucursal) => {
@@ -483,11 +486,12 @@ marcarCamposInvalidos(formGroup: FormGroup) {
     }
   });
 }
-
+  
 enviarEmpleado(): void {
+  console.log(this.personaForm.value, "form");
   if (this.personaForm.valid) {
     const datosFormulario = this.personaForm.value;
-    datosFormulario.email = this.email;
+    datosFormulario.correo = this.email;
     datosFormulario.pass = this.pass;    
     this.http.agregarEmpleado(datosFormulario).subscribe(
       (respuestaEmpleado) => {

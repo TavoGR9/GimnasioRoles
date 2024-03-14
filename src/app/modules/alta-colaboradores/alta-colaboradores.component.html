@@ -125,11 +125,11 @@
                         <mat-label>Email: </mat-label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                             <mat-label>Email:</mat-label>
-                            <input type="email" placeholder="ejemplo@yahoo.com" matInput autocomplete="off" formControlName="email" id="email" [errorStateMatcher]="matcher">
-                            <mat-error *ngIf="form.get('email')?.hasError('pattern') && !form.get('email')?.hasError('required')">
+                            <input type="email" placeholder="ejemplo@yahoo.com" matInput autocomplete="off" formControlName="correo" id="correo" [errorStateMatcher]="matcher">
+                            <mat-error *ngIf="form.get('correo')?.hasError('pattern') && !form.get('correo')?.hasError('required')">
                                 <strong class="txt_msg">**Formato no válido...</strong>
                             </mat-error>
-                            <mat-error *ngIf="form.get('email')?.hasError('required')">
+                            <mat-error *ngIf="form.get('correo')?.hasError('required')">
                                 <strong class="txt_msg">**Campo requerido</strong>
                             </mat-error>
                         </mat-form-field>  

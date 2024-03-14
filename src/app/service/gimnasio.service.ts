@@ -53,6 +53,7 @@ export class GimnasioService {
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
+    console.log(id,"este es el id que se envia");
     return this.clienteHttp.post(this.APIGym+"?actualizar="+id,datosPlan);
   }
 
@@ -98,7 +99,7 @@ export class GimnasioService {
   actualizarEstatus(idGimnasio: any, estatus: any): Observable<any> {
     // Crear los datos como x-www-form-urlencoded
     let body = new URLSearchParams();
-    body.set('idGimnasio', idGimnasio);
+    body.set('idBodega', idGimnasio);
     body.set('estatus', estatus.toString());
     body.set('actualizarEstatus', '1');
   

@@ -16,14 +16,14 @@
           <div class="card">
              <li style="font-size: 18px;">
                 <img src="../../../../../assets/img/gym.png" width="40px" alt="Icono gym" style="margin-right: 20px;margin-left: 20px; ">
-                <strong style="margin-right: 10px; ">TÚ GIMNASIO:</strong> {{ gimnasio.nombreGym}}
+                <strong style="margin-right: 10px; ">TÚ GIMNASIO:</strong> {{ gimnasio.nombreBodega}}
              </li>
           </div>
           <br>
           <div class="card" >
              <li  style="font-size: 18px;">
                 <img src="../../../../../assets/img/telefono.png" width="40px" alt="Icono teléfono" style="margin-right: 20px;margin-left: 20px; " >
-                <strong style="margin-right: 37px; ">TELÉFONO:</strong> {{ gimnasio.telefono }}
+                <strong style="margin-right: 37px; ">TELÉFONO:</strong> {{ gimnasio.numeroTelefonico }}
              </li>
           </div>
           <br>
@@ -70,7 +70,7 @@
       <ng-template #noHorario>
           <p style="text-align: center; margin-top: 20px;">Horario no disponible</p>
           <div style="display: flex; justify-content: center;">
-            <button *ngFor="let gimnasio of gimnasio" mat-raised-button style="background-color: #fd9727; width: 190px; font-size: 16px; margin-bottom: 30px;" (click)="agregarHorario(gimnasio.idGimnasio)">
+            <button *ngFor="let gimnasio of gimnasio" mat-raised-button style="background-color: #fd9727; width: 190px; font-size: 16px; margin-bottom: 30px;" (click)="agregarHorario(gimnasio.idBodega)">
                 <mat-icon>add</mat-icon> Agregar horario
             </button>
             <br><br>  

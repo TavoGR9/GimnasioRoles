@@ -47,7 +47,7 @@ export class AltaColaboradoresComponent {
       turnoLaboral: ['N/A'],
       telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
       salario: [0, Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
-      email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
+      correo: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
       pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])]
     })    
   }
@@ -58,7 +58,7 @@ export class AltaColaboradoresComponent {
       this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
         next: (resultData: any) => {
           this.sucursales = resultData;
-          const idGimnasio = resultData[0].idGimnasio;
+          const idGimnasio = resultData[0].idBodega;
           this.form.get('Gimnasio_idGimnasio')?.setValue(idGimnasio);
         }
       });
@@ -112,6 +112,7 @@ export class AltaColaboradoresComponent {
   }
 
   registrar():any{
+    console.log(this.form.value, "formularioooo");
     if (this.form.valid) {
       this.spinner.show();
       this.http.agregarEmpleado(this.form.value).subscribe({

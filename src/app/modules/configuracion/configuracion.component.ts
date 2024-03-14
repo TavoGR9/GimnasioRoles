@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { GimnasioService } from 'src/app/service/gimnasio.service';
+import { GimnasioService } from '../../service/gimnasio.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { HorarioService } from 'src/app/service/horario.service';
@@ -62,7 +62,7 @@ export class ConfiguracionComponent  implements OnInit{
 
     this.elID = this.activeRoute.snapshot.paramMap.get('id');
     this.formularioSucursales = this.formulario.group({
-     nombreGym: ["", Validators.required],
+      nombreBodega: ["", Validators.required],
      codigoPostal: ["", Validators.required],
       estado: ["", Validators.required],
       ciudad: ["", Validators.required],
@@ -70,7 +70,7 @@ export class ConfiguracionComponent  implements OnInit{
       calle: ["", Validators.required],
       numExt: ["", Validators.required],
       numInt: [""],
-      telefono:  ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      numeroTelefonico:  ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       tipo: ["", Validators.required],
       Franquicia_idFranquicia: ["", Validators.required],
       casilleros: ["", Validators.required],
@@ -114,7 +114,7 @@ export class ConfiguracionComponent  implements OnInit{
     this.gimnasioService.consultarPlan(this.idGym).subscribe(
       (respuesta) => {
         this.formularioSucursales.setValue({
-          nombreGym: respuesta[0]['nombreGym'],
+          nombreBodega: respuesta[0]['nombreBodega'],
           estado: respuesta[0]['estado'],
           ciudad: respuesta[0]['ciudad'],
           colonia: respuesta[0]['colonia'],
@@ -122,7 +122,7 @@ export class ConfiguracionComponent  implements OnInit{
           codigoPostal: respuesta[0]['codigoPostal'],
           numExt: respuesta[0]['numExt'],
           numInt: respuesta[0]['numInt'],
-          telefono: respuesta[0]['telefono'],
+          numeroTelefonico: respuesta[0]['numeroTelefonico'],
           tipo: respuesta[0]['tipo'],
           Franquicia_idFranquicia: respuesta[0]['Franquicia_idFranquicia'],
           casilleros: respuesta[0]['casilleros'],

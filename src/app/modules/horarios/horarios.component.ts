@@ -2,13 +2,13 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { GimnasioService } from 'src/app/service/gimnasio.service';
+import { GimnasioService } from '../../service/gimnasio.service';
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArray , FormControl} from "@angular/forms";
 import { AbstractControl } from '@angular/forms';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
-import { HorarioService } from 'src/app/service/horario.service';
+import { HorarioService } from '../../service/horario.service';
 import { NgxSpinnerService } from "ngx-spinner";
 
 class Horario {
@@ -54,6 +54,7 @@ export class HorariosComponent implements OnInit {
   }
 
   agregarHorario(diaSemana: string): void {
+   
     const horarioFormGroup = this.formularioHorario.group({
       diaSemana: [diaSemana],
       horaEntrada: [""],
@@ -100,6 +101,8 @@ export class HorariosComponent implements OnInit {
         horario.horaSalida = '00:00:00';
       }
     });
+
+    console.log(this.formularioHorarios.value, "form");
     // Verifica si el formulario es válido
     if (this.formularioHorarios.valid) {
       this.spinner.show();
