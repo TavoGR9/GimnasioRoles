@@ -92,7 +92,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     //'Dinero Recibido',
     //'Pagar',
     'Reenovación',
-    'Info Cliente'
+    'Info Cliente',
+    'Huella'
   ];
 
   //titulos de columnas de la tabla Reenovacion de membresias
@@ -490,7 +491,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
     }
   }
-
   /*********PARTE DEL DIALOGO *************/
   abrirDialogo() {
     this.dialog
@@ -604,7 +604,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   private formatDateV2(date: Date): string {
     return this.datePipe.transform(date, 'dd/MM/yyyy') || '';
   }
-  
   //Descarga el archivo en PDF
   descargarPDF(): void {
     // Verifica si hay datos para exportar

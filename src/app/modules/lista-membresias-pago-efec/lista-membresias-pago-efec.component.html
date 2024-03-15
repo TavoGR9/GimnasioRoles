@@ -121,6 +121,21 @@
                           <mat-icon class="icon-size">info</mat-icon>
                         </button>
                       </ng-container>
+                      <ng-container *ngIf="column === 'Huella'">
+                        <div *ngIf="prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0'; else noHuella">
+                          <!-- Contenido para cuando huella no es nula ni 'null' y tampoco es cero 
+                          <img src="https://olympus.arvispace.com/gimnasioRoles/assets/img/huella.png" style="width: 20%;"/>-->
+                          <label class="estatus-activo"><mat-icon>fingerprint</mat-icon>          
+                            Registrada
+                          </label>
+                        </div>
+                        <ng-template #noHuella>
+                          <!-- Contenido para cuando huella es nula, 'null' o cero -->
+                          <div style="width: 100%;">
+                            <label class="estatus-inactivo">Huella no registrada</label>
+                          </div>
+                        </ng-template>
+                      </ng-container>
                   </td>
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="displayedColumnsActivos"></tr>
