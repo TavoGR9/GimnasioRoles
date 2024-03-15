@@ -172,7 +172,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      this.updateDateLogs();  
+      this.listaClientesData();
+      //this.updateDateLogs();    
     }); 
 
   }
@@ -210,35 +211,46 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
   }
 
+  /* Busqueda de todos los clientes sin fechas */
+  private listaClientesData():void {
+    this.pagoService.obtenerClientes(this.idGym).subscribe((response) => {
+      this.clienteActivo = response;
+      
+          this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+          this.dataSourceActivos.paginator = this.paginatorActivos;
+    });
+  }
+
+  /* Busqueda de cliente activos e inactivos pero con fechas */
+  /* Busqueda de cliente activos e inactivos pero con fechas */
   private updateDateLogs(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;  
+
     this.pagoService.obtenerActivos(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
       this.idGym
-
     ).subscribe(
       response => {
         if (response.msg == 'No hay resultados') {
           this.clienteActivo = [];
-          this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-          this.dataSourceActivos.paginator = this.paginatorActivos;
-        } else if(response){
-          // Si hay datos, actualiza la tabla
-          this.clienteActivo = response;
-          this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-          this.dataSourceActivos.paginator = this.paginatorActivos;
+        } else if (response) {
+          // Filtrar los clientes activos cuya acción no sea "Online"
+          this.clienteActivo = response.filter((cliente: any) => cliente.accion !== 'Online');
         }
-      }, error => {
+
+        // Actualizar la tabla con los datos filtrados
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
+      },
+      error => {
         console.error('Error en la solicitud:', error);
         // Manejo de errores adicional si es necesario
         this.clienteActivo = [];
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
         this.dataSourceActivos.paginator = this.paginatorActivos;
-        this.toastr.error('Ocurrio un error.', 'Error!!!');
-      },
-      () => {
+        this.toastr.error('Ocurrió un error.', '¡Error!');
       }
     );
   }
@@ -273,10 +285,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           }
 
           // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-          this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                          this.formatDate(this.fechaFin),
-                                          this.auth.idGym.getValue()
-                                          ).subscribe((respuesta) => {
+          this.pagoService.obtenerClientes(this.idGym).subscribe((respuesta) => {
             this.clienteActivo = respuesta;
             // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
             this.dataSourceActivos.data = this.clienteActivo.slice();
@@ -357,10 +366,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           }
 
           // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-          this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                          this.formatDate(this.fechaFin),
-                                          this.auth.idGym.getValue()
-                                          ).subscribe((respuesta) => {
+          this.pagoService.obtenerClientes(this.idGym).subscribe((respuesta) => {
             this.clienteActivo = respuesta;
             // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
             this.dataSourceActivos.data = this.clienteActivo.slice();
@@ -423,10 +429,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           }
 
           // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-          this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                          this.formatDate(this.fechaFin),
-                                          this.auth.idGym.getValue()
-                                          ).subscribe((respuesta) => {
+          this.pagoService.obtenerClientes(this.idGym).subscribe((respuesta) => {
             this.clienteActivo = respuesta;
             // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
             this.dataSourceActivos.data = this.clienteActivo.slice();
@@ -462,10 +465,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           }
 
           // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-          this.pagoService.obtenerActivos(this.formatDate(this.fechaInicio),
-                                          this.formatDate(this.fechaFin),
-                                          this.auth.idGym.getValue()
-                                          ).subscribe((response) => {
+          this.pagoService.obtenerClientes(this.idGym).subscribe((response) => {
             this.clienteActivo = response;
             // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
             this.dataSourceActivos.data = this.clienteActivo.slice();
