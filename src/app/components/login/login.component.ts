@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -44,11 +44,12 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.loginForm.value);
     if (this.loginForm.valid) {
+      console.log(this.loginForm.value);
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
           if (resultData && resultData.rolUser !== 'No_acceso') {
+            console.log(resultData.rolUser, "resultData");
             this.auth.loggedIn.next(true);
             this.auth.role.next(resultData.rolUser);
             this.auth.userId.next(resultData.id);
@@ -57,7 +58,10 @@ export class LoginComponent implements OnInit {
             this.auth.email.next(resultData.email);
             this.auth.encryptedMail.next(resultData.encryptedMail);
             this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
-            if(resultData.rolUser= 'supAdmin'){
+            console.log(resultData.rolUser, "resultData.rolUser ");
+            const userRole = this.auth.getRole(); // Obtener el rol del usuario del servicio de autenticación
+            this.auth.setUserRole(userRole); 
+            if(resultData.rolUser === 'SuperAdmin'){
               this.router.navigate(['/listaSucursales']);
 
             }else{

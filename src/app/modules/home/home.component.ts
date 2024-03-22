@@ -125,16 +125,12 @@ export class HomeComponent implements OnInit{
     });
 
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      console.log(data, "data1");
     this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTML}</table>`);
       // Resto del código...
     });
     
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
-      
-      //this.datosRecientesVentas = data;
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTMLVentas}</table>`);
-      console.log(this.tablaHTMLVentas, "data2");
     });
 }
 

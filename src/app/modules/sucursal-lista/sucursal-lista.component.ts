@@ -182,6 +182,11 @@ export class SucursalListaComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   ngOnInit(): void {
+    this.currentUser = this.auth.getCurrentUser();
+    console.log(this.currentUser, "currentUser");
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
    
     this.gimnasioService.obternerPlan().subscribe((data) => {
       this.gimnasio = data;
@@ -222,6 +227,21 @@ export class SucursalListaComponent implements OnInit {
         );
       }else if(!data.respuesta){
       }
+    });
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        console.log(resultData.rolUser, "resultData.rolUser");
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
     });
   }
 

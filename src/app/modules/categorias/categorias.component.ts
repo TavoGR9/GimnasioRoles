@@ -156,6 +156,7 @@ export class CategoriasComponent implements OnInit {
     );
   }
 
+  
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
