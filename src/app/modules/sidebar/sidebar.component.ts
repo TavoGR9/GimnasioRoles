@@ -88,7 +88,7 @@ export class SidebarComponent {
       });
   }
 
-  abrirAcceso() {
+  /*abrirAcceso() {
     this.dialog
       .open(EmergenteAccesosComponent, {
         //data: `Membresía agregada exitosamente`,
@@ -103,7 +103,7 @@ export class SidebarComponent {
         } else {
         }
       });
-  }
+  }*/
 
  /* openSerialPage(){
     this.dialog
