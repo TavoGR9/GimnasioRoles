@@ -31,6 +31,11 @@ export class SidebarComponent {
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
 
+  
+  isRouteActive(route: string): boolean {
+    return this.router.isActive(route, true);
+  }
+
   ngOnDestroy(): void {
     this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
   }
@@ -68,7 +73,6 @@ export class SidebarComponent {
     this.router.navigate(['/misMembresias']);
 
   }
-
 
   AbrirRegistro() {
     const dialogConfig = new MatDialogConfig();

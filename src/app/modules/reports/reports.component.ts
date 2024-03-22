@@ -63,11 +63,28 @@ constructor(private fb: FormBuilder,private toastr: ToastrService,private auth: 
 
   ngOnInit(): void {
 
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
 
     this.obtenerDatosParaGrafico1();
     this.obtenerDatosParaGrafico2();
   }
 
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.userId.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
 ////////////////////////////////////////////GRAFICAS/////////////////////////7777777
 formatearFecha(fechaOriginal: string): string {
   const fechaObj = new Date(fechaOriginal);

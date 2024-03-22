@@ -91,3 +91,8 @@
     text-decoration: none;
   }
   
+  /* En tu archivo CSS */
+.transparent-button.active {
+  color: #ffffff; /* Cambia el color de texto cuando está activo */
+  background-color: #9696964d; /* Cambia el color de fondo cuando está activo */
+}

@@ -439,9 +439,7 @@ export class RegistroComponent implements OnInit {
     
   }
 
-
   registrar(): any {
-    console.log(this.form.value, "formulario");
     this.email = this.form.value.email;
     if (this.form.valid) {
       this.spinner.show();

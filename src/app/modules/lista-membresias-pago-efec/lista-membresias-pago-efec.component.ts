@@ -343,9 +343,12 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
-                // Recargar la página actual
-                //location.reload();
-                //this.router.navigateByUrl(`/index/`);
+                this.pagoService.obtenerClientes(this.idGym).subscribe((response) => {
+                  this.clienteActivo = response;
+                  
+                      this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+                      this.dataSourceActivos.paginator = this.paginatorActivos;
+                });
               } else {
               }
             });

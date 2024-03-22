@@ -44,10 +44,8 @@ const routes: Routes = [
     path: '',
     component: AdminDashboardComponent,
     children: [
-      //Rutas Admin
       { path: 'home', component: HomeComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-     // { path: 'eje', component: SidebarComponent},
       {
         path: '',
         canActivate: [RoleGuard], 
@@ -67,6 +65,7 @@ const routes: Routes = [
         canActivate: [RoleGuard], 
         data: { expectedRole: 'Administrador'},
         children: [
+         
           { path: 'misMembresias', component: MembresiasComponent },
           { path: 'agregarMembresias', component: MembresiasAgregarComponent },
           { path: 'editarMembresias/:id', component: MembresiasEditarComponent },
@@ -90,6 +89,7 @@ const routes: Routes = [
           { path: 'agregar-plan', component:planAgregarComponent}, 
           { path: 'plan', component:planComponent}, 
           { path: 'editar-plan', component:planEditarComponent},
+          { path: 'Ventas', component: VentasComponent},
         ]
       },
       {
