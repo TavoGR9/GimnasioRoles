@@ -1,32 +1,39 @@
 <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
-<h1 mat-dialog-title class="title">INFORMACIÓN DEL CLIENTE</h1>
+
+<div mat-dialog-title class="title">
+<h2 style="padding: 15px;">INFORMACIÓN DEL CLIENTE</h2>
+<button mat-icon-button (click)="cerrarDialogo()"><mat-icon style="font-size: 26px;color: rgb(151, 0, 0)">cancel</mat-icon></button>
+</div>
+
 <div mat-dialog-content>
+  <br>
 <div class="row">
   <div class="col-sm-5">
     <img [src]="photo" class="size_image" alt="Imagen del Cliente no disponible" style="width: 90%;">
-   
+    <button mat-button (click)="abrirDialogFoto(data)" style="background-color: #000000; color: white;">
+      <mat-icon>camera_alt</mat-icon> <!-- Icono de cámara -->
+      Tomar Foto
+    </button>    
   </div>
   <div class="col-sm-7">
     <form [formGroup]="form">
     <div class="row">
+    
 
-      <div *ngIf="huella !== null && huella !== 'null' && huella !== '0'; else noHuella">
-        <!-- Contenido para cuando huella no es nula ni 'null' y tampoco es cero -->
+   <!--  <div *ngIf="huella !== null && huella !== 'null' && huella !== '0'; else noHuella">
         <img src="https://olympus.arvispace.com/gimnasioRoles/assets/img/huella.png" style="width: 8%;"/>
         <label style="background-color: rgb(0, 155, 0); color: white; padding: 5px;">
-          
           Huella registrada
         </label>
         <hr>
       </div>
 
       <ng-template #noHuella>
-        <!-- Contenido para cuando huella es nula, 'null' o cero -->
         <div style="width: 100%;">
           <label style="background-color: rgb(177, 0, 0); color: white; padding: 5px;">Huella no registrada</label>
           <hr>
         </div>
-      </ng-template>
+      </ng-template>--> 
       
     
       <div class="col-sm-12">
@@ -191,10 +198,14 @@
     showFirstLastButtons></mat-paginator>
 </div>
 <div mat-dialog-actions fxLayoutAlign="center center">
-  <!--<button mat-button (click)="abrirPuertoSerial(data)" (click)="cerrarDialogo()">Acceso manual</button>-->
-  <!--<button mat-button (click)="abrirDialogFoto(data)" (click)="cerrarDialogo()">Tomar Foto</button>-->
   <!--<button mat-button (click)="cerrarDialogo()">Capturar huella</button>-->
-  <a href="{{url}}"><button mat-button (click)="capturarHuella()">Capturar huella</button></a>
-  <!--<a href="#">{{url}}</a>-->
-  <button mat-button (click)="cerrarDialogo()">Cerrar</button>
+  <a href="{{url}}">
+    <button mat-button (click)="capturarHuella()" style="background-color: #000000; color: white;">
+      <mat-icon>fingerprint</mat-icon> <!-- Icono de huella dactilar -->
+      Capturar huella
+    </button>
+  </a>
+  
+  <!--<a href="#">{{url}}</a>
+  <button mat-button (click)="cerrarDialogo()">Cerrar</button>-->
 </div>

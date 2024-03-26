@@ -25,3 +25,15 @@ button a {
     text-decoration: none;
     color: #000000;
 }
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    background-color: #eeeded;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight:500;
+  }
+  
+
+  
+  

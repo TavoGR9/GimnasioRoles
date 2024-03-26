@@ -31,6 +31,11 @@ export class SidebarComponent {
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
 
+  
+  isRouteActive(route: string): boolean {
+    return this.router.isActive(route, true);
+  }
+
   ngOnDestroy(): void {
     this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
   }
@@ -69,7 +74,6 @@ export class SidebarComponent {
 
   }
 
-
   AbrirRegistro() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = `Empleado agregado correctamente.`;
@@ -88,7 +92,7 @@ export class SidebarComponent {
       });
   }
 
-  abrirAcceso() {
+  /*abrirAcceso() {
     this.dialog
       .open(EmergenteAccesosComponent, {
         //data: `Membresía agregada exitosamente`,
@@ -103,7 +107,7 @@ export class SidebarComponent {
         } else {
         }
       });
-  }
+  }*/
 
  /* openSerialPage(){
     this.dialog

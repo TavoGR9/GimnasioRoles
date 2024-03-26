@@ -42,6 +42,10 @@ export class PagoMembresiaEfectivoService {
   }  
 
 
+  obtenerClientes(idGym:any):Observable<any>{
+    return this.clienteHttp.get(this.URLServices+"?idGimnasio="+idGym);
+  } 
+
   clientesMemReenovar(){
     return this.clienteHttp.get(this.URLServices+"?Reenovacion");
   }

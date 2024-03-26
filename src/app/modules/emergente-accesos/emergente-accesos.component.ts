@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, Inject, ViewChild} from '@angular/core';
+import { Component, OnInit, Inject, ViewChild} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA,MatDialog } from '@angular/material/dialog';
 import {
   FormControl,
@@ -37,8 +37,6 @@ export class EmergenteAccesosComponent implements OnInit{
   img:string =  'https://';
   private subscription: Subscription = new Subscription(); // Inicializar la propiedad subscription
   idGuardado: any; // Variable para almacenar el ID recibido la primera vez
-  //realizandoBusqueda: boolean = false;
-  @ViewChild('inputField') inputField!: ElementRef;
 
   selectedPort: any = null;
   writer: any = null;
@@ -73,8 +71,8 @@ export class EmergenteAccesosComponent implements OnInit{
         this.dialogo.updateSize('600px', 'auto');
       });
     
-      // Ejecutar la tarea cada 5 segundos
-      this.subscription = interval(5000).pipe(
+      // Ejecutar la tarea cada 4 segundos
+      this.subscription = interval(4000).pipe(
         startWith(0),
         switchMap(() => this.serviceHuella.ultimoAcceso())
       ).subscribe((data: any) => {
@@ -156,14 +154,6 @@ export class EmergenteAccesosComponent implements OnInit{
           );
       }
     }
-    
-  //para mandar la solicitud para abrir torniquete
-  accesoManual(): void {
-    this.IdFormControl.setValue('');
-    if (this.inputField) {
-      this.inputField.nativeElement.value = '';
-    }
-  }
 
   /*sendSerialData() {
     // Verifica si el puerto ya está abierto

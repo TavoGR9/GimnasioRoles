@@ -24,6 +24,7 @@ export class AuthService {
   usuarioRegistrado: any[] = [];
   public ubicacion!: string;
   idUsuario:number =0;
+  userRole: string = '';
   
    //variable que guarda el endpoint en el srver API: string = 'conf/';
    API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
@@ -118,6 +119,10 @@ isSupadmin():boolean {
 
 getRole(): string {
   return this.role.getValue();
+}
+
+setUserRole(role: string): void {
+  this.userRole = role;
 }
 
 //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
