@@ -18,7 +18,7 @@ export class ArchivosComponent implements OnInit{
   archivosSeleccionados: File[] = [];
   @ViewChild('archivoInput') archivoInput!: ElementRef;
   formularioArchivo: FormGroup;
-  idBodega : any;
+  id_bodega : any;
   nombreBodega : any;
   mostrarBoton: boolean = false;
   archivos: any[] = [];
@@ -34,7 +34,7 @@ export class ArchivosComponent implements OnInit{
     private gimnasio: GimnasioService,
     private router: Router
   ) {
-    this.idBodega = data.idBodega;
+    this.id_bodega = data.id_bodega;
     this.nombreBodega = data.nombreBodega;
     this.formularioArchivo = this.form.group({
       nombreArchivo: ['', Validators.required],
@@ -46,7 +46,7 @@ export class ArchivosComponent implements OnInit{
    }
 
    ngOnInit(): void {
-    this.gimnasio.consultarArchivos(this.idBodega).subscribe(
+    this.gimnasio.consultarArchivos(this.id_bodega).subscribe(
       (archivos) => {
         this.archivos = archivos;
       },
@@ -172,7 +172,7 @@ export class ArchivosComponent implements OnInit{
         // Agregar tipoArchivo y Gimnasio_idGimnasio al FormData
         formData.append('nombreArchivo', nombreArchivo);
         formData.append('tipoArchivo', 'application/zip'); 
-        formData.append('Gimnasio_idGimnasio', this.idBodega); 
+        formData.append('Gimnasio_idGimnasio', this.id_bodega); 
   
         this.archivoService.guardarArchivos(formData).subscribe(
           (respuesta) => {

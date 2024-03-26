@@ -38,16 +38,12 @@ export class AltaColaboradoresComponent {
     private toastr: ToastrService ){
     this.form = this.fb.group({
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      apMaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      //rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/), Validators.minLength(12),  //^[A-Za-zñÑ&]{1,2}([A-Za-zñÑ&]([A-Za-zñÑ&](\d(\d(\d(\d(\d(\d(\w(\w(\w)?)?)?)?)?)?)?)?)?)?)?$/
-      //Validators.maxLength(13)])],
-      Gimnasio_idGimnasio: ['', Validators.compose([ Validators.required])],
-      area: ['', Validators.compose([ Validators.required])],
-      turnoLaboral: ['N/A'],
-      telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
-      salario: [0, Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
-      correo: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
+      puesto: ['', Validators.compose([ Validators.required])],
+      email:  [''],
+      jefe: [1, Validators.compose([ Validators.required])],
+      foto: ['', Validators.compose([ Validators.required])],
+      correoEmp: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
+      celular: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
       pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])]
     })    
   }
@@ -111,45 +107,34 @@ export class AltaColaboradoresComponent {
     return this.auth.isSupadmin();
   }
 
-  registrar():any{
-    console.log(this.form.value, "formularioooo");
+  registrar(): any {
     if (this.form.valid) {
       this.spinner.show();
       this.http.agregarEmpleado(this.form.value).subscribe({
         next: (resultData) => {
-          //mensaje de error - generado apartir de la existencia previa del rfc en la bd
-          if(resultData.msg == 'RfcExists'){
-            this.toastr.error('El rfc ya existe.', 'Error!!!');
-          }
-          //mensaje de error - generado apartir de la existencia previa del email en la bd
-          if(resultData.msg == 'MailExists'){
-            this.toastr.error('El correo ya existe.', 'Error!!!');
-          }
-          //mensaje de insersion correcta
-          if(resultData.msg == 'Success'){
-            //this.toastr.success('Empleado agregado correctamente.', 'Exíto!!!');
+          if (resultData.message === 'MailExists') {
+            this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+          } else if (resultData.success == '1') {
             this.cerrarDialogo();
-            this. enviarMensajeWhatsApp();
+            this.enviarMensajeWhatsApp();
             this.spinner.hide();
-            this.dialog.open(MensajeEmergentesComponent,{
+            this.dialog.open(MensajeEmergentesComponent, {
               data: 'Registro agregado correctamente.'
-              //width: '500px',
-              //height: '500px',
             })
-              .afterClosed()
-              .subscribe((cerrarDialogo:Boolean) => {
-                if(cerrarDialogo){
-                  
-                } else {
-        
-                }
-              });
+            .afterClosed()
+            .subscribe((cerrarDialogo: boolean) => {
+              if (cerrarDialogo) {
+                // Realizar alguna acción si se cierra el diálogo
+              } else {
+                // Realizar alguna acción si no se cierra el diálogo
+              }
+            });
             this.form.markAsPristine(); 
-            //  marcar un control de formulario como no tocado, indicando que el usuario no ha interactuado con él.
             this.form.markAsUntouched();
           }
         },
         error: (error) => {
+          console.log(error, "error");
           this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
         }
       });
@@ -158,7 +143,7 @@ export class AltaColaboradoresComponent {
       this.marcarCamposInvalidos(this.form);
     }
   }
-
+  
   OpenEditar(empleado: any) {
     this.dialog.open(MensajeEmergentesComponent,{
       data: `Empleado agregado correctamente.`

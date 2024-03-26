@@ -6,7 +6,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { plan } from "src/app/models/plan";
 import { PlanService } from "src/app/service/plan.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
-import { GimnasioService } from "src/app/service/gimnasio.service";
+import { GimnasioService } from "../../service/gimnasio.service";
 import { AuthService } from "src/app/service/auth.service";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";

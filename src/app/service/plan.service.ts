@@ -7,10 +7,12 @@ import { plan } from '../models/plan';
 })
 export class PlanService {
  
-  //API: string ="http://localhost/plan/membresia.php";
-  API: string ="https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/membresia.php";
-  API2: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/Membresia.php";
-  API3: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/servicesMembresia.php";
+  API: string ="http://localhost/plan/membresias.php";
+  //API: string ="https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/membresia.php";
+  //API2: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/Membresia.php";
+  API2: string = "http://localhost/plan/membresias.php";
+  //API3: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/servicesMembresia.php";
+  API3: string = "http://localhost/plan/servicesMembresia.php";
 
   public optionShow: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public showServices: BehaviorSubject<any> = new BehaviorSubject<any>([]);
@@ -34,7 +36,7 @@ export class PlanService {
   }
   
   consultarPlan(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultar="+id);
+    return this.clienteHttp.get(this.API+"?consultarPlan="+id);
   }
 
   consultarPlanM():Observable<any>{
@@ -48,9 +50,6 @@ export class PlanService {
   consultarPlanIdPlan(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultarGYMPlan="+id);
   }
-
-
-
 
   consultarPlanIdPlan2(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultarGYMPlanT="+id);

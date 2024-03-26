@@ -49,16 +49,17 @@ export class EmergenteInfoClienteComponent implements OnInit{
     private pagoService: PagoMembresiaEfectivoService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     @Inject(MAT_DIALOG_DATA)  public data: any) { 
+      console.log(data, "dataaaaaaaaaaaaaaaaa");
       // Agregar campos el formulario 
       this.form = this.fb.group({
         id_cliente: [this.data.idCliente, Validators.required],
-        nombre: [this.data.nombre_cl, Validators.required],
-        apPaterno: [this.data.paterno, Validators.required],
-        apMaterno: [this.data.materno, Validators.required],
+        nombre: [this.data.nombre, Validators.required],
+       // apPaterno: [this.data.paterno, Validators.required],
+        //apMaterno: [this.data.materno, Validators.required],
         telefono: [this.data.telefono, Validators.required],
-        email: [this.data.email, Validators.required],
-        peso: [this.data.peso, Validators.required],
-        estatura: [this.data.estatura, Validators.required]
+        correo: [this.data.email, Validators.required],
+       // peso: [this.data.peso, Validators.required],
+        //estatura: [this.data.estatura, Validators.required]
       });
 
       
@@ -77,6 +78,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     this.huella = this.data.huella;
 
     this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
+      console.log(respuesta, "respuesta");
       this.membresiaHisto = respuesta;
       this.dataSource = new MatTableDataSource(this.membresiaHisto);
       this.dataSource.paginator = this.paginator;

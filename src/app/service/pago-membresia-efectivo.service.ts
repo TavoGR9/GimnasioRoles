@@ -9,7 +9,8 @@ import { msgResult } from '../models/empleado';
 })
 export class PagoMembresiaEfectivoService {
 
-  URLServices: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/pagoEfectivoMembresia.php/"; 
+//  URLServices: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/pagoEfectivoMembresia.php/"; 
+  URLServices: string = "http://localhost/plan/Usuario.php"; 
   constructor(private clienteHttp:HttpClient) { }
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
   
@@ -31,10 +32,15 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.URLServices+"?consultar");
   }*/
 
-  obtenerActivos(inicioDate: any, finDate: any, idGym: any): Observable<any>{
+ /* obtenerActivos(inicioDate: any, finDate: any, idGym: any): Observable<any>{
     const params = new HttpParams().set('fechaInicio',inicioDate).set('fechaFin',finDate).set('GYMid',idGym);
     return this.clienteHttp.get(this.URLServices, {params});
-  }
+  }*/
+
+  obtenerActivos(id:any):Observable<any>{
+    return this.clienteHttp.get(this.URLServices+"?obtenerVista="+id);
+  }  
+
 
   obtenerClientes(idGym:any):Observable<any>{
     return this.clienteHttp.get(this.URLServices+"?idGimnasio="+idGym);

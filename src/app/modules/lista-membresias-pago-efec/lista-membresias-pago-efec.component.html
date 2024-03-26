@@ -52,7 +52,8 @@
                 <input matInput (keyup)="applyFilterActivos($event)"placeholder="Buscar" #input/>
             </mat-form-field>
             <div  class="table-container">
-            <table mat-table [dataSource]="dataSourceActivos" class="mat-elevation-z8">
+           
+              <table mat-table [dataSource]="dataSourceActivos" class="mat-elevation-z8">
                 <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsActivos">
                   <th mat-header-cell *matHeaderCellDef >{{ column }}</th>
                   <td mat-cell *matCellDef="let prod">
@@ -60,12 +61,12 @@
                         {{ prod.ID }}
                       </ng-container>-->
                       <ng-container *ngIf="column === 'Nombre'">
-                        {{ prod.Nombre }}
+                        {{ prod.nombreCompleto }}
                       </ng-container>
                      
                       <ng-container *ngIf="column === 'Membresia'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
-                          {{ prod.Membresia }}
+                          {{ prod.titulo }}
                         </ng-container>
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
@@ -73,7 +74,7 @@
                       </ng-container>
                       <ng-container *ngIf="column === 'Precio'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
-                          ${{ prod.Precio }}
+                          {{ prod.precio }}
                         </ng-container>
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
@@ -81,7 +82,7 @@
                       </ng-container>
                       <ng-container *ngIf="column === 'Fecha Inicio'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
-                          {{ prod.Fecha_Inicio }}
+                          {{ prod.fechaInicio }}
                         </ng-container>
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
@@ -89,14 +90,14 @@
                       </ng-container>
                       <ng-container *ngIf="column === 'Fecha Fin'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
-                          {{ prod.Fecha_Fin }}
+                          {{ prod.fechaFin }}
                         </ng-container>
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
                         </ng-container>
                       </ng-container>
                       <ng-container *ngIf="column === 'Estatus'">
-                        <div [ngClass]="{'estatus-activo': prod.Status === 'Activo', 'estatus-inactivo': prod.Status !== 'Activo'}">
+                        <div [ngClass]="{'estatus-activo': prod.estatus === '1', 'estatus-inactivo': prod.estatus !== '1'}">
                           {{ prod.Status }}
                         </div>
                       </ng-container>
@@ -143,186 +144,4 @@
               </table>
             </div>
               <mat-paginator #paginatorActivos [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
-        <!--</mat-tab>
-
-         APARTADO 2, REENOVACION DE MEMBRESIA SOLICITADO DESDE SUCURSAL 
-        <mat-tab label="Reenovacion de membresia"> 
-          <br>
-            <h2>Reenovacion de membresia</h2>
-            <mat-form-field class="full-width">
-              <mat-label>Buscar</mat-label>
-              <input matInput (keyup)="applyFilterReenovacion($event)"placeholder="Buscar" #input/>
-          </mat-form-field>
-          <div  class="table-container">
-            <table mat-table [dataSource]="dataSourceReenovacion" class="mat-elevation-z8">
-              <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsReenovacionMem">
-                <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
-                <td mat-cell *matCellDef="let updMem">
-                  <ng-container *ngIf="column === 'ID'">
-                    {{ updMem.ID }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Nombre'">
-                    {{ updMem.Nombre }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Sucursal'">
-                    {{ updMem.Sucursal }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Membresia'">
-                    {{ updMem.Membresia }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Precio'">
-                    {{ updMem.Precio }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Fecha_Inicio'">
-                    {{ updMem.Fecha_Inicio }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Fecha_Fin'">
-                    {{ updMem.Fecha_Fin }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Status'">
-                    {{ updMem.Status }}
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Dinero recibido'">
-                    <mat-form-field>
-                      <input matInput [(ngModel)]="updMem.moneyRecibido" type="number" min="0" placeholder="0"/>
-                    </mat-form-field>
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Pagar'">
-                    <button mat-raised-button (click)="realizarPago(updMem)" style="background-color: #F9A640; color: #000000;">Pagar<mat-icon>attach_money</mat-icon></button>
-                  </ng-container>
-                  <ng-container *ngIf="column === 'Actualizar'">
-                    <button mat-icon-button color="primary" (click)="abrirEmergente(updMem)" aria-label="Example icon button with a home icon">
-                      <mat-icon class="icon-size">edit</mat-icon>
-                    </button>
-                  </ng-container>
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumnsReenovacionMem"></tr>
-              <tr mat-row *matRowDef="let productofila; columns: displayedColumnsReenovacionMem"></tr>
-            </table>
-          </div>
-            <mat-paginator #paginatorReenovacionMem [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
-        </mat-tab>-->
-
-        <!-- APARTADO 3, PAGO DE MEMBRESIA ONLINE
-        <mat-tab label="Pago membresia cliente online"> 
-            <br>
-            <h2>Pago de membresia en linea cliente nuevo</h2>
-            <mat-form-field class="full-width">
-                <mat-label>Buscar</mat-label>
-                <input matInput (keyup)="applyFilter($event)"placeholder="Buscar" #input/>
-            </mat-form-field>
-            <div  class="table-container">
-            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-                <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
-                  <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
-                  <td mat-cell *matCellDef="let prod">
-                    <ng-container *ngIf="column === 'ID'">
-                        {{ prod.ID }}
-                    </ng-container>
-                    <ng-container *ngIf="column === 'Nombre'">
-                        {{ prod.Nombre }}
-                    </ng-container>
-                    <ng-container *ngIf="column === 'Sucursal'">
-                        {{ prod.Sucursal }}
-                    </ng-container>
-                    <ng-container *ngIf="column === 'Membresia'">
-                        {{ prod.Membresia }}
-                    </ng-container>
-                    <ng-container *ngIf="column === 'Precio'">
-                        ${{ prod.Precio }}
-                    </ng-container>
-                    <ng-container *ngIf="column === 'Status'">
-                        {{ prod.Status }}
-                    </ng-container>
-                    <ng-container *ngIf="column === 'Dinero recibido'">
-                        <mat-form-field>
-                          <input matInput [(ngModel)]="prod.dineroRecibido" type="number" min="0" placeholder="0"/> 
-                        </mat-form-field>
-                    </ng-container>
-                    <ng-container *ngIf="column === 'Pagar'">
-                        <button mat-raised-button (click)="realizarCalculo(prod)" style="background-color: #F9A640;
-                        color: #000000;">Pagar<mat-icon>attach_money</mat-icon></button> 
-                    </ng-container>
-                  </td>
-                </ng-container>
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let productofila; columns: displayedColumns"></tr>
-            </table>
-            </div>
-            <mat-paginator #paginatorPagoOnline [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
-        </mat-tab>-->
-
-       <!-- <mat-tab label="Registro de huella"> 
-          <br>
-          <h2>Lista de clientes para registrar huella dactilar</h2>
-          
-          <div class="search-label">
-            <h2>Busca a tu cliente:</h2>
-            <div class="search-container" (click)="abrirDialogo()"> 
-              <mat-form-field>
-                <input matInput type="text" class="search-input" placeholder="Buscar..." disabled>
-              </mat-form-field>
-                <img src="https://media.istockphoto.com/id/1135487794/es/vector/icono-de-b%C3%BAsqueda-ilustraci%C3%B3n-vectorial-aislada-en-el-bot%C3%B3n-cuadrado-plano.jpg?s=612x612&w=0&k=20&c=2f7Km0xyaXPdL9IEH7Ep4y4tLwj0HXDxJIEeWGGYfCk=" alt="Imagen" class="search-icon">
-            </div>
-          </div>
         
-          <div *ngIf="cliente">
-            <h1>Información</h1>
-            <div class="grid-inputs">
-              <div>
-                <mat-form-field>
-                  <mat-label>ID CLIENTE:</mat-label>
-                  <input matInput type="text" id="idUsuario" name="idUsuario" [value]="cliente.ID_Cliente || ''" disabled>
-                </mat-form-field>
-              </div>
-
-              <div></div>
-
-              <div>
-                <mat-form-field>
-                  <mat-label>NOMBRE:</mat-label>
-                  <input matInput type="text" id="nombreCompleto" name="nombreCompleto" [value]="cliente.nombre + ' ' + cliente.apPaterno + ' ' + cliente.apMaterno || ''" disabled>
-                </mat-form-field>
-              </div>
-
-              <div></div>
-
-              <div>
-                <mat-form-field>
-                  <mat-label>EMAIL:</mat-label>
-                  <input matInput type="text"  id="email" name="email" [value]="cliente.email || ''" disabled>
-                </mat-form-field>
-              </div>
-            </div>-->
-            <!-- <div class="col-sm-4">
-              <button mat-button class="mat-button" (click)="RegistrarHuella(this.cliente.ID_Cliente)">Registrar huella</button>
-            </div> -->
-          <!--</div>
-        
-
-          <br>
-          <form [formGroup]="form" (ngSubmit)="mandaInstruccionTorniquete()">
-            <mat-form-field hidden="true" >
-              <mat-label>ID CLIENTE:</mat-label>
-              <input matInput type="text" formControlName="idUsuario" id="idUsuario" name="idUsuario" value ="{{id}}">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="inputs_properties">
-              <mat-label>Torniquete</mat-label>
-              <mat-select id="id_module" formControlName="id_module" [errorStateMatcher]="matcher">
-                <mat-option value="1">Entrada</mat-option>
-                <mat-option value="2">Salida</mat-option>
-              </mat-select>
-              <mat-error *ngIf="form.get('turnoLaboral')?.hasError('required')">
-                <strong class="txt_msg">**Campo requerido</strong>
-              </mat-error>
-            </mat-form-field>
-            <br>
-            <button type="submit" id="btn_guardar" style="background-color: #F9A640;
-            color: #000000;" mat-raised-button>Registrar huella<mat-icon>fingerprint</mat-icon></button>
-          </form>
-        </mat-tab>
-    </mat-tab-group>-->
-</div>
-</div>

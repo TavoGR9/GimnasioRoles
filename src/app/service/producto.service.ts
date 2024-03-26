@@ -3,7 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { Producto } from '../models/producto';
 import { HttpParams } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { tap, catchError} from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,9 @@ export class ProductoService {
 
    API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/joinDetalleProducto.php';
    API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/productoSucursal.php';
-   API3: string =  'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/producto2.php';
+
    API4: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/ventaProductos.php';
+   APIP: string = 'http://localhost/plan/producto_bod.php';
 
    
    //API2: string = 'http://localhost/plan/joinDetalleProducto.php'
@@ -23,7 +25,15 @@ export class ProductoService {
     constructor(private clienteHttp:HttpClient) {}
   
     creaProducto(datosFormulario: any): Observable<any> {
-      return this.clienteHttp.post(this.API+'?creaProducto',datosFormulario);
+      return this.clienteHttp.post(this.APIP + '?insertar', datosFormulario).pipe(
+        catchError(error => {
+          // Manejar el error aquí
+          console.error('Error al enviar la solicitud:', error);
+          // Puedes lanzar el error nuevamente o devolver un valor predeterminado
+          return throwError(error); // Lanzar el error nuevamente para que el componente pueda manejarlo
+          // return of({ success: false }); // Devolver un valor predeterminado
+        })
+      );
     }
 
     consultarProductoId(id:any):Observable<any[]>{
@@ -54,10 +64,6 @@ export class ProductoService {
 
     obternerProducto(){
       return this.clienteHttp.get(this.API)
-    }
-
-    obternerProductoenLinea(){
-      return this.clienteHttp.get(this.API3)
     }
 
     consultarProducto(id:any):Observable<any>{

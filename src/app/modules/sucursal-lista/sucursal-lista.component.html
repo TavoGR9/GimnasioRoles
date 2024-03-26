@@ -18,18 +18,18 @@
    <form>
        <div  class="table-container">
            <table mat-table  [dataSource]="dataSource">
-               <!-- Título Column -->
+               <!-- Título Column x
                <ng-container matColumnDef="estatus">
                    <th mat-header-cell *matHeaderCellDef>Estatus</th>
                    <td mat-cell *matCellDef="let item">
-                       <mat-icon *ngIf="item.estatus == 1" class="check_circle">
+                       <mat-icon *ngIf="item.activacion == 1" class="check_circle">
                            check_circle
                        </mat-icon>
                        <mat-icon *ngIf="item.estatus == 0" class="cancel">
                            cancel
                        </mat-icon>
                    </td>
-               </ng-container>
+               </ng-container>-->
                <ng-container matColumnDef="nombre">
                    <th mat-header-cell *matHeaderCellDef>Nombre</th>
                    <td mat-cell *matCellDef="let item">{{ item.nombreBodega }}</td>
@@ -37,9 +37,7 @@
                <ng-container matColumnDef="direccion">
                    <th mat-header-cell *matHeaderCellDef>Dirección</th>
                    <td mat-cell *matCellDef="let item">
-                       {{ item.calle }} #{{ item.numExt }},
-                       <ng-container *ngIf="item.numInt">Interior {{ item.numInt }},</ng-container>
-                       {{ item.colonia }}, {{ item.codigoPostal }} {{ item.ciudad }}, {{ item.estado }}
+                       {{ item.direccion}}
                    </td>
                </ng-container>
                <!-- Entrenador Column -->
@@ -100,7 +98,7 @@
                <ng-container matColumnDef="actions">
                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
                    <td mat-cell *matCellDef="let item">
-                       <button mat-icon-button color="primary" (click)="editarSucursal(item.idGimnasio)">
+                       <button mat-icon-button color="primary" (click)="editarSucursal(item.id_bodega)">
                            <mat-icon>edit</mat-icon>
                          </button>
                        <!--<button mat-icon-button color="warn" (click)="borrarSucursal(item.idGimnasio)">
@@ -137,7 +135,7 @@
                 <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Documentación</th>
                 <td mat-cell *matCellDef="let item">
                     <!--<button mat-raised-button style="background-color: #fd9727; font-size: 14px; margin-right: 10px;" (click)="agregarHorario(item.idGimnasio)">+Agregar horario</button>-->
-                    <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: white;" (click)="agregarDocumentos(item.idBodega, item.nombreBodega)">Agregar documentos</button>
+                    <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: white;" (click)="agregarDocumentos(item.id_bodega, item.nombreBodega)">Agregar documentos</button>
                 </td>
             </ng-container>
 

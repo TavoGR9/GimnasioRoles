@@ -20,10 +20,11 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      pass: ['', Validators.required],
     });
   }
+
   ngOnInit(): void {
     if(this.auth.isLoggedInBS() || this.auth.getCurrentUser()){
       this.router.navigate(['/home']);
@@ -45,30 +46,27 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value);
+      console.log(this.loginForm.value, "datos form")
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
-          if (resultData && resultData.rolUser !== 'No_acceso') {
-            console.log(resultData.rolUser, "resultData");
+          console.log(resultData, "resultData");
+          if (resultData && resultData.rol !== 'No_acceso') {
             this.auth.loggedIn.next(true);
-            this.auth.role.next(resultData.rolUser);
+            this.auth.role.next(resultData.rol);
             this.auth.userId.next(resultData.id);
             this.auth.idGym.next(resultData.idGym);
             this.auth.nombreGym.next(resultData.nombreGym);
             this.auth.email.next(resultData.email);
             this.auth.encryptedMail.next(resultData.encryptedMail);
             this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
-            console.log(resultData.rolUser, "resultData.rolUser ");
-            const userRole = this.auth.getRole(); // Obtener el rol del usuario del servicio de autenticación
-            this.auth.setUserRole(userRole); 
-            if(resultData.rolUser === 'SuperAdmin'){
+            if(resultData.rol= 'supAdmin'){
               this.router.navigate(['/listaSucursales']);
 
             }else{
               this.router.navigate(['/home']);
             }
            
-            console.log('Tu rol es: ' + resultData.rolUser);
+            console.log('Tu rol es: ' + resultData.rol);
           } else {
             this.toastr.error('Por favor, verifica las credenciales proporcionadas....', 'Error', {
               positionClass: 'toast-bottom-left',

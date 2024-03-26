@@ -37,7 +37,7 @@ export class SucursalListaComponent implements OnInit {
     private auth: AuthService,
   ){}
 
-  displayedColumns: string[] = ['estatus','nombre','direccion','telefono', 'tipo', 'actions', 'ubicacion', 'activar', 'documentacion'];
+  displayedColumns: string[] = ['nombre','direccion','telefono', 'tipo', 'actions', 'ubicacion', 'activar', 'documentacion'];
 
   /*onToggle(event: Event, idGimnasio: any) {
 
@@ -189,6 +189,7 @@ export class SucursalListaComponent implements OnInit {
     }
    
     this.gimnasioService.obternerPlan().subscribe((data) => {
+      console.log("data", data);
       this.gimnasio = data;
       this.dataSource = new MatTableDataSource(this.gimnasio);
       this.dataSource.paginator = this.paginator;
@@ -367,11 +368,11 @@ export class SucursalListaComponent implements OnInit {
   }
 
 
-  agregarDocumentos(idBodega: string, nombreBodega: string): void {
+  agregarDocumentos(id_bodega: string, nombreBodega: string): void {
     const dialogRef = this.dialog.open(ArchivosComponent, {
       width: '60%',
       height: '60%',
-      data: { idBodega: idBodega, nombreBodega: nombreBodega},
+      data: { idBodega: id_bodega, nombreBodega: nombreBodega},
       disableClose: true
     });
   }

@@ -18,11 +18,7 @@ export class ListaProductoLineaComponent implements OnInit {
     public dialog: MatDialog){}
 
   ngOnInit():void{
-    this.productoService.obternerProductoenLinea().subscribe({
-      next: (resultData) => {
-        this.productos = resultData;
-      }
-    })
+    
   }
   
   getCategoria(idCategoria: number) {

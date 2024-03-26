@@ -76,6 +76,7 @@ export class HomeComponent implements OnInit{
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
+        console.log(resultData, "resultData");
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
           this.auth.userId.next(resultData.id);

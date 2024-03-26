@@ -13,57 +13,28 @@
                          <label>Nombre:</label>
                       </div>
                       <div class="col-sm-6">
-                         <label>Estatus:</label>
-                      </div>
-                   </div>
-                   <div class="row">
-                      <div class="col-sm-6">
-                         <p>
-                            <mat-form-field appearance="outline"  style="width: 100%;" required>
-                               <mat-label>Nombre</mat-label>
-                               <input type="text" matInput placeholder="Bebidas" autocomplete="off" id="nombreCategoria" formControlName="nombreCategoria">
-                               
-                            </mat-form-field>
-                         </p>
-                      </div>
-                      <div class="col-sm-6">
-                         <p>
-                            <mat-form-field style="width: 100%;height: 80px;" autocomplete="off" appearance="outline" required>
-                               <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar</mat-label>
-                               <mat-select id="estatus" formControlName="estatus">
-                                  <mat-option value="1" style="font-family: Arial; font-size: 18px;">Activo</mat-option>
-                                  <mat-option value="0" style="font-family: Arial; font-size: 18px;">Inactivo</mat-option>
-                               </mat-select>
-                            </mat-form-field>
-                         </p>
+                         <label>Foto:</label>
                       </div>
                    </div>
                    <div class="row">
                      <div class="col-sm-6">
-                        <label >Descripción:</label>
-                     </div>
-                     <div class="col-sm-6">
-                        <label>Fecha creación:</label>
-                     </div>
-                  </div>
-                   <div class="row">
-                      <div class="col-sm-6">
-                         <p>
-                            <mat-form-field appearance="outline" style="display: inline-block; width: 100%; height: 110px;" required>
-                               <mat-label>Descripción</mat-label>
-                               <textarea class="textarea" matInput rows="4" placeholder="Descripción breve de la categoria" cols="50" style="display: inline-block; width: 100%;height: 100%;" id="descripcion" formControlName="descripcion"> </textarea>
-                            </mat-form-field>
-                         </p>
-                      </div>
-                      <div class="col-sm-6">
                         <p>
-                          <mat-form-field appearance="outline" style="width: 100%;" required>
-                            <mat-label>Fecha creación</mat-label>
-                            <input type="date" matInput formControlName="fechaCreacion">
-                          </mat-form-field>
+                            <mat-form-field appearance="outline" style="width: 100%;" required>
+                                <mat-label>Nombre</mat-label>
+                                <input type="text" matInput placeholder="Nombre" autocomplete="off" id="nombreCategoriaP" formControlName="nombreCategoriaP">
+                            </mat-form-field>
                         </p>
-                      </div> 
-                   </div>
+                    </div>
+                    <div class="col-sm-6">
+                     <p>
+                         <input accept="image/*" type="file" name="image" class="d-none" id="imageInput" (change)="handleImageChange($event)">
+                         <label for="imageInput" class="btn btn-primary">Seleccionar Imagen</label>
+                     </p>
+                 </div>
+                 
+                 
+                                 
+                  </div>                    
                 </div>
              </form>
     </div>
