@@ -9,7 +9,8 @@ import { catchError } from 'rxjs/operators';
 export class ArchivoService {
 
 //Servicio para guardar archivos.
-API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/archivos.php';
+//API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/archivos.php';
+API: string = 'http://localhost/plan/archivos.php'
 
 constructor(private clienteHttp: HttpClient) {
 }

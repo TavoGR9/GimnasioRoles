@@ -92,6 +92,7 @@ export class ServiceDialogComponent implements OnInit {
   }
 
   validaFormService() {
+    console.log(this.serviceForm.value, "form");
     if (this.serviceForm.invalid) {
       Object.values(this.serviceForm.controls).forEach((control) => {
         control.markAsTouched();
@@ -106,6 +107,7 @@ export class ServiceDialogComponent implements OnInit {
         precio_unitario: this.serviceForm.value.precio_unitario,
         fk_idGimnasio: this.idGym,
       });
+      console.log("segundo", this.serviceForm.value);
       this.planService
         .newService(this.serviceForm.value)
         .subscribe((respuesta) => {

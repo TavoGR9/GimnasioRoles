@@ -3,6 +3,11 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject  } from 'rxjs';
 import { listaEmpleados, msgResult, registrarEmpleado } from '../models/empleado';
 import { tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+
+
 @Injectable({
     providedIn: 'root'
 })
@@ -14,6 +19,8 @@ export class ColaboradorService {
     private categoriasSubject = new BehaviorSubject<any[]>([]);
 
     API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/empleado.php';
+    API2: string = 'http://localhost/plan/empleado.php';
+    API3: string = 'http://localhost/plan/BodegaEmpleado.php'
     constructor(private clienteHttp:HttpClient) {
     }
     
@@ -26,12 +33,22 @@ export class ColaboradorService {
         return this.clienteHttp.get(this.API+"?nameGym="+gimName);
     }
 
-    //servicio correspondiente al registro-alta de nuevo colaborador
-    agregarEmpleado(datosEmpleado: registrarEmpleado):Observable<any>{
-        let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-        return this.clienteHttp.post<msgResult>(this.API+"?addEmpleado",datosEmpleado, {headers})
+    agregarEmpleado(datosEmpleado: any): Observable<any> {
+        return this.clienteHttp.post(this.API2 + "?insertar=1", datosEmpleado);
     }
 
+    agregarUsuario(datosEmpleado: any): Observable<any> {
+        return this.clienteHttp.post(this.API2 + "?insertarUsuario=1", datosEmpleado);
+    }
+
+    agregarUsuarioBodega(datosEmpleado: any): Observable<any> {
+        return this.clienteHttp.post(this.API2 + "?insertarUsuarioBodega=1", datosEmpleado);
+    }
+
+    agregarBodegaEmpleado(datosEmpleado: any): Observable<any> {
+        return this.clienteHttp.post(this.API3 + "?insertar=1", datosEmpleado);
+    }
+      
     comboDatosAllGym(){
         return this.clienteHttp.get(this.API+"?nomAllGym");
     }
@@ -55,7 +72,7 @@ export class ColaboradorService {
 
     //servicio correspondiente a traer datos para la actualizacion de empleado
     consultarIdEmpleado(id: any):Observable<any>{
-        return this.clienteHttp.get<listaEmpleados>(this.API+"?obtEmp="+id);
+        return this.clienteHttp.get<listaEmpleados>(this.API2+"?obtEmp="+id);
     }
 
     //servicio correspondiente a la actualizacion del empleado

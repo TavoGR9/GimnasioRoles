@@ -29,30 +29,30 @@
       </ng-template>
       
     
-      <div class="col-sm-6">
+      <div class="col-sm-12">
         <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
           <mat-label>Nombre:</mat-label>
-          <input id="nombre" formControlName="nombre" type="text" matInput autocomplete="off" placeholder="Nombre" />
+          <input id="nombre" formControlName="nombre" type="text" matInput autocomplete="off" placeholder="nombre" />
         </mat-form-field>
 
       </div>
-      <div class="col-sm-6">
+      <!--<div class="col-sm-6">
         <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
           <mat-label>Apellido paterno:</mat-label>
           <input id="apPaterno" formControlName="apPaterno" type="text" matInput autocomplete="off" placeholder="Apellido paterno" />
         </mat-form-field>
 
-      </div>
+      </div>-->
     </div>
 
     <div class="row">
-      <div class="col-sm-6">
+     <!--<div class="col-sm-6">
         <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
           <mat-label>Apellido materno:</mat-label>
           <input id="apMaterno" formControlName="apMaterno" type="text" matInput autocomplete="off" placeholder="Apellido materno" />
         </mat-form-field>
-      </div>
-      <div class="col-sm-6">
+      </div>--> 
+      <div class="col-sm-12">
         <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
           <mat-label>Telefono:</mat-label>
           <input id="telefono" formControlName="telefono" type="text" matInput autocomplete="off" placeholder="Telefono" />
@@ -61,28 +61,28 @@
     </div>
 
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-sm-12">
         <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
           <mat-label>Correo electronico.</mat-label>
-          <input id="email" formControlName="email" type="text" matInput autocomplete="off" placeholder="Correo electronico" />
+          <input id="email" formControlName="correo" type="text" matInput autocomplete="off" placeholder="Correo electronico" />
         </mat-form-field>
       </div>
-      <div class="col-sm-6">
+      <!--<div class="col-sm-6">
         <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
           <mat-label>Estatura</mat-label>
           <input id="estatura" formControlName="estatura" type="text" matInput autocomplete="off" placeholder="Estatura" />
         </mat-form-field>
-      </div>
+      </div>-->
     </div>
 
     <div class="row">
-      <div class="col-sm-6">
+      <!--<div class="col-sm-6">
         <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
           <mat-label>Peso</mat-label>
           <input id="peso" formControlName="peso" type="text" matInput autocomplete="off" placeholder="Peso" />
         </mat-form-field>
-      </div>
-      <div class="col-sm-6">
+      </div>-->
+      <div class="col-sm-12">
         <div style="display: flex; justify-content: center;">
           <button mat-raised-button (click)="actualizar()" style="background-color: #fd9727; font-size: 15px;  height: 40px;">Actualizar información</button>
        </div>
@@ -98,30 +98,33 @@
       <h3 style="font-weight: bold;">Nombre:</h3> {{ data.nombre }}
     </div>-->
 
-    <div class="column">
+    <!--<div class="column">
       <h3 style="font-weight: bold;">Sucursal:</h3> {{ data.sucursal }}
-    </div>
+    </div>-->
 
     <div class="column">
-      <ng-container *ngIf="data.action === 'Activo'; else notActive">
+      <ng-container >
         <h3 style="font-weight: bold;">Membresia:</h3> {{ data.membresia }}
       </ng-container>
-      <ng-template #notActive>
+      <!--<ng-template #notActive>
         <h3 style="font-weight: bold;">Membresia:</h3> N/A
-      </ng-template>
+      </ng-template>-->
     </div>
 
     <div class="column">
-      <ng-container *ngIf="data.action === 'Activo'; else notActive">
+      <!--<ng-container *ngIf="data.action === 'Activo'; else notActive">
+      <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
+    </ng-container>
+    <ng-template #notActive>
+      <h3 style="font-weight: bold;">Duración:</h3> N/A
+    </ng-template>-->
+      <ng-container >
         <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
       </ng-container>
-      <ng-template #notActive>
-        <h3 style="font-weight: bold;">Duración:</h3> N/A
-      </ng-template>
     </div>
 
     <div class="column">
-      <ng-container *ngIf="data.action === 'Activo'; else notActive">
+      <ng-container>
         <h3 style="font-weight: bold;">Información de la membresia:</h3> {{ data.infoMembresia }}
       </ng-container>
       <ng-template #notActive>
@@ -188,8 +191,8 @@
     showFirstLastButtons></mat-paginator>
 </div>
 <div mat-dialog-actions fxLayoutAlign="center center">
-  <button mat-button (click)="abrirPuertoSerial(data)" (click)="cerrarDialogo()">Acceso manual</button>
-  <button mat-button (click)="abrirDialogFoto(data)" (click)="cerrarDialogo()">Tomar Foto</button>
+  <!--<button mat-button (click)="abrirPuertoSerial(data)" (click)="cerrarDialogo()">Acceso manual</button>-->
+  <!--<button mat-button (click)="abrirDialogFoto(data)" (click)="cerrarDialogo()">Tomar Foto</button>-->
   <!--<button mat-button (click)="cerrarDialogo()">Capturar huella</button>-->
   <a href="{{url}}"><button mat-button (click)="capturarHuella()">Capturar huella</button></a>
   <!--<a href="#">{{url}}</a>-->

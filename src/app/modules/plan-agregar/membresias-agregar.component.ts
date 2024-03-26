@@ -13,7 +13,7 @@ import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emerge
 import { AuthService } from "src/app/service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { PlanService } from "src/app/service/plan.service";
-import { plan } from "src/app/models/plan";
+import { plan } from "../../models/plan";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from 'ngx-toastr';
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";

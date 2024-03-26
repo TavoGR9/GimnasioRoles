@@ -36,13 +36,8 @@ export class AltaCategoriaComponent implements OnInit {
     //this.fechaRegistro = this.obtenerFechaActual();
     const fechaActual = new Date().toISOString().split('T')[0];
     this.formularioCategoria = this.formulario.group({
-      nombreCategoria: ['', Validators.required],
-      descripcion: ['', Validators.required],
-      estatus: ['', Validators.required],
-      //fechaCreacion: ['', Validators.required],
-      //fechaCreacion: [this.fechaRegistro],
-      fechaCreacion: [fechaActual],
-      Gimnasio_idGimnasio:[this.auth.idGym.getValue()],
+      nombreCategoriaP: ['', Validators.required],
+      fotoP:[''],
     });
   }
 
@@ -60,6 +55,7 @@ export class AltaCategoriaComponent implements OnInit {
   }  
 
   enviar(): any {
+  console.log(this.formularioCategoria.value, "this.formularioCategoria.valid");
   if (this.formularioCategoria.valid) {
     this.spinner.show();
     this.categoriaService.agregarCategoria(this.formularioCategoria.value).subscribe((respuesta) => {
@@ -94,4 +90,20 @@ marcarCamposInvalidos(formGroup: FormGroup) {
     }
   });
 } 
+
+handleImageChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
+  const files = target.files;
+
+  if (files && files.length > 0) {
+      const imageName = files[0].name;
+      console.log('Nombre de la imagen seleccionada:', imageName);
+
+      // Asigna el nombre de la imagen al campo fotoP del formulario
+      this.formularioCategoria.patchValue({
+          fotoP: imageName
+      });
+  }
+}
+
 }

@@ -9,8 +9,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class MembresiaService {
  
-  API: string ="https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/membresia.php";
-  //API: string = "https://olympus.arvispace.com/puntoDeVenta/conf/Membresia.php";  
+  //API: string ="https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/membresia.php";
+  API: string ="https://localhost/plan/membresias.php" 
   
   constructor(private clienteHttp:HttpClient) {
   }
@@ -61,7 +61,7 @@ export class MembresiaService {
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
     console.log(id, "id", datosPlan, "datos");
-    return this.clienteHttp.post(this.API+"?actualizar="+id,datosPlan);
+    return this.clienteHttp.post(this.API+"?actualizarPlan="+id,datosPlan);
   }  
 
   borrarPlanM(id:any):Observable<any>{

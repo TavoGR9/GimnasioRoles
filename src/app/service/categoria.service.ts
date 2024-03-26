@@ -15,11 +15,47 @@ export class CategoriaService {
   private categoriasSubject = new BehaviorSubject<any[]>([]);
 
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/categoria.php'
+  API2: string = 'http://localhost/plan/categoria.php'
+
   constructor(private clienteHttp:HttpClient) {
   }
 
-  agregarCategoria(datosCategoria:proveedor):Observable<any>{
-    return this.clienteHttp.post(this.API+"?insertar=1",datosCategoria);
+  agregarSubCategoria(datosSubCategoria:any):Observable<any>{
+    return this.clienteHttp.post(this.API2+"?insertarSubC=1",datosSubCategoria);
+  }
+
+  agregarCategoria(datosCategoria:any):Observable<any>{
+    return this.clienteHttp.post(this.API2+"?insertar=1",datosCategoria);
+  }
+
+  agregarMarca(datosMarca:any):Observable<any>{
+    return this.clienteHttp.post(this.API2+"?insertarMarca=1",datosMarca);
+  }
+
+  obtenerCategoria():Observable<any>{
+    return this.clienteHttp.get(this.API2+"?consultarCategorias");
+  }
+
+  obtenerSubCategoria():Observable<any>{
+    return this.clienteHttp.get(this.API2+"?consultarSubCategorias");
+  }
+
+  obtenerMarcas():Observable<any>{
+    return this.clienteHttp.get(this.API2+"?consultarMarcas");
+  }
+
+  obtenerCategoriaPorNombre(nombre:string):Observable<any>{
+    return this.clienteHttp.get(this.API2+"?categoriaName="+nombre);
+  }
+
+  obtenerSubCategoriaPorNombre(nombre:string, id:any):Observable<any>{
+    console.log(nombre, id);
+    console.log(this.API2+"?SubcategoriaName="+nombre+"&id"+id, "url");
+    return this.clienteHttp.get(this.API2+"?SubcategoriaName="+nombre+"&id="+id);
+  }
+
+  obtenerMarcaPorNombre(nombre:string):Observable<any>{
+    return this.clienteHttp.get(this.API2+"?marcaName="+nombre);
   }
 
   obternerCategoria(){

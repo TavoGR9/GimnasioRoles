@@ -15,9 +15,13 @@ export class GimnasioService {
   botonEstado = new Subject<{respuesta: boolean, idGimnasio: any}>();
   optionSelected = new BehaviorSubject<number>(0);
   Api_home: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/espacioCliente.php';
-  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio2.php'
+ // API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio2.php'
+ API: string = 'http://localhost/plan/gimnasio.php'
+  API2: string = 'http://localhost/plan/bodega.php'
+
   APIGym: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/gimnasio.php'
-  APISERVICE: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/serviciosGym.php';
+ // APISERVICE: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/serviciosGym.php';
+ APISERVICE: string = 'https://localhost/plan/serviciosGym.php';
 
   //para guardar los headers que manda el API
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -30,13 +34,7 @@ export class GimnasioService {
   }
 
   obternerPlan(): Observable<any[]>{
-    return this.clienteHttp.get<any[]>(this.API+"?consultarGimnasios")
-    .pipe(
-      tap((nuevosGym: any[]) => {
-        // Emite el valor al subject después de recibir la respuesta
-        this.gymSubject.next(nuevosGym);
-      })
-    );
+    return this.clienteHttp.get<any[]>(this.API2+"?consultar");
   }
 
   getCategoriasSubject() {
@@ -45,7 +43,7 @@ export class GimnasioService {
 
   // Angular service method
   agregarSucursal(datosGym: gimnasio):Observable<any>{
-    return this.clienteHttp.post(this.API+"?insertar", datosGym);
+    return this.clienteHttp.post(this.API2+"?insertar", datosGym);
   }
 
   consultarArchivos(id: any):Observable<any>{
@@ -58,7 +56,7 @@ export class GimnasioService {
   }
 
   actualizarSucursal(datosGym: gimnasio):Observable<any>{
-    return this.clienteHttp.post(this.API+"?actualizar", datosGym);
+    return this.clienteHttp.post(this.API2+"?actualizar", datosGym);
   }
 
   consultarPlan(id:any):Observable<any>{

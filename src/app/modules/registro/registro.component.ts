@@ -23,6 +23,7 @@ import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 import { agregarContra } from "src/app/service/agregarContra.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
+import { ColaboradorService } from "../../service/colaborador.service";
 interface Food {
   value: string;
   viewValue: string;
@@ -118,6 +119,7 @@ export class RegistroComponent implements OnInit {
     public fb: FormBuilder,
     private clienteService: ClienteService,
     public testService: TestService,
+    public usuario: ColaboradorService,
     private router: Router,
     private activeRoute: ActivatedRoute,
     public dialog: MatDialog,
@@ -141,10 +143,10 @@ export class RegistroComponent implements OnInit {
       this.webcamImage = null;
 
     this.form = this.fb.group({
-      nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
+      nombreU: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       apMaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
-      telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      fon: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       codigoPostal: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(5)])],
       ciudad: ['', Validators.compose([Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       colonia: ['', Validators.compose([Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
@@ -153,18 +155,29 @@ export class RegistroComponent implements OnInit {
       numExterno: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       estado: [''],
       //direccion: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú0-9 ./#]*[A-Za-z][A-Za-zñÑáéíóú0-9 ./#]*$/)])],
-      fechaNacimiento: ['', Validators.required],
-      curp: ['', Validators.compose([ Validators.minLength(18), Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/)])],
-      email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
+      //fechaNacimiento: ['', Validators.required],
+      //curp: ['', Validators.compose([ Validators.minLength(18), Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/)])],
+      
    //   pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
-      tiene_huella:[''],
+      //tiene_huella:[''],
+      
       fotoUrl:['', Validators.required],
-      peso:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(300)])],
-      estatura:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(250)])],
+      //peso:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(300)])],
+      //estatura:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(250)])],
       Gimnasio_idGimnasio:[this.auth.idGym.getValue()],
-      Membresia_idMem:['', Validators.required],
+      //Membresia_idMem:['', Validators.required],
       nombreArchivo: [''],
       base64textString: [''],
+
+      email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
+      pass: [''],
+      user:['saad'],
+      no_clave: ['0'],
+      nombre:[''],
+      destino:["Cliente"],
+      direccion:[''],
+      codigoPromotor:[0],
+      Genero:['Mjer'],
     })
 
   }
@@ -439,6 +452,70 @@ export class RegistroComponent implements OnInit {
     
   }
 
+  registrarUsuario(){
+    const codigoPostal = this.form.get("codigoPostal")?.value;
+    const estado = this.form.get("estado")?.value;
+    const ciudad = this.form.get("ciudad")?.value;
+    const colonia = this.form.get("colonia")?.value;
+    const calle = this.form.get("calle")?.value;
+    const numInter = this.form.get("numExt")?.value;
+    const numExterno = this.form.get("numInt")?.value;
+
+    const nombreU = this.form.get("nombreU")?.value;
+    const apPaterno = this.form.get("apPaterno")?.value;
+    const apMaterno = this.form.get("apMaterno")?.value;
+      
+
+    const direccionCompleta = `${calle} ${numExterno} ${numInter ? "Int. " + numInter : ""}, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
+
+    const nombreCompleto = `${nombreU} ${apPaterno} ${apMaterno}`;
+      console.log("direccionCompleta", direccionCompleta);
+      // Establecer la dirección completa en un nuevo control del formulario
+      this.form.patchValue({
+        direccion: direccionCompleta,
+        nombre: nombreCompleto
+      });
+
+    this.usuario.agregarUsuario(this.form.value).subscribe({
+      next: (resultData) => {
+        if (resultData.message === 'MailExists') {
+          this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+        } else if (resultData.success == '1') {
+
+          const fomrBU = {
+            status: 1,
+            id_usuario: resultData.no_clave,
+            id_bodega: 1
+          }
+
+          console.log(fomrBU, "fomrBU");
+          this.usuario.agregarUsuarioBodega(fomrBU).subscribe({next: (resultData) =>{
+          this.cerrarDialogo();
+          this.spinner.hide();
+          this.dialog.open(MensajeEmergentesComponent, {
+            data: 'Registro agregado correctamente.'
+          })
+          .afterClosed()
+          .subscribe((cerrarDialogo: boolean) => {
+            if (cerrarDialogo) {
+              // Realizar alguna acción si se cierra el diálogo
+            } else {
+              // Realizar alguna acción si no se cierra el diálogo
+            }
+          });
+          //this.form.markAsPristine(); 
+          //this.form.markAsUntouched();
+
+            }
+          }) 
+        }
+      },
+      error: (error) => {
+        console.log(error, "error");
+        this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
+      }
+    });
+  }
 
   registrar(): any {
     console.log(this.form.value, "formulario");

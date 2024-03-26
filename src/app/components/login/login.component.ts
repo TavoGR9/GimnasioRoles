@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -20,10 +20,11 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      pass: ['', Validators.required],
     });
   }
+
   ngOnInit(): void {
     if(this.auth.isLoggedInBS() || this.auth.getCurrentUser()){
       this.router.navigate(['/home']);
@@ -44,27 +45,28 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.loginForm.value);
     if (this.loginForm.valid) {
+      console.log(this.loginForm.value, "datos form")
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
-          if (resultData && resultData.rolUser !== 'No_acceso') {
+          console.log(resultData, "resultData");
+          if (resultData && resultData.rol !== 'No_acceso') {
             this.auth.loggedIn.next(true);
-            this.auth.role.next(resultData.rolUser);
+            this.auth.role.next(resultData.rol);
             this.auth.userId.next(resultData.id);
             this.auth.idGym.next(resultData.idGym);
             this.auth.nombreGym.next(resultData.nombreGym);
             this.auth.email.next(resultData.email);
             this.auth.encryptedMail.next(resultData.encryptedMail);
             this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
-            if(resultData.rolUser= 'supAdmin'){
+            if(resultData.rol= 'supAdmin'){
               this.router.navigate(['/listaSucursales']);
 
             }else{
               this.router.navigate(['/home']);
             }
            
-            console.log('Tu rol es: ' + resultData.rolUser);
+            console.log('Tu rol es: ' + resultData.rol);
           } else {
             this.toastr.error('Por favor, verifica las credenciales proporcionadas....', 'Error', {
               positionClass: 'toast-bottom-left',
