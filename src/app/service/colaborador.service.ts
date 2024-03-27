@@ -38,11 +38,11 @@ export class ColaboradorService {
     }
 
     agregarUsuario(datosEmpleado: any): Observable<any> {
-        return this.clienteHttp.post(this.API2 + "?insertarUsuario=1", datosEmpleado);
+        return this.clienteHttp.post(this.API2 + "?insertarUsuario", datosEmpleado);
     }
 
     agregarUsuarioBodega(datosEmpleado: any): Observable<any> {
-        return this.clienteHttp.post(this.API2 + "?insertarUsuarioBodega=1", datosEmpleado);
+        return this.clienteHttp.post(this.API2 + "?insertarUsuarioBodega", datosEmpleado);
     }
 
     agregarBodegaEmpleado(datosEmpleado: any): Observable<any> {
