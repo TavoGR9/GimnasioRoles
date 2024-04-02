@@ -1,18 +1,11 @@
-import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy,Component,OnInit,ViewChild} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductoService } from '../../service/producto.service';
 import { EmergenteHistorialProductosComponent } from '../emergente-historial-productos/emergente-historial-productos.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/service/auth.service';
-
+import { AuthService } from '../../service/auth.service';
 @Component({
   selector: 'inventarios',
   templateUrl: './inventarios.component.html',
@@ -24,7 +17,6 @@ export class InventariosComponent implements OnInit {
     'Código De Barras',
     'Categoría',
     'Nombre',
-    'Descripción',
     'Cantidad Disponible'
   ];
 
@@ -95,18 +87,11 @@ export class InventariosComponent implements OnInit {
     });
   }
 
-
   getClaseCantidadDisponible(prod: any): string[] {
     const clases: string[] = [];
- 
     if (prod && prod.cantidad_disponible !== undefined) {
        clases.push(prod.cantidad_disponible < 5 ? 'cantidad-disponible-bajo' : 'cantidad-disponible-suficiente');
     }
- 
     return clases;
  }
- 
-  
-  
-  
 }

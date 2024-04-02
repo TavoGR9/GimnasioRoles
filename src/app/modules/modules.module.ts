@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ModulesRoutingModule } from './modules-routing.module';
 import { HomeComponent } from './home/home.component';
 import { ReportsComponent } from './reports/reports.component';
@@ -17,9 +16,6 @@ import { CategoriasComponent } from './categorias/categorias.component';
 import { AltaCategoriaComponent } from './alta-categoria/alta-categoria.component';
 //import { InventarioComponent } from './inventario/inventario.component';
 import { ProductosComponent } from './productos/productos.component';
-//import { CrearProductoComponent } from './crearProducto/crearProducto.component';
-//import { EditarProductoComponent } from './editar-producto/editar-producto.component';
-
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -55,9 +51,7 @@ import { ListaCategoriaComponent } from './lista-categoria/lista-categoria.compo
 import { EditarCategoriaComponent } from './editar-categoria/editar-categoria.component';
 import { ListaProductoComponent } from './lista-producto/lista-producto.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
-import { ProductManagementComponent } from './product-management/product-management.component';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
-import { SubirImagenesComponent } from './subir-imagenes/subir-imagenes.component';
 import { HorariosVistaComponent } from './horarios-vista/horarios-vista.component';
 import { MensajeEliminarComponent } from './mensaje-eliminar/mensaje-eliminar.component';
 import { ListarCategoriaPipe } from '../pipes/listar-categoria.pipe';
@@ -90,22 +84,17 @@ import { FiltroFechaPipe } from 'src/app//pipes/filtro-fecha.pipe';
 import { FilterByDatePipe } from 'src/app/pipes/filtroFechas.pipe';
 import { ListarProductosPipe } from 'src/app/pipes/lista-proveedor.pipe';
 import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
-import { ListaProductoLineaComponent } from './lista-producto-linea/lista-producto.component';
-import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
 import { HorarioEditarComponent } from './horario-editar/horario-editar.component';
 import { MensajeDesactivarComponent } from './mensaje-desactivar/mensaje-desactivar.component';
 import { RouterModule } from '@angular/router';
 import { DialogSelectMembershipComponent } from './dialog-select-membership/dialog-select-membership.component';
 import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
 import { ServiceDialogComponent } from './service-dialog/service-dialog.component';
-import { EmergenteCapturarHuellasComponent } from './emergente-capturar-huellas/emergente-capturar-huellas.component';
 import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
 import { planComponent } from './plan-lista/membresias.component';
 import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
 import { planEditarComponent } from './plan-editar/membresias-editar.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { EditarProductoLineaComponent } from './editar-productoLinea/editar-producto.component';
-
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
 import { ArchivosComponent } from './archivos/archivos.component';
@@ -113,8 +102,6 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgChartsModule } from 'ng2-charts';
 import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos.component';
-
-
 
 @NgModule({
   declarations: [
@@ -129,9 +116,7 @@ import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos
     ListaCategoriaComponent,
     ListaProductoComponent,
     EditarProductoComponent,
-    ProductManagementComponent,
     CrearProductoComponent,
-    SubirImagenesComponent,
     HorariosVistaComponent,
     MensajeEliminarComponent,
     NotificacionesComponent,
@@ -171,21 +156,17 @@ import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos
     FilterByDatePipe,
     ListarProductosPipe,
     ProductosVendidosComponent,
-    ListaProductoLineaComponent,
-    CrearProductoLineaComponent,
     HorarioEditarComponent,
     MensajeDesactivarComponent,
     DialogSelectMembershipComponent,
     ServiciosListaComponent,
     ServiceDialogComponent,
-    EmergenteCapturarHuellasComponent,
     EmergenteAperturaPuertoSerialComponent,
     planComponent,
     planAgregarComponent,
     planEditarComponent,
     ArchivosComponent,
     SidebarComponent,
-    EditarProductoLineaComponent,
     EmergenteAccesosComponent
     //InventarioComponent
   ],

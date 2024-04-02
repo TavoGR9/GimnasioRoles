@@ -8,25 +8,21 @@ import { Observable } from 'rxjs';
 })
 export class inventarioService {
 
-//API: string = 'http://localhost/plan/inventario.php/'
-  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/inventario.php'
+API: string = 'http://localhost/plan/producto_bod.php'
+ // API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/inventario.php'
   
   constructor(private clienteHttp:HttpClient) {
   }
-
-  obtenerProducto(){
-    return this.clienteHttp.get(this.API)
-  }
-
 
   obtenerProductoPorId(id: any, idGimnasio: any): Observable<any> {
     let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
     return this.clienteHttp.get(this.API, { params: params });
   }
 
-  HistorialInventario(startDate: any, endDate: any, idGym : any): Observable<any>{
-    const params = new HttpParams().set('DateStartHistorial',startDate).set('DateEndHistorial',endDate).set('gymID',idGym);
-    return this.clienteHttp.get(this.API, {params});
+  HistorialInventario(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
+    const url = `${this.API}?obtenerHistorialInventario`;
+    const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
+    return this.clienteHttp.post(url, body);
   }
 
 }

@@ -24,9 +24,7 @@ import { ProductosVendidosComponent } from './productos-vendidos/productos-vendi
 import { SucursalListaComponent } from './sucursal-lista/sucursal-lista.component';
 import { SucursalEditarComponent } from './sucursal-editar/sucursal-editar.component';
 import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
-import { ListaProductoLineaComponent } from './lista-producto-linea/lista-producto.component';
 import { NotificacionesComponent } from './notificaciones/notificaciones.component';
-import { CrearProductoLineaComponent } from './crearProductoLinea/crearProducto.component';
 import { RoleGuard } from '../guards/role.guard';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
 import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
@@ -54,8 +52,6 @@ const routes: Routes = [
           { path: 'listaSucursales', component:SucursalListaComponent},
           { path: 'alta-sucursal', component:SucursalAltaComponent},
           { path: 'editar-sucursal', component:SucursalEditarComponent},
-          { path: 'lista-productoLinea', component:ListaProductoLineaComponent},
-          { path: 'crearProductoLinea', component:CrearProductoLineaComponent},
           { path: 'estadisticas', component: ReportsComponent},
           { path: 'archivos', component: ArchivosComponent},
         ]
@@ -65,7 +61,6 @@ const routes: Routes = [
         canActivate: [RoleGuard], 
         data: { expectedRole: 'Administrador'},
         children: [
-         
           { path: 'misMembresias', component: MembresiasComponent },
           { path: 'agregarMembresias', component: MembresiasAgregarComponent },
           { path: 'editarMembresias/:id', component: MembresiasEditarComponent },

@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArr
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { GimnasioService } from 'src/app/service/gimnasio.service';
-import { FranquiciaService } from 'src/app/service/franquicia.service';
 import { ErrorStateMatcher} from '@angular/material/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -48,8 +47,6 @@ export class SucursalAltaComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private gimnasioService: GimnasioService,
-    private FranquiciaService: FranquiciaService
-    
   ){
     this.formularioSucursales = this.formulario.group({
       nombreGym: ["", Validators.required],
@@ -81,16 +78,6 @@ export class SucursalAltaComponent implements OnInit {
 
  matcher = new MyErrorStateMatcher();
   ngOnInit(): void {
-    this.FranquiciaService.obternerFran().subscribe((respuesta) => {
-      if (Array.isArray(respuesta)) {
-        this.franquicia = respuesta.map((dato) => ({
-          value: dato.idFranquicia, // Valor que se enviará al seleccionar
-          label: dato.nombre, // Etiqueta que se mostrará en el combo
-        }));
-      } else {
-        console.error("La respuesta no es un arreglo.");
-      }
-    });    
   }
 
   cancelar() {

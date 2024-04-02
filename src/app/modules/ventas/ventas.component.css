@@ -347,3 +347,23 @@ option {
   border-color: #4CAF50; /* Cambia el color del borde al enfocar el input */
 }
 
+
+.mat-dialog-content.maximized {
+  height: 100%;
+  overflow: auto;
+}
+
+.maximized {
+  overflow-y: auto; /* Añade una barra de desplazamiento vertical si el contenido excede el tamaño */
+  max-height: 76vh; /* Establece el tamaño máximo del contenido */
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-container {
+  margin-left: auto; /* Esto alinea el contenedor de botones a la derecha */
+}

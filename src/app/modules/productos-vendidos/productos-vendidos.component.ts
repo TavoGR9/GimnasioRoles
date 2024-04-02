@@ -1,16 +1,14 @@
 import { Component, OnInit, ViewChild, DoCheck} from '@angular/core';
-import { ListProductVendidosService } from 'src/app/service/list-product-vendidos.service'
-import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
-import { MatTableDataSource } from '@angular/material/table'; //para controlar los datos del api y ponerlos en una tabla
+import { MatPaginator } from '@angular/material/paginator'; 
+import { MatTableDataSource } from '@angular/material/table'; 
 import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
-//import * as jsPDF from 'jspdf';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
-import { AuthService } from 'src/app/service/auth.service';
-
+import { AuthService } from '../../service/auth.service';
+import { ProductoService } from '../../service/producto.service';
 interface Producto {
   Nombre: string;
   Sucursal: string;
@@ -21,14 +19,12 @@ interface Producto {
   Fecha_Venta: string;
   Total: number;
 }
-
 @Component({
   selector: 'app-productos-vendidos',
   templateUrl: './productos-vendidos.component.html',
   styleUrls: ['./productos-vendidos.component.css'],
   providers: [DatePipe],
 })
-
 
 export class ProductosVendidosComponent implements OnInit, DoCheck{
   fechaInicio: Date = new Date(); // Inicializa como una nueva fecha
@@ -37,8 +33,9 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   currentUser: string = '';
   productosVendidos: Producto[] = [];
   dataSource: any; 
+  private fechaInicioAnterior: Date | null = null;
+  private fechaFinAnterior: Date | null = null;
   displayedColumns: string[] = [
-
     'Producto',
     'Cantidad',
     'Precio unitario',
@@ -49,15 +46,12 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorProductos', { static: true }) paginator!: MatPaginator;
-
-  
-  constructor(private prodVendidosService: ListProductVendidosService, 
+  constructor(private prodVendidosService: ProductoService, 
     private datePipe: DatePipe, 
     private toastr: ToastrService,
     private auth: AuthService,){}
   
-  ngOnInit(): void{
-     // Actualiza las fechas iniciales al inicio
+    ngOnInit(): void{
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -66,7 +60,6 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.updateDateLogs(); 
-     
     }); 
   }
 
@@ -115,57 +108,37 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     ).subscribe(
       response => {
         if (response) {
-          // Si hay datos, actualiza la tabla
           this.productosVendidos = response;
           this.dataSource = new MatTableDataSource(this.productosVendidos);
           this.dataSource.paginator = this.paginator;
-        //  this.toastr.success('Datos encontrados.', 'Success!!!');
         } else {
-          // Si no hay datos, resetea la tabla
           this.productosVendidos = [];
           this.dataSource = new MatTableDataSource(this.productosVendidos);
           this.dataSource.paginator = this.paginator;
-       //   this.toastr.info('No hay productos vendidos en este rango de fechas.', 'Info!!!');
-          //console.log('No hay datos para mostrar.');
         }
       },
       error => {
         console.error('Error en la solicitud:', error);
-        // Manejo de errores adicional si es necesario
         this.productosVendidos = [];
         this.dataSource = new MatTableDataSource(this.productosVendidos);
         this.dataSource.paginator = this.paginator;
-       // console.log('No hay productos comprados en este rango de fechas');
-      //  this.toastr.info('No hay productos vendidos en este rango de fechas.', 'Info!!!');
-
       },
       () => {
       }
     );
   }
-  
-
-  private fechaInicioAnterior: Date | null = null;
-  private fechaFinAnterior: Date | null = null;
-
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-   // this.productosVendidos = this.dataSource.filter
   }
 
-  //Descarga el archivo en excel
   descargarExcel(): void {
-
-    // Verifica si hay datos para exportar
   if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
     this.toastr.error('No hay datos para exportar.', 'Error!!!');
-    //console.warn('No hay datos para exportar a Excel.');
     return;
   }
 
-  // Mapea la información de this.productosVendidos a un arreglo bidimensional
   const datos = [
     ['Nombre', 'Sucursal', 'Producto', 'Cantidad', 'Precio unitario', 'Importe por producto', 'Fecha venta', 'Total'],
     ...this.dataSource.filteredData.map((producto: Producto) => [

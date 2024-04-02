@@ -2,13 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ListaProductos } from '../../models/listaProductos';
 import { ProductoService } from '../../service/producto.service';
 import { MatTableDataSource } from '@angular/material/table'; 
-import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
-//import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from "@angular/material/dialog";
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { CrearProductoComponent } from '../crearProducto/crearProducto.component';
 import { EditarProductoComponent } from '../editar-producto/editar-producto.component';
-
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
@@ -17,9 +15,8 @@ import { EditarProductoComponent } from '../editar-producto/editar-producto.comp
 export class ProductosComponent implements OnInit {
   //titulos de columnas de la tabla
   displayedColumns: string[] = [
-    'codigo_de_barra',
+    'codigoBarras',
     'nombre',
-    'descripcion',
     'estatus',
     'categoria', 
   ];
@@ -36,8 +33,7 @@ export class ProductosComponent implements OnInit {
     private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog,
-  ) {
-    
+  ) { 
   }
 
   ngOnInit(): void {
@@ -49,10 +45,7 @@ export class ProductosComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
-      //this.actualizarTabla();
-      //this.cargarProductos();
-    }); 
-    
+    });   
   }
 
   getSSdata(data: any){
@@ -77,7 +70,6 @@ export class ProductosComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.productos);
         if (this.paginator) {
         this.dataSource.paginator = this.paginator;
-      //  this.cargarProductos();
         }
       } else {
         console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
@@ -89,8 +81,6 @@ export class ProductosComponent implements OnInit {
     })
   }
 
-
-
   crearProducto(): void {
     const dialogRef = this.dialog.open(CrearProductoComponent, {
       width: '65%',
@@ -100,14 +90,11 @@ export class ProductosComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       this.productoService.consultarProductoId(this.idGym).subscribe({
         next: (resultData: any) => {
-  
           if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
-  
           this.productos = Array.isArray(resultData) ? resultData : [];
           this.dataSource = new MatTableDataSource(this.productos);
           if (this.paginator) {
             this.dataSource.paginator = this.paginator;
-            //this.cargarProductos();
             }
           } else {
             console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
@@ -126,9 +113,7 @@ export class ProductosComponent implements OnInit {
       width: '65%',
       height: '90%', 
       disableClose: true,  
-      
     });
-  
     dialogRef.afterClosed().subscribe(() => {
       this.productoService.consultarProductoId(this.idGym).subscribe({
         next: (resultData: any) => {
@@ -137,7 +122,6 @@ export class ProductosComponent implements OnInit {
           this.dataSource = new MatTableDataSource(this.productos);
           if (this.paginator) {
           this.dataSource.paginator = this.paginator;
-        //  this.cargarProductos();
           }
         } else {
           console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);

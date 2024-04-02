@@ -4,8 +4,6 @@ import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArr
 import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
-import { FranquiciaService } from 'src/app/service/franquicia.service';
-//import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ErrorStateMatcher} from '@angular/material/core';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -35,8 +33,7 @@ export class SucursalEditarComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private router: Router,
     private gimnasioService: GimnasioService,
-    public dialog: MatDialog,
-    private franquiciaService: FranquiciaService,
+    public dialog: MatDialog
   ) {
   
     //this.idGimnasio = data.idGimnasio;
@@ -64,18 +61,6 @@ export class SucursalEditarComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
 
   ngOnInit(): void {
-    this.franquiciaService.obternerFran().subscribe((respuesta) => {
-      if (Array.isArray(respuesta)) {
-        this.franquicia = respuesta.map((dato) => ({
-          value: dato.idFranquicia, // Valor que se enviará al seleccionar
-          label: dato.nombre, // Etiqueta que se mostrará en el combo
-        }));
-      } else {
-        console.error('La respuesta no es un arreglo.');
-      }
-    });
-    
-
     this.gimnasioService.consultarPlan(this.idGimnasio).subscribe(
       (respuesta) => {
         this.formularioSucursales.setValue({

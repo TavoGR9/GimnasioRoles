@@ -79,24 +79,24 @@ export class EntradasComponent implements OnInit {
 
     this.form = this.fb.group({
       idGym: [this.id],
-      idProducto: ['', Validators.compose([Validators.required])],
+      idProbob: ['', Validators.compose([Validators.required])],
       idProveedor: [1],
       idUsuario: [this.idUsuario],
       fechaEntrada: [this.fechaRegistro],
-      cantidad: [
+      exis: [
         '',
         Validators.compose([
           Validators.required,
           Validators.pattern(/^[0-9]+$/), //solo numeros enteros
         ]),
       ],
-      precioVenta: [
+      precciosucu: [
         '',
         Validators.compose([
           Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
         ]),
       ],
-      precioCompra: [
+      precioCaja: [
         '',
         Validators.compose([
           Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
@@ -145,9 +145,9 @@ export class EntradasComponent implements OnInit {
   }
 
   listaTablas(){
-    this.entrada.listaProductos(this.idGym).subscribe({
+    this.entrada.listaProductos().subscribe({
       next: (resultData) => {
-        this.listaProductos = resultData;
+        this.listaProductos = resultData.productos;
       },
       error: (error) => {
         console.error(error);
@@ -170,38 +170,40 @@ export class EntradasComponent implements OnInit {
 
   agregarATabla() {
     if (this.form.valid) { 
-    // Verificar si el formulario y sus controles no son nulos
-    if (this.form && this.form.get('idProducto') && this.form.get('idProveedor') && this.form.get('cantidad')) {
-      const idProductoSeleccionado = this.form.get('idProducto')!.value;
-      const idPrecioVenta = this.form.get('precioVenta')!.value;
-      const idPrecioCompra = this.form.get('precioCompra')!.value;
-      const productoSeleccionado = this.listaProductos.find((producto: any) => producto.idProducto === idProductoSeleccionado);
+    if (this.form && this.form.get('idProbob') && this.form.get('exis')) {
+      const idProductoSeleccionado = this.form.get('idProbob')!.value;
+      const idPrecioVenta = this.form.get('precciosucu')!.value;
+      const idPrecioCompra = this.form.get('precioCaja')!.value;
+      const productoSeleccionado = this.listaProductos.find((producto: any) => producto.idProbob === idProductoSeleccionado);
+     /*solo sirve para mostrar fecha*/
       const fechaActual = new Date();
       const año = fechaActual.getFullYear();
       const mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
       const día = String(fechaActual.getDate()).padStart(2, '0');
       const fechaFormateada = `${año}-${mes}-${día}`;
+
       if (productoSeleccionado) {
+        console.log(this.tablaDatos, "datos");
         // Verificar si el producto ya está en la tabla
-        const indiceProducto = this.tablaDatos.findIndex(item => item.Producto_idProducto === idProductoSeleccionado);
+        const indiceProducto = this.tablaDatos.findIndex(item => item.id_Probob === idProductoSeleccionado);
         if (indiceProducto !== -1) {
           // Si el producto ya está en la tabla, actualiza la cantidad
-          this.tablaDatos[indiceProducto].cantidad += this.form.get('cantidad')!.value;
+          this.tablaDatos[indiceProducto].exis += this.form.get('exis')!.value;
         } else {
           const nuevoDato = {
-            Producto_idProducto: idProductoSeleccionado,  
-            nombreProducto: productoSeleccionado.nombre,
-            Proveedor_idProveedor: 1,
-            cantidad: this.form.get('cantidad')!.value,
+            id_Probob: idProductoSeleccionado,  
+            descripcion: productoSeleccionado.descripcion,
+            exis: this.form.get('exis')!.value,
             fechaEntrada: fechaFormateada,
-            Gimnasio_idGimnasio: this.auth.idGym.getValue(),
-            Usuarios_idUsuarios: this.auth.userId.getValue(),
-            precioCompra: idPrecioCompra,
-            precioVenta: idPrecioVenta
+            valor: this.auth.idGym.getValue(),
+            precioCaja: idPrecioCompra,
+            preccio: '',
+            fechaE: '',
+            precciosucu: idPrecioVenta
           };
           this.tablaDatos.push(nuevoDato);
         }
-        this.form.reset(); // reiniciar el formulario después de agregar los datos
+        this.form.reset();
       } else {
         console.warn('Producto no encontrado en listaProductos');
       }
@@ -211,7 +213,7 @@ export class EntradasComponent implements OnInit {
     }
   }
   
-  registrar(): any {
+/*  registrar(): any {
     if (this.tablaDatos.length > 0) {
       this.spinner.show();
       const dataToSend: any[] = this.tablaDatos;
@@ -236,6 +238,56 @@ export class EntradasComponent implements OnInit {
             this.toastr.error(respuesta.message, 'Error', {
               positionClass: 'toast-bottom-left',
             });
+          }
+        },
+        error: (paramError) => {
+          console.error(paramError); // Muestra el error del API en la consola para diagnóstico
+          // accedemos al atributo error y al key
+          this.toastr.error(paramError.error.message, 'Error', {
+            positionClass: 'toast-bottom-left',
+          });
+        },
+      });
+    } else {
+      // Aquí mostramos la notificación específica
+      this.toastr.error('Agrega algo a la tabla antes de enviar', 'Error', {
+        positionClass: 'toast-bottom-left',
+      });
+      this.message = 'Por favor, complete todos los campos requeridos.';
+      this.marcarCamposInvalidos(this.form);
+    }
+    
+  }*/
+
+
+  registrar(): any {
+    if (this.tablaDatos.length > 0) {
+      this.spinner.show();
+      const dataToSend: any[] = this.tablaDatos;
+      console.log(dataToSend, "dataToSenddataToSenddataToSend");
+      this.entrada.agregarEntradaProducto(dataToSend).subscribe({
+        next: (respuesta) => {
+          console.log(respuesta, "respuesta");
+          if (respuesta.success == 1) {
+            this.spinner.hide();
+            this.dialog
+              .open(MensajeEmergentesComponent, {
+                data: `Entrada agregada exitosamente`,
+              })
+              .afterClosed()
+              .subscribe((cerrarDialogo: Boolean) => {
+                if (cerrarDialogo) {
+                  this.form.reset();
+                  this.tablaDatos = [];
+                } else {
+                }
+              });
+            
+          } else {
+            this.toastr.error(respuesta.message, 'Error', {
+              positionClass: 'toast-bottom-left',
+            });
+          
           }
         },
         error: (paramError) => {

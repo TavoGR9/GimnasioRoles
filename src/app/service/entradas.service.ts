@@ -12,16 +12,17 @@ import { ListaProductos } from '../models/listaProductos';
 })
 export class EntradasService {
   //Servicio que sirve para dar entrada a productos
-  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/entradas.php';
+  //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/entradas.php';
+  API: string = 'http://localhost/plan/producto_bod.php';
   constructor(private clienteHttp: HttpClient) {}
 
   agregarEntradaProducto(entradaProductos:any):Observable<any>{
     console.log("entradaProductos", entradaProductos);
-    return this.clienteHttp.post(this.API+"?registraEntrada",entradaProductos);
+    return this.clienteHttp.post(this.API+"?insertarBodegaPro",entradaProductos);
   }
   
-  listaProductos(id:any): Observable<ListaProductos> {
-    return this.clienteHttp.get<ListaProductos>(this.API + '?listaProductos='+id);
+  listaProductos(): Observable<any> {
+    return this.clienteHttp.get<any>(this.API + '?getProBodPre');
   }
 
 }
