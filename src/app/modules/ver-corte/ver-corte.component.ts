@@ -3,7 +3,7 @@ import { AuthService } from "src/app/service/auth.service";
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit  } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { CajaService } from "src/app/service/caja.service";
+
 import { MatPaginator } from '@angular/material/paginator';
 import { FormGroup, FormBuilder, Validators} from "@angular/forms";
 import * as XLSX from 'xlsx';
@@ -24,12 +24,10 @@ export class VerCorteComponent implements OnInit  {
     public dialog: MatDialog,
     private auth: AuthService,
     public formulario: FormBuilder,
-    private cajaService: CajaService,
     private joinDetalleVentaService: JoinDetalleVentaService,
     private dialogStateService: DialogStateService,
     private toastr: ToastrService
   ) {
-    const userId = this.auth.userId.getValue(); // id del usuario
   }
 
   totalVentas: number = 0;
@@ -52,7 +50,6 @@ export class VerCorteComponent implements OnInit  {
     "fechaVenta",
   ];
   dialogRef: any;
-
 
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -83,7 +80,6 @@ export class VerCorteComponent implements OnInit  {
     }); 
   }  
 
-
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -101,10 +97,12 @@ export class VerCorteComponent implements OnInit  {
   listaTablas(){
     this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
       (data) => {
+        console.log(data, "data");
         this.detallesCaja = data;
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.dataSource.paginator = this.paginator; 
         this.dataSource.data = this.detallesCaja;
+        console.log(this.detallesCaja, "this.detallesCaja");
         const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
         this.fechaFiltro = fechaActual;
         this.aplicarFiltro();
@@ -132,7 +130,6 @@ export class VerCorteComponent implements OnInit  {
     );
   }
   
-
   private actualizarTabla() {
     if (!this.dataSource) {
       this.cargarVentas();
@@ -153,7 +150,9 @@ export class VerCorteComponent implements OnInit  {
   }
 
   private obtenerFechaActual(): Date {
-    return new Date();
+    const fechaActual = new Date();
+    fechaActual.setHours(fechaActual.getHours() - 6); // Agregar 6 horas
+    return fechaActual;
   }
   
   // Función para aplicar el filtro
@@ -181,104 +180,6 @@ export class VerCorteComponent implements OnInit  {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  convertirNumeroAPalabrasPesos(numero: number): string {
-    const unidades = [
-      "CERO",
-      "UN",
-      "DOS",
-      "TRES",
-      "CUATRO",
-      "CINCO",
-      "SEIS",
-      "SIETE",
-      "OCHO",
-      "NUEVE",
-    ];
-    const decenas = [
-      "DIEZ",
-      "ONCE",
-      "DOCE",
-      "TRECE",
-      "CATORCE",
-      "QUINCE",
-      "DIECISEIS",
-      "DIECISIETE",
-      "DIECIOCHO",
-      "DIECINUEVE",
-    ];
-    const decenasCompuestas = [
-      "VEINTE",
-      "TREINTA",
-      "CUARENTA",
-      "CINCUENTA",
-      "SESENTA",
-      "SETENTA",
-      "OCHENTA",
-      "NOVENTA",
-    ];
-    const centenas = [
-      "CIENTO",
-      "DOSCIENTOS",
-      "TRESCIENTOS",
-      "CUATROCIENTOS",
-      "QUINIENTOS",
-      "SEISCIENTOS",
-      "SETECIENTOS",
-      "OCHOCIENTOS",
-      "NOVECIENTOS",
-    ];
-
-    const decimales = [
-      "CERO",
-      "UN",
-      "DOS",
-      "TRES",
-      "CUATRO",
-      "CINCO",
-      "SEIS",
-      "SIETE",
-      "OCHO",
-      "NUEVE",
-    ];
-
-    const miles = "MIL";
-    const millones = "MILLÓN";
-    const millonesPlural = "MILLONES";
-
-    let palabras = "";
-    const entero = Math.floor(numero);
-    const decimal = Math.round((numero - entero) * 100); // Obtiene los dos decimales
-
-    if (numero === 0) {
-      palabras = "CERO";
-    } else if (numero < 10) {
-      palabras = unidades[numero];
-    } else if (numero < 20) {
-      palabras = decenas[numero - 10];
-    } else if (numero < 100) {
-      palabras = decenasCompuestas[Math.floor(numero / 10) - 2];
-      if (numero % 10 !== 0) palabras += ` Y ${unidades[numero % 10]}`;
-    } else if (numero < 1000) {
-      palabras = centenas[Math.floor(numero / 100) - 1];
-      if (numero % 100 !== 0)
-        palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 100)}`;
-    } else if (numero < 10000) {
-      palabras = unidades[Math.floor(numero / 1000)] + ` ${miles}`;
-      if (numero % 1000 !== 0)
-        palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 1000)}`;
-    } else if (numero < 1000000) {
-      palabras =
-        this.convertirNumeroAPalabrasPesos(Math.floor(numero / 1000)) +
-        ` ${miles}`;
-      if (numero % 1000 !== 0)
-        palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 1000)}`;
-    } else {
-      palabras = "Número demasiado grande";
-    }
-
-    return palabras;
   }
 
   actualizarTotalVentas(): void {
@@ -404,7 +305,6 @@ export class VerCorteComponent implements OnInit  {
       const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
       const excelData = XLSX.utils.sheet_to_json(worksheet, { raw: true });
       // 'excelData' ahora contiene los datos del archivo Excel
-  
       // Asignar 'excelData' al origen de datos de tu tabla (this.dataSource)
       this.dataSource = new MatTableDataSource<any>(excelData);
     };

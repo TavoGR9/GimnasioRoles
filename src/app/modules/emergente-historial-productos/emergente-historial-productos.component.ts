@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ViewChild} from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { inventarioService } from 'src/app/service/inventario.service';
+import { inventarioService } from '../../service/inventario.service';
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
 import { MatTableDataSource } from '@angular/material/table'; //para controlar los datos del api y ponerlos en una tabla
 import * as XLSX from 'xlsx';
@@ -36,8 +36,6 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   dataSource: any; // instancia para matTableDatasource
   //titulos de columnas de la tabla
   displayedColumnsHistorial: string[] = [
-    'Sucursal',
-    'Usuario',
     'Producto',
     'Concepto',
     'Fecha Movimiento',
@@ -88,15 +86,15 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
   
-    //console.log('Fecha de inicio seleccionada:', this.formatDate(this.fechaInicio));
-    //console.log('Fecha de fin seleccionada:', this.formatDate(this.fechaFin));
-  
+    console.log(this.auth.idGym.getValue(), "this.auth.idGym.getValue()");
     this.ServiceHistorInventario.HistorialInventario(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
       this.auth.idGym.getValue()
+      
     ).subscribe(
       response => {
+        console.log(response, "response");
         if (response.msg == 'No hay resultados') {
           // Si no hay datos, resetea la tabla
           this.dataHistorial = [];
@@ -118,6 +116,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
         this.dataHistorial = [];
         this.dataSource = new MatTableDataSource(this.dataHistorial);
         this.dataSource.paginator = this.paginatorHistorial;
+        console.log(error, "error");
         //console.log('Ocurrio un error.');
         this.toastr.error('Ocurrio un error.', 'Error!!!');
       },

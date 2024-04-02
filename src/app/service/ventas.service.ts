@@ -8,7 +8,7 @@ import { Ventas } from '../models/ventas';
 })
 export class VentasService {
 
-  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/ventas.php' 
+  API: string = 'http://localhost/plan/venta_detalleVenta.php'
   
   constructor(private clienteHttp:HttpClient) {
   }
@@ -19,7 +19,7 @@ export class VentasService {
 
   // Angular service method
   agregarVentas(Ventas: Ventas):Observable<any>{
-    return this.clienteHttp.post(this.API+"?insertar=1", Ventas);
+    return this.clienteHttp.post(this.API+"?insertarVentas=1", Ventas);
   }
 
   actualizarVentas(id:any,Ventas:any):Observable<any>{

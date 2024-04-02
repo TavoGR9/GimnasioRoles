@@ -105,12 +105,7 @@ export class CrearProductoComponent implements OnInit {
       STYLE_ITEM_ID: ["0"],
       precioCaja: ["0"],
       cantidadMayoreo: ["0"],
-      descripcion: [
-        "",
-        Validators.compose([
-          Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),
-        ]),
-      ],
+      descripcion: [""],
     });
   }
 
@@ -169,6 +164,7 @@ export class CrearProductoComponent implements OnInit {
       }
     });
   }
+  
 
   validarNumeroDecimal(event: any) {
     const input = event.target.value;
@@ -178,24 +174,6 @@ export class CrearProductoComponent implements OnInit {
       // Si el valor no coincide con el patrón, se elimina el último carácter
       this.form.get("cantidadUnidades")?.setValue(input.slice(0, -1));
     }
-  }
-
-  buscarSabores() {
-    const saborIngresado = this.form.get("sabor")?.value;
-    this.productoService.consultarsabores(this.idGym).subscribe({
-      next: (respuesta) => {
-        const saboresUnicos = new Set(
-          respuesta.sabores.map((sabor: any) => sabor.sabor)
-        );
-        this.sabores = Array.from(saboresUnicos) as string[];
-
-        this.filteredSabores = this.sabores.filter(
-          (sabor) =>
-            !saborIngresado ||
-            sabor.toLowerCase().includes(saborIngresado.toLowerCase())
-        );
-      },
-    });
   }
 
   obtenerFechaActual(): string {
@@ -281,49 +259,7 @@ export class CrearProductoComponent implements OnInit {
     });
   }
   
-  registrar(): any {
-    console.log(this.form.value, "formulariooo");
-    if (this.form.valid) {
-      this.spinner.show();
-      this.productoService.creaProducto(this.form.value).subscribe({
-        next: (respuesta) => {
-          console.log("respuesta", respuesta);
-          if (respuesta.success) {
-            // Aquí hay un error, debería ser una coma en lugar de dos puntos
-            // idPlan: respuesta.id,
-            this.spinner.hide();
 
-            this.dialog
-              .open(MensajeEmergentesComponent, {
-                data: `Producto agregado exitosamente`,
-              })
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-                if (cerrarDialogo) {
-                  this.productoSubject.next();
-                  this.dialogo.close(true);
-                } else {
-                  // Puedes agregar lógica adicional aquí si es necesario
-                }
-              });
-          } else {
-            this.toastr.error(respuesta.message, "Error", {
-              positionClass: "toast-bottom-left",
-            });
-            //console.error(respuesta.error);
-          }
-        },
-        error: (paramError) => {
-          this.toastr.error(paramError.error.message, "Error", {
-            positionClass: "toast-bottom-left",
-          });
-        },
-      });
-    } else {
-      this.message = "Por favor, complete todos los campos requeridos.";
-      this.marcarCamposInvalidos(this.form);
-    }
-  }
 
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
@@ -633,7 +569,7 @@ export class CrearProductoComponent implements OnInit {
                                 //agregar producto
 
                                 this.spinner.hide();
-                                const dialogRefConfirm = this.dialog.open(
+                               /* const dialogRefConfirm = this.dialog.open(
                                   MensajeEmergentesComponent,
                                   {
                                     data: `Se agregó exitosamente`,
@@ -641,7 +577,7 @@ export class CrearProductoComponent implements OnInit {
                                 );
                                 dialogRefConfirm
                                   .afterClosed()
-                                  .subscribe((result) => {});
+                                  .subscribe((result) => {});*/
                               });
                           }
                         });
@@ -801,7 +737,7 @@ export class CrearProductoComponent implements OnInit {
                                   });
 
                                 this.spinner.hide();
-                                const dialogRefConfirm = this.dialog.open(
+                                /*const dialogRefConfirm = this.dialog.open(
                                   MensajeEmergentesComponent,
                                   {
                                     data: `Se agregó exitosamente`,
@@ -809,7 +745,7 @@ export class CrearProductoComponent implements OnInit {
                                 );
                                 dialogRefConfirm
                                   .afterClosed()
-                                  .subscribe((result) => {});
+                                  .subscribe((result) => {});*/
                               });
                           }
                         });
@@ -970,7 +906,7 @@ export class CrearProductoComponent implements OnInit {
                                     //agregar producto
 
                                     this.spinner.hide();
-                                    const dialogRefConfirm = this.dialog.open(
+                                   /* const dialogRefConfirm = this.dialog.open(
                                       MensajeEmergentesComponent,
                                       {
                                         data: `Se agregó exitosamente`,
@@ -978,7 +914,7 @@ export class CrearProductoComponent implements OnInit {
                                     );
                                     dialogRefConfirm
                                       .afterClosed()
-                                      .subscribe((result) => {});
+                                      .subscribe((result) => {});*/
                                   });
                               }
                             });

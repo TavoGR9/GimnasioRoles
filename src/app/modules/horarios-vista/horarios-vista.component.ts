@@ -7,7 +7,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { HorarioEditarComponent } from "../horario-editar/horario-editar.component";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
-import { FranquiciaService } from "./../../service/franquicia.service";
 import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArray, FormControl} from "@angular/forms";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -66,7 +65,6 @@ export class HorariosVistaComponent implements OnInit {
     private formulario: FormBuilder,
     private auth: AuthService,
     private http: ColaboradorService,
-    private franquiciaService: FranquiciaService,
     private router: Router,
     private postalCodeService: PostalCodeService
   ) {
@@ -101,19 +99,6 @@ export class HorariosVistaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.gimnasioService.optionSelected.subscribe((data) => {
-      if (data) {
-        this.optionToShow = data;
-        if (this.optionToShow === 1) {
-          this.consultarHorario();
-        } else if (this.optionToShow === 2) {
-          this.consultarFranquicia();
-        } else if (this.optionToShow === 3) {
-          this.consultarFranquicia();
-          this.editarCosa();
-        }
-      }
-    });
   }
 
   actualizarSelect() {
@@ -174,14 +159,6 @@ export class HorariosVistaComponent implements OnInit {
         console.error("Error al consultar el horario:", error);
       }
     );
-  }
-
-  consultarFranquicia() {
-    this.franquiciaService.obternerFran().subscribe((data) => {
-      if (data) {
-        this.franquicia = data;
-      }
-    });
   }
 
   consultarCodigoPostal(): void {

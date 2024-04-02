@@ -15,122 +15,58 @@ export class ProductoService {
 
    API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/joinDetalleProducto.php';
    API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/productoSucursal.php';
-
    API4: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/ventaProductos.php';
    APIP: string = 'http://localhost/plan/producto_bod.php';
 
-   
-   //API2: string = 'http://localhost/plan/joinDetalleProducto.php'
-
-    constructor(private clienteHttp:HttpClient) {}
-  
+    constructor(private clienteHttp:HttpClient) {
+    }
     creaProducto(datosFormulario: any): Observable<any> {
       return this.clienteHttp.post(this.APIP + '?insertar', datosFormulario).pipe(
         catchError(error => {
-          // Manejar el error aquí
           console.error('Error al enviar la solicitud:', error);
-          // Puedes lanzar el error nuevamente o devolver un valor predeterminado
-          return throwError(error); // Lanzar el error nuevamente para que el componente pueda manejarlo
-          // return of({ success: false }); // Devolver un valor predeterminado
+          return throwError(error);
         })
       );
     }
 
-    consultarProductoId(id:any):Observable<any[]>{
-      return this.clienteHttp.get<any[]>(this.API+"?listaProductoGym="+id)
-      .pipe(
-        tap((nuevosProductos: any[]) => {
-          this.productoSubject.next(nuevosProductos);
-        })
-      );
+    consultarProductoId(id: any): Observable<any[]> {
+      const data = { id_bodega_param: id }; // Crear el objeto de datos a enviar
+      return this.clienteHttp.post<any[]>(this.APIP + "?consultarProductoBodega", data)
+        .pipe(
+          tap((nuevosProductos: any[]) => {
+            this.productoSubject.next(nuevosProductos);
+          })
+        );
     }
-
-    getCategoriasSubject() {
-      return this.productoSubject.asObservable();
-    }
-
-    actualizarProducto(id: any, datosP: any): Observable<any> {
-      const url = `${this.API}?actualizar=${id}`;
+    
+    actualizarProducto(datosP: any): Observable<any> {
+      const url = `${this.APIP}?actualizarP`;
       return this.clienteHttp.post(url, datosP);
     }
 
     obternerProductos(id:any):Observable<any>{
-      return this.clienteHttp.get(this.API+"?listaProductosRecepcion="+id);
+      const data = { id_bodega_param: id };
+      return this.clienteHttp.post(this.APIP+"?consultarProductoBodega=",data);
     }
   
     obternerInventario(id:any): Observable<any[]> {
-      return this.clienteHttp.get<any[]>(this.API +'?listaInventario='+id);
-    }
-
-    obternerProducto(){
-      return this.clienteHttp.get(this.API)
-    }
-
-    consultarProducto(id:any):Observable<any>{
-      return this.clienteHttp.get(this.API+"?consultar="+id);
+      const data = { id_bodega_param: id };
+      return this.clienteHttp.post<any[]>(this.APIP +'?listaInventario=',data);
     }
   
-    borrarProducto(id:any):Observable<any>{
-      return this.clienteHttp.get(this.API+"?borrar="+id)
-    }
-
-    subirImagenes(imagenes: File[]): Observable<any> {
-      const formData: FormData = new FormData();
-      // !es muy importante que el nombre tenga llaves files[] , de lo contrario php no lo reconoce
-      for (let i = 0; i < imagenes.length; i++) {
-        formData.append('files[]', imagenes[i]);
-      }
-      // Imprime el contenido de formData en la consola
-      console.log('Datos de las imagenes tipo formData:');
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
-      return this.clienteHttp.post(this.API + '?subirImagenes', formData);
-    }
-  
-    getProductosAdmin(): Observable<any[]> {
-      return this.clienteHttp.get<any[]>(this.API + '?listaProductosAdmin');
-    }
-  
-    inventarioGlobal(): Observable<any> {
-      return this.clienteHttp.get(this.API + '?inventarioGlobal');
-    }
-  
-    getProductosSeleccionados() {
-      return this.productoSubject.asObservable();
-    }
-  
-    setProductosSeleccionados(productos: Producto[]) {
-       // Crear una copia de la lista
-      this.productoSubject.next([...productos]);
-    }
-  
-    clearProductosSeleccionados() {
-      this.productoSubject.next([]);
-    }
-
-    borrarProductoInventario(idInv: any, usuaId: any): Observable<any>{
-      const params = new HttpParams().set('invenID',idInv).set('userID',usuaId);
-      return this.clienteHttp.get(this.API, {params});
-    }
-
     updateProductoStatus(id: number, estado: { estatus: number }): Observable<any> {
-      console.log("status",estado,"id",id);
       return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
     }
 
     consultarProductosJ(idProducto: number | null): Observable<any[]> {
-      const url = `${this.API2}?idProducto=${idProducto}`;
-      return this.clienteHttp.get<any[]>(url);
+      const url = `${this.APIP}?consultarProductoId`;
+      return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto });
     }
 
-    consultarProductos(idProducto: number | null): Observable<any[]> {
-      const url = `${this.API4}?idProducto=${idProducto}`;
-      return this.clienteHttp.get<any[]>(url);
+    obtenerListaProduct(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
+      const url = `${this.APIP}?consultarVentasPorFecha`;
+      const body = { gimnasioId: idGym, fechaInicioParam: dateInicio, fechaFinParam: dateFin };
+      return this.clienteHttp.post(url, body);
     }
-
-    consultarsabores(idGym:any):Observable<any>{
-      return this.clienteHttp.get(this.API+"?consultarSabores="+idGym);
-    }
-
+    
 }

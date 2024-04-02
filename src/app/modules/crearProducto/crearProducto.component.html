@@ -18,19 +18,34 @@
                            <mat-form-field appearance="outline"  style="width: 100%;" required>
                               <mat-label>Codigo de barra</mat-label>
                               <input
+                                 matInput
+                                 type="text"
+                                 placeholder="Escribelo o escanealo"
                                  id="codigoBarra"
                                  formControlName="codigoBarra"
-                                 type="text"
-                                 matInput
                                  autocomplete="off"
-                                 placeholder="escribelo o escanealo"
                                  />
                            </mat-form-field>
                         </p>
                      </div>
-                     
                      <div class="row">
-                       
+                        <div class="col-sm-12">
+                           <p>
+                              <mat-form-field style="width: 100%;" required appearance="outline">
+                                 <mat-label>Nombre</mat-label>
+                                 <input 
+                                    matInput
+                                    placeholder="Nombre del producto"
+                                    type="text"
+                                    id="descripcion"
+                                    autocomplete="off"
+                                    formControlName="descripcion"
+                                    />
+                              </mat-form-field>
+                           </p>
+                        </div>
+                     </div>
+                     <div class="row">
                         <div class="col-sm-6">
                            <p>
                               <mat-form-field appearance="outline" style="width: 100%;">
@@ -71,7 +86,7 @@
                                  <input
                                    matInput
                                    formControlName="nomsubcate"
-                                   placeholder="Escribe una subCategoria"
+                                   placeholder="Escribe una subcategoria"
                                    [matAutocomplete]="autoSubcategoria"
                                    (input)="buscarSubCategorias()"
                                  />
@@ -86,7 +101,7 @@
                         </div>
                      </div>
                      <div class="row">
-                        <div class="col-sm-6">
+                        <!--<div class="col-sm-6">
                            <p>
                               <mat-form-field appearance="outline"  style="width: 100%;" required>
                                  <mat-label>Precio de compra</mat-label>
@@ -100,26 +115,7 @@
                                     />
                               </mat-form-field>
                            </p>
-                        </div>
-                        <div class="col-sm-6">
-                           <p>
-                              <mat-form-field appearance="outline"  style="width: 100%;" required>
-                                 <mat-label>Detalle compra</mat-label>
-                                 <input
-                                    id="detalleCompra"
-                                    formControlName="detalleCompra"
-                                    type="text"
-                                    matInput
-                                    autocomplete="off"
-                                    placeholder="detalleCompra"
-                                    />
-                              </mat-form-field>
-                           </p>
-                        </div>
-                       
-                     </div>
-                     
-                     <div class="row">
+                        </div>-->
                         <div class="col-sm-6">
                            <p>
 
@@ -140,28 +136,21 @@
                                </mat-form-field>
                            </p>
                         </div>
-                       
                         <div class="col-sm-6">
                            <p>
-                              <mat-form-field 
-                                 style="display: inline-block; width: 100%; height: 20px"
-                                 required appearance="outline"
-                                 >
-                                 <mat-label>Descripción</mat-label>
-                                 <textarea 
-                                    class="textarea"
+                              <mat-form-field appearance="outline"  style="width: 100%;" required>
+                                 <mat-label>Detalle del producto</mat-label>
+                                 <input
+                                    id="detalleCompra"
+                                    formControlName="detalleCompra"
+                                    type="text"
                                     matInput
-                                    rows="4"
-                                    placeholder="Descripción breve del producto"
-                                    cols="50"
-                                    style="display: inline-block; width: 100%; height: 100%"
-                                    id="descripcion"
-                                    formControlName="descripcion"
-                                    >
-                              </textarea>
+                                    autocomplete="off"
+                                    placeholder="Detalle del producto"
+                                    />
                               </mat-form-field>
                            </p>
-                        </div>
+                        </div>  
                      </div>
                   </fieldset>
                </div>

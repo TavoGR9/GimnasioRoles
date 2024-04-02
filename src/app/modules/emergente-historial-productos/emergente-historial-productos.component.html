@@ -34,12 +34,6 @@
             <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsHistorial">
               <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
               <td mat-cell *matCellDef="let hist">
-                <ng-container *ngIf="column === 'Sucursal'">
-                  {{ hist.Sucursal }}
-                </ng-container>
-                <ng-container *ngIf="column === 'Usuario'">
-                  {{ hist.Usuario }}
-                </ng-container>
                 <ng-container *ngIf="column === 'Producto'">
                   {{ hist.Producto }}
                 </ng-container>
