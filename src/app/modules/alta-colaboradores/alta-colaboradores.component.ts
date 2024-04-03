@@ -26,7 +26,7 @@ export class AltaColaboradoresComponent {
   sucursales: any;
   message: string = '';
   currentUser: string = '';
-  idGym: number = 0;
+  idGym!: number;
 
   constructor (private fb: FormBuilder, 
     public dialog: MatDialog,
@@ -44,20 +44,21 @@ export class AltaColaboradoresComponent {
       foto: ['', Validators.compose([ Validators.required])],
       correoEmp: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
       celular: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
-      pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])]
+      pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
+      idGym: ''
     })    
   }
 
   matcher = new MyErrorStateMatcher();
   ngOnInit():void{
     if (this.isAdmin()){
-      this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
-        next: (resultData: any) => {
-          this.sucursales = resultData;
-          const idGimnasio = resultData[0].idBodega;
-          this.form.get('Gimnasio_idGimnasio')?.setValue(idGimnasio);
-        }
-      });
+      // this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
+      //   next: (resultData: any) => {
+      //     this.sucursales = resultData;
+      //     const idGimnasio = resultData[0].idBodega;
+      //     this.form.get('Gimnasio_idGimnasio')?.setValue(idGimnasio);
+      //   }
+      // });
     }
     if(this.isSupadmin()){
       this.http.comboDatosAllGym().subscribe({
@@ -66,6 +67,14 @@ export class AltaColaboradoresComponent {
         }
       });
     }
+
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      if (this.form.get('idGym') !== null) {
+        this.form.get('idGym')!.setValue(this.idGym);
+      }      
+      //console.log("OOOOOO",this.idGym)
+    }); 
   }
 
   getSSdata(data: any){
@@ -110,6 +119,7 @@ export class AltaColaboradoresComponent {
   registrar(): any {
     if (this.form.valid) {
       this.spinner.show();
+      console.log(this.form.value);
       this.http.agregarEmpleado(this.form.value).subscribe({
         next: (resultData) => {
           if (resultData.message === 'MailExists') {

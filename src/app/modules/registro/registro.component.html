@@ -83,16 +83,19 @@
                     </div>
                  </div>
                  <div class="col-sm-6">
+                  <br>
+                  <br>
+                  <br>
                     <div class="row">
                        <div class="col-sm-6">
                           <p>
                              <mat-form-field appearance="outline" class="inputs_properties">
                                 <mat-label>Nombre</mat-label>
-                                <input type="text" matInput placeholder="Nombre" autocomplete="off" formControlName="nombre" />
-                                <mat-error *ngIf="form.get('nombre')?.hasError('pattern') && !form.get('nombre')?.hasError('required')">
+                                <input type="text" matInput placeholder="Nombre" autocomplete="off" formControlName="nombreU" />
+                                <mat-error *ngIf="form.get('nombreU')?.hasError('pattern') && !form.get('nombreU')?.hasError('required')">
                                    <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                                 </mat-error>
-                                <mat-error *ngIf="form.get('nombre')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                                <mat-error *ngIf="form.get('nombreU')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                              </mat-form-field>
                           </p>
                           <p>
@@ -120,11 +123,11 @@
                           <p>
                              <mat-form-field appearance="outline" class="inputs_properties">
                                 <mat-label>Telefono</mat-label>
-                                <input type="text" matInput placeholder="Telefono" autocomplete="off" minlength="7" maxlength="10" formControlName="telefono" />
-                                <mat-error *ngIf="form.get('telefono')?.hasError('pattern') && !form.get('telefono')?.hasError('required')">
+                                <input type="text" matInput placeholder="Telefono" autocomplete="off" minlength="7" maxlength="10" formControlName="fon" />
+                                <mat-error *ngIf="form.get('fon')?.hasError('pattern') && !form.get('fon')?.hasError('required')">
                                    <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
                                 </mat-error>
-                                <mat-error *ngIf="form.get('telefono')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                                <mat-error *ngIf="form.get('fon')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                              </mat-form-field>
                           </p>
                        </div>
@@ -140,7 +143,7 @@
                              </mat-form-field>
                           </p>
                        </div>
-                       <div class="col-sm-12">
+                       <!-- <div class="col-sm-12">
                           <p>
                              <mat-form-field appearance="outline" class="inputs_properties">
                                 <mat-label>Curp</mat-label>
@@ -168,8 +171,8 @@
                               </mat-error>
                            </mat-form-field>
                         </p>
-                     </div>
-                     <div class="col-sm-6">
+                     </div> -->
+                     <!-- <div class="col-sm-6">
                         <p>
                            <mat-form-field appearance="outline" class="inputs_properties">
                               <mat-label>Estatura (CM)</mat-label>
@@ -181,58 +184,85 @@
                                 <strong class="txt_msg">**Estatura no valida</strong>
                              </mat-error>
                            </mat-form-field>
-                        </p>
+                        </p> -->
                      </div>
-                       <div class="col-sm-6">
-                          <p>
-                             <mat-form-field appearance="outline" class="inputs_properties">
-                                <mat-label>Codigo postal</mat-label>
-                                <input type="text" matInput placeholder="Codigo postal" autocomplete="off" minlength="5" maxlength="5" formControlName="codigoPostal" />
-                                <mat-error *ngIf="form.get('codigoPostal')?.hasError('minlength') && !form.get('codigoPostal')?.hasError('required')">
-                                   <strong class="txt_msg">**Minimo 5 carácteres</strong>
-                                </mat-error>
-                                <mat-error *ngIf="form.get('codigoPostal')?.hasError('pattern') && !form.get('codigoPostal')?.hasError('required')">
-                                   <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                                </mat-error>
-                             </mat-form-field>
-                          </p>
-                       </div>
-                       <div class="col-sm-6">
-                          <p>
-                             <mat-form-field appearance="outline" class="inputs_properties">
-                                <mat-label>Estado</mat-label>
-                                <mat-select matInput placeholder="Estado" autocomplete="off" formControlName="estado">
-                                   <mat-option *ngFor="let food of foods" [value]="food.value">
-                                   {{food.viewValue}}
-                                   </mat-option>
-                                </mat-select>
-                             </mat-form-field>
-                          </p>
-                       </div>
-                       <div class="col-md-6">
-                        <p>
-                           <mat-form-field appearance="outline" class="inputs_properties">
-                              <mat-label>Ciudad</mat-label>
-                              <input type="text" matInput placeholder="Ciudad" autocomplete="off" formControlName="ciudad" />
-                              <mat-error *ngIf="form.get('ciudad')?.hasError('pattern') && !form.get('ciudad')?.hasError('required')">
-                                 <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
-                              </mat-error>
-                           </mat-form-field>
-                        </p>
-                        </div>
-                        <div class="col-md-6">
+                     <div class="row"> 
+                        <div class="col-sm-6">
                            <p>
                               <mat-form-field appearance="outline" class="inputs_properties">
-                                 <mat-label>Colonia</mat-label>
-                                 <input type="text" matInput placeholder="Colonia" autocomplete="off" formControlName="colonia" />
-                                 <mat-error *ngIf="form.get('colonia')?.hasError('pattern') && !form.get('colonia')?.hasError('required')">
-                                    <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+                                 <mat-label>Codigo postal</mat-label>
+                                 <input type="text" matInput placeholder="Codigo postal" autocomplete="off" minlength="5" maxlength="5" formControlName="codigoPostal" />
+                                 <mat-error *ngIf="form.get('codigoPostal')?.hasError('minlength') && !form.get('codigoPostal')?.hasError('required')">
+                                    <strong class="txt_msg">**Minimo 5 carácteres</strong>
+                                 </mat-error>
+                                 <mat-error *ngIf="form.get('codigoPostal')?.hasError('pattern') && !form.get('codigoPostal')?.hasError('required')">
+                                    <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
                                  </mat-error>
                               </mat-form-field>
                            </p>
                         </div>
+                        <div class="col-sm-6">
+                           <p>
+                              <mat-form-field appearance="outline" class="inputs_properties">
+                                 <mat-label>Estado</mat-label>
+                                 <mat-select matInput placeholder="Estado" autocomplete="off" formControlName="estado">
+                                    <mat-option *ngFor="let food of foods" [value]="food.value">
+                                    {{food.viewValue}}
+                                    </mat-option>
+                                 </mat-select>
+                              </mat-form-field>
+                           </p>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-6">
+                           <p>
+                              <mat-form-field appearance="outline" class="inputs_properties">
+                                 <mat-label>Ciudad</mat-label>
+                                 <input type="text" matInput placeholder="Ciudad" autocomplete="off" formControlName="ciudad" />
+                                 <mat-error *ngIf="form.get('ciudad')?.hasError('pattern') && !form.get('ciudad')?.hasError('required')">
+                                    <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+                                 </mat-error>
+                              </mat-form-field>
+                           </p>
+                           </div>
+                           <div class="col-md-6">
+                              <p>
+                                 <mat-form-field appearance="outline" class="inputs_properties">
+                                    <mat-label>Colonia</mat-label>
+                                    <input type="text" matInput placeholder="Colonia" autocomplete="off" formControlName="colonia" />
+                                    <mat-error *ngIf="form.get('colonia')?.hasError('pattern') && !form.get('colonia')?.hasError('required')">
+                                       <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+                                    </mat-error>
+                                 </mat-form-field>
+                              </p>
+                           </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-6">
+                           <p>
+                              <mat-form-field appearance="outline" class="inputs_properties">
+                                 <mat-label>No. Externo</mat-label>
+                                 <input type="text" matInput placeholder="Numero externo" autocomplete="off" formControlName="numExterno" />
+                                 <mat-error *ngIf="form.get('numExterno')?.hasError('pattern') && !form.get('numExterno')?.hasError('required')">
+                                    <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                                 </mat-error>
+                              </mat-form-field>
+                           </p>
+                        </div>
+                        <div class="col-md-6">
+                           <p>
+                              <mat-form-field appearance="outline" class="inputs_properties">
+                                 <mat-label>No. Interno</mat-label>
+                                 <input type="text" matInput placeholder="Número interno" autocomplete="off" formControlName="numInter" />
+                                 <mat-error *ngIf="form.get('numInter')?.hasError('pattern') && !form.get('numInter')?.hasError('required')">
+                                    <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                                 </mat-error>
+                              </mat-form-field>
+                           </p>
+                        </div>
+                     </div>
                     </div>
-                 </div>
               </div>
               <br>
               <div class="row">
@@ -247,58 +277,20 @@
                        </mat-form-field>
                     </p>
                  </div>
-                 <div class="col-md-3">
-                    <p>
-                       <mat-form-field appearance="outline" class="inputs_properties">
-                          <mat-label>No. Externo</mat-label>
-                          <input type="text" matInput placeholder="Numero externo" autocomplete="off" formControlName="numExterno" />
-                          <mat-error *ngIf="form.get('numExterno')?.hasError('pattern') && !form.get('numExterno')?.hasError('required')">
-                             <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                          </mat-error>
-                       </mat-form-field>
-                    </p>
-                 </div>
-                 <div class="col-md-3">
-                    <p>
-                       <mat-form-field appearance="outline" class="inputs_properties">
-                          <mat-label>No. Interno</mat-label>
-                          <input type="text" matInput placeholder="Número interno" autocomplete="off" formControlName="numInter" />
-                          <mat-error *ngIf="form.get('numInter')?.hasError('pattern') && !form.get('numInter')?.hasError('required')">
-                             <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                          </mat-error>
-                       </mat-form-field>
-                    </p>
-                 </div>
-              </div>
-              <div class="row">
                  <div class="col-md-6">
-                    <p>
-                       <mat-form-field appearance="outline" class="inputs_properties">
-                          <mat-label>Correo</mat-label>
-                          <input type="text" placeholder="Correo" matInput autocomplete="off" formControlName="email" />
-                          <mat-error *ngIf="form.get('email')?.hasError('pattern') && !form.get('email')?.hasError('required')">
-                             <strong class="txt_msg">**Formato de correo no valido...</strong>
-                          </mat-error>
-                          <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                       </mat-form-field>
-                    </p>
-                 </div>
-               <!--  <div class="col-md-6">
-                    <p>
-                       <mat-form-field appearance="outline" class="inputs_properties">
-                          <mat-label>Contraseña</mat-label>
-                          <input matInput matInput [type]="hide ? 'password' : 'text'" placeholder="Asignar contraseña" formControlName="pass" />
-                          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                          </button>
-                          <mat-error *ngIf="form.get('pass')?.hasError('minlength') && !form.get('pass')?.hasError('required')">
-                             <strong class="txt_msg">**Minimo 8 carácteres...</strong>
-                          </mat-error>
-                          <mat-error *ngIf="form.get('pass')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                       </mat-form-field>
-                    </p>
-                 </div>-->
+                  <p>
+                     <mat-form-field appearance="outline" class="inputs_properties">
+                        <mat-label>Correo</mat-label>
+                        <input type="text" placeholder="Correo" matInput autocomplete="off" formControlName="email" />
+                        <mat-error *ngIf="form.get('email')?.hasError('pattern') && !form.get('email')?.hasError('required')">
+                           <strong class="txt_msg">**Formato de correo no valido...</strong>
+                        </mat-error>
+                        <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                     </mat-form-field>
+                  </p>
+               </div>
               </div>
+              
               <!--<div class="button-container">
                 <button class="btn_int" (click)="registrar()" mat-raised-button style="background: #fd9727; color: white; width: 30%;">
                   ¡REGISTRAR!

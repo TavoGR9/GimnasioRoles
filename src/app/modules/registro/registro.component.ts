@@ -155,8 +155,8 @@ export class RegistroComponent implements OnInit {
       numExterno: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       estado: [''],
       //direccion: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú0-9 ./#]*[A-Za-z][A-Za-zñÑáéíóú0-9 ./#]*$/)])],
-      //fechaNacimiento: ['', Validators.required],
-      //curp: ['', Validators.compose([ Validators.minLength(18), Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/)])],
+      fechaNacimiento: ['', Validators.required],
+      //curp: ['', Validatfors.compose([ Validators.minLength(18), Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/)])],
       
    //   pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
       //tiene_huella:[''],
@@ -460,16 +460,18 @@ export class RegistroComponent implements OnInit {
     const calle = this.form.get("calle")?.value;
     const numInter = this.form.get("numExt")?.value;
     const numExterno = this.form.get("numInt")?.value;
+    const fon = this.form.get("fon")?.value;
 
     const nombreU = this.form.get("nombreU")?.value;
     const apPaterno = this.form.get("apPaterno")?.value;
     const apMaterno = this.form.get("apMaterno")?.value;
-      
+    const fechaNacimiento = this.form.get("fechaNacimiento")?.value;
 
     const direccionCompleta = `${calle} ${numExterno} ${numInter ? "Int. " + numInter : ""}, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
 
     const nombreCompleto = `${nombreU} ${apPaterno} ${apMaterno}`;
       console.log("direccionCompleta", direccionCompleta);
+      console.log("nombreCompleto:",nombreCompleto);
       // Establecer la dirección completa en un nuevo control del formulario
       this.form.patchValue({
         direccion: direccionCompleta,
@@ -517,82 +519,82 @@ export class RegistroComponent implements OnInit {
     });
   }
 
-  registrar(): any {
-    console.log(this.form.value, "formulario");
-    this.email = this.form.value.email;
-    if (this.form.valid) {
-      this.spinner.show();
-      this.clienteService.consultarEmail(this.email).subscribe((resultData) => {
-        if (resultData.msg == "emailExist") {
-          this.toastr.warning("El correo ingresado ya existe.", "Alerta!!!");
-        }
-        if (resultData.msg == "emailNotExist") {
-          this.clienteService
-            .guardarCliente(this.form.value)
-            .subscribe((respuesta) => {
-              this.spinner.hide();
-              this.dialog
-                .open(MensajeEmergentesComponent, {
-                data: `Usuario registrado exitosamente`,
-              })
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-                if (cerrarDialogo) {
-                  this.dialogo.close(true);
-                  this.add.enviarMail(respuesta.email).subscribe(
-                    (response) => {
-                    },
-                    (error) => {
-                      console.error('Error al enviar el correo:', error);
-                      // Aquí puedes manejar el error según tus necesidades
-                    }
-                  );
+  // registrar(): any {
+  //   console.log(this.form.value, "formulario");
+  //   this.email = this.form.value.email;
+  //   if (this.form.valid) {
+  //     this.spinner.show();
+  //     this.clienteService.consultarEmail(this.email).subscribe((resultData) => {
+  //       if (resultData.msg == "emailExist") {
+  //         this.toastr.warning("El correo ingresado ya existe.", "Alerta!!!");
+  //       }
+  //       if (resultData.msg == "emailNotExist") {
+  //         this.clienteService
+  //           .guardarCliente(this.form.value)
+  //           .subscribe((respuesta) => {
+  //             this.spinner.hide();
+  //             this.dialog
+  //               .open(MensajeEmergentesComponent, {
+  //               data: `Usuario registrado exitosamente`,
+  //             })
+  //             .afterClosed()
+  //             .subscribe((cerrarDialogo: Boolean) => {
+  //               if (cerrarDialogo) {
+  //                 this.dialogo.close(true);
+  //                 this.add.enviarMail(respuesta.email).subscribe(
+  //                   (response) => {
+  //                   },
+  //                   (error) => {
+  //                     console.error('Error al enviar el correo:', error);
+  //                     // Aquí puedes manejar el error según tus necesidades
+  //                   }
+  //                 );
                   
-                  this.clienteService.consultarDataPago(this.form.value.email).subscribe(respuesta =>{
-                    this.responseData=respuesta;
-                      this.clienteService.idPagoSucursal(this.responseData.ID_Cliente).subscribe((resultado)=> {
+  //                 this.clienteService.consultarDataPago(this.form.value.email).subscribe(respuesta =>{
+  //                   this.responseData=respuesta;
+  //                     this.clienteService.idPagoSucursal(this.responseData.ID_Cliente).subscribe((resultado)=> {
 
-                        this.router.navigateByUrl(`/home`);
-                      });
-                      //console.log(resultado.msg);
-                  });  
-                } 
-              });
+  //                       this.router.navigateByUrl(`/home`);
+  //                     });
+  //                     //console.log(resultado.msg);
+  //                 });  
+  //               } 
+  //             });
             
-            },
-            (error) => {
-              // Manejar errores de solicitud HTTP
-              if (error.status === 400) {
-                if (error.error && error.error.msg === 'error_tipo_archivo_no_soportado') {
-                  // Manejar el error específico 'error_tipo_archivo_no_soportado'
-                  console.error('Error 400: Tipo de archivo no soportado', error);
-                  this.toastr.error('Error: Tipo de archivo no soportado');
-                } else {
-                  // Otro tipo de error 400
-                  console.error('Error 400: Bad Request', error);
-                  this.toastr.error('Error: no se pudo agregar usuario. Intente de nuevo');
-                }
-              } else {
-                // Otro tipo de error diferente a 400
-                console.error('Error: Otro tipo de error', error);
-                this.toastr.error('Error: no se pudo agregar usuario. Intente de nuevo');
-              }
+  //           },
+  //           (error) => {
+  //             // Manejar errores de solicitud HTTP
+  //             if (error.status === 400) {
+  //               if (error.error && error.error.msg === 'error_tipo_archivo_no_soportado') {
+  //                 // Manejar el error específico 'error_tipo_archivo_no_soportado'
+  //                 console.error('Error 400: Tipo de archivo no soportado', error);
+  //                 this.toastr.error('Error: Tipo de archivo no soportado');
+  //               } else {
+  //                 // Otro tipo de error 400
+  //                 console.error('Error 400: Bad Request', error);
+  //                 this.toastr.error('Error: no se pudo agregar usuario. Intente de nuevo');
+  //               }
+  //             } else {
+  //               // Otro tipo de error diferente a 400
+  //               console.error('Error: Otro tipo de error', error);
+  //               this.toastr.error('Error: no se pudo agregar usuario. Intente de nuevo');
+  //             }
               
-            }
+  //           }
             
-            );
-        }
+  //           );
+  //       }
         
-      });
-    } else {
-      // El formulario no es válido, muestra un mensaje de error
-      this.toastr.error('Llenar los campos requeridos', 'Error');
-      this.marcarCamposInvalidos(this.form);
+  //     });
+  //   } else {
+  //     // El formulario no es válido, muestra un mensaje de error
+  //     this.toastr.error('Llenar los campos requeridos', 'Error');
+  //     this.marcarCamposInvalidos(this.form);
 
-      if (!this.form.value.fotoUrl || this.form.value.fotoUrl.length === 0) {
-        this.toastr.error('Agregar o sube una imagen', 'Error');
-      }
+  //     if (!this.form.value.fotoUrl || this.form.value.fotoUrl.length === 0) {
+  //       this.toastr.error('Agregar o sube una imagen', 'Error');
+  //     }
 
-    }
-  }
+  //   }
+  // }
 }

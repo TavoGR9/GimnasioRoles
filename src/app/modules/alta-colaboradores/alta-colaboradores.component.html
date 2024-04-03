@@ -37,7 +37,7 @@
                     <mat-label>Telefono: </mat-label>
                     <mat-form-field appearance="outline" style="width: 95%;">
                        <mat-label>Telefono</mat-label>
-                       <input type="email" placeholder="2222222222" matInput autocomplete="off" formControlName="celular" id="celular" [errorStateMatcher]="matcher">
+                       <input type="email" placeholder="2222222222" matInput autocomplete="off" formControlName="celular" id="celular" minlength="10" maxlength="10" [errorStateMatcher]="matcher">
                        <mat-error *ngIf="form.get('celular')?.hasError('pattern') && !form.get('celular')?.hasError('required')">
                           <strong class="txt_msg">**Formato no válido...</strong>
                        </mat-error>
