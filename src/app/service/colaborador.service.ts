@@ -19,8 +19,8 @@ export class ColaboradorService {
     private categoriasSubject = new BehaviorSubject<any[]>([]);
 
     API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/empleado.php';
-    API2: string = 'http://localhost/plan/empleado.php';
-    API3: string = 'http://localhost/plan/BodegaEmpleado.php';
+    API2: string = 'https://olympus.arvispace.com/olimpusGym/conf/empleado.php';
+    API3: string = 'https://olympus.arvispace.com/olimpusGym/conf/BodegaEmpleado.php';
 
     APIL: string = 'http://localhost/plan/';
 

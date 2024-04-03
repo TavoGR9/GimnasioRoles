@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class JoinDetalleVentaService {
 
-  API: string = 'http://localhost/plan/'
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
 
   constructor(private clienteHttp:HttpClient) {
   }

@@ -11,7 +11,7 @@ import { ListaProductos } from '../models/listaProductos';
   providedIn: 'root',
 })
 export class EntradasService {
-  API: string = 'http://localhost/plan/';
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
   constructor(private clienteHttp: HttpClient) {}
 

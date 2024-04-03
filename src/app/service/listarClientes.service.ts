@@ -20,9 +20,4 @@ export class listarClientesService {
   consultarCliente(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"?consultar="+id);
   }
-
-  consultarClienteNombre(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarNombre="+id);
-  }
-
 }

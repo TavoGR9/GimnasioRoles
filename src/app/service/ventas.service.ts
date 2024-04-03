@@ -8,7 +8,7 @@ import { Ventas } from '../models/ventas';
 })
 export class VentasService {
 
-  API: string = 'http://localhost/plan/'
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
   
   constructor(private clienteHttp:HttpClient) {
   }

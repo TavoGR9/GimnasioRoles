@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ResetPasswordService {
 
-  API: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/nuevaContra.php/';
+  API: string ='olympus.arvispace.com/olimpusGym/EnviarMail/nuevaContra.php/';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 

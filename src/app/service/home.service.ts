@@ -8,7 +8,7 @@ import { horario } from '../models/horario';
 })
 export class HomeService {
 
-  API: string = 'http://localhost/plan/' 
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/' 
   
   constructor(private clienteHttp:HttpClient) {
   }

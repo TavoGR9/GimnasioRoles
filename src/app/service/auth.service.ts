@@ -27,7 +27,7 @@ export class AuthService {
   userRole: string = '';
 
   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
-  APIv2: string = 'http://localhost/plan/';
+  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 

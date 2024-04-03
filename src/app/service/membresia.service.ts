@@ -10,7 +10,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class MembresiaService {
 
-  API: string ="https://localhost/plan/" 
+  API: string ="https://olympus.arvispace.com/olimpusGym/conf/" 
   
   constructor(private clienteHttp:HttpClient) {
   }
