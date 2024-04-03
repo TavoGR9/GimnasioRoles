@@ -61,12 +61,12 @@
                         {{ prod.ID }}
                       </ng-container>-->
                       <ng-container *ngIf="column === 'Nombre'">
-                        {{ prod.nombreCompleto }}
+                        {{ prod.Nombre }}
                       </ng-container>
                      
                       <ng-container *ngIf="column === 'Membresia'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
-                          {{ prod.titulo }}
+                          {{ prod.Mmembresia }}
                         </ng-container>
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
@@ -74,7 +74,7 @@
                       </ng-container>
                       <ng-container *ngIf="column === 'Precio'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
-                          {{ prod.precio }}
+                          {{ prod.Precio }}
                         </ng-container>
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
@@ -82,7 +82,7 @@
                       </ng-container>
                       <ng-container *ngIf="column === 'Fecha Inicio'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
-                          {{ prod.fechaInicio }}
+                          {{ prod.Fecha_Inicio }}
                         </ng-container>
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
@@ -90,14 +90,14 @@
                       </ng-container>
                       <ng-container *ngIf="column === 'Fecha Fin'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
-                          {{ prod.fechaFin }}
+                          {{ prod.Fecha_Fin }}
                         </ng-container>
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
                         </ng-container>
                       </ng-container>
                       <ng-container *ngIf="column === 'Estatus'">
-                        <div [ngClass]="{'estatus-activo': prod.estatus === '1', 'estatus-inactivo': prod.estatus !== '1'}">
+                        <div [ngClass]="{'estatus-activo': prod.Status_Num === '1', 'estatus-inactivo': prod.Status_Num !== '1'}">
                           {{ prod.Status }}
                         </div>
                       </ng-container>

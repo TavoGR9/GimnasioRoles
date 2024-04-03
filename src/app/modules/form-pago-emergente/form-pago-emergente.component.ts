@@ -324,7 +324,17 @@ export class FormPagoEmergenteComponent implements OnInit{
         //console.log('membresia seleccionada antes de pagar:', this.membresiaSeleccionada );
         if(this.moneyRecibido >= this.precio){
           const PrecioCalcular = this.moneyRecibido - this.precio;
-          this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, this.data.detMemID).subscribe((dataResponse: any)=> {
+
+          // Obtener la fecha actual
+          const fechaActual: Date = new Date();
+
+          // Formatear la fecha en el formato deseado (yyyy-mm-dd)
+          const fechaFormateada: string = fechaActual.toISOString().split('T')[0];
+
+          // Imprimir la fecha actual
+          console.log("Fecha actual:", fechaFormateada);
+                                                                                                        //this.data.detMemID
+          this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada).subscribe((dataResponse: any)=> {
           this.actualizarTablas.emit(true);
           
           this.dialogo.close(true);

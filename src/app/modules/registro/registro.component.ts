@@ -13,14 +13,14 @@ import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { ToastrService } from "ngx-toastr";
-import { TestService } from "src/app/service/test.service";
-import { MembresiaService } from "src/app/service/membresia.service";
-import { AuthService } from "src/app/service/auth.service";
+import { TestService } from "../../service/test.service";
+import { MembresiaService } from "../../service/membresia.service";
+import { AuthService } from "../../service/auth.service";
 import { autoTable } from "jspdf-autotable";
-import { plan } from "src/app/models/plan";
+import { plan } from "../../models/plan";
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
-import { agregarContra } from "src/app/service/agregarContra.service";
+import { agregarContra } from "../../service/agregarContra.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
 import { ColaboradorService } from "../../service/colaborador.service";
@@ -154,6 +154,7 @@ export class RegistroComponent implements OnInit {
       numInter: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       numExterno: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       estado: [''],
+      idGym:[this.auth.idGym.getValue()],
       //direccion: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú0-9 ./#]*[A-Za-z][A-Za-zñÑáéíóú0-9 ./#]*$/)])],
       fechaNacimiento: ['', Validators.required],
       //curp: ['', Validatfors.compose([ Validators.minLength(18), Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/)])],
@@ -462,7 +463,7 @@ export class RegistroComponent implements OnInit {
     const numExterno = this.form.get("numInt")?.value;
     const fon = this.form.get("fon")?.value;
 
-    const nombreU = this.form.get("nombreU")?.value;
+    const nombreU = this.form.get("nombre")?.value;
     const apPaterno = this.form.get("apPaterno")?.value;
     const apMaterno = this.form.get("apMaterno")?.value;
     const fechaNacimiento = this.form.get("fechaNacimiento")?.value;
@@ -484,10 +485,10 @@ export class RegistroComponent implements OnInit {
           this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
         } else if (resultData.success == '1') {
 
-          const fomrBU = {
+          /*const fomrBU = {
             status: 1,
             id_usuario: resultData.no_clave,
-            id_bodega: 1
+            id_bodega: this.auth.idGym.getValue() //1
           }
 
           console.log(fomrBU, "fomrBU");
@@ -509,7 +510,7 @@ export class RegistroComponent implements OnInit {
           //this.form.markAsUntouched();
 
             }
-          }) 
+          }) */
         }
       },
       error: (error) => {

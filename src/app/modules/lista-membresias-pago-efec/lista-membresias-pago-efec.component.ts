@@ -9,8 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 import { FormPagoEmergenteComponent } from '../form-pago-emergente/form-pago-emergente.component';
 import { MensajeListaComponent } from '../ListaClientes/mensaje-cargando.component';
 import { listarClientesService } from '../../service/listarClientes.service';
-import { ClienteService } from 'src/app/service/cliente.service';
-import { HuellaService } from 'src/app/service/huella.service';
+import { ClienteService } from '../../service/cliente.service';
+import { HuellaService } from '../../service/huella.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
@@ -19,7 +19,7 @@ import { DatePipe } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { EmergenteInfoClienteComponent } from '../emergente-info-cliente/emergente-info-cliente.component';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 
 interface ClientesActivos {
   ID: number;
@@ -234,7 +234,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
 
   updateDateLogs(): void {
-    this.pagoService.obtenerActivos(1).subscribe(
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (response: any) => {
         console.log('Respuesta del servicio:', response.data);
         this.clienteActivo = response.data;
@@ -315,23 +315,23 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.dialog
             .open(EmergenteInfoClienteComponent, {
               data: {
-                idCliente: `${prod.id}`,
-                nombre: `${prod.nombreCompleto}`,
+                idCliente: `${prod.ID}`,
+                nombre: `${prod.Nombre}`,
 
                // nombre_cl: `${prod.nombre_cliente}`,
                 //paterno: `${prod.apPaterno}`,
                 //materno: `${prod.apMaterno}`,
                 telefono: `${prod.telefono}`,
-                email: `${prod.Correo}`,
+                email: `${prod.email}`,
                 peso: `${prod.peso}`,
                 estatura: `${prod.estatura}`,
                 //sucursal: `${prod.Sucursal}`,
-                membresia: `${prod.titulo}`,
-                precio: `${prod.precio}`,
+                membresia: `${prod.Membresia}`,
+                precio: `${prod.Precio}`,
                 huella: `${prod.huella}`,
-                duracion: `${prod.duracion}`,
-                idSucursal: `${prod.id_bodega}`,
-                infoMembresia: `${prod.detalles}`,
+                duracion: `${prod.Duracion}`,
+                idSucursal: `${prod.Gimnasio_idGimnasio}`,
+                infoMembresia: `${prod.Info_Membresia}`,
                 foto: `${prod.fotoUrl}`,
                 action:`${prod.accion}`
               },
@@ -400,17 +400,17 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     // Abre el diálogo y almacena la referencia
     const dialogRef = this.dialog.open(FormPagoEmergenteComponent, {
       data: {
-        idCliente: `${prod.id}`,
-        nombre: `${prod.nombreCompleto}`,
+        idCliente: `${prod.ID}`,
+        nombre: `${prod.Nombre}`,
         //sucursal: `${prod.Sucursal}`,
-        membresia: `${prod.titulo}`,
-        dateStart: `${prod.fechaInicio}`,
-        dateEnd: `${prod.fechaFin}`,
-        precio: `${prod.precio}`,
-        duracion: `${prod.duracion}`,
-        idSucursal: `${prod.id_bodega}`,
+        membresia: `${prod.Membresia}`,
+        dateStart: `${prod.Fecha_Inicio}`,
+        dateEnd: `${prod.Fecha_Fin}`,
+        precio: `${prod.Precio}`,
+        duracion: `${prod.Duracion}`,
+        idSucursal: `${prod.Gimnasio_idGimnasio}`,
         //action: `${prod.accion}`,
-        idMem: `${prod.idMem}`,
+        idMem: `${prod.Membresia_idMem}`,
        // detMemID: `${prod.idDetMem}`
       },
       width: '50%',
@@ -418,42 +418,34 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       disableClose: true,
     });
 
-   
-    // Suscríbete al evento actualizarTablas del diálogo
-    dialogRef.componentInstance.actualizarTablas.subscribe(
-      (actualizar: boolean) => {
-        if (actualizar) {
-          // Realiza las operaciones de actualización necesarias aquí
-          // Eliminar la fila de la tabla uno
-          const index = this.dataSourceActivos.data.indexOf(prod);
-          if (index !== -1) {
-            this.dataSourceActivos.data.splice(index, 1);
-            this.dataSourceActivos._updateChangeSubscription(); // Notificar a la tabla sobre el cambio
-          }
-
-          // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-          this.pagoService.obtenerActivos(
-                                          this.auth.idGym.getValue()
-                                          ).subscribe((respuesta) => {
-            this.clienteActivo = respuesta;
-            // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
-            this.dataSourceActivos.data = this.clienteActivo.slice();
-            // Notificar a la tabla sobre el cambio
-            this.dataSourceActivos._updateChangeSubscription();
-          });
-        }
+  // Suscríbete al evento actualizarTablas del diálogo
+  dialogRef.componentInstance.actualizarTablas.subscribe(
+    (actualizar: boolean) => {
+      if (actualizar) {
+        // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
+        this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((respuesta) => {
+          this.clienteActivo = respuesta.data;
+          console.log('datos en tabla: ',this.clienteActivo);
+          // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
+          this.dataSourceActivos.data = this.clienteActivo.slice();
+          // Notificar a la tabla sobre el cambio
+          this.dataSourceActivos.data.paginator = this.paginator; // Actualizar el paginador si es necesario
+          // Notificar a la tabla sobre el cambio
+          this.dataSourceActivos._updateChangeSubscription();
+        });
       }
-    );
+    }
+  );
 
-    // Suscríbete al evento afterClosed() para manejar el caso en que se cierra el diálogo
-    dialogRef.afterClosed().subscribe((cancelDialog: boolean) => {
-      if (cancelDialog) {
-      
-      } else {
-        
-      }
-    });
-  }
+  // Suscríbete al evento afterClosed() para manejar el caso en que se cierra el diálogo
+  dialogRef.afterClosed().subscribe((cancelDialog: boolean) => {
+    if (cancelDialog) {
+      // Manejar el caso en que se cancela el diálogo
+    } else {
+      // Manejar el caso en que se cierra el diálogo sin cancelar
+    }
+  });
+}
 
   //Se resta el dinero recibido del precio para el apartado de pago de membresia cliente online
   realizarCalculo(prod: any): void {
