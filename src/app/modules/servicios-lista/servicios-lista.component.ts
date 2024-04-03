@@ -3,16 +3,17 @@ import { Router } from "@angular/router";
 import { ActivatedRoute } from "@angular/router";
 import { ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { plan } from "src/app/models/plan";
-import { PlanService } from "src/app/service/plan.service";
+import { plan } from "../../models/plan";
+import { serviciosService } from "../../service/servicios.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { GimnasioService } from "../../service/gimnasio.service";
-import { AuthService } from "src/app/service/auth.service";
+import { AuthService } from "../../service/auth.service";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 //import { DialogSelectMembershipComponent } from '../dialog-select-membership/dialog-select-membership.component';
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
 import { DialogStateService } from "../../service/dialogState.service";
+import { MembresiaService } from "../../service/membresia.service";
 
 @Component({
   selector: "app-servicios-lista",
@@ -43,8 +44,9 @@ export class ServiciosListaComponent {
     private auth: AuthService,
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef,
-    private planService: PlanService,
+    private ServiciosService: serviciosService,
     private gimnasioService: GimnasioService,
+    private membresiaService: MembresiaService,
     private dialogStateService: DialogStateService
   ) {}
 
@@ -120,7 +122,7 @@ export class ServiciosListaComponent {
   }
 
   actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
-    this.planService.updateMembresiaStatus(idMem, estado).subscribe(
+    this.membresiaService.updateMembresiaStatus(idMem, estado).subscribe(
       (respuesta) => {
         this.membresiaActiva = estado.status == 1;
       },
@@ -131,7 +133,7 @@ export class ServiciosListaComponent {
 
   openDialog(): void {
     this.seleccionado = 1;
-    this.planService.seleccionado.next(this.seleccionado);
+    this.ServiciosService.seleccionado.next(this.seleccionado);
     this.dialogRef = this.dialog.open(ServiceDialogComponent, {
       width: "55%",
       height: "60%",
@@ -145,8 +147,8 @@ export class ServiciosListaComponent {
         this.dataSource = new MatTableDataSource(this.services);
         this.dataSource.paginator = this.paginator;
       });
-      this.planService.confirmButton.next(false);
-      this.planService.confirmButton.subscribe((res) => {
+      this.ServiciosService.confirmButton.next(false);
+      this.ServiciosService.confirmButton.subscribe((res) => {
         if (!res) {
         }
       });
@@ -155,22 +157,22 @@ export class ServiciosListaComponent {
 
   editarServicio(idServicio: number) {
     this.seleccionado = 2;
-    this.planService.idService.next(idServicio);
-    this.planService.seleccionado.next(this.seleccionado);
+    this.ServiciosService.idService.next(idServicio);
+    this.ServiciosService.seleccionado.next(this.seleccionado);
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
       width: "55%",
       height: "60%",
       disableClose: true,
     });
 
-    this.planService.idService.next(idServicio);
-    this.planService.getService(idServicio).subscribe((res) => {
+    this.ServiciosService.idService.next(idServicio);
+    this.ServiciosService.getService(idServicio).subscribe((res) => {
       if (res) {
       }
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.planService.confirmButton.subscribe((res) => {
+      this.ServiciosService.confirmButton.subscribe((res) => {
         if (res) {
           this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
             this.services = res;
@@ -179,8 +181,8 @@ export class ServiciosListaComponent {
           });
         }
       });
-      this.planService.confirmButton.next(false);
-      this.planService.confirmButton.subscribe((res) => {
+      this.ServiciosService.confirmButton.next(false);
+      this.ServiciosService.confirmButton.subscribe((res) => {
         if (!res) {
       
         }

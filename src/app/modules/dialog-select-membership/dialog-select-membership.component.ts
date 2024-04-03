@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject,TemplateRef } from "@angular/core";
-import { AuthService } from "src/app/service/auth.service";
+import { AuthService } from "../../service/auth.service";
 import { HttpClient } from "@angular/common/http";
-import { GimnasioService } from "src/app/service/gimnasio.service";
+import { GimnasioService } from "../../service/gimnasio.service";
 import { ToastrService } from 'ngx-toastr';
 import {
   FormBuilder,
@@ -11,7 +11,7 @@ import {
   NgForm,
   Validators,
 } from "@angular/forms";
-import { PlanService } from "../../service/plan.service";
+import { serviciosService } from "../../service/servicios.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { EMPTY } from "rxjs";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -23,6 +23,7 @@ import {
 import { ErrorStateMatcher } from "@angular/material/core";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
+import { MembresiaService } from "../../service/membresia.service";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -62,10 +63,6 @@ export class DialogSelectMembershipComponent implements OnInit {
   serviciosSeleccionadosFilters: any[] = [];
   prices: any[] = [];
   totalPlanPersolnalized: number = 0;
-  /*data = {
-    fk_idMem: 0,
-    id_servicios_individuales: [""],
-  };*/
   sucursalServices: any[] = [];
   dataToUpdate: any = {};
   plan: any[] = [];
@@ -80,8 +77,9 @@ export class DialogSelectMembershipComponent implements OnInit {
     private GimnasioService: GimnasioService,
     private formulario: FormBuilder,
     private toastr: ToastrService,
-    private planService: PlanService,
+    private ServiciosService: serviciosService,
     public dialog: MatDialog,
+    public membresiaService: MembresiaService,
     public dialogRefConfirm: MatDialogRef<MensajeEmergentesComponent>
   ) {
     this.formPlan = this.formulario.group({
@@ -118,17 +116,17 @@ export class DialogSelectMembershipComponent implements OnInit {
     this.getIdGym();
     this.getServices();
     this.tipo_membresia = 1;
-    this.planService.optionShow.subscribe((respuesta) => {
+    this.membresiaService.optionShow.subscribe((respuesta) => {
       if (respuesta) {
         this.optionToShow = respuesta;
         if (this.optionToShow == 1) {
           this.getServices();
         } else if (this.optionToShow == 2) {
-          this.planService.getDataToUpdate().subscribe((respuesta) => {
+          this.membresiaService.getDataToUpdate().subscribe((respuesta) => {
             if (respuesta) {
               this.dataToUpdate = respuesta;
               if (this.dataToUpdate.id != undefined) {
-                this.planService
+                this.membresiaService
                   .consultarPlanGym(this.dataToUpdate.id)
                   .subscribe((respuesta) => {
                     if (respuesta) {
@@ -146,7 +144,7 @@ export class DialogSelectMembershipComponent implements OnInit {
             }
           });
         } else if (this.optionToShow == 3) {
-          this.planService.getDataToUpdate().subscribe((respuesta) => {
+          this.membresiaService.getDataToUpdate().subscribe((respuesta) => {
             if (respuesta) {
               this.dataToUpdate = respuesta;
             }
@@ -154,7 +152,7 @@ export class DialogSelectMembershipComponent implements OnInit {
           this.GimnasioService.getServicesForId(this.idGym).subscribe(
             (respuesta) => {
               this.servicios = respuesta;
-              this.planService
+              this.membresiaService
                 .consultarPlanGym(this.dataToUpdate.id)
                 .subscribe((respuesta) => {
                   if (respuesta) {
@@ -191,7 +189,7 @@ export class DialogSelectMembershipComponent implements OnInit {
       }
     });
 
-    this.planService.section.subscribe((respuesta) => {
+    this.membresiaService.section.subscribe((respuesta) => {
       if (respuesta) {
         this.section = respuesta;
       }
@@ -218,7 +216,7 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   abrirDialogo() {
     this.seleccionado = 1;
-    this.planService.seleccionado.next(this.seleccionado);
+    this.ServiciosService.seleccionado.next(this.seleccionado);
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
       width: "55%",
       height: "60%",
@@ -292,7 +290,7 @@ export class DialogSelectMembershipComponent implements OnInit {
           formValue.servicioseleccionado = [formValue.servicioseleccionado];
         }
        
-        this.planService.agregarPlan(formValue).subscribe((respuesta) => {
+        this.membresiaService.agregarMem(formValue).subscribe((respuesta) => {
           if (respuesta) {
             if (respuesta.success == 1) {
               this.spinner.hide();
@@ -302,7 +300,7 @@ export class DialogSelectMembershipComponent implements OnInit {
                 data: "La membresía se ha insertado correctamente",
               });
               dialogRef.afterClosed().subscribe((result) => {
-                this.planService.confirmButton.next(true);
+                this.ServiciosService.confirmButton.next(true);
                 this.dialogo.close(respuesta);
               });
             }
@@ -325,7 +323,7 @@ export class DialogSelectMembershipComponent implements OnInit {
         });
         if (this.formPlan.valid) {
           //llamada al servicio para actualizar la membresia
-          this.planService
+          this.membresiaService
             .updateMembresia(this.formPlan.value)
             .subscribe((respuesta) => {
               if (respuesta) {
@@ -363,7 +361,7 @@ export class DialogSelectMembershipComponent implements OnInit {
         precio: this.formService.value.precio,
         gimnasio: this.idGym,
       });
-      this.planService
+      this.ServiciosService
         .newService(this.formService.value)
         .subscribe((respuesta) => {
           if (respuesta) {
@@ -400,7 +398,6 @@ export class DialogSelectMembershipComponent implements OnInit {
     });
   }
 }
-
 interface MyElement {
   fk_idMem: string;
   fk_servicios_individuales: string;

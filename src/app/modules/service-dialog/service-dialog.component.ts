@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { PlanService } from "../../service/plan.service";
-import { AuthService } from "src/app/service/auth.service";
+import { serviciosService } from "../../service/servicios.service";
+import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MatDialog } from "@angular/material/dialog";
-import { RouterLink, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DialogStateService } from "../../service/dialogState.service";
-
 @Component({
   selector: "app-service-dialog",
   templateUrl: "./service-dialog.component.html",
@@ -27,7 +26,7 @@ export class ServiceDialogComponent implements OnInit {
     private fb: FormBuilder,
     public dialog: MatDialog,
     private auth: AuthService,
-    private planService: PlanService,
+    private ServiciosService: serviciosService,
     private dialogStateService: DialogStateService,
     private spinner: NgxSpinnerService,
     private dialogRef: MatDialogRef<ServiceDialogComponent>,
@@ -47,24 +46,22 @@ export class ServiceDialogComponent implements OnInit {
     this.dialogStateService.updateMaximizeState(this.isMaximized);
   }
 
-
   ngOnInit(): void {
     this.auth.idGym.subscribe((id) => {
       if (id) {
-      
         this.idGym = id;
       }
     });
 
-    this.planService.seleccionado.subscribe((id) => {
+    this.ServiciosService.seleccionado.subscribe((id) => {
       if (id) {
         this.seleccionado = id;
         if (id == 1) {
         } else if (id == 2) {
-          this.planService.idService.subscribe((id) => {
+          this.ServiciosService.idService.subscribe((id) => {
             if (id) {
               this.idService = id;
-              this.planService.getService(this.idService).subscribe((res) => {
+              this.ServiciosService.getService(this.idService).subscribe((res) => {
                 if (res) {
                   this.service = res;
                   if (this.service) {
@@ -92,7 +89,6 @@ export class ServiceDialogComponent implements OnInit {
   }
 
   validaFormService() {
-    console.log(this.serviceForm.value, "form");
     if (this.serviceForm.invalid) {
       Object.values(this.serviceForm.controls).forEach((control) => {
         control.markAsTouched();
@@ -107,8 +103,7 @@ export class ServiceDialogComponent implements OnInit {
         precio_unitario: this.serviceForm.value.precio_unitario,
         fk_idGimnasio: this.idGym,
       });
-      console.log("segundo", this.serviceForm.value);
-      this.planService
+      this.ServiciosService
         .newService(this.serviceForm.value)
         .subscribe((respuesta) => {
           if (respuesta) {
@@ -125,8 +120,6 @@ export class ServiceDialogComponent implements OnInit {
               dialogRefConfirm.afterClosed().subscribe((result) => {
                 this.dialogRef.close(respuesta);
               });
-              
-
             }
           } else {
           }
@@ -136,7 +129,7 @@ export class ServiceDialogComponent implements OnInit {
 
   actualizarForm() {
     this.spinner.show();
-    this.planService.updateService(this.serviceForm.value).subscribe((res) => {
+    this.ServiciosService.updateService(this.serviceForm.value).subscribe((res) => {
       if (res) {
         if (res) {
           this.spinner.hide();
@@ -150,7 +143,7 @@ export class ServiceDialogComponent implements OnInit {
           );
 
           dialogRefConfirm.afterClosed().subscribe((result) => {
-            this.planService.confirmButton.next(true);
+            this.ServiciosService.confirmButton.next(true);
             this.dialogRef.close();
           });
         }

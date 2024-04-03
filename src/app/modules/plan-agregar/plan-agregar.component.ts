@@ -1,26 +1,20 @@
 import { Component, OnInit, Inject } from "@angular/core";
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  AbstractControl,
-} from "@angular/forms";
+import { FormGroup, FormBuilder, Validators, AbstractControl} from "@angular/forms";
 import { MembresiaService } from "../../service/membresia.service";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-//import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
-import { AuthService } from "src/app/service/auth.service";
+import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { PlanService } from "src/app/service/plan.service";
 import { plan } from "../../models/plan";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from 'ngx-toastr';
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
+
 @Component({
   selector: "app-membresias-agregar",
-  templateUrl: "./membresias-agregar.component.html",
-  styleUrls: ["./membresias-agregar.component.css"],
+  templateUrl: "./plan-agregar.component.html",
+  styleUrls: ["./plan-agregar.component.css"],
 })
 export class planAgregarComponent {
   formulariodePlan: FormGroup;
@@ -35,15 +29,12 @@ export class planAgregarComponent {
   constructor(
     public dialogo: MatDialogRef<planAgregarComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
-
     public formulario: FormBuilder,
     private router: Router,
     private membresiaService: MembresiaService,
     private auth: AuthService,
-    private planService: PlanService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService,
-    // private gimnasioService: GimnasioService,
     public dialog: MatDialog
   ) {
     this.formulariodePlan = this.formulario.group(
@@ -58,7 +49,6 @@ export class planAgregarComponent {
         fechaInicio: ["", Validators.required],
         fechaFin: ["", Validators.required],
         membresias: [[], Validators.required],
-        // membresias: [[], [Validators.required, this.requireMinItems(1)]],
       },
       { validators: this.dateLessThan("fechaInicio", "fechaFin") }
     );
@@ -69,7 +59,7 @@ export class planAgregarComponent {
       if (id) {
         this.idGym = id;
       }
-      this.planService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
+      this.membresiaService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
         this.plan = respuesta;
       });
     });
@@ -148,8 +138,6 @@ export class planAgregarComponent {
     });
   }
 
-  
-
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
@@ -193,8 +181,8 @@ export class planAgregarComponent {
   }
 
   openDialog(): void {
-    this.planService.optionShow.next(1);
-    this.planService.optionShow.subscribe((option) => {});
+    this.membresiaService.optionShow.next(1);
+    this.membresiaService.optionShow.subscribe((option) => {});
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: "70%",
       height: "90%",
