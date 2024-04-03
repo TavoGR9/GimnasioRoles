@@ -11,7 +11,7 @@ import { tap } from 'rxjs/operators';
 })
 export class CategoriaService {
 
-  API2: string = 'http://localhost/plan/'
+  API2: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
 
   constructor(private clienteHttp:HttpClient) {
   }

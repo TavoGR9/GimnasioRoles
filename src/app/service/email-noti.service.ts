@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class notificaciones {
  
-  API: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/';
+  API: string ='olympus.arvispace.com/olimpusGym/EnviarMail/';
   
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 

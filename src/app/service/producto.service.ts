@@ -13,7 +13,7 @@ export class ProductoService {
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
   private productoSubject = new BehaviorSubject<any[]>([]);
 
-   APIP: string = 'http://localhost/plan/';
+   APIP: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
     constructor(private clienteHttp:HttpClient) {
     }

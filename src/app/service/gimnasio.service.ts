@@ -12,7 +12,7 @@ export class GimnasioService {
   botonEstado = new Subject<{respuesta: boolean, idGimnasio: any}>();
   optionSelected = new BehaviorSubject<number>(0);
 
-  API: string = 'http://localhost/plan/'
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
