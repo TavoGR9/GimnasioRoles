@@ -20,7 +20,10 @@ export class ColaboradorService {
 
     API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/empleado.php';
     API2: string = 'http://localhost/plan/empleado.php';
-    API3: string = 'http://localhost/plan/BodegaEmpleado.php'
+    API3: string = 'http://localhost/plan/BodegaEmpleado.php';
+
+    APIL: string = 'http://localhost/plan/';
+
     constructor(private clienteHttp:HttpClient) {
     }
     
@@ -80,5 +83,28 @@ export class ColaboradorService {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         return this.clienteHttp.post<msgResult>(this.API+"?actEmp="+id,datosEmpleado, {headers});
     }   
+
+
+
+
+
+
+    MostrarRecepcionistas(idGym: any) {
+        let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let params = 'idGym=' + idGym;
+        return this.clienteHttp.post(this.APIL + 'ser_mostrar_Recepcionistas.php', params, { headers });
+      }
+
+    InfoIdEmpleado(idEmp: any) {
+        let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let params = 'idEmp=' + idEmp;
+        return this.clienteHttp.post(this.APIL + 'ser_mostrar_Recepcionistas.php', params, { headers });
+      }
+
+      ActualizarColaborador(pid_bodega: number, pnombreCompleto: String, pCorreoEmpleado: String, ptelefono: String, pidEmp: String) {
+        let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let params = 'pid_bodega=' + pid_bodega + '&pnombreCompleto=' + pnombreCompleto + '&pCorreoEmpleado=' + pCorreoEmpleado + '&ptelefono=' + ptelefono + '&pidEmp=' + pidEmp;
+        return this.clienteHttp.post(this.APIL + 'ser_mostrar_Recepcionistas.php', params, { headers });
+      }
   }
   

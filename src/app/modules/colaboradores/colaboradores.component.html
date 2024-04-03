@@ -17,22 +17,22 @@
       <table mat-table [dataSource]="dataSource" >
         <ng-container matColumnDef="nombre">
           <th mat-header-cell *matHeaderCellDef> Nombre </th>
-          <td mat-cell *matCellDef="let empleado"> {{ empleado.nombre }} {{ empleado.apPaterno }} {{ empleado.apMaterno }} </td>
+          <td mat-cell *matCellDef="let empleados"> {{ empleados.nombreCompleto }}  </td>
         </ng-container>
       
-        <ng-container matColumnDef="turno">
+         <ng-container matColumnDef="turno">
           <th mat-header-cell *matHeaderCellDef> Turno </th>
-          <td mat-cell *matCellDef="let empleado"> {{ empleado.turnoLaboral }} </td>
-        </ng-container>
+          <td mat-cell *matCellDef="let empleados"> {{ empleados.id_empleado }} </td>
+        </ng-container> 
       
         <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef> Email </th>
-          <td mat-cell *matCellDef="let empleado"> {{ empleado.email }} </td>
+          <td mat-cell *matCellDef="let empleados"> {{ empleados.correoEmpleado }} </td>
         </ng-container>
 
         <ng-container matColumnDef="telefono">
           <th mat-header-cell *matHeaderCellDef> Telefono </th>
-          <td mat-cell *matCellDef="let empleado"> {{ empleado.telefono }} </td>
+          <td mat-cell *matCellDef="let empleados"> {{ empleados.telefono }} </td>
         </ng-container>
       
         <ng-container matColumnDef="acciones">

@@ -48,9 +48,10 @@ export class ColaboradoresComponent {
       });
     } 
     if (this.isAdmin()){
-      this.http.listaRecepcionistas(this.idGym).subscribe({
+      this.http.MostrarRecepcionistas(this.idGym).subscribe({
         next: (dataResponse) => {
           this.empleados = dataResponse;
+          //console.log(this.empleados);
           this.dataSource = new MatTableDataSource(this.empleados);
         this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
         }
@@ -62,8 +63,8 @@ export class ColaboradoresComponent {
     this.http.listaRecepcionistas(this.idGym).subscribe({
       next: (resultData) => {
         this.empleados = resultData;
-        this.dataSource = new MatTableDataSource(this.empleados);
-        this.dataSource.paginator = this.paginator;
+        //this.dataSource = new MatTableDataSource(this.empleados);
+        //this.dataSource.paginator = this.paginator;
       }
     });
   }
@@ -76,7 +77,7 @@ export class ColaboradoresComponent {
       this.http.listaRecepcionistas(this.idGym).subscribe({
         next: (resultData) => {
           this.empleados = resultData;
-          this.dataSource.data = this.empleados;
+       //   this.dataSource.data = this.empleados;
         }
       });
     }
@@ -128,7 +129,8 @@ export class ColaboradoresComponent {
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
           // Hacer algo cuando se cierra el diálogo
-          this.actualizarTabla();
+          //this.actualizarTabla();
+          this.listaTabla();
         } else {
           // Hacer algo cuando se cancela el diálogo
         }
@@ -136,15 +138,17 @@ export class ColaboradoresComponent {
   }
   
 
-  OpenEditar(empleado: any) {
+  OpenEditar(empleados: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '70%';
     dialogConfig.height = '90%';
     dialogConfig.disableClose = true; // Evita que el diálogo se cierre haciendo clic fuera de él
     
     dialogConfig.data = {
-      empleadoID: `${empleado.idEmpleado}`
+      empleadoID: `${empleados.id_empleado}`
     };
+
+    //console.log(empleados.id_empleado);
   
     this.dialog.open(EditarColaboradorComponent, dialogConfig)
       .afterClosed()

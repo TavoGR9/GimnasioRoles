@@ -17,6 +17,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+
 @Component({
   selector: 'app-editar-colaborador',
   templateUrl: './editar-colaborador.component.html',
@@ -27,7 +28,9 @@ export class EditarColaboradorComponent implements OnInit{
   public form: FormGroup;
   public sucursales: any;
   public idParam: any;
-
+  //resultadoData: any[] = [];
+  resultadoData:  any = {};
+  idGym!: number;
   constructor (private fb: FormBuilder,
     public dialogo: MatDialogRef<EditarColaboradorComponent>,
     public dialog: MatDialog,
@@ -42,34 +45,40 @@ export class EditarColaboradorComponent implements OnInit{
     //this.idParam=this.activeR.snapshot.paramMap.get('id');
 
     //llamar al servicio datos empleado - pasando el parametro capturado por url
-    this.http.consultarIdEmpleado(this.data.empleadoID).subscribe({
+    this.http.InfoIdEmpleado(this.data.empleadoID).subscribe({
       next: (resultData) => {
+        //console.log(resultData);
+        this.resultadoData = resultData;
+        // console.log(this.resultadoData[0].nombreCompleto);
+        // console.log(this.resultadoData[0].correoEmpleado);
         //asignar valor a los campos correspondientes al fomulario
-        this.form.setValue({
-          nombre:resultData [0]['nombre'],
-          apPaterno:resultData [0]['apPaterno'],
-          apMaterno:resultData [0]['apMaterno'],
-          telefono:resultData [0]['telefono'],
-          //rfc:resultData [0]['rfc'],
-          Gimnasio_idGimnasio:resultData [0]['Gimnasio_idGimnasio'],
-          turnoLaboral:resultData [0]['turnoLaboral'],
-          salario:resultData [0]['salario'],
-          email:resultData [0]['email']
-        });
+         this.form.setValue({
+           nombreCompleto: this.resultadoData[0].nombreCompleto,
+        //   // apPaterno:resultData [0]['apPaterno'],
+        //   // apMaterno:resultData [0]['apMaterno'],
+           telefono: this.resultadoData[0].telefono,
+           CorreoEmpleado: this.resultadoData[0].CorreoEmpleado,
+           id_bodega: this.resultadoData[0].id_bodega,
+        //   //rfc:resultData [0]['rfc'],
+        //   id_bodega:resultData [0]['id_bodega'],
+        //   // turnoLaboral:resultData [0]['turnoLaboral'],
+        //   // salario:resultData [0]['salario'],
+        //   CorreoEmpleado:resultData [0]['CorreoEmpleado']
+         });
       }
     });
 
     //asignar validaciones a los campos de fomulario
     this.form = this.fb.group({
-      nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      apMaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
+      nombreCompleto: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
+      // apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
+      // apMaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       telefono: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
       //rfc: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/), Validators.minLength(12),Validators.maxLength(13)])],
-      Gimnasio_idGimnasio: ['', Validators.compose([ Validators.required])],
-      turnoLaboral: [''],
-      salario: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
-      email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])]
+      id_bodega: ['', Validators.compose([ Validators.required])],
+      // turnoLaboral: [''],
+      // salario: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      CorreoEmpleado: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])]
     });
   }
 
@@ -108,17 +117,21 @@ export class EditarColaboradorComponent implements OnInit{
 
   //funcion correspondiente a actualizar empleado
   actualizar(){
+    //console.log(this.form.value.nombreCompleto);
     if (this.form.valid) {
       this.spinner.show();
-      this.http.actualizaEmpleado(this.data.empleadoID, this.form.value).subscribe({
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+      });
+      this.http.ActualizarColaborador(this.idGym, this.form.value.nombreCompleto, this.form.value.CorreoEmpleado, this.form.value.telefono, this.data.empleadoID).subscribe({
         next: (resultDataUpdate) => {
-          if(resultDataUpdate.msg == 'RfcExists'){
-            this.toastr.error('El rfc ya existe.', 'Error!!!');
-          }
-          if(resultDataUpdate.msg == 'MailExists'){
+          // if(resultDataUpdate.msg == 'RfcExists'){
+          //   this.toastr.error('El rfc ya existe.', 'Error!!!');
+          // }
+          if(resultDataUpdate == '2'){
             this.toastr.error('El correo ya existe.', 'Error!!!');
           }
-          if(resultDataUpdate.msg == 'Success'){
+          if(resultDataUpdate == '1'){
             //this.toastr.success('Registro actualizado correctamente.', 'Exíto!!!');
 
             this.cerrarDialogo();
