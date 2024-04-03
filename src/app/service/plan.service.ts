@@ -7,12 +7,7 @@ import { plan } from '../models/plan';
 })
 export class PlanService {
  
-  API: string ="http://localhost/plan/membresias.php";
-  //API: string ="https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/membresia.php";
-  //API2: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/Membresia.php";
-  API2: string = "http://localhost/plan/membresias.php";
-  //API3: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/servicesMembresia.php";
-  API3: string = "http://localhost/plan/servicesMembresia.php";
+  API: string ="http://localhost/plan/";
 
   public optionShow: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public showServices: BehaviorSubject<any> = new BehaviorSubject<any>([]);
@@ -28,73 +23,54 @@ export class PlanService {
   }
 
   agregarPlan(datosPlan:plan):Observable<any>{
-    return this.clienteHttp.post(this.API2+"?insertar",datosPlan);
+    return this.clienteHttp.post(this.API+"membresias.php?insertar",datosPlan);
   }
 
   obternerPlan(){
-    return this.clienteHttp.get(this.API)
+    return this.clienteHttp.get(this.API+"membresias.php")
   }
   
   consultarPlan(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarPlan="+id);
+    return this.clienteHttp.get(this.API+"membresias.php?consultarPlan="+id);
   }
 
   consultarPlanM():Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarPlanM");
+    return this.clienteHttp.get(this.API+"membresias.php?consultarPlanM");
   }
 
   consultarPlanIdMem(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarGYMMem="+id);
-  }
-
-  consultarPlanIdPlan(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarGYMPlan="+id);
+    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMMem="+id);
   }
 
   consultarPlanIdPlan2(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarGYMPlanT="+id);
+    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMPlanT="+id);
   }
 
   consultarPlanGym(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API2+"?consultarMembresia="+id);
+    return this.clienteHttp.get(this.API+"membresias.php?consultarMembresia="+id);
   }
 
   consultarPlanId(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultarGYM="+id);
-  }
-
-  borrarPlan(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?borrar="+id)
+    return this.clienteHttp.get(this.API+"membresias.php?consultarGYM="+id);
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"?actualizar="+id,datosPlan);
+    return this.clienteHttp.post(this.API+"membresias.php?actualizar="+id,datosPlan);
   }  
 
   updateMembresiaStatus(id: number, estado: { status: number }): Observable<any> {
     console.log("status",estado,"id",id);
-    return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);
+    return this.clienteHttp.post(this.API+"membresias.php?actualizarEstatus="+id,estado);
   }
 
   agregarServicios(datoService: any):Observable<any>{
     //return this.clienteHttp.post(this.API3+"?insertar=1", datoService, { headers: { 'Content-Type': 'application/json' } });  }
-    return this.clienteHttp.post(this.API3+"?insertar", datoService);
+    return this.clienteHttp.post(this.API+"servicesMembresia.php?insertar", datoService);
 }
-
-/*getServices(services: any) {
-  this.services = services;
-  if(services){
-    console.log("SERVICIOS FROM SERVICE",this.services);
-    this.showServices.next(this.services);
-  }else {
-    console.log("NO HAY SERVICIOS");
-  }
-}*/
 
 showService(): Observable<any> {
   return this.showServices.asObservable();
 }
-
 
 setDataToupdate(id:number, tipo_membresia: number){
    this.data = {
@@ -113,19 +89,19 @@ getDataToUpdate(): Observable<any> {
 }
 
 updateMembresia(formData: any): Observable<any>{ 
-  return this.clienteHttp.put(this.API2, formData);
+  return this.clienteHttp.put(this.API+"membresias.php", formData);
 }
 
 newService(data: any): Observable<any> {
-  return this.clienteHttp.post(this.API3+"?insertarservicio", data);
+  return this.clienteHttp.post(this.API+"servicesMembresia.php?insertarservicio", data);
 }
 
 getService(id: number): Observable<any> {
-  return this.clienteHttp.get(this.API3+"?getServicio="+id);
+  return this.clienteHttp.get(this.API+"servicesMembresia.php?getServicio="+id);
 }
 
 updateService(data: any): Observable<any> {
-  return this.clienteHttp.post(this.API3+"?actualizarServicio", data);
+  return this.clienteHttp.post(this.API+"servicesMembresia.php?actualizarServicio", data);
 }
 
 }

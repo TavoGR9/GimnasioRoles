@@ -4,12 +4,13 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { GimnasioService } from '../../service/gimnasio.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
-import { HorarioService } from 'src/app/service/horario.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { HorarioService } from '../../service/horario.service';
 import { AbstractControl } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { AuthService } from 'src/app/service/auth.service';
-
+import { AuthService } from '../../service/auth.service';
+import { catchError} from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { tap } from 'rxjs/operators';
 class Horario {
   constructor(
     public diaSemana: string,
@@ -50,34 +51,15 @@ export class ConfiguracionComponent  implements OnInit{
       this.formularioHorarios = this.formularioHorario.group({
         horarios: this.formularioHorario.array([]),
       });
-      // Consulta los horarios según el ID y estructura los datos para el formulario
-      this.HorarioService.consultarHorario(this.idGimnasio).subscribe(
-        respuesta => {
-          this.diasSemana.forEach(dia => {
-            this.agregarHorarioExistente(dia, respuesta);
-          });
-        }
-      );    
+   
     }
 
     this.elID = this.activeRoute.snapshot.paramMap.get('id');
     this.formularioSucursales = this.formulario.group({
-      nombreBodega: ["", Validators.required],
-     codigoPostal: ["", Validators.required],
-      estado: ["", Validators.required],
-      ciudad: ["", Validators.required],
-      colonia: ["", Validators.required],
-      calle: ["", Validators.required],
-      numExt: ["", Validators.required],
-      numInt: [""],
+      nombreBodega: [""],
+      direccion: ["", Validators.required],
       numeroTelefonico:  ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
-      tipo: ["", Validators.required],
-      Franquicia_idFranquicia: ["", Validators.required],
-      casilleros: ["", Validators.required],
-      estacionamiento: ["", Validators.required],
-      regaderas: ["", Validators.required],
-      bicicletero: ["", Validators.required],
-      estatus: [1],
+     // estatus: [1],
     });
   }
 
@@ -107,29 +89,32 @@ export class ConfiguracionComponent  implements OnInit{
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
+      this.verHorario();
     }); 
+  }
+
+  verHorario(){
+    this.HorarioService.consultarHorario(this.idGym).subscribe(
+      respuesta => {
+        console.log(respuesta, "respuesta");
+        this.diasSemana.forEach(dia => {
+          this.agregarHorarioExistente(dia, respuesta);
+        });
+      }
+    );
+
   }
 
   listaTabla(){
     this.gimnasioService.consultarPlan(this.idGym).subscribe(
       (respuesta) => {
+        console.log(respuesta, "respuesta");
+        
         this.formularioSucursales.setValue({
           nombreBodega: respuesta[0]['nombreBodega'],
-          estado: respuesta[0]['estado'],
-          ciudad: respuesta[0]['ciudad'],
-          colonia: respuesta[0]['colonia'],
-          calle: respuesta[0]['calle'],
-          codigoPostal: respuesta[0]['codigoPostal'],
-          numExt: respuesta[0]['numExt'],
-          numInt: respuesta[0]['numInt'],
+          direccion: respuesta[0]['direccion'],
           numeroTelefonico: respuesta[0]['numeroTelefonico'],
-          tipo: respuesta[0]['tipo'],
-          Franquicia_idFranquicia: respuesta[0]['Franquicia_idFranquicia'],
-          casilleros: respuesta[0]['casilleros'],
-          estacionamiento: respuesta[0]['estacionamiento'],
-          regaderas: respuesta[0]['regaderas'],
-          bicicletero: respuesta[0]['bicicletero'],
-          estatus: respuesta[0]['estatus'],
+         // estatus: respuesta[0]['estatus'],
         }); 
       }
     );
@@ -151,12 +136,41 @@ export class ConfiguracionComponent  implements OnInit{
 
   actualizar() {
     const idGym = this.auth.idGym.getValue();
-    const planData = this.formularioSucursales.value;
+    const planData = {
+      nombre: this.formularioSucursales.value.nombreBodega,
+      direcc: this.formularioSucursales.value.direccion,
+      numero: this.formularioSucursales.value.numeroTelefonico,
+      id_bod: idGym
+    };  
     const horariosData = this.formularioHorarios.value;
+    console.log(planData, "planData");
   
     // Realizar las solicitudes de actualización
-    const actualizarPlan = this.gimnasioService.actualizarPlan(idGym, planData);
-    const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData);  
+    const actualizarPlan = this.gimnasioService.actualizarSucursal(planData).pipe(
+      tap(respuesta => {
+        if (respuesta.success === 1) {
+          console.log("La actualización del plan fue exitosa");
+        }
+      }),
+      catchError(error => {
+        console.error('Error al actualizar el plan:', error);
+        return throwError('Error al actualizar el plan');
+      })
+    );
+  
+    const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData).pipe(
+      tap(respuesta => {
+        console.log(respuesta, "respuestaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        if (respuesta.success === 1) {
+          console.log("La actualización del plan fue exitosa");
+        }
+      }),
+      catchError(error => {
+        console.error('Error al actualizar los horarios:', error);
+        return throwError('Error al actualizar los horarios');
+      })
+    );
+  
     // Realizar las solicitudes concurrentemente con forkJoin
     forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
       next: ([planResponse, horariosResponse]) => {

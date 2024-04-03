@@ -91,6 +91,7 @@ export class HorariosVistaComponent implements OnInit {
       foto: [""],
       jefe: ["1"],
       email: [""],
+      nombre: [""],
     });
   }
 
@@ -99,6 +100,20 @@ export class HorariosVistaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.gimnasioService.optionSelected.subscribe((data) => {
+      if(data) {
+        this.optionToShow = data;
+        if(this.optionToShow === 1){
+          this.consultarHorario();
+        }
+        else if(this.optionToShow === 2){
+       
+        }
+        else if(this.optionToShow === 3){
+          this.editarCosa();
+        }
+      }
+    });
   }
 
   actualizarSelect() {
@@ -221,7 +236,7 @@ export class HorariosVistaComponent implements OnInit {
                 numInt:0,
                 estatus:1,
                 direccion: data[0].direccion,
-                numeroTelefonico: data[0].numeroTelefonico,
+                numeroTelefonico: data[0].numeroTelefonico
               });
             }
           });
@@ -250,10 +265,20 @@ export class HorariosVistaComponent implements OnInit {
   }
 
   confirmarEdicion() {
+    const idGym = this.auth.idGym.getValue();
     this.spinner.show();
+    console.log(this.formularioSucursales.value, "this.formularioSucursales.value");
+    const datosAc = {
+      nombre: this.formularioSucursales.value.nombre,
+      direcc: this.formularioSucursales.value.direccion,
+      numero: this.formularioSucursales.value.numeroTelefonico,
+      id_bod: idGym,
+    }
+    console.log(datosAc, "datosAc");
     this.gimnasioService
-      .actualizarSucursal(this.formularioSucursales.value)
+      .actualizarSucursal(datosAc)
       .subscribe((respuesta) => {
+        console.log(respuesta, "respuesta");
         if (respuesta) {
           if (respuesta.success === 1) {
             this.spinner.hide();

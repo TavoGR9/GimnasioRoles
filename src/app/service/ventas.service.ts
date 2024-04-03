@@ -8,31 +8,21 @@ import { Ventas } from '../models/ventas';
 })
 export class VentasService {
 
-  API: string = 'http://localhost/plan/venta_detalleVenta.php'
+  API: string = 'http://localhost/plan/'
   
   constructor(private clienteHttp:HttpClient) {
   }
 
   obternerVentas(){
-    return this.clienteHttp.get(this.API)
+    return this.clienteHttp.get(this.API+"venta_detalleVenta.php")
   }
 
-  // Angular service method
   agregarVentas(Ventas: Ventas):Observable<any>{
-    return this.clienteHttp.post(this.API+"?insertarVentas=1", Ventas);
+    return this.clienteHttp.post(this.API+"venta_detalleVenta.php?insertarVentas=1", Ventas);
   }
-
-  actualizarVentas(id:any,Ventas:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"?actualizar="+id,Ventas);
-  } 
 
   consultarVentas(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultar="+id);
-  }
-
-  borrarVentas(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?borrar="+id)
-    //this.message = "¡Error al eliminar!, Restricción en la base de datos";
+    return this.clienteHttp.get(this.API+"venta_detalleVenta.php?consultar="+id);
   }
 
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { GimnasioService } from 'src/app/service/gimnasio.service';
-import { HorarioService } from 'src/app/service/horario.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { GimnasioService } from '../../service/gimnasio.service';
+import { HorarioService } from '../../service/horario.service';
+import { AuthService } from '../../service/auth.service';
 import { HorariosComponent } from '../horarios/horarios.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
@@ -38,12 +38,12 @@ export class VerConfiguracionComponent implements OnInit {
       this.idGym = data;
       this.consultarHorario();
       this.consultarGym();
-   
     }); 
   }
 
   consultarGym(){
     this.gimnasioService.consultarPlan(this.idGym).subscribe(respuesta => {
+      console.log(respuesta, "respuesta");
       this.gimnasio = respuesta;
     });
   }
@@ -51,6 +51,7 @@ export class VerConfiguracionComponent implements OnInit {
   consultarHorario() {
     this.HorarioService.consultarHorario(this.idGym).subscribe(
       (data) => {
+        console.log(data, "data");
         this.datosHorario = data; 
       },
       (error) => {
@@ -83,6 +84,7 @@ export class VerConfiguracionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(() => {
       this.gimnasioService.consultarPlan(this.idGym).subscribe(respuesta => {
+        
         this.gimnasio = respuesta;
       });
       this.HorarioService.consultarHorario(this.idGym).subscribe(

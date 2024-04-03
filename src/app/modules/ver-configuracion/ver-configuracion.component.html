@@ -30,22 +30,10 @@
           <div class="card">
              <li style="font-size: 18px;">
                 <img src="../../../../../assets/img/ubicacion.png" width="40px" alt="Icono direccion" style="margin-right: 20px;margin-left: 20px; ">
-                <strong style="margin-right: 35px; ">DIRECCIÓN:</strong> {{ gimnasio.calle }}, {{ gimnasio.colonia }}, {{ gimnasio.ciudad }}
+                <strong style="margin-right: 35px; ">DIRECCIÓN:</strong> {{ gimnasio.direccion }}
              </li>
           </div>
           <br>
-          <div class="card" style="font-size: 13px;">
-            <li style="font-size: 18px;">
-                <img src="../../../../../assets/img/disponible.png" width="45px" alt="Icono teléfono" style="margin-right: 20px;margin-left: 20px; ">
-                <strong style="font-size: 18px;">DISPONIBILIDAD</strong>
-            </li>
-            <ul style="list-style: none; padding-left: 0;">
-                <li style="margin-left: 15%;"><strong style="margin-right: 5%;">CASILLEROS:</strong> {{ gimnasio.casilleros === '1' ? 'Sí' : 'No' }}</li>
-                <li style="margin-left: 10%;"><strong style="margin-right: 1%;">ESTACIONAMIENTO:</strong> {{ gimnasio.estacionamiento === '1' ? 'Sí' : 'No' }}</li>
-                <li style="margin-left: 14%;"><strong style="margin-right: 6%;">REGADERAS:</strong> {{ gimnasio.regaderas === '1' ? 'Sí' : 'No' }}</li>
-                <li style="margin-left: 14%;"><strong style="margin-right: 5%;">BICICLETERO:</strong> {{ gimnasio.bicicletero === '1' ? 'Sí' : 'No' }}</li>
-            </ul>
-        </div>
        </ul>
     </div>
     <div class="card" style="font-size: 18px;">
@@ -70,7 +58,7 @@
       <ng-template #noHorario>
           <p style="text-align: center; margin-top: 20px;">Horario no disponible</p>
           <div style="display: flex; justify-content: center;">
-            <button *ngFor="let gimnasio of gimnasio" mat-raised-button style="background-color: #fd9727; width: 190px; font-size: 16px; margin-bottom: 30px;" (click)="agregarHorario(gimnasio.idBodega)">
+            <button *ngFor="let gimnasio of gimnasio" mat-raised-button style="background-color: #fd9727; width: 190px; font-size: 16px; margin-bottom: 30px;" (click)="agregarHorario(gimnasio.id_bodega)">
                 <mat-icon>add</mat-icon> Agregar horario
             </button>
             <br><br>  

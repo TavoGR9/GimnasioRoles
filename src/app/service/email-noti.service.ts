@@ -6,11 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class notificaciones {
-
-  //Servicio para enviar notificaciones.
  
-  API: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/enviarNotificacion.php';
-  APITra: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/enviarNotificacionTrabajador.php';
+  API: string ='https://olympus.arvispace.com/gimnasioRoles/configuracion/EnviarMail/';
   
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -21,7 +18,7 @@ export class notificaciones {
     formData.append('nombre', nombre);
     formData.append('texto', texto);
     formData.append('archivo', archivo);
-    return this.clienteHttp.post(this.API, formData);
+    return this.clienteHttp.post(this.API+"enviarNotificacion.php", formData);
   }
 
   enviarMailTrabajadores(nombre: string, texto: string, archivo: File): Observable<any> {
@@ -29,6 +26,6 @@ export class notificaciones {
     formData.append('nombre', nombre);
     formData.append('texto', texto);
     formData.append('archivo', archivo);
-    return this.clienteHttp.post(this.APITra, formData);
+    return this.clienteHttp.post(this.API+"enviarNotificacionTrabajador.php", formData);
   }
 }

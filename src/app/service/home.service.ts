@@ -8,21 +8,21 @@ import { horario } from '../models/horario';
 })
 export class HomeService {
 
-  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/ConsultasHome.php' 
+  API: string = 'http://localhost/plan/' 
   
   constructor(private clienteHttp:HttpClient) {
   }
 
   consultarHome(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultasHome="+id);
+    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHome="+id);
   }
 
   getAnalyticsData(sucursalId: any): Observable<any> {
-    return this.clienteHttp.get(this.API+"?consultarProductosVendidos="+sucursalId);
+    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultarProductosVendidos="+sucursalId);
   }
 
   getARecientesVentas(sucursalId: any): Observable<any> {
-    return this.clienteHttp.get(this.API+"?consultarVentasVendidas="+sucursalId);
+    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultarVentasVendidas="+sucursalId);
   }
 
 

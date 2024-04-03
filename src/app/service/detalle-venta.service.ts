@@ -8,39 +8,25 @@ import { detalleVenta } from '../models/detalleVenta';
 })
 export class DetalleVentaService {
   //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/detalle_venta.php'
-  API: string = 'http://localhost/plan/venta_detalleVenta.php'
-  API2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/estatus.php'
+  API: string = 'http://localhost/plan/'
 
   constructor(private clienteHttp:HttpClient) {
   }
 
   obternerVentaDetalle(){
-    return this.clienteHttp.get(this.API)
+    return this.clienteHttp.get(this.API+"venta_detalleVenta.php")
   }
 
-  obternerEstatus(){
-    return this.clienteHttp.get(this.API2)
-  }
-  // Angular service method
   agregarVentaDetalle(datosVentaDetalle: detalleVenta[]): Observable<any> {
-    // Iterar sobre cada elemento del array y realizar una solicitud por cada elemento
     return forkJoin(
       datosVentaDetalle.map((detalle: detalleVenta) =>
-        this.clienteHttp.post(this.API + '?insertar=1', detalle)
+        this.clienteHttp.post(this.API + 'venta_detalleVenta.php?insertar=1', detalle)
       )
     );
   }
   
-  actualizarVentaDetalle(id:any,datosVentaDetalle:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"?actualizar="+id,datosVentaDetalle);
-  } 
-
   consultarVentaDetalle(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?consultar="+id);
-  }
-
-  borrarVentaDetalle(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?borrar="+id)
+    return this.clienteHttp.get(this.API+"venta_detalleVenta.php?consultar="+id);
   }
 
 }

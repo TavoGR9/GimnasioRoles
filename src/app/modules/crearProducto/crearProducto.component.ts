@@ -26,7 +26,6 @@ import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emerge
 import { ProductoService } from "../../service/producto.service";
 import { Observable, Subject } from "rxjs";
 import { NgxSpinnerService } from "ngx-spinner";
-import { AltaCategoriaComponent } from "../alta-categoria/alta-categoria.component";
 import { ChangeDetectorRef } from "@angular/core";
 import { NgZone } from "@angular/core";
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -122,14 +121,14 @@ export class CrearProductoComponent implements OnInit {
   }
 
   listaTabla() {
-    this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
+   /* this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
       },
       error: (error) => {
         console.log(error);
       },
-    });
+    });*/
   }
 
   getSSdata(data: any) {
@@ -149,23 +148,7 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
-  altaCategoria(): void {
-    const dialogRef = this.dialog.open(AltaCategoriaComponent, {
-      width: "60%",
-      height: "70%",
-      disableClose: true,
-    });
-    dialogRef.afterClosed().subscribe((nuevoServicio) => {
-      if (nuevoServicio.registroInsertado) {
-        if (!Array.isArray(this.listaCategorias)) {
-          this.listaCategorias = [];
-        }
-        this.listaCategorias.push(nuevoServicio.registroInsertado);
-      }
-    });
-  }
   
-
   validarNumeroDecimal(event: any) {
     const input = event.target.value;
     // Patrón para aceptar números decimales

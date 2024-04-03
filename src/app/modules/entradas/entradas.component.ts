@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common'; //para obtener fecha del sistema
 import { Component, OnInit, HostListener, Inject} from '@angular/core';
-import { Producto } from 'src/app/models/producto';
+import { Producto } from '../../models/producto';
 import {
   FormBuilder,
   FormControl,
@@ -11,14 +11,11 @@ import {
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { EntradasService } from '../../service/entradas.service';
-import { ProveedorService } from 'src/app/service/proveedor.service';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { EntradaProducto } from 'src/app/models/entradas';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -67,7 +64,6 @@ export class EntradasComponent implements OnInit {
     private toastr: ToastrService,
     private datePipe: DatePipe,
     private entrada: EntradasService,
-    private proveedor: ProveedorService,
     private dialog: MatDialog,
     private spinner: NgxSpinnerService,
     private router:Router,
