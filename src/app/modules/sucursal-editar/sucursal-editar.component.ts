@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArray , FormControl} from "@angular/forms";
-import { GimnasioService } from 'src/app/service/gimnasio.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { ErrorStateMatcher} from '@angular/material/core';
@@ -32,7 +31,6 @@ export class SucursalEditarComponent implements OnInit {
     private formulario: FormBuilder,
     private activeRoute: ActivatedRoute,
     private router: Router,
-    private gimnasioService: GimnasioService,
     public dialog: MatDialog
   ) {
   
@@ -61,42 +59,9 @@ export class SucursalEditarComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
 
   ngOnInit(): void {
-    this.gimnasioService.consultarPlan(this.idGimnasio).subscribe(
-      (respuesta) => {
-        this.formularioSucursales.setValue({
-          nombreGym: respuesta[0]['nombreGym'],
-          estado: respuesta[0]['estado'],
-          ciudad: respuesta[0]['ciudad'],
-          colonia: respuesta[0]['colonia'],
-          calle: respuesta[0]['calle'],
-          codigoPostal: respuesta[0]['codigoPostal'],
-          numExt: respuesta[0]['numExt'],
-          numInt: respuesta[0]['numInt'],
-          telefono: respuesta[0]['telefono'],
-          tipo: respuesta[0]['tipo'],
-          Franquicia_idFranquicia: respuesta[0]['Franquicia_idFranquicia'],
-          casilleros: respuesta[0]['casilleros'],
-          estacionamiento: respuesta[0]['estacionamiento'],
-          regaderas: respuesta[0]['regaderas'],
-          bicicletero: respuesta[0]['bicicletero']
-        }); 
-      }
-    );
   }
 
   actualizar() {
-    this.gimnasioService.actualizarPlan(this.idGimnasio, this.formularioSucursales.value).subscribe(() => {
-      this.dialog.open(MensajeEmergentesComponent, {
-        data: 'Membresía actualizada exitosamente',
-      })
-        .afterClosed()
-        .subscribe((cerrarDialogo: Boolean) => {
-          if (cerrarDialogo) {
-            this.router.navigateByUrl("/admin/lista-sucursales");
-          } else {
-          }
-        });
-    });
   }
 
   cerrarDialogo(): void {

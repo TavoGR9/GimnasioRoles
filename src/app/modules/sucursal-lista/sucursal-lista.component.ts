@@ -278,23 +278,7 @@ export class SucursalListaComponent implements OnInit {
   }
   
   borrarSucursal(idGimnasio: any) {
-    this.dialog.open(MensajeDesactivarComponent,{
-      data: `¿Deseas desactivar esta sucursal?`,
-    })
-    .afterClosed()
-    .subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        this.gimnasioService.borrarSucursal(idGimnasio).subscribe(
-          (respuesta) => {
-            window.location.reload();
-          },
-          (error) => {
-            this.message = "¡Error al eliminar!, Restricción en la base de datos";
-          }
-        );
-      } else {
-      }
-    });
+   
   }
 
  verHorario(idGimnasio: string): void {

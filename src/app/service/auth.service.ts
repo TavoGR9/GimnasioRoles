@@ -25,14 +25,11 @@ export class AuthService {
   public ubicacion!: string;
   idUsuario:number =0;
   userRole: string = '';
-  
-   //variable que guarda el endpoint en el srver API: string = 'conf/';
-   API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
-  // APIv2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/api/';
-  //APIv2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/';
-    APIv2: string = 'http://localhost/plan/';
-   //para guardar los headers que manda el API
-   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
+  APIv2: string = 'http://localhost/plan/';
+
+  httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private router: Router, private clienteHttp: HttpClient) {
     const encryptedMail = sessionStorage.getItem(this.USER_KEY);
@@ -41,58 +38,24 @@ export class AuthService {
     }
   }
 
-  //Metodos de login usando BehaviourSubject
-  /*loginBS(data: User): Observable<any> {
-    console.log(data, "dataa");
-    console.log('login.php' + data)
-    return this.clienteHttp.post<dataLogin>(this.APIv2 + 'login.php' + data, { headers: this.httpHeaders })
-    .pipe(
-     catchError((err: any) => {
-       if (err.status === 401) {
-         const errorMessage = err.error.message;
-         // this.toastr.error(errorMessage,'Error');
-         //  alert(`Error 401: ${errorMessage}`);
-         return throwError(() => errorMessage);
-       } else {
-         return throwError(() => 'Error desconocido');
-       }
-     })
-   );
- }*/
-
- loginBS(data: User): Observable<any> {
-
+  loginBS(data: User): Observable<any> {
   const url = `${this.APIv2}login.php?email=${data.email}&pass=${data.pass}`;
-  console.log("url", url);
-
-  // Realiza la solicitud POST con la URL construida
   return this.clienteHttp.request('GET', url, {responseType:'json'})
-  //return this.clienteHttp.post<dataLogin>(url, data)
       .pipe(
         catchError((err: any) => {
-          console.log("err", err);
-          console.log("err", err.status);
           if (err.status == 0) {
-            console.log(throwError, "throwError");
             const errorMessage = err.error;
-            // Maneja el caso en que el servidor devuelve "0"
             return throwError(() => errorMessage);
             
           } else if (err.status === 401) {
-            // Maneja el error 401 si es necesario
             const errorMessage = err.error.message;
             return throwError(() => errorMessage);
-           
           } else {
-            // Maneja otros errores desconocidos
             return throwError(() => 'Error desconocido');
           }
         })
       );
   }
-
-
-
 
  logoutBS(): void {
   this.loggedIn.next(false);
@@ -174,13 +137,7 @@ clearCurrentUser(): void {
 
 // Traer datos de usuario logeaddo
 dataUser(data: any): Observable<any> {
-  console.log("dataaaaaaaaaaaaa", data);
   return this.clienteHttp.post<dataLogin>(this.APIv2 + 'datosSStorage.php?datos', data, { headers: this.httpHeaders});
-}
-
-// Valiodar huella
-testSpringBoot(data: any):Observable<any> {
-  return this.clienteHttp.post<msgResult>(this.APIv2 + 'fingerAuth.php', data, { headers: this.httpHeaders});
 }
 
 hasAnyRole(expectedRoles: string[]): boolean {

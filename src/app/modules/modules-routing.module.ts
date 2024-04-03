@@ -9,9 +9,6 @@ import { ConfiguracionComponent } from './configuracion/configuracion.component'
 import { ReportsComponent } from './reports/reports.component';
 import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
 import { EntradasComponent } from './entradas/entradas.component';
-import { CategoriasComponent } from './categorias/categorias.component';
-import { EditarCategoriaComponent } from './editar-categoria/editar-categoria.component';
-import { AltaCategoriaComponent } from './alta-categoria/alta-categoria.component';
 import { CrearProductoComponent } from './crearProducto/crearProducto.component';
 import { ProductosComponent } from './productos/productos.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
@@ -64,9 +61,6 @@ const routes: Routes = [
           { path: 'misMembresias', component: MembresiasComponent },
           { path: 'agregarMembresias', component: MembresiasAgregarComponent },
           { path: 'editarMembresias/:id', component: MembresiasEditarComponent },
-          { path: 'categorias', component: CategoriasComponent },
-          { path: 'alta-categoria', component:AltaCategoriaComponent},
-          { path: 'editar-categoria/:id', component:EditarCategoriaComponent},
           { path: 'entradas', component: EntradasComponent },
           { path: 'crearProducto', component:CrearProductoComponent},
           { path: 'productos', component: ProductosComponent },

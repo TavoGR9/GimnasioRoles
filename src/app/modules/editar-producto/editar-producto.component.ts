@@ -139,16 +139,16 @@ export class EditarProductoComponent implements OnInit{
   }
 
   listaTabla(){
-    this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
+   /* this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
       next: (respuesta) => {
         this.listaCategorias = respuesta;
       },
       error: (error) => {
         //console.log(error);
       },
-    });
-
+    });*/
   };
+  
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {

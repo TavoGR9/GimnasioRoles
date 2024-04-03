@@ -12,9 +12,6 @@ import { EntradasComponent } from './entradas/entradas.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
 import { HorariosComponent } from './horarios/horarios.component';
-import { CategoriasComponent } from './categorias/categorias.component';
-import { AltaCategoriaComponent } from './alta-categoria/alta-categoria.component';
-//import { InventarioComponent } from './inventario/inventario.component';
 import { ProductosComponent } from './productos/productos.component';
 //Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -48,7 +45,6 @@ import { SucursalListaComponent } from './sucursal-lista/sucursal-lista.componen
 import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
 import { SucursalEditarComponent } from './sucursal-editar/sucursal-editar.component';
 import { ListaCategoriaComponent } from './lista-categoria/lista-categoria.component';
-import { EditarCategoriaComponent } from './editar-categoria/editar-categoria.component';
 import { ListaProductoComponent } from './lista-producto/lista-producto.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
@@ -62,7 +58,6 @@ import { ListaProveedorPipe } from '../pipes/listar-proveedor.pipe';
 import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 import {ToastModule} from 'primeng/toast';
 import {FileUploadModule} from 'primeng/fileupload';
-import { ListaProveedorComponent } from './lista-proveedor/lista-proveedor.component';
 import { HeaderComponent } from './header/header.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RecepMaterialModule } from './recepMaterial';
@@ -125,7 +120,6 @@ import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos
     ListarSucursalesPipe,
     ListarProductoPipe,
     ListaProveedorPipe,
-    ListaProveedorComponent,
     MembresiasComponent,
     MembresiasAgregarComponent,
     MembresiasEditarComponent,
@@ -136,9 +130,6 @@ import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos
     AdminDashboardComponent,
     VerConfiguracionComponent,
     HorariosComponent,
-    AltaCategoriaComponent,
-    EditarCategoriaComponent,
-    CategoriasComponent,
     ProductosComponent,
     EmergenteCargarFotoComponent,
     EmergenteHistorialProductosComponent,

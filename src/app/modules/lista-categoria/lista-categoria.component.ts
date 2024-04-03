@@ -14,11 +14,11 @@ export class ListaCategoriaComponent {
   constructor(private categoriaService: CategoriaService){}
 
   ngOnInit():void{
-    this.categoriaService.obternerCategoria().subscribe({
+    /*this.categoriaService.obternerCategoria().subscribe({
       next: (resultData) => {
         this.categorias = Array.isArray(resultData) ? resultData : [resultData];
       }
-    })
+    })*/
   }
 
   nextPage() {

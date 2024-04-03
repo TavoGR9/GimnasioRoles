@@ -55,9 +55,7 @@ export class MembresiaService {
     return this.clienteHttp.get(this.API+"?consultarGYMPlan="+id);
   }
 
-  borrarPlan(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"?borrar="+id)
-  }
+
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
     console.log(id, "id", datosPlan, "datos");

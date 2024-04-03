@@ -28,7 +28,7 @@
     </div> 
 
 
-    <div *ngIf="optionToShow === 2 && !mostrarFormularioAdministrador" mat-dialog-content>
+    <div *ngIf="optionToShow === 2" mat-dialog-content>
       <form [formGroup]="formularioSucursales">
         <div >
           <div style="color: red;">{{message}}</div>
@@ -159,7 +159,6 @@
           </div>
         </div>
       </form>
-
       <div class="subtitulo row" >
         Agrega datos del administrador
       </div>
@@ -253,15 +252,14 @@
             </mat-form-field>
           </div>
         </div>
-        <div class="row">
+       <!-- <div class="row">
           <div class="col-sm-6">
             <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;" required>
               <mat-label>Foto:</mat-label>
               <input matInput placeholder="Apellido Paterno" formControlName="foto"/>
             </mat-form-field>
           </div>
-  
-        </div>
+        </div>-->
       </form>
     </div>
 

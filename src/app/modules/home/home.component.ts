@@ -3,22 +3,12 @@ import { OnInit } from '@angular/core';
 import { VentasComponent } from '../ventas/ventas.component';
 import { MatDialog } from "@angular/material/dialog";
 import { EntradasComponent } from '../entradas/entradas.component';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
-import { format } from "date-fns";
-import { ToastrService } from "ngx-toastr";
 import { ChartOptions, ChartType, ChartDataset } from "chart.js";
 import { HomeService } from '../../service/home.service';
-import { convertToObject } from 'typescript';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
 
 @Component({
   selector: 'app-home',
@@ -26,8 +16,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit{
-
-
   public barChartDataArray: { data: number[]; label: string }[] = [];
   barChartLabels: string[] = [];
   public barChartOptions: ChartOptions = {
@@ -103,8 +91,7 @@ export class HomeComponent implements OnInit{
   ventas(): void {
     const dialogRef = this.dialog.open(VentasComponent, {
       width: '80%',
-      height: '90%',
-      
+      height: '90%',     
     });
   }
 
@@ -127,9 +114,7 @@ export class HomeComponent implements OnInit{
 
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
     this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTML}</table>`);
-      // Resto del código...
     });
-    
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTMLVentas}</table>`);
     });

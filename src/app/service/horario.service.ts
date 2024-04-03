@@ -8,33 +8,25 @@ import { horario } from '../models/horario';
 })
 export class HorarioService {
 
-  APIHorario: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/horario.php' // Cambia la URL a la de tu servicio PHP
+  APIHorario: string = 'http://localhost/plan/'
   constructor(private clienteHttp:HttpClient) {
   }
 
   obternerHorario(){
-    return this.clienteHttp.get(this.APIHorario);
+    return this.clienteHttp.get(this.APIHorario+"horario.php");
   }
 
-  // Angular service method
   agregarHorario(datosHorario: horario):Observable<any>{
-    return this.clienteHttp.post(this.APIHorario+"?insertar=1", datosHorario);
+    return this.clienteHttp.post(this.APIHorario+"horario.php?insertar=1", datosHorario);
   }
   
- // Cambia el servicio para que el observable emita un arreglo de Horario
-
- actualizarHorario(id: any, datosPlan: any): Observable<any> {
-  return this.clienteHttp.post(`${this.APIHorario}?actualizar=${id}`, datosPlan, { headers: { 'Content-Type': 'application/json' }, responseType: 'text' });
-}
-
+  actualizarHorario(id: any, datosPlan: any): Observable<any> {
+    console.log(id, "idHorarios")
+    return this.clienteHttp.post(`${this.APIHorario}horario.php?actualizar=${id}`, datosPlan, { headers: { 'Content-Type': 'application/json' }, responseType: 'text' });
+  }
 
   consultarHorario(id:any):Observable<any>{
-    return this.clienteHttp.get(this.APIHorario+"?consultar="+id);
+    return this.clienteHttp.get(this.APIHorario+"horario.php?consultar="+id);
   }
 
-  borrarHorario(id:any):Observable<any>{
-    console.log("si entro aca") 
-    return this.clienteHttp.get(this.APIHorario+"?borrar="+id)
-    //this.message = "¡Error al eliminar!, Restricción en la base de datos";
-  }
 }

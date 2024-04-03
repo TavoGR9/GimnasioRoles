@@ -24,9 +24,9 @@ export class ListaProductoComponent implements OnInit {
   
 
   getCategoria(idCategoria: number) {
-    this.categoriaService.consultarCategoria(idCategoria).subscribe((categoria) => {
+   /* this.categoriaService.consultarCategoria(idCategoria).subscribe((categoria) => {
       return categoria.nombre; // Retorna el nombre de la categoría
-    });
+    });*/
   }  
 
   getCategoria1(idCategoria: string): number {

@@ -127,8 +127,8 @@ export class VentasComponent implements OnInit {
   }
 
   ejecutarServicio(): void {
-    this.DetalleVenta.obternerEstatus().subscribe((result) => {
-    });
+    /*this.DetalleVenta.obternerEstatus().subscribe((result) => {
+    });*/
   }
 
   /* MAXIMIZAR PANTALLA*/
