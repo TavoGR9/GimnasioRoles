@@ -4,8 +4,6 @@ import { ModulesRoutingModule } from './modules-routing.module';
 import { HomeComponent } from './home/home.component';
 import { ReportsComponent } from './reports/reports.component';
 import { MembresiasComponent } from './membresias-lista/membresias.component';
-import { MembresiasAgregarComponent } from './membresias-agregar/membresias-agregar.component';
-import { MembresiasEditarComponent } from './membresias-editar/membresias-editar.component';
 import { MensajeEmergentesComponent } from './mensaje-emergentes/mensaje-emergentes.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
 import { EntradasComponent } from './entradas/entradas.component';
@@ -86,9 +84,9 @@ import { DialogSelectMembershipComponent } from './dialog-select-membership/dial
 import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
 import { ServiceDialogComponent } from './service-dialog/service-dialog.component';
 import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
-import { planComponent } from './plan-lista/membresias.component';
-import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
-import { planEditarComponent } from './plan-editar/membresias-editar.component';
+import { planComponent } from './plan-lista/plan.component';
+import { planAgregarComponent } from './plan-agregar/plan-agregar.component';
+import { planEditarComponent } from './plan-editar/plan-editar.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 //modulo de spinner
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -121,8 +119,6 @@ import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos
     ListarProductoPipe,
     ListaProveedorPipe,
     MembresiasComponent,
-    MembresiasAgregarComponent,
-    MembresiasEditarComponent,
     MensajeEmergentesComponent,
     ConfiguracionComponent,
     EntradasComponent,

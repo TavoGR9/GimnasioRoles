@@ -1,23 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
-import { plan } from 'src/app/models/plan';
-import { PlanService } from '../../service/plan.service';
+import { plan } from '../../models/plan';
 import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
-import { GimnasioService } from 'src/app/service/gimnasio.service';
-import { AuthService } from 'src/app/service/auth.service';
+import { GimnasioService } from '../../service/gimnasio.service';
+import { AuthService } from '../../service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { DialogSelectMembershipComponent } from '../dialog-select-membership/dialog-select-membership.component';
-import { planAgregarComponent } from '../plan-agregar/membresias-agregar.component';
-import { planEditarComponent} from '../plan-editar/membresias-editar.component';
+import { planAgregarComponent } from '../plan-agregar/plan-agregar.component';
+import { planEditarComponent } from '../plan-editar/plan-editar.component';
+import { MembresiaService } from '../../service/membresia.service';
 
 @Component({
   selector: 'app-membresias',
-  templateUrl: './membresias.component.html',
-  styleUrls: ['./membresias.component.css']
+  templateUrl: './plan.component.html',
+  styleUrls: ['./plan.component.css']
 })
 export class planComponent implements OnInit {
 
@@ -38,8 +37,8 @@ export class planComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
-    private planService:PlanService,
     private gimnasioService:GimnasioService,
+    private membresiaService: MembresiaService,
     private auth: AuthService,
     private route: ActivatedRoute,
     private cd: ChangeDetectorRef,
@@ -50,8 +49,8 @@ export class planComponent implements OnInit {
   displayedColumns: string[] = ['title', 'details','price','actions'];
 
   ngOnInit(): void {
-    this.planService.optionShow.next(4);
-    this.planService.optionShow.subscribe((option) => {
+    this.membresiaService.optionShow.next(4);
+    this.membresiaService.optionShow.subscribe((option) => {
       if(option){
         if(option == 4){
           this.option = option;
@@ -72,7 +71,7 @@ export class planComponent implements OnInit {
   }
   
   listaTabla() {
-    this.planService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
+    this.membresiaService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
       if (respuesta.success === 1) {
         // Verificar si la propiedad 'data' está presente y es un array
         if (respuesta.data && Array.isArray(respuesta.data)) {
@@ -128,7 +127,7 @@ export class planComponent implements OnInit {
   }
 
   actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
-    this.planService.updateMembresiaStatus(idMem, estado).subscribe(
+    this.membresiaService.updateMembresiaStatus(idMem, estado).subscribe(
       (respuesta) => {
         this.membresiaActiva = estado.status == 1;
       },
@@ -139,14 +138,14 @@ export class planComponent implements OnInit {
   }
   
   openDialog(): void {
-    this.planService.section.next(1);
+    this.membresiaService.section.next(1);
     const dialogRef = this.dialog.open(planAgregarComponent, {
       width: '70%',
       height: '90%',
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.planService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
+      this.membresiaService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
         if (respuesta.success === 1) {
           // Verificar si la propiedad 'data' está presente y es un array
           if (respuesta.data && Array.isArray(respuesta.data)) {
@@ -166,7 +165,7 @@ export class planComponent implements OnInit {
   }
 
   openDialogService(idMem: number, tipo_membresia: number){
-    this.planService.optionShow.next(5);
+    this.membresiaService.optionShow.next(5);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: '50%',
       height: '50%',
@@ -176,10 +175,10 @@ export class planComponent implements OnInit {
   }
 
   openDialogEdit(idMem: number, tipo_membresia: number){
-    this.planService.optionShow.subscribe((option) => {
+    this.membresiaService.optionShow.subscribe((option) => {
     })
 
-    this.planService.setDataToupdate(idMem, tipo_membresia);
+    this.membresiaService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(planEditarComponent, {
       width: '70%',
       height: '90%',
@@ -188,7 +187,7 @@ export class planComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.planService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
+      this.membresiaService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
         if (respuesta.success === 1) {
           // Verificar si la propiedad 'data' está presente y es un array
           if (respuesta.data && Array.isArray(respuesta.data)) {
@@ -208,8 +207,8 @@ export class planComponent implements OnInit {
   }
 
   openDialogAddServices(){
-    this.planService.optionShow.next(4);
-    this.planService.optionShow.subscribe((option) => {
+    this.membresiaService.optionShow.next(4);
+    this.membresiaService.optionShow.subscribe((option) => {
       if(option == 4){
         const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
           width: '70%',

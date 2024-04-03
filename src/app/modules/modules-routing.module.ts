@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { MembresiasAgregarComponent } from './membresias-agregar/membresias-agregar.component';
 import { MembresiasComponent } from './membresias-lista/membresias.component';
-import { MembresiasEditarComponent } from './membresias-editar/membresias-editar.component';
 import { ConfiguracionComponent } from './configuracion/configuracion.component';
 import { ReportsComponent } from './reports/reports.component';
 import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
@@ -27,11 +25,10 @@ import { ColaboradoresComponent } from './colaboradores/colaboradores.component'
 import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
 import { AltaColaboradoresComponent } from './alta-colaboradores/alta-colaboradores.component';
 import { EditarColaboradorComponent } from './editar-colaborador/editar-colaborador.component';
-import { planAgregarComponent } from './plan-agregar/membresias-agregar.component';
-import { planComponent } from './plan-lista/membresias.component';
-import { planEditarComponent } from './plan-editar/membresias-editar.component';
+import { planAgregarComponent } from './plan-agregar/plan-agregar.component';
+import { planComponent } from './plan-lista/plan.component';
+import { planEditarComponent } from './plan-editar/plan-editar.component';
 import { ArchivosComponent } from './archivos/archivos.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
 import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
 
 const routes: Routes = [
@@ -59,8 +56,6 @@ const routes: Routes = [
         data: { expectedRole: 'Administrador'},
         children: [
           { path: 'misMembresias', component: MembresiasComponent },
-          { path: 'agregarMembresias', component: MembresiasAgregarComponent },
-          { path: 'editarMembresias/:id', component: MembresiasEditarComponent },
           { path: 'entradas', component: EntradasComponent },
           { path: 'crearProducto', component:CrearProductoComponent},
           { path: 'productos', component: ProductosComponent },

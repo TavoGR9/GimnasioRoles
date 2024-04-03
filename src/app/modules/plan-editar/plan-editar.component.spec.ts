@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { planEditarComponent } from './membresias-editar.component';
+import { planEditarComponent } from './plan-editar.component';
 
 describe('planEditarComponent', () => {
   let component: planEditarComponent;

@@ -10,16 +10,14 @@ import {
 } from "@angular/forms";
 import { MembresiaService } from "./../../service/membresia.service";
 import { MatDialog } from "@angular/material/dialog";
-import { AuthService } from "src/app/service/auth.service";
-import { PlanService } from "../../service/plan.service";
+import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { NgxSpinnerService } from "ngx-spinner";
-import { forkJoin, Observable } from "rxjs";
 
 @Component({
   selector: "app-membresias-editar",
-  templateUrl: "./membresias-editar.component.html",
-  styleUrls: ["./membresias-editar.component.css"],
+  templateUrl: "./plan-editar.component.html",
+  styleUrls: ["./plan-editar.component.css"],
 })
 export class planEditarComponent {
   formulariodePlan: FormGroup;
@@ -44,8 +42,7 @@ export class planEditarComponent {
     private router: Router,
     private auth: AuthService,
     private spinner: NgxSpinnerService,
-    public dialog: MatDialog,
-    private planService: PlanService
+    public dialog: MatDialog
   ) {
     this.idMem = data.idMem;
     this.formulariodePlan = this.formulario.group(
@@ -66,34 +63,36 @@ export class planEditarComponent {
   }
 
   ngOnInit(): void {
-    this.planService.getDataToUpdate().subscribe((data) => {
+    this.membresiaService.getDataToUpdate().subscribe((data) => {
       if (data) {
         this.dataToUpdate = data;
       }
  
     });
 
-    this.planService
+    this.membresiaService
       .consultarPlanIdMem(this.auth.idGym.getValue())
       .subscribe((respuesta) => {
      
         this.servicios = respuesta;
         
-        this.planService
+        this.membresiaService
           .consultarPlan(this.dataToUpdate.id)
           .subscribe((respuesta) => {
     
             if (respuesta) {
+              
               this.serviceToUpdate = respuesta;
 
               const serviciosPlan = this.serviceToUpdate[0].servicios.map(
                 (servicio: any) => servicio.nombreMem
               );
 
-
               const serviciosCoincidentes = this.servicios.filter((servicio) =>
                 serviciosPlan.includes(servicio.titulo)
               );
+
+              console.log(serviciosCoincidentes, "serviciosCoincidentes");
 
               serviciosCoincidentes.forEach((servicio) => {});
 
@@ -115,65 +114,6 @@ export class planEditarComponent {
           });
       });
   }
-
-  /*actualizar() {
-    console.log(this.formulariodePlan.setValue, "this.formulariodePlan.setValue");
-    console.log(this.formulariodePlan.value, "form");
-    if(this.formulariodePlan.valid){
-    this.spinner.show();
-    this.membresiaService
-      .actualizarPlan(this.idMem, this.formulariodePlan.value)
-      .subscribe(
-        () => {
-          const membresias = this.formulariodePlan.get("membresias")?.value;
-          const observables: Observable<any>[] = [];
-          membresias.forEach((m: any) => {
-            const datosMembresias = {
-              idMem: m.idMem,
-              nombreMem: m.titulo,
-              duracion: m.duracion,
-              idPlan: this.idMem,
-            };
-
-            const observableEliminar = this.membresiaService.borrarPlanM(
-              this.idMem
-            );
-
-            const observableAgregar =
-              this.membresiaService.agregarPlanMem(datosMembresias);
-
-            observables.push(observableEliminar, observableAgregar);
-          });
-
-          // Combina observables y espera a que todos se completen
-          forkJoin(observables).subscribe(
-            () => {
-              this.spinner.hide();
-              this.dialog
-                .open(MensajeEmergentesComponent, {
-                  data: `Membresía actualizada exitosamente`,
-                })
-                .afterClosed()
-                .subscribe((cerrarDialogo: Boolean) => {
-                  if (cerrarDialogo) {
-                    this.dialogo.close(true);
-                  } else {
-                  }
-                });
-            },
-            (error) => {
-              this.spinner.hide();
-            }
-          );
-        },
-        (errorActualizar) => {
-          this.spinner.hide();
-        }
-      );
-    }
-  }*/
-
-
 
   actualizar() {  
     if (this.formulariodePlan.valid) {
