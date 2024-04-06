@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { ResetPasswordService } from 'src/app/service/reset-password.service';
+import { ResetPasswordService } from '../../service/reset-password.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -32,12 +32,7 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 
-   /**
-   * Al iniciar el componente validar que el link este correcto de lo contrario no puede ver este recurso
-   * @returns 
-   */
    ngOnInit(): void {
-    // Verificar los parámetros 'id' y 'token' en la URL al inicializar el componente
     const idParam = this.route.snapshot.queryParamMap.get('id');
     const tokenParam = this.route.snapshot.queryParamMap.get('token');
 
@@ -49,8 +44,6 @@ export class ResetPasswordComponent implements OnInit {
       // Enviar los parámetros al servicio para la interacción con la API
       this.passwordReset.validaToken(idParam, tokenParam).subscribe({
         next: (respuesta) => {
-          console.log('llego respuest del api');
-          console.log(respuesta);
           if (respuesta.success) {
             this.toastr.success(respuesta.message, 'Exito', {
               positionClass: 'toast-bottom-left',
@@ -76,15 +69,7 @@ export class ResetPasswordComponent implements OnInit {
     }
   }
 
-
-  /**
-   * Si esta correcto el link se procede a verificar que coincidan las contraseñas para
-   * poder actualizar
-   */
   onSubmit(): void {
-    console.log('Hiciste clic en enviar');
-    console.log(this.resetForm.value);
-
     if (this.resetForm.valid) {
       const nuevaPassword = this.resetForm.get('nuevaPassword')?.value;
       const confirmaPassword = this.resetForm.get('confirmaPassword')?.value;
@@ -106,8 +91,6 @@ export class ResetPasswordComponent implements OnInit {
               .actualizaPassword(idParam, tokenParam, this.resetForm.value)
               .subscribe({
                 next: (respuesta) => {
-                  console.log('llego respuesta del api');
-                  console.log(respuesta);
                   if (respuesta.success) {
                     this.toastr.success(respuesta.message, 'Exito', {
                       positionClass: 'toast-bottom-left',

@@ -120,7 +120,7 @@
                    <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Activar</th>
                    <td mat-cell *matCellDef="let item; let i = index">
                        <div class="toggle-container">
-                           <input type="checkbox" id="toggle{{item.idBodega}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.idBodega)">
+                           <input type="checkbox" id="toggle{{item.idBodega}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.id_bodega)">
                            <label for="toggle{{item.idBodega}}{{i}}" class="toggle-label"></label>
                        </div>
                    </td>

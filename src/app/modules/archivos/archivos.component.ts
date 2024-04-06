@@ -35,6 +35,7 @@ export class ArchivosComponent implements OnInit{
     private router: Router
   ) {
     this.id_bodega = data.id_bodega;
+    console.log(this.id_bodega, "this.id_bodega");
     this.nombreBodega = data.nombreBodega;
     this.formularioArchivo = this.form.group({
       nombreArchivo: ['', Validators.required],
