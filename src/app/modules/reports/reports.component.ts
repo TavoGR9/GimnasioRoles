@@ -3,7 +3,7 @@ import { OnInit } from '@angular/core';
 import { VentasComponent } from '../ventas/ventas.component';
 import { MatDialog } from "@angular/material/dialog";
 import { EntradasComponent } from '../entradas/entradas.component';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import {
@@ -94,6 +94,7 @@ formatearFecha(fechaOriginal: string): string {
 }
 
 obtenerDatosParaGrafico1() {
+  console.log("entra");
   let inicial = this.formatearFecha(this.form.value.p_inicial);
   let final = this.formatearFecha(this.form.value.p_final);
 
@@ -103,6 +104,7 @@ obtenerDatosParaGrafico1() {
 
   this.auth.chart_sucursales(this.form.value).subscribe({
     next: (resultData: DatosGrafico[]) => {
+      console.log("resultData", resultData);
       if (resultData.length === 0 || resultData[0].nombre === "No_result") {
         this.toastr.error(
           "No hay resultados disponibles...",

@@ -193,8 +193,8 @@ export class EntradasComponent implements OnInit {
             fechaEntrada: fechaFormateada,
             valor: this.auth.idGym.getValue(),
             precioCaja: idPrecioCompra,
-            preccio: '',
-            fechaE: '',
+            preccio: 0,
+            fechaE: "0000-00-00",
             precciosucu: idPrecioVenta
           };
           this.tablaDatos.push(nuevoDato);
