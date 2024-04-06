@@ -9,7 +9,6 @@ import {
 } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { ClienteService } from "../../service/cliente.service";
-import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { ToastrService } from "ngx-toastr";
@@ -21,7 +20,7 @@ import { plan } from "../../models/plan";
 import { Subject, Observable } from 'rxjs';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 import { agregarContra } from "../../service/agregarContra.service";
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
 import { ColaboradorService } from "../../service/colaborador.service";
 interface Food {
@@ -173,7 +172,7 @@ export class RegistroComponent implements OnInit {
       email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
       pass: [''],
       user:['saad'],
-      no_clave: ['0'],
+      //no_clave: ['0'],
       nombre:[''],
       destino:["Cliente"],
       direccion:[''],
@@ -459,66 +458,57 @@ export class RegistroComponent implements OnInit {
     const ciudad = this.form.get("ciudad")?.value;
     const colonia = this.form.get("colonia")?.value;
     const calle = this.form.get("calle")?.value;
-    const numInter = this.form.get("numExt")?.value;
-    const numExterno = this.form.get("numInt")?.value;
+    const numInter = this.form.get("numInter")?.value;
+    const numExterno = this.form.get("numExterno")?.value;
     const fon = this.form.get("fon")?.value;
 
-    const nombreU = this.form.get("nombre")?.value;
+    const nombreU = this.form.get("nombreU")?.value;
     const apPaterno = this.form.get("apPaterno")?.value;
     const apMaterno = this.form.get("apMaterno")?.value;
     const fechaNacimiento = this.form.get("fechaNacimiento")?.value;
 
-    const direccionCompleta = `${calle} ${numExterno} ${numInter ? "Int. " + numInter : ""}, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
+    const direccionCompleta = `${calle} ${numExterno ? "Ext. " + numExterno: ""}, ${numInter ? "Int. " + numInter : ""}, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
 
     const nombreCompleto = `${nombreU} ${apPaterno} ${apMaterno}`;
-      console.log("direccionCompleta", direccionCompleta);
-      console.log("nombreCompleto:",nombreCompleto);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true; // Bloquea el cierre del diálogo haciendo clic fuera de él
+    dialogConfig.data = 'Registro agregado correctamente.'; // Datos a pasar al diálogo
+
+      // Bloquea el cierre del diálogo haciendo clic fuera de él
+      //console.log("direccionCompleta", direccionCompleta);
+      //console.log("nombreCompleto:",nombreCompleto);
       // Establecer la dirección completa en un nuevo control del formulario
       this.form.patchValue({
         direccion: direccionCompleta,
         nombre: nombreCompleto
       });
 
-    this.usuario.agregarUsuario(this.form.value).subscribe({
-      next: (resultData) => {
-        if (resultData.message === 'MailExists') {
-          this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
-        } else if (resultData.success == '1') {
-
-          /*const fomrBU = {
-            status: 1,
-            id_usuario: resultData.no_clave,
-            id_bodega: this.auth.idGym.getValue() //1
+      this.usuario.agregarUsuario(this.form.value).subscribe({
+        next: (resultData) => {
+          this.spinner.show();
+          if (resultData.message === 'MailExists') {
+            this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+            this.spinner.hide();
+          } else if (resultData.success == '1') {
+            this.cerrarDialogo();
+            this.spinner.hide();
+            this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
+              if (cerrarDialogo) {
+                this.router.navigateByUrl(`/home`);
+                // Realizar alguna acción si se cierra el diálogo
+              } else {
+                // Realizar alguna acción si no se cierra el diálogo
+              }
+            });
+  
           }
-
-          console.log(fomrBU, "fomrBU");
-          this.usuario.agregarUsuarioBodega(fomrBU).subscribe({next: (resultData) =>{
-          this.cerrarDialogo();
-          this.spinner.hide();
-          this.dialog.open(MensajeEmergentesComponent, {
-            data: 'Registro agregado correctamente.'
-          })
-          .afterClosed()
-          .subscribe((cerrarDialogo: boolean) => {
-            if (cerrarDialogo) {
-              // Realizar alguna acción si se cierra el diálogo
-            } else {
-              // Realizar alguna acción si no se cierra el diálogo
-            }
-          });
-          //this.form.markAsPristine(); 
-          //this.form.markAsUntouched();
-
-            }
-          }) */
+        },
+        error: (error) => {
+          console.log(error, "error");
+          this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
         }
-      },
-      error: (error) => {
-        console.log(error, "error");
-        this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
-      }
-    });
-  }
+      });
+    }
 
   // registrar(): any {
   //   console.log(this.form.value, "formulario");

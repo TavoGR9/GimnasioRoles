@@ -22,7 +22,7 @@ export class ColaboradorService {
     API2: string = 'https://olympus.arvispace.com/olimpusGym/conf/empleado.php';
     API3: string = 'https://olympus.arvispace.com/olimpusGym/conf/BodegaEmpleado.php';
 
-    APIL: string = 'http://localhost/plan/';
+    APIL: string = 'https://olympus.arvispace.com/olimpusGym/conf/';   //http://localhost/plan/
 
     constructor(private clienteHttp:HttpClient) {
     }
