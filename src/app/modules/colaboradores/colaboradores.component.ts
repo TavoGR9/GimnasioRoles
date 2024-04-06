@@ -1,10 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { ColaboradorService } from './../../service/colaborador.service';
-import { ListarEmpleadosPipe } from 'src/app/pipes/listar-empleados.pipe';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { AltaColaboradoresComponent } from '../alta-colaboradores/alta-colaboradores.component';
 import { EditarColaboradorComponent } from '../editar-colaborador/editar-colaborador.component';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 

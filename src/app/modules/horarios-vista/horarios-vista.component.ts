@@ -52,6 +52,7 @@ export class HorariosVistaComponent implements OnInit {
   addressControl = new FormControl("");
   asentamientosUnicos: Set<string> = new Set<string>();
   matcher = new MyErrorStateMatcher();
+  idGym: number = 0;
 
   constructor(
     private gimnasioService: GimnasioService,
@@ -92,6 +93,7 @@ export class HorariosVistaComponent implements OnInit {
       jefe: ["1"],
       email: [""],
       nombre: [""],
+      idGym: [""],
     });
   }
 
@@ -100,6 +102,14 @@ export class HorariosVistaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.auth.idGym.subscribe((data) => {
+    this.idGym = data;
+      if (this.personaForm.get('idGym') !== null) {
+        this.personaForm.get('idGym')!.setValue(this.idGym);
+      }      
+      //console.log("OOOOOO",this.idGym)
+    });  
+
     this.gimnasioService.optionSelected.subscribe((data) => {
       if(data) {
         this.optionToShow = data;
@@ -375,6 +385,7 @@ export class HorariosVistaComponent implements OnInit {
 
               const nombreCompleto = `${nombreS} ${apPaterno} ${apMaterno}`;
               console.log("nombreCompleto", nombreCompleto);
+              
               // Establecer la dirección completa en un nuevo control del formulario
               this.personaForm.patchValue({
                 nombre: nombreCompleto
@@ -391,7 +402,20 @@ export class HorariosVistaComponent implements OnInit {
                   console.log(respuestaEmpleado, "respuestaEmpleado");
                   if (respuestaEmpleado.success == "1") {
 
-                    const datosEmpleadoBodega = {
+                    this.dialog
+                        .open(MensajeEmergentesComponent, {
+                          data: `Empleado agregado exitosamente`,
+                          disableClose: true,
+                        })
+                        .afterClosed()
+                        .subscribe((cerrarDialogo: Boolean) => {
+                          if (cerrarDialogo) {
+                            this.dialogo.close();
+                            this.personaForm.reset();
+                          }
+                        }); 
+
+                   /* const datosEmpleadoBodega = {
                       idCategoriaP: 1,
                       codigoP: 1,
                       email: respuestaEmpleado.correoEmp,
@@ -413,7 +437,7 @@ export class HorariosVistaComponent implements OnInit {
                           }
                         }); 
                       }
-                    ) 
+                    ) */
                   } else {
                     if (respuestaEmpleado) {
                       console.error(

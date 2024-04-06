@@ -96,6 +96,7 @@ list_sucursales():Observable<any> {
 
 //Consultar informacion de sucursales
 chart_sucursales(data: any):Observable<any> {
+  console.log(data, "data");
   return this.clienteHttp.post<dataChart>(this.APIv2 + 'chart_sucursales.php', data, { headers: this.httpHeaders });
 }
 
@@ -137,7 +138,7 @@ clearCurrentUser(): void {
 
 // Traer datos de usuario logeaddo
 dataUser(data: any): Observable<any> {
-  return this.clienteHttp.post<dataLogin>(this.APIv2 + 'datosSStorage.php?datos', data, { headers: this.httpHeaders});
+  return this.clienteHttp.post<dataLogin>(this.APIv2 + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders});
 }
 
 hasAnyRole(expectedRoles: string[]): boolean {
