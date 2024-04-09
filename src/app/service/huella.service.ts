@@ -22,21 +22,12 @@ export class HuellaService {
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
-  registroHuella(id:any):Observable<any>{
-    return this.clienteHttp.get(this.URLServices+"?NewHuella="+id);
-  } 
-  
   accesoID(id:any):Observable<any>{
     return this.clienteHttp.get(this.service+"?busquedaAcceso="+id);
   }
 
   ultimoAcceso(){
     return this.clienteHttp.get(this.service);
-  }
-
-  insertarInstruccion(dato: any):Observable<any>{
-    return this.clienteHttp.post(this.URLServices,dato, { headers: this.httpHeaders });
-                                            /*+"?insertar=1" <- Nota: Colocarlo al cambiarlo a un servicio de php*/
   }
 
   insertarAsistencia(id:any):Observable<any>{

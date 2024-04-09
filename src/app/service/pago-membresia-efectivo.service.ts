@@ -13,46 +13,19 @@ export class PagoMembresiaEfectivoService {
 
   constructor(private clienteHttp:HttpClient) { }
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
-  
-  obternerDataMem(){
-    return this.clienteHttp.get(this.URLServices);
-  }
-
-  idPagoSucursal(id:any,MemId:any):Observable<any>{
-    const params = new HttpParams().set('consClienteId', id).set('consDetMemId', MemId);
-
-    return this.clienteHttp.get(this.URLServices+"Usuario.php", { params });
-  }
 
   ticketPagoInfo(id:any):Observable<any>{
     return this.clienteHttp.get(this.URLServices+"Usuario.php?infoTicketMembresia="+id);
   }
 
-  /*obtenerActivos(){
-    return this.clienteHttp.get(this.URLServices+"?consultar");
-  }*/
-
- /* obtenerActivos(inicioDate: any, finDate: any, idGym: any): Observable<any>{
-    const params = new HttpParams().set('fechaInicio',inicioDate).set('fechaFin',finDate).set('GYMid',idGym);
-    return this.clienteHttp.get(this.URLServices, {params});
-  }*/
-
   obtenerActivos(id:any):Observable<any>{
     return this.clienteHttp.get(this.URLServices+"Usuario.php?obtenerVista="+id);
-  }  
-
-
-  obtenerClientes(idGym:any):Observable<any>{
-    return this.clienteHttp.get(this.URLServices+"Usuario.php?idGimnasio="+idGym);
-  } 
-
-  clientesMemReenovar(){
-    return this.clienteHttp.get(this.URLServices+"Usuario.php?Reenovacion");
   }
 
-  pagoMemOpcion1(id:any):Observable<any>{
-    return this.clienteHttp.get(this.URLServices+"Usuario.php?updateMembresia="+id);
-  }  
+  obtenerClientes(inicioDate: any, finDate: any, idGym: any): Observable<any>{
+    const params = new HttpParams().set('fechaInicio',inicioDate).set('fechaFin',finDate).set('GYMid',idGym);
+    return this.clienteHttp.get(this.URLServices+'Usuario.php', {params});
+  }
 
   membresiasLista(idSucu: any):Observable<any>{
     return this.clienteHttp.get(this.URLServices+"Usuario.php?listaMembre="+idSucu);

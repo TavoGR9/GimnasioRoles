@@ -3,10 +3,11 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/service/auth.service';
-import { ClienteService } from 'src/app/service/cliente.service';
+import { AuthService } from '../../service/auth.service';
+import { ClienteService } from '../../service/cliente.service';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 import { Subject, Observable } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-emergente-cargar-foto',
@@ -128,7 +129,13 @@ export class EmergenteCargarFotoComponent implements OnInit{
         // Validar si el archivo seleccionado es una imagen
         if (!file.type.startsWith('image/')) {
           this.not_format = true;
-          this.toastr.error('El archivo seleccionado no es una imagen', 'Error');
+          //this.toastr.error('El archivo seleccionado no es una imagen', 'Error');
+          this.toastr.error('El archivo que intentas subir no tiene un formato valido...', 'Error');
+          return;
+        }
+        // Validar si el archivo tiene la extensión .ico
+        if (file.name.endsWith('.ico')) {
+          this.toastr.error('El archivo seleccionado tiene una extensión no válida (ico). Por favor, selecciona una imagen válida.', 'Error');
           return;
         }
         // Validar si el archivo excede el tamaño máximo permitido de 1mb
@@ -176,10 +183,19 @@ export class EmergenteCargarFotoComponent implements OnInit{
       return;
     }
     this.ServiceCliente.updatePhoto(this.archivo).subscribe({
-      next: (resultData) => { }, error: (error) => { console.log(error); }
-    });
-    this.toastr.success('Se guardo la foto exitosamente...', 'Éxito');
-    this.dialogo.close(true);
+      next: (resultData) => { 
+        console.log(resultData); // Imprimir resultData en la consola
+        this.toastr.success('Se guardó la foto exitosamente...', 'Éxito');
+        this.dialogo.close(true);
+      }, 
+      error: (error) => { 
+        console.log(error); 
+        if (error instanceof HttpErrorResponse) {
+          console.log(error.error); // Si el error es una instancia de HttpErrorResponse, imprime el error
+        }
+        this.toastr.error('Ocurrió un error al guardar la foto.', 'Error');
+      }
+    }); 
   }
 
   mostrarInformacion(boton: string): void {

@@ -103,6 +103,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
       data: {
         clienteID: `${data.idCliente}`
       },
+      disableClose: true // Evita que el diálogo se cierre haciendo clic fuera de él
     })
     .afterClosed()
     .subscribe((cerrarDialogo: Boolean) => {
