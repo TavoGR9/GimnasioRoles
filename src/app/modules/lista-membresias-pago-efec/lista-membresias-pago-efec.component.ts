@@ -247,7 +247,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                 duracion: `${prod.Duracion}`,
                 idSucursal: `${prod.Gimnasio_idGimnasio}`,
                 infoMembresia: `${prod.Info_Membresia}`,
-                foto: `${prod.fotoUrl}`,
+                foto: `${prod.foto}`,
                 action:`${prod.accion}`
               },
               width: '80%',

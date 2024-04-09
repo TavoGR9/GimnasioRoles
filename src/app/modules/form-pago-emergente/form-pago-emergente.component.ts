@@ -34,7 +34,7 @@ export class FormPagoEmergenteComponent implements OnInit{
 
               
   ngOnInit(): void {
-    console.log(this.data, "data");
+    //console.log(this.data, "data");
     // Llamar al servicio para obtener la lista de membresías
     this.precio = 0;
     this.duracion = 'días';
