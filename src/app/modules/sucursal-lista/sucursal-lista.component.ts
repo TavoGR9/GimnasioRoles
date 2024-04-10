@@ -284,7 +284,7 @@ changeSearchString(newSearchString: string) {
 }
 
 verUbicacion(item: any) {
-  const direccion = `${item.calle}+${item.numExt}+${item.colonia}+${item.codigoPostal}+${item.ciudad}+${item.estado}`;
+  const direccion = `${item.direccion}`;
   window.open(`https://www.google.com/maps/search/?api=1&query=${direccion}`, '_blank');
 }
 
