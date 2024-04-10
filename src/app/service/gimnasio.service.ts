@@ -35,7 +35,6 @@ export class GimnasioService {
   }
 
   actualizarSucursal(datosGym: any):Observable<any>{
-    console.log(datosGym, "datosGym");
     return this.clienteHttp.post(this.API+"bodega.php?actualizar", datosGym);
   }
 
