@@ -282,7 +282,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         idSucursal: `${prod.Gimnasio_idGimnasio}`,
         //action: `${prod.accion}`,
         idMem: `${prod.Membresia_idMem}`,
-       // detMemID: `${prod.idDetMem}`
+        detMemID: `${prod.idDetMem}`
       },
       width: '50%',
       height: '80%',

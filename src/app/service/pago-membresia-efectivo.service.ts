@@ -35,8 +35,8 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.URLServices+"Usuario.php?infoMembre="+idMemb);
   }
 
-  actualizacionMemebresia(idCli:any,idMem:any, fecha: any):Observable<any>{
-    const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fecha);
+  actualizacionMemebresia(idCli:any,idMem:any, fecha: any, detMemID: any, precio: any):Observable<any>{
+    const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fecha).set('detMemID',detMemID).set('precio',precio);
 
     return this.clienteHttp.get(this.URLServices+"Usuario.php", { params });
   }
