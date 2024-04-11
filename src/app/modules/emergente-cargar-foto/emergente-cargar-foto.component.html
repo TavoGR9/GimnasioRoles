@@ -17,8 +17,8 @@
            <img [src]="photoSelected || 'assets/img/tomar-foto.png'" class="img-fluid" alt="No image"
                (click)="photoInput.click()">
            <p *ngIf="photoSelected"><strong>Imagen seleccionada correctamente.</strong></p>
-           <p *ngIf="not_size"><strong style="color: red;">La imagen excede el peso permitido (1mb).</strong></p>
-           <p *ngIf="not_format"><strong style="color: red;">El archivo que intentas subir no tiene un formato valido..</strong></p>
+           <!--<p *ngIf="not_size"><strong style="color: red;">La imagen excede el peso permitido (1mb).</strong></p>
+           <p *ngIf="not_format"><strong style="color: red;">El archivo que intentas subir no tiene un formato valido..</strong></p>-->
 
             <div class="contenedor-botones">
                 <button class="btn btn-primary btn-block">

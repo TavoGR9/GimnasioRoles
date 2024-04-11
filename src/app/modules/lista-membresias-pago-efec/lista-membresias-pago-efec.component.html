@@ -65,6 +65,18 @@
                       </ng-container>
                      
                       <ng-container *ngIf="column === 'Membresia'">
+                        {{ prod.Membresia }}
+                      </ng-container>
+                      <ng-container *ngIf="column === 'Precio'">
+                        {{ prod.Precio }}
+                      </ng-container>
+                      <ng-container *ngIf="column === 'Fecha Inicio'">
+                        {{ prod.Fecha_Inicio }}
+                      </ng-container>
+                      <ng-container *ngIf="column === 'Fecha Fin'">
+                        {{ prod.Fecha_Fin }}
+                      </ng-container>
+                      <!--<ng-container *ngIf="column === 'Membresia'">
                         <ng-container *ngIf="prod.accion !== 'Online'">
                           {{ prod.Membresia }}
                         </ng-container>
@@ -95,7 +107,7 @@
                         <ng-container *ngIf="prod.accion === 'Online'">
                           &nbsp;
                         </ng-container>
-                      </ng-container>
+                      </ng-container>-->
                       <ng-container *ngIf="column === 'Estatus'">
                         <div [ngClass]="{'estatus-activo': prod.Status_Num === '1', 'estatus-inactivo': prod.Status_Num !== '1'}">
                           {{ prod.Status }}

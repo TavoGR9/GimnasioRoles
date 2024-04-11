@@ -18,7 +18,7 @@ import { MessageService } from "primeng/api"; /**siempre debes importarlo */
 import { ToastrService } from "ngx-toastr";
 import { CategoriaService } from "../../service/categoria.service";
 import { HttpClient } from "@angular/common/http";
-import { AuthService } from "src/app/service/auth.service";
+import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
@@ -89,22 +89,22 @@ export class CrearProductoComponent implements OnInit {
     // formulario
     this.form = this.fb.group({
       detalleUnidadMedida: ["pza"],
-      precioCompra: ["0"],
-      detalleCompra: [""],
-      marcaP: [""],
+      precioCompra: [0],
+      detalleCompra: ["", Validators.required],
+      marcaP: ["", Validators.required],
       activo: [1],
       ItemNumber: [0],
-      codigoBarra: [""],
+      codigoBarra: ["", Validators.required],
       ieps: [0],
       iva: [0],
       sat: [0],
-      nombreCategoriaP: [""],
-      nomsubcate: [""],
+      nombreCategoriaP: ["", Validators.required],
+      nomsubcate: ["", Validators.required],
       factura: [0],
       STYLE_ITEM_ID: ["0"],
       precioCaja: ["0"],
       cantidadMayoreo: ["0"],
-      descripcion: [""],
+      descripcion: ["", Validators.required],
     });
   }
 
@@ -122,14 +122,6 @@ export class CrearProductoComponent implements OnInit {
   }
 
   listaTabla() {
-   /* this.categoriaService.consultarListaCategoria(this.idGym).subscribe({
-      next: (respuesta) => {
-        this.listaCategorias = respuesta;
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });*/
   }
 
   getSSdata(data: any) {
@@ -259,7 +251,9 @@ export class CrearProductoComponent implements OnInit {
   }
 
   registrarProd() {
+    console.log(this.form.value, "formulario");
     if (this.form.valid) {
+      console.log(this.form.value, "formulario");
       this.spinner.show();
       ///********** Verifica si la categoria ya existe */
       this.categoriaService

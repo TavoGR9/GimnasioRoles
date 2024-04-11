@@ -68,17 +68,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   fechaInicio: Date = new Date(); // Inicializa como una nueva fecha
   fechaFin: Date = new Date();    // Inicializa como una nueva fecha
   id: any;
-  //titulos de columnas de la tabla de pago online
-  displayedColumns: string[] = [
-    'ID',
-    'Nombre',
-    'Sucursal',
-    'Membresia',
-    'Precio',
-    'Status',
-    'Dinero recibido',
-    'Pagar',
-  ];
   //titulos de columnas de la tabla clientes activos
   displayedColumnsActivos: string[] = [
 
@@ -93,21 +82,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     //'Pagar',
     'Reenovación',
     'Info Cliente'
-  ];
-
-  //titulos de columnas de la tabla Reenovacion de membresias
-  displayedColumnsReenovacionMem: string[] = [
-    'ID',
-    'Nombre',
-    'Sucursal',
-    'Membresia',
-    'Precio',
-    'Fecha_Inicio',
-    'Fecha_Fin',
-    'Status',
-    'Dinero recibido',
-    'Pagar',
-    'Actualizar',
   ];
   dineroRecibido: number = 0; 
   moneyRecibido: number = 0; 
@@ -154,22 +128,10 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   ngOnInit(): void {
     this.pagoService.comprobar();
-    // this.pagoService.obternerDataMem().subscribe((respuesta) => {
-    //   this.clientePago = respuesta;
-    //   this.dataSource = new MatTableDataSource(this.clientePago);
-    //   this.dataSource.paginator = this.paginator;
-    // });
-    this.pagoService.clientesMemReenovar().subscribe((data) => {
-      this.clienteReenovacion = data;
-      this.dataSourceReenovacion = new MatTableDataSource(this.clienteReenovacion);
-      this.dataSourceReenovacion.paginator = this.paginatorReenovacion;
-    });
-
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-
     setTimeout(() => {
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
@@ -196,7 +158,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ngDoCheck(): void {
     // Verifica si las fechas han cambiado y actualiza los logs
     if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
-      //this.updateDateLogs();
+      this.updateDateLogs();
     }
   }
 
@@ -206,36 +168,43 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   onFechaFinChange(event: any): void {
   }
 
-  //@Input() notificacionMostrada: boolean = false;
-
   private formatDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
   }
 
- /* updateDateLogs(): void {
-    //this.fechaInicioAnterior = this.fechaInicio;
-    //this.fechaFinAnterior = this.fechaFin; 
-
-    this.pagoService.obtenerActivos(1).subscribe(
+  updateDateLogs(): void {
+    this.fechaInicioAnterior = this.fechaInicio;
+    this.fechaFinAnterior = this.fechaFin; 
+    this.pagoService.obtenerClientes(this.formatDate(this.fechaInicio),
+                                    this.formatDate(this.fechaFin),
+                                    this.auth.idGym.getValue()).subscribe(
       response => {
         console.log(response);
-        /*  if (response.msg == 'No hay resultados') {
+          if (response.msg == 'No hay resultados') {
           this.clienteActivo = [];
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
-        } else if(response.datos){
+        } else if(response.data){
           // Si hay datos, actualiza la tabla
-          this.clienteActivo = response;
+          this.clienteActivo = response.data;
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
         }
       },
+      error => {
+        console.error('Error en la solicitud:', error);
+        // Manejo de errores adicional si es necesario
+        this.clienteActivo = [];
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
+        this.toastr.error('Ocurrió un error.', '¡Error!');
+      }
     );
-  }*/
+  }
 
 
 
-  updateDateLogs(): void {
+  listaClientesData(): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (response: any) => {
         console.log('Respuesta del servicio:', response.data);
@@ -250,66 +219,10 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       }
     );
   }
-  
-
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
 
   applyFilterActivos(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceActivos.filter = filterValue.trim().toLowerCase();
-  }
-
-  applyFilterReenovacion(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSourceReenovacion.filter = filterValue.trim().toLowerCase();
-  }
-
-  pagarMismaMembresia(prod: any): void{
-    if (prod.cash >= prod.Precio) {
-      prod.PrecioCalcular = prod.cash - prod.Precio;
-      this.pagoService
-        .idPagoSucursal(prod.ID, prod.idDetMem)
-        //.pagoMemOpcion1(prod.ID)
-        .subscribe((dataResponse: any) => {
-          // Proceso de actualizacion de datos
-          const index = this.dataSourceActivos.data.indexOf(prod);
-          if (index !== -1) {
-            this.dataSourceActivos.data.splice(index, 1);
-            this.dataSourceActivos._updateChangeSubscription(); // Notificar a la tabla sobre el cambio
-          }
-
-          // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-          this.pagoService.obtenerActivos(
-                                          this.auth.idGym.getValue()
-                                          ).subscribe((respuesta) => {
-            this.clienteActivo = respuesta;
-            // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
-            this.dataSourceActivos.data = this.clienteActivo.slice();
-            // Notificar a la tabla sobre el cambio
-            this.dataSourceActivos._updateChangeSubscription();
-          });
-
-          this.dialog
-            .open(MensajeEmergenteComponent, {
-              data: `Pago exitoso, el cambio es de: $${prod.PrecioCalcular}`,
-            })
-            .afterClosed()
-            .subscribe((cerrarDialogo: Boolean) => {
-              if (cerrarDialogo) {
-                // Recargar la página actual
-                //location.reload();
-                //this.router.navigateByUrl(`/index/`);
-              } else {
-              }
-            });
-        });
-    } else {
-      this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
-    }
   }
 
   abrirInfoCliente(prod: any): void{ 
@@ -334,7 +247,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                 duracion: `${prod.Duracion}`,
                 idSucursal: `${prod.Gimnasio_idGimnasio}`,
                 infoMembresia: `${prod.Info_Membresia}`,
-                foto: `${prod.fotoUrl}`,
+                foto: `${prod.foto}`,
                 action:`${prod.accion}`
               },
               width: '80%',
@@ -353,50 +266,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
             });
   }
 
-  //Se resta el dinero recibido del precio para el apartado de actualizacion de membresia
-  realizarPago(updMem: any): void {
-    if (updMem.moneyRecibido >= updMem.Precio) {
-      updMem.PrecioCalcular = updMem.moneyRecibido - updMem.Precio;
-      this.pagoService
-        .pagoMemOpcion1(updMem.ID)
-        .subscribe((dataResponse: any) => {
-          // Eliminar la fila de la tabla uno
-          const index = this.dataSourceReenovacion.data.indexOf(updMem);
-          if (index !== -1) {
-            this.dataSourceReenovacion.data.splice(index, 1);
-            this.dataSourceReenovacion._updateChangeSubscription(); // Notificar a la tabla sobre el cambio
-          }
-
-          // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-          this.pagoService.obtenerActivos(
-                                          this.auth.idGym.getValue()
-                                          ).subscribe((respuesta) => {
-            this.clienteActivo = respuesta;
-            // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
-            this.dataSourceActivos.data = this.clienteActivo.slice();
-            // Notificar a la tabla sobre el cambio
-            this.dataSourceActivos._updateChangeSubscription();
-          });
-
-          this.dialog
-            .open(MensajeEmergenteComponent, {
-              data: `Pago exitoso, el cambio es de: $${updMem.PrecioCalcular}`,
-            })
-            .afterClosed()
-            .subscribe((cerrarDialogo: Boolean) => {
-              if (cerrarDialogo) {
-                // Recargar la página actual
-                //location.reload();
-                //this.router.navigateByUrl(`/index/`);
-              } else {
-              }
-            });
-        });
-    } else {
-      this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
-    }
-  }
-
   abrirEmergente(prod: any) {
     console.log(prod, "prod");
     // Abre el diálogo y almacena la referencia
@@ -413,7 +282,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         idSucursal: `${prod.Gimnasio_idGimnasio}`,
         //action: `${prod.accion}`,
         idMem: `${prod.Membresia_idMem}`,
-       // detMemID: `${prod.idDetMem}`
+        detMemID: `${prod.idDetMem}`
       },
       width: '50%',
       height: '80%',
@@ -449,50 +318,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   });
 }
 
-  //Se resta el dinero recibido del precio para el apartado de pago de membresia cliente online
-  realizarCalculo(prod: any): void {
-    if (prod.dineroRecibido >= prod.Precio) {
-      prod.PrecioCalculado = prod.dineroRecibido - prod.Precio;
-      this.pagoService
-        .idPagoSucursal(prod.ID, prod.idDetMem)
-        .subscribe((response: any) => {
-          // Eliminar la fila de la tabla uno
-          const index = this.dataSource.data.indexOf(prod);
-          if (index !== -1) {
-            this.dataSource.data.splice(index, 1);
-            this.dataSource._updateChangeSubscription(); // Notificar a la tabla sobre el cambio
-          }
-
-          // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-          this.pagoService.obtenerActivos(
-                                          this.auth.idGym.getValue()
-                                          ).subscribe((response) => {
-            this.clienteActivo = response;
-            // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
-            this.dataSourceActivos.data = this.clienteActivo.slice();
-            // Notificar a la tabla sobre el cambio
-            this.dataSourceActivos._updateChangeSubscription();
-          });
-
-          this.dialog
-            .open(MensajeEmergenteComponent, {
-              data: `Pago exitoso, el cambio es de: $${prod.PrecioCalculado}`,
-            })
-            .afterClosed()
-            .subscribe((cerrarDialogo: Boolean) => {
-              if (cerrarDialogo) {
-                // Recargar la página actual
-                //location.reload();
-                //this.router.navigateByUrl(`/index/`);
-              } else {
-              }
-            });
-        });
-    } else {
-      this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
-    }
-  }
-
   /*********PARTE DEL DIALOGO *************/
   abrirDialogo() {
     this.dialog
@@ -518,32 +343,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         }
       }
     );
-  }
-
-  RegistrarHuella(idCliente: number): void {
-    this.huellasService
-      .registroHuella(idCliente)
-      .subscribe((dataResponse: any) => {
-        if (dataResponse) {
-        } else {
-        }
-      });
-  }
-
-  mandaInstruccionTorniquete() {
-    this.huellasService.insertarInstruccion(this.form.value).subscribe({
-      next: (respuesta) => {
-        this.toastr.success(respuesta.message, 'Exito', {
-          positionClass: 'toast-bottom-left',
-        });
-      },
-      error: (paramError) => {
-          this.toastr.error(paramError.message, 'Error', {
-            positionClass: 'toast-bottom-left',
-          });
-        
-      },
-    });
   }
 
   //Descarga el archivo en excel

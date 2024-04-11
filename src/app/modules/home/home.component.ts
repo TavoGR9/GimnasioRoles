@@ -6,7 +6,6 @@ import { EntradasComponent } from '../entradas/entradas.component';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
-import { ChartOptions, ChartType, ChartDataset } from "chart.js";
 import { HomeService } from '../../service/home.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -16,18 +15,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit{
-  public barChartDataArray: { data: number[]; label: string }[] = [];
-  barChartLabels: string[] = [];
-  public barChartOptions: ChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-  public barChartType: ChartType = "bar";
-  public barChartLegend = true;
-  public barChartData: ChartDataset[] = [];
-  public coloresPersonalizados: string[] = ['#FF5733', '#33FF57', '#5733FF'];
-  datosGraficosPorGimnasio: { [key: string]: { chartLabels: string[], chartData: any[] } } = {};
-  // Almacenar el usuario en sesion
   currentUser: string = '';
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
@@ -68,7 +55,6 @@ export class HomeComponent implements OnInit{
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
-        console.log(resultData, "resultData");
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
           this.auth.userId.next(resultData.id);
@@ -107,10 +93,6 @@ export class HomeComponent implements OnInit{
     });
   }
 
-  private obtenerFechaActual(): Date {
-    return new Date();
-  }
-
   listaTablas() {
     this.homeService.consultarHome(this.idGym).subscribe(respuesta => {
       this.homeCard = respuesta
@@ -122,6 +104,6 @@ export class HomeComponent implements OnInit{
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTMLVentas}</table>`);
     });
-}
+  }
 
 }

@@ -25,18 +25,9 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log('Hiciste clic en enviar');
-    console.log(this.resetForm.value);
-    console.log(this.resetForm.valid, "this.resetForm.valid");
-  
     if (this.resetForm.valid) {
-      console.log("pasa");
-  
       this.resetPass.enviarMail(this.resetForm.value).subscribe({
-        next: (respuesta) => {
-          console.log('llego respuesta del api');
-          console.log(respuesta);
-  
+        next: (respuesta) => {  
           if (respuesta && respuesta.success) {
             this.toastr.success(respuesta.message, '¡Éxito! Hemos enviado un correo electrónico con instrucciones para recuperar tu contraseña', {
               positionClass: 'toast-bottom-left',

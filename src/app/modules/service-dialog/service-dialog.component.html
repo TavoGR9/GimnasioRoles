@@ -3,12 +3,8 @@
    <p style="color: white" > Cargando... </p>
 </ngx-spinner>
 <div class="title" mat-dialog-title>
-   <!--<button mat-icon-button (click)="toggleMaximize()">
-      <mat-icon>{{ isMaximized ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
-    </button>-->
     <label >SERVICIOS</label>
 </div>
-
 <div mat-dialog-content>
    <form [formGroup]="serviceForm" >
       <br>
@@ -31,7 +27,7 @@
                <div class="col-sm-6">
                   <mat-form-field appearance="outline" style="width: 95%;">
                      <mat-label>Precio unitario</mat-label>
-                     <input matInput formControlName="precio_unitario" placeholder="Precio unitario" />
+                     <input matInput formControlName="precio_unitario" placeholder="Precio unitario" type="number" inputmode="numeric" />
                      <mat-error *ngIf="isFieldInvalidService('precio_unitario', 'required')">
                         El precio es requerido.
                      </mat-error>
@@ -39,7 +35,7 @@
                         Solo se aceptan números.
                      </mat-error>
                   </mat-form-field>
-               </div>
+               </div>               
             </div>
             <div class="row">
                <div class="col-sm-6">

@@ -18,6 +18,7 @@ export class PagoMembresiaEfectivoService {
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) { }
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
+
   comprobar(){
     this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
       this.isConnected = isConnected;
@@ -30,46 +31,20 @@ export class PagoMembresiaEfectivoService {
       }
     });
   }
-  
-  // obternerDataMem(){
-  //   return this.clienteHttp.get(this.API);
-  // }
 
-  idPagoSucursal(id:any,MemId:any):Observable<any>{
-    const params = new HttpParams().set('consClienteId', id).set('consDetMemId', MemId);
-
-    return this.clienteHttp.get(this.API+"Usuario.php", { params });
-  }
 
   ticketPagoInfo(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"Usuario.php?infoTicketMembresia="+id);
   }
 
-  /*obtenerActivos(){
-    return this.clienteHttp.get(this.API+"?consultar");
-  }*/
-
- /* obtenerActivos(inicioDate: any, finDate: any, idGym: any): Observable<any>{
-    const params = new HttpParams().set('fechaInicio',inicioDate).set('fechaFin',finDate).set('GYMid',idGym);
-    return this.clienteHttp.get(this.API, {params});
-  }*/
-
   obtenerActivos(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"Usuario.php?obtenerVista="+id);
-  }  
-
-
-  obtenerClientes(idGym:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"Usuario.php?idGimnasio="+idGym);
-  } 
-
-  clientesMemReenovar(){
-    return this.clienteHttp.get(this.API+"Usuario.php?Reenovacion");
   }
 
-  pagoMemOpcion1(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"Usuario.php?updateMembresia="+id);
-  }  
+  obtenerClientes(inicioDate: any, finDate: any, idGym: any): Observable<any>{
+    const params = new HttpParams().set('fechaInicio',inicioDate).set('fechaFin',finDate).set('GYMid',idGym);
+    return this.clienteHttp.get(this.API+'Usuario.php', {params});
+  }
 
   membresiasLista(idSucu: any):Observable<any>{
     return this.clienteHttp.get(this.API+"Usuario.php?listaMembre="+idSucu);
@@ -79,8 +54,8 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.API+"Usuario.php?infoMembre="+idMemb);
   }
 
-  actualizacionMemebresia(idCli:any,idMem:any, fecha: any):Observable<any>{
-    const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fecha);
+  actualizacionMemebresia(idCli:any,idMem:any, fecha: any, detMemID: any, precio: any):Observable<any>{
+    const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fecha).set('detMemID',detMemID).set('precio',precio);
 
     return this.clienteHttp.get(this.API+"Usuario.php", { params });
   }

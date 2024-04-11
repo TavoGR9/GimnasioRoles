@@ -1,20 +1,23 @@
 import { GimnasioService } from "./../../service/gimnasio.service";
 import { HorarioService } from "./../../service/horario.service";
 import { Router } from "@angular/router";
-import { ActivatedRoute } from "@angular/router";
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { HorarioEditarComponent } from "../horario-editar/horario-editar.component";
-import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
-import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
-import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArray, FormControl} from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormGroupDirective,
+  NgForm,
+  FormControl,
+} from "@angular/forms";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { PostalCodeService } from "./../../service/cp.service";
 import { AuthService } from "./../../service/auth.service";
 import { ColaboradorService } from "./../../service/colaborador.service";
-import { mergeMap, subscribeOn } from "rxjs/operators";
-import { throwError } from "rxjs";
 import { NgxSpinnerService } from "ngx-spinner";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -30,14 +33,13 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     );
   }
 }
-
 @Component({
   selector: "app-horarios-vista",
   templateUrl: "./horarios-vista.component.html",
   styleUrls: ["./horarios-vista.component.css"],
 })
 export class HorariosVistaComponent implements OnInit {
-  idGimnasio: number = 0; // Asegúrate de obtener el ID de alguna manera, por ejemplo, a través de ActivatedRoute
+  idGimnasio: number = 0;
   datosHorario: any[] = [];
   message: string = "";
   correoEmp: string = "";
@@ -52,15 +54,15 @@ export class HorariosVistaComponent implements OnInit {
   addressControl = new FormControl("");
   asentamientosUnicos: Set<string> = new Set<string>();
   matcher = new MyErrorStateMatcher();
+  idGym: number = 0;
+  idGimnasioE: any;
 
   constructor(
+    public dialogo: MatDialogRef<HorariosVistaComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private gimnasioService: GimnasioService,
     private spinner: NgxSpinnerService,
     private HorarioService: HorarioService,
-    private route: ActivatedRoute,
-    public dialogo: MatDialogRef<HorariosVistaComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-
     public dialog: MatDialog,
     private formulario: FormBuilder,
     private auth: AuthService,
@@ -70,28 +72,88 @@ export class HorariosVistaComponent implements OnInit {
   ) {
     this.formularioSucursales = this.formulario.group({
       nombre: ["", Validators.compose([Validators.required])],
-      codigoPostal: ["",Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/),Validators.maxLength(5),]),],
-      estado: ["",Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),]),],
-      ciudad: ["",Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),]),],
+      codigoPostal: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^(0|[1-9][0-9]*)$/),
+          Validators.maxLength(5),
+        ]),
+      ],
+      estado: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),
+        ]),
+      ],
+      ciudad: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),
+        ]),
+      ],
       colonia: ["", Validators.compose([Validators.required])],
       calle: ["", Validators.compose([Validators.required])],
-      numExt: ["",Validators.compose([Validators.required,Validators.pattern(/^(0|[1-9][0-9]*)$/),]),],
-      numInt: ["",Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)]),],
-      numeroTelefonico: ["",Validators.compose([Validators.required,Validators.pattern(/^(0|[1-9][0-9]*)$/),]),],
+      numExt: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^(0|[1-9][0-9]*)$/),
+        ]),
+      ],
+      numInt: [
+        "",
+        Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)]),
+      ],
+      numeroTelefonico: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^(0|[1-9][0-9]*)$/),
+        ]),
+      ],
       estatus: [1, Validators.required],
       direccion: [""],
     });
 
     this.personaForm = this.formulario.group({
-      nombreS: ["",Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),]),],
-      apPaterno: ["",Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),]),],
-      apMaterno: ["",Validators.compose([Validators.required,Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),]),],
-      celular: ["",Validators.compose([Validators.required,Validators.pattern(/^(0|[1-9][0-9]*)$/),Validators.minLength(10),]),],
+      nombreS: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),
+        ]),
+      ],
+      apPaterno: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),
+        ]),
+      ],
+      apMaterno: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),
+        ]),
+      ],
+      celular: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^(0|[1-9][0-9]*)$/),
+          Validators.minLength(10),
+        ]),
+      ],
       puesto: ["Administrador"],
       foto: [""],
       jefe: ["1"],
       email: [""],
       nombre: [""],
+      idGym: [""],
     });
   }
 
@@ -100,43 +162,24 @@ export class HorariosVistaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      if (this.personaForm.get("idGym") !== null) {
+        this.personaForm.get("idGym")!.setValue(this.idGym);
+      }
+    });
+
     this.gimnasioService.optionSelected.subscribe((data) => {
-      if(data) {
+      if (data) {
         this.optionToShow = data;
-        if(this.optionToShow === 1){
+        if (this.optionToShow === 1) {
           this.consultarHorario();
-        }
-        else if(this.optionToShow === 2){
-       
-        }
-        else if(this.optionToShow === 3){
+        } else if (this.optionToShow === 2) {
+        } else if (this.optionToShow === 3) {
           this.editarCosa();
         }
       }
     });
-  }
-
-  actualizarSelect() {
-    if (this.isSupadmin()) {
-      setTimeout(() => {
-        this.http
-          .comboDatosGymByNombre(this.formularioSucursales.value.nombreBodega)
-          .subscribe({
-            next: (dataResponse) => {
-              if (
-                Array.isArray(dataResponse) &&
-                dataResponse.length > 0 &&
-                dataResponse[0].idBodega
-              ) {
-                this.personaForm.patchValue({
-                  Gimnasio_idGimnasio: dataResponse[0].idBodega,
-                });
-              }
-              this.sucursales = dataResponse;
-            },
-          });
-      }, 5000); // 5000 milisegundos = 5 segundos
-    }
   }
 
   cerrarDialogo(): void {
@@ -158,7 +201,6 @@ export class HorariosVistaComponent implements OnInit {
     const url = `https://wa.me/${numeroTelefonico}?text=${encodeURIComponent(
       mensaje
     )}`;
-
     // Abrir WhatsApp en una nueva ventana o pestaña
     window.open(url, "_blank");
   }
@@ -177,10 +219,7 @@ export class HorariosVistaComponent implements OnInit {
   }
 
   consultarCodigoPostal(): void {
-    const codigoPostal = this.formularioSucursales.get(
-      "codigoPostal"
-    )?.value;
-
+    const codigoPostal = this.formularioSucursales.get("codigoPostal")?.value;
     // Reiniciar el conjunto antes de agregar nuevos asentamientos
     this.asentamientosUnicos.clear();
 
@@ -224,80 +263,53 @@ export class HorariosVistaComponent implements OnInit {
           .consultarPlan(this.idGimnasio)
           .subscribe((data) => {
             if (data) {
-              console.log("dtaaaaaaaaaaaaaaaaaaa", data[0].nombreBodega);
               this.formularioSucursales.setValue({
                 nombre: data[0].nombreBodega,
                 codigoPostal: 0,
-                estado:0,
-                colonia:0,
-                calle:0,
-                ciudad:0,
-                numExt:0,
-                numInt:0,
-                estatus:1,
+                estado: 0,
+                colonia: 0,
+                calle: 0,
+                ciudad: 0,
+                numExt: 0,
+                numInt: 0,
+                estatus: 1,
                 direccion: data[0].direccion,
-                numeroTelefonico: data[0].numeroTelefonico
+                numeroTelefonico: data[0].numeroTelefonico,
               });
             }
           });
       }
     });
-
-   /* this.http.consultarIdEmpleado(this.data.empleadoID).subscribe(
-      (resultData) => {
-        if (resultData && resultData.length > 0) {
-          // Asignar valores a los campos correspondientes al formulario
-          this.personaForm.setValue({
-            nombre: resultData[0]["nombre"],
-            apPaterno: resultData[0]["apPaterno"],
-            apMaterno: resultData[0]["apMaterno"],
-            Gimnasio_idGimnasio: resultData[0]["Gimnasio_idGimnasio"],
-            turnoLaboral: resultData[0]["turnoLaboral"],
-            salario: resultData[0]["salario"],
-            email: resultData[0]["email"],
-          });
-        }
-      },
-      (error) => {
-        console.error("Error al consultar el empleado:", error);
-      }
-    );*/
   }
 
   confirmarEdicion() {
-    const idGym = this.auth.idGym.getValue();
     this.spinner.show();
-    console.log(this.formularioSucursales.value, "this.formularioSucursales.value");
     const datosAc = {
       nombre: this.formularioSucursales.value.nombre,
       direcc: this.formularioSucursales.value.direccion,
       numero: this.formularioSucursales.value.numeroTelefonico,
-      id_bod: idGym,
-    }
-    console.log(datosAc, "datosAc");
-    this.gimnasioService
-      .actualizarSucursal(datosAc)
-      .subscribe((respuesta) => {
-        console.log(respuesta, "respuesta");
-        if (respuesta) {
-          if (respuesta.success === 1) {
-            this.spinner.hide();
-            this.dialog
-              .open(MensajeEmergentesComponent, {
-                data: `Sucursal editada exitosamente`,
-              })
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-                if (cerrarDialogo) {
-                  this.formularioSucursales.reset();
-                  this.dialogo.close();
-                } else {
-                }
-              });
-          } else {
-          }
+      id_bod: this.idGimnasio,
+    };
+    this.gimnasioService.actualizarSucursal(datosAc).subscribe((respuesta) => {
+      if (respuesta) {
+        if (respuesta.success === 1) {
+          this.spinner.hide();
+          this.dialog
+            .open(MensajeEmergentesComponent, {
+              data: `Sucursal editada exitosamente`,
+            })
+            .afterClosed()
+            .subscribe((cerrarDialogo: Boolean) => {
+              if (cerrarDialogo) {
+                this.formularioSucursales.reset();
+                this.dialogo.close();
+              } else {
+              }
+            });
+        } else {
         }
-      });
+      }
+    });
   }
 
   verHorario(idGimnasio: string): void {
@@ -343,7 +355,6 @@ export class HorariosVistaComponent implements OnInit {
   }
 
   enviarSucursal(): void {
-    console.log(this.formularioSucursales.value, "formulario");
     if (this.formularioSucursales.valid && this.personaForm.valid) {
       const codigoPostal = this.formularioSucursales.get("codigoPostal")?.value;
       const estado = this.formularioSucursales.get("estado")?.value;
@@ -353,67 +364,52 @@ export class HorariosVistaComponent implements OnInit {
       const numExt = this.formularioSucursales.get("numExt")?.value;
       const numInt = this.formularioSucursales.get("numInt")?.value;
 
-      // Construir la dirección como una cadena de texto
-      const direccionCompleta = `${calle} ${numExt} ${numInt ? "Int. " + numInt : ""}, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
-      console.log("direccionCompleta", direccionCompleta);
-      // Establecer la dirección completa en un nuevo control del formulario
+      const direccionCompleta = `${calle} ${numExt} ${
+        numInt ? "Int. " + numInt : ""
+      }, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
       this.formularioSucursales.patchValue({
-        direccion: direccionCompleta
+        direccion: direccionCompleta,
       });
 
-      console.log(this.formularioSucursales.value, "formulario2");
-      console.log("respuestaSucursalUnooo");
       this.gimnasioService
         .agregarSucursal(this.formularioSucursales.value)
         .subscribe(
           (respuestaSucursal) => {
-            console.log(respuestaSucursal, "respuestaSucursal");
             if (respuestaSucursal && respuestaSucursal.success === 1) {
+              this.personaForm.patchValue({
+                idGym: respuestaSucursal.id_bodega,
+              });
+
               const nombreS = this.personaForm.get("nombreS")?.value;
               const apPaterno = this.personaForm.get("apPaterno")?.value;
               const apMaterno = this.personaForm.get("apMaterno")?.value;
 
               const nombreCompleto = `${nombreS} ${apPaterno} ${apMaterno}`;
-              console.log("nombreCompleto", nombreCompleto);
-              // Establecer la dirección completa en un nuevo control del formulario
+
               this.personaForm.patchValue({
-                nombre: nombreCompleto
+                nombre: nombreCompleto,
               });
 
               const datosFormulario = this.personaForm.value;
               datosFormulario.correoEmp = this.correoEmp;
               datosFormulario.pass = this.pass;
 
-              console.log(datosFormulario, "form2222");
-
               this.http.agregarEmpleado(datosFormulario).subscribe(
                 (respuestaEmpleado) => {
-                  console.log(respuestaEmpleado, "respuestaEmpleado");
                   if (respuestaEmpleado.success == "1") {
-
-                    const datosEmpleadoBodega = {
-                      idCategoriaP: 1,
-                      codigoP: 1,
-                      email: respuestaEmpleado.correoEmp,
-                      id_bod: respuestaSucursal.id_bodega,
-                    };
-
-                    this.http.agregarBodegaEmpleado(datosEmpleadoBodega).subscribe(
-                      (respuestaEmpleadoB) => {
-                        this.dialog
-                        .open(MensajeEmergentesComponent, {
-                          data: `Empleado agregado exitosamente`,
-                          disableClose: true,
-                        })
-                        .afterClosed()
-                        .subscribe((cerrarDialogo: Boolean) => {
-                          if (cerrarDialogo) {
-                            this.dialogo.close();
-                            this.personaForm.reset();
-                          }
-                        }); 
-                      }
-                    ) 
+                    this.enviarMensajeWhatsApp();
+                    this.dialog
+                      .open(MensajeEmergentesComponent, {
+                        data: `Empleado agregado exitosamente`,
+                        disableClose: true,
+                      })
+                      .afterClosed()
+                      .subscribe((cerrarDialogo: Boolean) => {
+                        if (cerrarDialogo) {
+                          this.dialogo.close();
+                          this.personaForm.reset();
+                        }
+                      });
                   } else {
                     if (respuestaEmpleado) {
                       console.error(
@@ -421,7 +417,9 @@ export class HorariosVistaComponent implements OnInit {
                         respuestaEmpleado.error
                       );
                     } else {
-                      console.error("Error al agregar empleado: respuesta vacía");
+                      console.error(
+                        "Error al agregar empleado: respuesta vacía"
+                      );
                     }
                   }
                 },
@@ -463,65 +461,5 @@ export class HorariosVistaComponent implements OnInit {
         }
       }
     });
-  }
-
-  enviarEmpleado(): void {
-    console.log(this.personaForm.value, "form");
-    if (this.personaForm.valid) {
-      const nombreS = this.personaForm.get("nombreS")?.value;
-      const apPaterno = this.personaForm.get("apPaterno")?.value;
-      const apMaterno = this.personaForm.get("apMaterno")?.value;
-
-      const nombreCompleto = `${nombreS} ${apPaterno} ${apMaterno}`;
-      console.log("nombreCompleto", nombreCompleto);
-      // Establecer la dirección completa en un nuevo control del formulario
-      this.personaForm.patchValue({
-        nombre: nombreCompleto
-      });
-
-      const datosFormulario = this.personaForm.value;
-      datosFormulario.correoEmp = this.correoEmp;
-      datosFormulario.pass = this.pass;
-
-      console.log(datosFormulario, "form2222");
-
-      this.http.agregarEmpleado(datosFormulario).subscribe(
-        (respuestaEmpleado) => {
-          if (respuestaEmpleado.success == "1") {
-            this.dialog
-              .open(MensajeEmergentesComponent, {
-                data: `Empleado agregado exitosamente`,
-                disableClose: true,
-              })
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-                if (cerrarDialogo) {
-                  this.dialogo.close();
-                  this.personaForm.reset();
-                }
-              });
-          } else {
-            if (respuestaEmpleado) {
-              console.error(
-                "Error al agregar empleado:",
-                respuestaEmpleado.error
-              );
-            } else {
-              console.error("Error al agregar empleado: respuesta vacía");
-            }
-          }
-        },
-        (error) => {
-          // Manejo de errores en la solicitud al servidor para agregarEmpleado
-          console.error(
-            "Error en la solicitud al servidor para agregarEmpleado:",
-            error
-          );
-          // Aquí puedes mostrar un mensaje de error o ejecutar alguna otra acción
-        }
-      );
-    } else {
-      this.message = "Por favor, complete todos los campos requeridos.";
-    }
   }
 }

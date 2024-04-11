@@ -82,8 +82,6 @@ export class RoleGuard implements CanActivate {
     const expectedRole = route.data['expectedRole'];
     const userRole = this.authService.getRole();
 
-    console.log(userRole, "aqui userRole");
-    console.log(expectedRole, "aqui expectedRole");
   
     if (  expectedRole === 'Administrador'||   expectedRole === 'Recepcionista') {
       // Permitir acceso para 'Administrador' y 'Recepcionista' a la ruta específica

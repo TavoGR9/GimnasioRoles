@@ -1,317 +1,260 @@
-
-<div >
-  <div class="title" >
-    <label *ngIf="optionToShow === 1">HORARIOS DEL GIMNASIO</label>
-    <label *ngIf="optionToShow === 2" >AGREGAR SUCURSAL</label>
-    <label *ngIf="optionToShow === 3" >EDITAR SUCURSAL</label>
+<div>
+  <div class="title">
+      <label *ngIf="optionToShow === 1">HORARIOS DEL GIMNASIO</label>
+      <label *ngIf="optionToShow === 2">AGREGAR SUCURSAL</label>
+      <label *ngIf="optionToShow === 3">EDITAR SUCURSAL</label>
   </div>
- <!--  <div class="not-found" *ngIf="optionToShow === 1">{{ message }}</div>
-  <br/>-->
- <div class="hour_container" *ngIf="optionToShow === 1" mat-dialog-content>
-  <div style="margin: auto; display: block; text-align: center; color: red; font-size: 20px;">{{ message }}</div>
-  <table class="divf">
-      <thead>
-        <tr>
-          <th>Día Semana</th>
-          <th>Hora Entrada</th>
-          <th>Hora Salida</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let horario of datosHorario">
-          <td>{{ horario.diaSemana }}</td>
-          <td>{{ horario.horaEntrada }}</td>
-          <td>{{ horario.horaSalida }}</td>
-        </tr>
-      </tbody>
-    </table>
-    </div> 
-
-
-    <div *ngIf="optionToShow === 2" mat-dialog-content>
+  <div class="hour_container" *ngIf="optionToShow === 1" mat-dialog-content>
+      <div style="margin: auto; display: block; text-align: center; color: red; font-size: 20px;">{{ message }}</div>
+      <table class="divf">
+          <thead>
+              <tr>
+                  <th>Día Semana</th>
+                  <th>Hora Entrada</th>
+                  <th>Hora Salida</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let horario of datosHorario">
+                  <td>{{ horario.diaSemana }}</td>
+                  <td>{{ horario.horaEntrada }}</td>
+                  <td>{{ horario.horaSalida }}</td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+  <div *ngIf="optionToShow === 2" mat-dialog-content>
       <form [formGroup]="formularioSucursales">
-        <div >
-          <div style="color: red;">{{message}}</div>
-          <br />
-
-
-          <div class="row">
-            <div class="col-sm-6">
-              <label for="nombreColonia" class="large-text" >Nombre de la sucursal:</label>
-                <mat-form-field appearance="outline"  style="width: 95%;" required>
-                  <mat-label>Nombre</mat-label>
-                  <input type="text" matInput placeholder="Nombre sucursal" autocomplete="off" id="nombre" formControlName="nombre" />
-                  <mat-error *ngIf="formularioSucursales.get('nombre')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                </mat-form-field>
-               
-            </div>
-            <div class="col-sm-6">
-              <label for="numeroTelefonico" class="large-text" >Telefono:</label>
-                <mat-form-field appearance="outline" style="width: 95%;" required>
-                  <mat-label>Telefono</mat-label>
-                  <input type="text" placeholder="telefono" minlength="7" maxlength="10"  matInput autocomplete="off" id="numeroTelefonico" formControlName="numeroTelefonico" [errorStateMatcher]="matcher" />
-                  <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('pattern') && !formularioSucursales.get('numeroTelefonico')?.hasError('required')">
-                    <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                </mat-error>
-                <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                </mat-form-field>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-6" >
-              <label for="nombreColonia" class="large-text" >Codigo postal:</label>
-              <mat-form-field appearance="outline"  style="width: 95%;" required >
-                <mat-label>Codigo postal</mat-label>
-                <input type="text" placeholder="codigoPostal" minlength="5" maxlength="5" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" (blur)="consultarCodigoPostal()" />
-                <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('maxlength') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
-                  <strong class="txt_msg">**Maximo 5 carácteres</strong>
-               </mat-error>
-               <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('pattern') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
-                  <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-               </mat-error>
-               <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-              </mat-form-field>
-            </div>
-            <div class="col-sm-6">
-              <label for="nombreColonia" class="large-text" >Estado:</label>
-              <mat-form-field appearance="outline"  style="width: 95%;" required >
-                <mat-label>Estado</mat-label>
-                <input type="text" placeholder="Estado" matInput autocomplete="off" id="estado" formControlName="estado" />
-                <mat-error *ngIf="formularioSucursales.get('estado')?.hasError('pattern') && !formularioSucursales.get('estado')?.hasError('required')">
-                  <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
-               </mat-error>
-               <mat-error *ngIf="formularioSucursales.get('estado')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-              </mat-form-field>
-              
-
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-6">
-              <label for="nombreColonia" class="large-text" >Ciudad:</label>
-              <mat-form-field appearance="outline"style="width: 95%;" required >
-                <mat-label>Ciudad</mat-label>
-                <input type="text" placeholder="ciudad" matInput autocomplete="off" id="ciudad" formControlName="ciudad" />
-                <mat-error *ngIf="formularioSucursales.get('ciudad')?.hasError('pattern') && !formularioSucursales.get('ciudad')?.hasError('required')">
-                  <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
-               </mat-error>
-               <mat-error *ngIf="formularioSucursales.get('ciudad')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-              </mat-form-field>
-              
-            </div>
-            <div class="col-sm-6">
-              <label for="nombreColonia" class="large-text" >Colonia:</label>
-              <mat-form-field appearance="outline" style="width: 95%;" required >
-                <mat-label>Colonia</mat-label>
-                <mat-select formControlName="colonia">
-                  <mat-option *ngFor="let asentamiento of asentamientosUnicos" [value]="asentamiento">
-                    {{ asentamiento }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-6">
-              <label for="nombreColonia" class="large-text" >Calle:</label>
-              <mat-form-field appearance="outline" style="width: 95%;" required >
-                <mat-label>Calle</mat-label>
-                <input type="text" placeholder="calle" matInput autocomplete="off" id="calle" formControlName="calle" />
-                <mat-error *ngIf="formularioSucursales.get('calle')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-              </mat-form-field>
-
-              
-            </div>
-            <div class="col-sm-6">
+          <div>
+              <div style="color: red;">{{message}}</div>
+              <br />
               <div class="row">
-                <div class="col-sm-6">
-                  <label for="nombreColonia" class="large-text" >Número externo:</label>
-                  <mat-form-field appearance="outline" style="width: 92%;" required>
-                    <mat-label>numExt</mat-label>
-                    <input type="text" placeholder="numExt" matInput autocomplete="off" id="numExt" formControlName="numExt" />
-                    <mat-error *ngIf="formularioSucursales.get('numExt')?.hasError('pattern') && !formularioSucursales.get('numExt')?.hasError('required')">
-                      <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                   </mat-error>
-                   <mat-error *ngIf="formularioSucursales.get('numExt')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                  </mat-form-field>
-
-                </div>
-                <div class="col-sm-6">
-                  <label for="nombreColonia" class="large-text" >Número interno:</label>
-                  <mat-form-field appearance="outline" style="width: 92%;" required>
-                    <mat-label>numInt</mat-label>
-                    <input type="text" placeholder="numInt" matInput autocomplete="off" id="numInt" formControlName="numInt" />
-                    <mat-error *ngIf="formularioSucursales.get('numInt')?.hasError('pattern')">
-                      <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                   </mat-error>
-                  </mat-form-field>
-                  
-                </div>
-
-
+                  <div class="col-sm-6">
+                      <label for="nombreColonia" class="large-text">Nombre de la sucursal:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Nombre</mat-label>
+                          <input type="text" matInput placeholder="Nombre sucursal" autocomplete="off" id="nombre" formControlName="nombre" />
+                          <mat-error *ngIf="formularioSucursales.get('nombre')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
+                  <div class="col-sm-6">
+                      <label for="numeroTelefonico" class="large-text">Telefono:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Telefono</mat-label>
+                          <input type="text" placeholder="telefono" minlength="7" maxlength="10" matInput autocomplete="off" id="numeroTelefonico" formControlName="numeroTelefonico" [errorStateMatcher]="matcher" />
+                          <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('pattern') && !formularioSucursales.get('numeroTelefonico')?.hasError('required')">
+                              <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                          </mat-error>
+                          <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
               </div>
-              
-            </div>
+              <div class="row">
+                  <div class="col-sm-6">
+                      <label for="nombreColonia" class="large-text">Codigo postal:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Codigo postal</mat-label>
+                          <input type="text" placeholder="codigoPostal" minlength="5" maxlength="5" matInput autocomplete="off" id="codigoPostal" formControlName="codigoPostal" (blur)="consultarCodigoPostal()" />
+                          <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('maxlength') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
+                              <strong class="txt_msg">**Maximo 5 carácteres</strong>
+                          </mat-error>
+                          <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('pattern') && !formularioSucursales.get('codigoPostal')?.hasError('required')">
+                              <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                          </mat-error>
+                          <mat-error *ngIf="formularioSucursales.get('codigoPostal')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
+                  <div class="col-sm-6">
+                      <label for="nombreColonia" class="large-text">Estado:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Estado</mat-label>
+                          <input type="text" placeholder="Estado" matInput autocomplete="off" id="estado" formControlName="estado" />
+                          <mat-error *ngIf="formularioSucursales.get('estado')?.hasError('pattern') && !formularioSucursales.get('estado')?.hasError('required')">
+                              <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+                          </mat-error>
+                          <mat-error *ngIf="formularioSucursales.get('estado')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-6">
+                      <label for="nombreColonia" class="large-text">Ciudad:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Ciudad</mat-label>
+                          <input type="text" placeholder="ciudad" matInput autocomplete="off" id="ciudad" formControlName="ciudad" />
+                          <mat-error *ngIf="formularioSucursales.get('ciudad')?.hasError('pattern') && !formularioSucursales.get('ciudad')?.hasError('required')">
+                              <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+                          </mat-error>
+                          <mat-error *ngIf="formularioSucursales.get('ciudad')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
+                  <div class="col-sm-6">
+                      <label for="nombreColonia" class="large-text">Colonia:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Colonia</mat-label>
+                          <mat-select formControlName="colonia">
+                              <mat-option *ngFor="let asentamiento of asentamientosUnicos" [value]="asentamiento">
+                                  {{ asentamiento }}
+                              </mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-6">
+                      <label for="nombreColonia" class="large-text">Calle:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Calle</mat-label>
+                          <input type="text" placeholder="calle" matInput autocomplete="off" id="calle" formControlName="calle" />
+                          <mat-error *ngIf="formularioSucursales.get('calle')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
+                  <div class="col-sm-6">
+                      <div class="row">
+                          <div class="col-sm-6">
+                              <label for="nombreColonia" class="large-text">Número externo:</label>
+                              <mat-form-field appearance="outline" style="width: 92%;" required>
+                                  <mat-label>numExt</mat-label>
+                                  <input type="text" placeholder="numExt" matInput autocomplete="off" id="numExt" formControlName="numExt" />
+                                  <mat-error *ngIf="formularioSucursales.get('numExt')?.hasError('pattern') && !formularioSucursales.get('numExt')?.hasError('required')">
+                                      <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                                  </mat-error>
+                                  <mat-error *ngIf="formularioSucursales.get('numExt')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                              </mat-form-field>
+                          </div>
+                          <div class="col-sm-6">
+                              <label for="nombreColonia" class="large-text">Número interno:</label>
+                              <mat-form-field appearance="outline" style="width: 92%;" required>
+                                  <mat-label>numInt</mat-label>
+                                  <input type="text" placeholder="numInt" matInput autocomplete="off" id="numInt" formControlName="numInt" />
+                                  <mat-error *ngIf="formularioSucursales.get('numInt')?.hasError('pattern')">
+                                      <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                                  </mat-error>
+                              </mat-form-field>
+                          </div>
+                      </div>
+                  </div>
+              </div>
           </div>
-        </div>
       </form>
-      <div class="subtitulo row" >
-        Agrega datos del administrador
+      <div class="subtitulo row">
+          Agrega datos del administrador
       </div>
       <br>
       <form [formGroup]="personaForm" class="example-form">
-        <div class="row">
-          <div class="col-sm-6">
-            <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
-              <mat-label>Nombre:</mat-label>
-              <input matInput placeholder="nombreS" formControlName="nombreS" (blur)="generarCorreoYContrasena()" />
-              <mat-error *ngIf="personaForm.get('nombreS')?.hasError('pattern') && !personaForm.get('nombreS')?.hasError('required')">
-                <strong class="error-msg">**Formato no valido, (solo letras)...</strong>
-              </mat-error>
-              <mat-error *ngIf="personaForm.get('nombreS')?.touched && personaForm.get('nombreS')?.hasError('required')">
-                <strong class="error-msg">**Campo requerido</strong>
-              </mat-error>
-            </mat-form-field>
+          <div class="row">
+              <div class="col-sm-6">
+                  <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
+                      <mat-label>Nombre:</mat-label>
+                      <input matInput placeholder="Nombre" formControlName="nombreS" (blur)="generarCorreoYContrasena()" />
+                      <mat-error *ngIf="personaForm.get('nombreS')?.hasError('pattern') && !personaForm.get('nombreS')?.hasError('required')">
+                          <strong class="error-msg">**Formato no valido, (solo letras)...</strong>
+                      </mat-error>
+                      <mat-error *ngIf="personaForm.get('nombreS')?.touched && personaForm.get('nombreS')?.hasError('required')">
+                          <strong class="error-msg">**Campo requerido</strong>
+                      </mat-error>
+                  </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                  <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;" required>
+                      <mat-label>Apellido Paterno:</mat-label>
+                      <input matInput placeholder="Apellido Paterno" formControlName="apPaterno" (blur)="generarCorreoYContrasena()" />
+                      <mat-error *ngIf="personaForm.get('apPaterno')?.hasError('pattern') && !personaForm.get('apPaterno')?.hasError('required')">
+                          <strong class="error-msg">**Formato no valido, (solo letras)...</strong>
+                      </mat-error>
+                      <mat-error *ngIf="personaForm.get('apPaterno')?.touched && personaForm.get('apPaterno')?.hasError('required')">
+                          <strong class="error-msg">**Campo requerido</strong>
+                      </mat-error>
+                  </mat-form-field>
+              </div>
           </div>
-         
-
-          <div class="col-sm-6">
-            <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;" required>
-              <mat-label>Apellido Paterno:</mat-label>
-              <input matInput placeholder="Apellido Paterno" formControlName="apPaterno" (blur)="generarCorreoYContrasena()" />
-              <mat-error *ngIf="personaForm.get('apPaterno')?.hasError('pattern') && !personaForm.get('apPaterno')?.hasError('required')">
-                <strong class="error-msg">**Formato no valido, (solo letras)...</strong>
-              </mat-error>
-              <mat-error *ngIf="personaForm.get('apPaterno')?.touched && personaForm.get('apPaterno')?.hasError('required')">
-                <strong class="error-msg">**Campo requerido</strong>
-              </mat-error>
-            </mat-form-field>
+          <div class="row">
+              <div class="col-sm-6">
+                  <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
+                      <mat-label>Apellido Materno:</mat-label>
+                      <input matInput placeholder="Apellido Materno" formControlName="apMaterno" />
+                      <mat-error *ngIf="personaForm.get('apMaterno')?.hasError('pattern') && !personaForm.get('apMaterno')?.hasError('required')">
+                          <strong class="error-msg">**Formato no valido, (solo letras)...</strong>
+                      </mat-error>
+                      <mat-error *ngIf="personaForm.get('apMaterno')?.touched && personaForm.get('apMaterno')?.hasError('required')">
+                          <strong class="error-msg">**Campo requerido</strong>
+                      </mat-error>
+                  </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                  <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
+                      <mat-label>Telefono:</mat-label>
+                      <input matInput placeholder="Número de celular" formControlName="celular" minlength="10" maxlength="10" />
+                      <mat-error *ngIf="personaForm.get('celular')?.hasError('pattern') && !personaForm.get('celular')?.hasError('required')">
+                          <strong class="error-msg">**Formato no valido, (solo números)...</strong>
+                      </mat-error>
+                      <mat-error *ngIf="personaForm.get('celular')?.hasError('minlength') && !personaForm.get('celular')?.hasError('required')">
+                          <strong class="error-msg">**Minimo 10 carácteres</strong>
+                      </mat-error>
+                      <mat-error *ngIf="personaForm.get('celular')?.touched && personaForm.get('celular')?.hasError('required')">
+                          <strong class="error-msg">**Campo requerido</strong>
+                      </mat-error>
+                  </mat-form-field>
+              </div>
           </div>
-
-          
-        </div>
-        
-        <div class="row">
-          <div class="col-sm-6">
-            <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
-              <mat-label>Apellido Materno:</mat-label>
-              <input matInput placeholder="Apellido Materno" formControlName="apMaterno" />
-              <mat-error *ngIf="personaForm.get('apMaterno')?.hasError('pattern') && !personaForm.get('apMaterno')?.hasError('required')">
-                <strong class="error-msg">**Formato no valido, (solo letras)...</strong>
-              </mat-error>
-              <mat-error *ngIf="personaForm.get('apMaterno')?.touched && personaForm.get('apMaterno')?.hasError('required')">
-                <strong class="error-msg">**Campo requerido</strong>
-              </mat-error>
-            </mat-form-field>
+          <div class="row">
+              <div class="col-sm-6">
+                  <mat-form-field appearance="outline" style="width: 95%;">
+                      <mat-label>Correo:</mat-label>
+                      <input matInput [value]="correoEmp" disabled />
+                  </mat-form-field>
+              </div>
+              <div class="col-sm-6">
+                  <mat-form-field appearance="outline" style="width: 95%;">
+                      <mat-label>Contraseña:</mat-label>
+                      <input matInput [value]="pass" disabled />
+                  </mat-form-field>
+              </div>
           </div>
-          <div class="col-sm-6">
-
-            <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
-              <mat-label>Telefono:</mat-label>
-              <input matInput placeholder="Número de celular" formControlName="celular" minlength="10" maxlength="10"/>
-                <mat-error *ngIf="personaForm.get('celular')?.hasError('pattern') && !personaForm.get('celular')?.hasError('required')">
-                  <strong class="error-msg">**Formato no valido, (solo números)...</strong>
-                </mat-error>
-                <mat-error *ngIf="personaForm.get('celular')?.hasError('minlength') && !personaForm.get('celular')?.hasError('required')">
-                  <strong class="error-msg">**Minimo 10 carácteres</strong>
-                </mat-error>
-                <mat-error *ngIf="personaForm.get('celular')?.touched && personaForm.get('celular')?.hasError('required')">
-                  <strong class="error-msg">**Campo requerido</strong>
-                </mat-error>
-            </mat-form-field>
-          </div>
-         
-         <!--<div class="col-sm-6">
-            <mat-form-field appearance="outline" style="width: 95%;">
-              <mat-label>Sucursal</mat-label>
-              <mat-select id="sucursal" formControlName="Gimnasio_idGimnasio" id="Gimnasio_idGimnasio" [errorStateMatcher]="matcher">
-                <mat-option *ngFor="let sucursal of sucursales" value="{{sucursal.idGimnasio}}">{{sucursal.nombreGym}}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="personaForm.get('Gimnasio_idGimnasio')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-          </mat-form-field>
-          </div>--> 
-        </div>
-        <div class="row">
-          
-          <div class="col-sm-6">
-
-            <mat-form-field  appearance="outline" style="width: 95%;">
-              <mat-label>Correo:</mat-label>
-              <input matInput [value]="correoEmp" disabled />
-            </mat-form-field>
-          </div>
-
-          <div class="col-sm-6">
-            <mat-form-field  appearance="outline" style="width: 95%;">
-              <mat-label>Contraseña:</mat-label>
-              <input matInput [value]="pass" disabled />
-            </mat-form-field>
-          </div>
-        </div>
-       <!-- <div class="row">
-          <div class="col-sm-6">
-            <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;" required>
-              <mat-label>Foto:</mat-label>
-              <input matInput placeholder="Apellido Paterno" formControlName="foto"/>
-            </mat-form-field>
-          </div>
-        </div>-->
       </form>
-    </div>
-
-    <div *ngIf="optionToShow === 3" mat-dialog-content>
+  </div>
+  <div *ngIf="optionToShow === 3" mat-dialog-content>
       <form [formGroup]="formularioSucursales">
-        <div >
-          <div style="color: red;">{{message}}</div>
-          <br />
-          <div class="row">
-            <div class="col-sm-6">
-              <label for="nombreColonia" class="large-text" >Nombre de la sucursal:</label>
-                <mat-form-field appearance="outline"  style="width: 95%;" required>
-                  <mat-label>Nombre</mat-label>
-                  <input type="text" matInput placeholder="Nombre sucursal" autocomplete="off" id="nombre" formControlName="nombre" />
-                  <mat-error *ngIf="formularioSucursales.get('nombre')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                </mat-form-field>
-               
-            </div>
-            <div class="col-sm-6">
-              <label for="numeroTelefonico" class="large-text" >Telefono:</label>
-                <mat-form-field appearance="outline" style="width: 95%;" required>
-                  <mat-label>Telefono</mat-label>
-                  <input type="text" placeholder="telefono" minlength="7" maxlength="10"  matInput autocomplete="off" id="numeroTelefonico" formControlName="numeroTelefonico" [errorStateMatcher]="matcher" />
-                  <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('pattern') && !formularioSucursales.get('numeroTelefonico')?.hasError('required')">
-                    <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                </mat-error>
-                <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                </mat-form-field>
-            </div>
+          <div>
+              <div style="color: red;">{{message}}</div>
+              <br />
+              <div class="row">
+                  <div class="col-sm-6">
+                      <label for="nombreColonia" class="large-text">Nombre de la sucursal:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Nombre</mat-label>
+                          <input type="text" matInput placeholder="Nombre sucursal" autocomplete="off" id="nombre" formControlName="nombre" />
+                          <mat-error *ngIf="formularioSucursales.get('nombre')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
+                  <div class="col-sm-6">
+                      <label for="numeroTelefonico" class="large-text">Telefono:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Telefono</mat-label>
+                          <input type="text" placeholder="telefono" minlength="7" maxlength="10" matInput autocomplete="off" id="numeroTelefonico" formControlName="numeroTelefonico" [errorStateMatcher]="matcher" />
+                          <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('pattern') && !formularioSucursales.get('numeroTelefonico')?.hasError('required')">
+                              <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                          </mat-error>
+                          <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-12">
+                      <label for="nombreColonia" class="large-text">Direccion:</label>
+                      <mat-form-field appearance="outline" style="width: 95%;" required>
+                          <mat-label>Direccion</mat-label>
+                          <input type="text" placeholder="Direccion" matInput autocomplete="off" id="direccion" formControlName="direccion" />
+                          <mat-error *ngIf="formularioSucursales.get('direccion')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                      </mat-form-field>
+                  </div>
+              </div>
           </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <label for="nombreColonia" class="large-text" >Direccion:</label>
-              <mat-form-field appearance="outline" style="width: 95%;" required >
-                <mat-label>Direccion</mat-label>
-                <input type="text" placeholder="Direccion" matInput autocomplete="off" id="direccion" formControlName="direccion" />
-                <mat-error *ngIf="formularioSucursales.get('direccion')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-              </mat-form-field>
-
-              
-            </div>
-           
-          </div>
-        </div>
-      </form>    
-    </div>
-    <div style="margin: auto; display: block; text-align: center;" mat-dialog-actions>
-      <!--<button *ngIf="optionToShow === 2" mat-raised-button type="submit" (click)="enviarFormularios()" (click)="enviarMensajeWhatsApp()" style="background-color: #fd9727; font-size: 20px; margin-top: 50px; height: 40px; width: 120px;">Aceptar</button>-->   <!--(click)="enviarFormularios()" -->
-      <button *ngIf="optionToShow === 2 && !mostrarFormularioAdministrador" (click)="enviarSucursal()" mat-raised-button type="submit" style="background-color: #fd9727; font-size: 20px;height: 40px; width: 120px;">Aceptar</button>   <!--(click)="enviarSucursal()"" sera el envio de sucursal-->
-      <!--<button  (click)="enviarEmpleado(); enviarMensajeWhatsApp()" mat-raised-button type="submit" style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 120px;">Aceptar</button>-->  <!--(click)="enviarEmpleado()" (click)="enviarMensajeWhatsApp()"" serael envio del empleado y del whatsapp-->
+      </form>
+  </div>
+  <div style="margin: auto; display: block; text-align: center;" mat-dialog-actions>
+      <button *ngIf="optionToShow === 2 && !mostrarFormularioAdministrador" (click)="enviarSucursal()" mat-raised-button type="submit" style="background-color: #fd9727; font-size: 20px;height: 40px; width: 120px;">Aceptar</button>
       <button *ngIf="optionToShow === 3" mat-raised-button type="submit" (click)="confirmarEdicion()" style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 120px;">Aceptar</button>
-  
-      <button mat-raised-button type="submit" (click)="cancelar()"  style="background-color: #000000; font-size: 20px; margin-left: 50px;  height: 40px; width: 120px;color: white;">Cancelar</button>
-    </div>
+      <button mat-raised-button type="submit" (click)="cancelar()" style="background-color: #000000; font-size: 20px; margin-left: 50px;  height: 40px; width: 120px;color: white;">Cancelar</button>
+  </div>
 </div>

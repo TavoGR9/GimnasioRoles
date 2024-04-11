@@ -47,10 +47,8 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value, "datos form")
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
-          console.log(resultData, "resultData");
           if (resultData && resultData.rol !== 'No_acceso') {
             this.auth.loggedIn.next(true);
             this.auth.role.next(resultData.rol);
@@ -66,8 +64,6 @@ export class LoginComponent implements OnInit {
             }else{
               this.router.navigate(['/home']);
             }
-           
-            console.log('Tu rol es: ' + resultData.rol);
           } else {
             this.toastr.error('Por favor, verifica las credenciales proporcionadas....', 'Error', {
               positionClass: 'toast-bottom-left',

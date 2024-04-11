@@ -5,7 +5,6 @@
               <mat-card class="orange-card" *ngFor="let card of homeCard">
                   <mat-card-header>
                       <mat-card-title>{{card.titulo}}</mat-card-title>
-                      <!--<mat-card-title>VENTAS DEL DIA - {{ fechaActual | date:'yyyy-MM-dd' }}</mat-card-title>-->
                   </mat-card-header>
                   <mat-card-content>
                       <br>
@@ -33,9 +32,9 @@
                           <mat-card class="ancho-1">
                               <mat-card-header>
                                   <h3 class="icon-title">
-                <mat-icon class="icon">grid_view</mat-icon>
-                PRODUCTOS MÁS VENDIDOS
-              </h3>
+                                    <mat-icon class="icon">grid_view</mat-icon>
+                                    PRODUCTOS MÁS VENDIDOS
+                                  </h3>
                               </mat-card-header>
                               <mat-card-content>
                                   <p style="border-top: 2px solid orange;"></p>
@@ -43,53 +42,22 @@
 
                               </mat-card-content>
                           </mat-card>
-
                           <mat-card class="ancho-2">
                               <mat-card-header>
                                   <h3 class="icon-title">
-                <mat-icon class="icon">grid_view</mat-icon>
-                ÚLTIMAS VENTAS
-              </h3>
+                                    <mat-icon class="icon">grid_view</mat-icon>
+                                    ÚLTIMAS VENTAS
+                                  </h3>
                               </mat-card-header>
                               <mat-card-content>
-                                  <p style="border-top: 2px solid orange;"></p>
-                                  <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
-
+                                <p style="border-top: 2px solid orange;"></p>
+                                <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
                               </mat-card-content>
                           </mat-card>
-
                       </div>
                   </mat-card-content>
               </mat-card>
-
-              <!--<div class="row">
-
-      <div class="col-sm-9">
-        <mat-card *ngIf="isSupadmin()" class="sup-card" routerLink="../listaSucursales" >
-          <mat-card-header>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="row">
-              <div class="col-sm-2">
-                <img src="../../../../../assets/img/sucursal.png" alt="Imagen Azul Marino" class="card-imagenesU">
-              </div>
-              <div class="col-sm-10">
-                <P style="font-size: 20px;">BIENVENIDO SUPER ADMINISTRADOR</P>
-                <P style="font-size: 17px;">Puedes administrar las sucursales desde aquí</P>
-                <div style="display: flex; justify-content: flex-end; align-items: center;">
-                  <button mat-button style="background-color: #fd9727; border: 0px; width: 30%;height: 35px;">
-                   CONSULTA AQUÍ
-                  </button>
-                </div>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card> 
-      </div>
-      <div class="col-sm3">
-        <mat-card *ngIf="isSupadmin()" class="sup-card" routerLink="../otraRuta">
-       
-        </mat-card>
-      </div>
-    </div>-->
+           </div>
+      </mat-card-content>
+  </mat-card>
 </div>

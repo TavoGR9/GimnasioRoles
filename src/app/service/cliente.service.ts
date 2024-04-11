@@ -15,8 +15,9 @@ export class ClienteService {
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
   URLServices: String = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/registros.php"; 
   URL: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/formaPago.php/";
-  apiFoto: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/update_image.php";
-
+  //apiFoto: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/update_image.php";
+  apiFoto: string = "https://olympus.arvispace.com/olimpusGym/conf/";
+  
   constructor(private clienteHttp:HttpClient) {
   }
   private dataSubject = new BehaviorSubject<any>(null);
@@ -27,7 +28,7 @@ export class ClienteService {
   }
 
   updatePhoto(archivo: any): Observable<any> {
-    return this.clienteHttp.post<any>(this.apiFoto, archivo);
+    return this.clienteHttp.post<any>(this.apiFoto + 'update_image.php', archivo);
   }
 
   idPagoSucursal(id:any):Observable<any>{
