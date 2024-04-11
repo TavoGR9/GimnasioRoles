@@ -89,7 +89,7 @@ export class CrearProductoComponent implements OnInit {
     // formulario
     this.form = this.fb.group({
       detalleUnidadMedida: ["pza"],
-      precioCompra: [""],
+      precioCompra: ["0"],
       detalleCompra: [""],
       marcaP: [""],
       activo: [1],
@@ -109,6 +109,7 @@ export class CrearProductoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.categoriaService.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));

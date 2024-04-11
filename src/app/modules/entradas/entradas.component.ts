@@ -113,17 +113,20 @@ export class EntradasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.entrada.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-    
-    this.auth.idGym.subscribe((data) => {
-      if(data) {
-        this.idGym = data;
-        this.listaTablas();
-      }
-    });
+
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        if(data) {
+          this.idGym = data;
+          this.listaTablas();
+        }
+      });
+    }, 3000);
   }
 
   getSSdata(data: any){
@@ -193,8 +196,8 @@ export class EntradasComponent implements OnInit {
             fechaEntrada: fechaFormateada,
             valor: this.auth.idGym.getValue(),
             precioCaja: idPrecioCompra,
-            preccio: '',
-            fechaE: '',
+            preccio: 0,
+            fechaE: '0000-00-00',
             precciosucu: idPrecioVenta
           };
           this.tablaDatos.push(nuevoDato);

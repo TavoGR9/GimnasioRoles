@@ -52,15 +52,19 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     private auth: AuthService,){}
   
     ngOnInit(): void{
+    this.prodVendidosService.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-  
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.updateDateLogs(); 
-    }); 
+
+
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.updateDateLogs(); 
+      }); 
+    }, 3000); 
   }
 
   getSSdata(data: any){

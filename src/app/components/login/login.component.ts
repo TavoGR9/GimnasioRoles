@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth.service';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -12,7 +13,6 @@ import { AuthService } from '../../service/auth.service';
 export class LoginComponent implements OnInit {
   hide = true;
   loginForm: FormGroup;
-
   constructor(
     private auth: AuthService,
     private router: Router,
@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.auth.comprobar();
     if(this.auth.isLoggedInBS() || this.auth.getCurrentUser()){
       this.router.navigate(['/home']);
     }

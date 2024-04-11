@@ -153,11 +153,12 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pagoService.obternerDataMem().subscribe((respuesta) => {
-      this.clientePago = respuesta;
-      this.dataSource = new MatTableDataSource(this.clientePago);
-      this.dataSource.paginator = this.paginator;
-    });
+    this.pagoService.comprobar();
+    // this.pagoService.obternerDataMem().subscribe((respuesta) => {
+    //   this.clientePago = respuesta;
+    //   this.dataSource = new MatTableDataSource(this.clientePago);
+    //   this.dataSource.paginator = this.paginator;
+    // });
     this.pagoService.clientesMemReenovar().subscribe((data) => {
       this.clienteReenovacion = data;
       this.dataSourceReenovacion = new MatTableDataSource(this.clienteReenovacion);
@@ -168,12 +169,13 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-  
-    
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.updateDateLogs();  
-    }); 
+
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.updateDateLogs();  
+      }); 
+    }, 3000); 
 
   }
 

@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
 import { msgResult } from '../models/empleado';
+import { ConnectivityService } from './connectivity.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,20 +27,41 @@ export class AuthService {
   idUsuario:number =0;
   userRole: string = '';
 
-  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
+  isConnected: boolean = true;
+
+  //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
+  //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+
+
+
   APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  APIv3: string = 'http://localhost/olimpusGym/conf/';
+  API: String = '';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private router: Router, private clienteHttp: HttpClient) {
+  constructor(private router: Router, private clienteHttp: HttpClient, private connectivityService: ConnectivityService) {
     const encryptedMail = sessionStorage.getItem(this.USER_KEY);
     if (encryptedMail) {
       this.encryptedMail.next(encryptedMail);
     }
   }
 
+  comprobar(){
+    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+      this.isConnected = isConnected;
+      if (isConnected) {
+        //console.log("La red WiFi tiene acceso a Internet.");
+        this.API = this.APIv2;
+      } else {
+        //console.log("La red WiFi no tiene acceso a Internet.");
+        this.API = this.APIv3;
+      }
+    });
+  }
+
   loginBS(data: User): Observable<any> {
-  const url = `${this.APIv2}login.php?email=${data.email}&pass=${data.pass}`;
+  const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;
   return this.clienteHttp.request('GET', url, {responseType:'json'})
       .pipe(
         catchError((err: any) => {
@@ -91,12 +113,12 @@ setUserRole(role: string): void {
 //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
 //Traer lista de sucursales
 list_sucursales():Observable<any> {
-  return this.clienteHttp.get<listaSucursal>(this.APIv2 + 'sucursales.php');
+  return this.clienteHttp.get<listaSucursal>(this.API + 'sucursales.php');
 }
 
 //Consultar informacion de sucursales
 chart_sucursales(data: any):Observable<any> {
-  return this.clienteHttp.post<dataChart>(this.APIv2 + 'chart_sucursales.php', data, { headers: this.httpHeaders });
+  return this.clienteHttp.post<dataChart>(this.API + 'chart_sucursales.php', data, { headers: this.httpHeaders });
 }
 
 getUserData(): any | null {
@@ -115,7 +137,7 @@ logout() {
 
 // Guardar huella dactilar en BD
 saveFingerprint(data: any): Observable<any>{
-  return this.clienteHttp.post(this.APIv2 + 'fingerprintSave.php', data, { headers: this.httpHeaders });
+  return this.clienteHttp.post(this.API + 'fingerprintSave.php', data, { headers: this.httpHeaders });
 }
 
 // Almacenar información del usuario en sessionStorage
@@ -137,7 +159,7 @@ clearCurrentUser(): void {
 
 // Traer datos de usuario logeaddo
 dataUser(data: any): Observable<any> {
-  return this.clienteHttp.post<dataLogin>(this.APIv2 + 'datosSStorage.php?datos', data, { headers: this.httpHeaders});
+  return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders});
 }
 
 hasAnyRole(expectedRoles: string[]): boolean {

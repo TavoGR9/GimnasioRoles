@@ -2,15 +2,33 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable,forkJoin } from 'rxjs';
 import { detalleVenta } from '../models/detalleVenta';
+import { ConnectivityService } from './connectivity.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DetalleVentaService {
-  //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/detalle_venta.php'
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
 
-  constructor(private clienteHttp:HttpClient) {
+  isConnected: boolean = true;
+
+  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  APIv3: string = 'http://localhost/olimpusGym/conf/';
+  API: String = '';
+
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+  }
+  
+  comprobar(){
+    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+      this.isConnected = isConnected;
+      if (isConnected) {
+        //console.log("La red WiFi tiene acceso a Internet.");
+        this.API = this.APIv2;
+      } else {
+        //console.log("La red WiFi no tiene acceso a Internet.");
+        this.API = this.APIv3;
+      }
+    });
   }
 
   obternerVentaDetalle(){
