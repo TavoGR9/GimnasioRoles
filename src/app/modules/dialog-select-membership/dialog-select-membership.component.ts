@@ -24,7 +24,6 @@ import { ErrorStateMatcher } from "@angular/material/core";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
 import { MembresiaService } from "../../service/membresia.service";
-
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -47,8 +46,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class DialogSelectMembershipComponent implements OnInit {
   noServicios: boolean = false; 
   displayedColumns: string[] = ["No", "nombre", "precio"];
-  dataSource: MatTableDataSource<MyElement> =
-    new MatTableDataSource<MyElement>();
+  dataSource: MatTableDataSource<MyElement> = new MatTableDataSource<MyElement>();
   tipo_membresia: number = 0;
   optionToShow: number = 0;
   selection: number = 0;
@@ -67,6 +65,8 @@ export class DialogSelectMembershipComponent implements OnInit {
   dataToUpdate: any = {};
   plan: any[] = [];
   selectedService: number = 4;
+  matcher = new MyErrorStateMatcher();
+  seleccionado: number = 0;
 
   constructor(
     public dialogo: MatDialogRef<DialogSelectMembershipComponent>,
@@ -109,8 +109,6 @@ export class DialogSelectMembershipComponent implements OnInit {
       gimnasio: [this.AuthService.idGym.value, Validators.required],
     });
   }
-
-  matcher = new MyErrorStateMatcher();
 
   ngOnInit(): void {
     this.getIdGym();
@@ -212,8 +210,6 @@ export class DialogSelectMembershipComponent implements OnInit {
     }
   }
 
-  seleccionado: number = 0;
-
   abrirDialogo() {
     this.seleccionado = 1;
     this.ServiciosService.seleccionado.next(this.seleccionado);
@@ -231,8 +227,7 @@ export class DialogSelectMembershipComponent implements OnInit {
         }
         this.servicios.push(nuevoServicio.registroInsertado);
       }
-    });
-    
+    });  
   }
   
   getIdGym() {

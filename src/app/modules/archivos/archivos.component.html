@@ -1,78 +1,70 @@
 <div>
   <h1 mat-dialog-title class="title">Carga de documentos</h1>
-      <mat-tab-group mat-dialog-content>
-          <mat-tab label="Agregar archivo">
+  <mat-tab-group mat-dialog-content>
+      <mat-tab label="Agregar archivo">
+          <br>
+          <div>
+              <button mat-raised-button style="background-color: #000000; color: white;" (click)="archivoInput.click()">
+                  <mat-icon>attach_file</mat-icon> Seleccionar Archivos
+              </button>
+              <input type="file" multiple #archivoInput style="display: none;" (change)="seleccionarArchivo($event)">
+          </div>
+          <div *ngIf="archivosSeleccionados.length > 0">
               <br>
-              <div>
-                  <button mat-raised-button style="background-color: #000000; color: white;" (click)="archivoInput.click()">
-                      <mat-icon>attach_file</mat-icon> Seleccionar Archivos
-                  </button>
-                  <input type="file" multiple  #archivoInput style="display: none;" (change)="seleccionarArchivo($event)">
-              </div>
-              <div *ngIf="archivosSeleccionados.length > 0">
-                  <br>
-                  <label>Documentos cargados</label>
-                  <table>
-                      <thead>
-                          <tr>
-                              <th>Nombre del Archivo</th>
-                              <th>Tipo de Archivo</th>
-                              <th>Acciones</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr *ngFor="let archivo of archivosSeleccionados; let i = index">
-                              <td>{{ archivo.name }}</td>
-                              <td>{{ archivo.type }}</td>
-                              <td>
-                                  <button mat-icon-button (click)="quitarArchivo(i)">
-                                      <mat-icon>delete</mat-icon>
-                                  </button>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
-              </div>
-          </mat-tab>
-
-         <mat-tab label="Ver documentación">
-            <div *ngIf="archivos.length > 0; else noArchivos">
+              <label>Documentos cargados</label>
               <table>
-                <thead>
-                  <tr>
-                    <th>Nombre del Archivo</th>
-                    <th>Contenido del Archivo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let archivo of archivos">
-                    <td>{{ archivo.nombreArchivo }}</td>
-                    <td>
-                      <button (click)="openURL(archivo.contenidoArchivo)" class="boton-llamativo">
-                        <i class="fas fa-download"></i> Descargar archivo
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
+                  <thead>
+                      <tr>
+                          <th>Nombre del Archivo</th>
+                          <th>Tipo de Archivo</th>
+                          <th>Acciones</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let archivo of archivosSeleccionados; let i = index">
+                          <td>{{ archivo.name }}</td>
+                          <td>{{ archivo.type }}</td>
+                          <td>
+                              <button mat-icon-button (click)="quitarArchivo(i)">
+                                  <mat-icon>delete</mat-icon>
+                              </button>
+                          </td>
+                      </tr>
+                  </tbody>
               </table>
-            </div>
-            
-            <ng-template #noArchivos>
+          </div>
+      </mat-tab>
+      <mat-tab label="Ver documentación">
+          <div *ngIf="archivos.length > 0; else noArchivos">
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Nombre del Archivo</th>
+                          <th>Contenido del Archivo</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let archivo of archivos">
+                          <td>{{ archivo.nombreArchivo }}</td>
+                          <td>
+                              <button (click)="openURL(archivo.contenidoArchivo)" class="boton-llamativo">
+                                  <i class="fas fa-download"></i> Descargar archivo
+                              </button>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+          <ng-template #noArchivos>
               <br>
               <p>
-                <i class="fas fa-exclamation-triangle fa-3x" style="vertical-align: middle; color: orange;"></i>
-                &nbsp; Datos no disponibles. Actualmente no se han subido archivos.
-              </p>              
-              
-            </ng-template>
-            
-          </mat-tab>
-      </mat-tab-group>
-
-
+                  <i class="fas fa-exclamation-triangle fa-3x" style="vertical-align: middle; color: orange;"></i> &nbsp; Datos no disponibles. Actualmente no se han subido archivos.
+              </p>
+          </ng-template>
+      </mat-tab>
+  </mat-tab-group>
   <div mat-dialog-actions class="centro-horizontal">
-    <button *ngIf="archivosSeleccionados.length > 0" mat-raised-button style="background-color: #F9A640; color: white;" (click)="subirArchivo()">Guardar</button>
-    <button mat-raised-button style="background-color: #000000; color: white;" (click)="cancelar()">Cancelar</button>
-</div>
-
+      <button *ngIf="archivosSeleccionados.length > 0" mat-raised-button style="background-color: #F9A640; color: white;" (click)="subirArchivo()">Guardar</button>
+      <button mat-raised-button style="background-color: #000000; color: white;" (click)="cancelar()">Cancelar</button>
+  </div>
 </div>

@@ -1,162 +1,76 @@
 <div style="margin-top: 60px;">
-<div class="container mt-4">
-   <h2 mat-dialog-title class="mb-3">SUCURSALES</h2>
-   <div style="text-align: right; margin-bottom: 50px;">
-       <button mat-raised-button (click)="agregarSucursal()" style="background-color: #fd9727; font-size: 16px;">
-       <mat-icon>add</mat-icon> AGREGAR SUCURSAL
-     </button>
-   </div>
-   <div style="margin-left: 70px;color:red;font-size: 20px;">{{message}}</div>
-   <div class="mb-3">
-       <mat-form-field class="example-full-width">
-           <mat-label>Busca por columnas</mat-label>
-           <span matPrefix class="icon_search"><mat-icon>search</mat-icon></span>
-           <input matInput placeholder="Busca por columnas" #txtSearch (keyup)="onSearchPokemon($event)">
-         </mat-form-field>
-   </div>
-   
-   <form>
-       <div  class="table-container">
-           <table mat-table  [dataSource]="dataSource">
-               <!-- Título Column x
-               <ng-container matColumnDef="estatus">
-                   <th mat-header-cell *matHeaderCellDef>Estatus</th>
-                   <td mat-cell *matCellDef="let item">
-                       <mat-icon *ngIf="item.activacion == 1" class="check_circle">
-                           check_circle
-                       </mat-icon>
-                       <mat-icon *ngIf="item.estatus == 0" class="cancel">
-                           cancel
-                       </mat-icon>
-                   </td>
-               </ng-container>-->
-               <ng-container matColumnDef="nombre">
-                   <th mat-header-cell *matHeaderCellDef>Nombre</th>
-                   <td mat-cell *matCellDef="let item">{{ item.nombreBodega }}</td>
-               </ng-container>
-               <ng-container matColumnDef="direccion">
-                   <th mat-header-cell *matHeaderCellDef>Dirección</th>
-                   <td mat-cell *matCellDef="let item">
-                       {{ item.direccion}}
-                   </td>
-               </ng-container>
-               <!-- Entrenador Column -->
-               <ng-container matColumnDef="telefono">
-                   <th mat-header-cell *matHeaderCellDef>Teléfono</th>
-                   <td mat-cell *matCellDef="let item">{{ item.numeroTelefonico }}</td>
-               </ng-container>
-               <!-- Duración Column -->
-               <ng-container matColumnDef="tipo">
-                   <th mat-header-cell *matHeaderCellDef>Tipo</th>
-                   <td mat-cell *matCellDef="let item">{{ item.tipo }}</td>
-               </ng-container>
-               <ng-container matColumnDef="alberca">
-                   <th mat-header-cell *matHeaderCellDef>Casilleros</th>
-                   <td mat-cell *matCellDef="let item">
-                       <ng-container *ngIf="item.casilleros == 1; else noCasilleros">
-                           Sí
-                       </ng-container>
-                       <ng-template #noCasilleros>
-                           No
-                       </ng-template>
-                   </td>
-               </ng-container>
-               <ng-container matColumnDef="gimnasio">
-                   <th mat-header-cell *matHeaderCellDef>Estacionamiento</th>
-                   <td mat-cell *matCellDef="let item">
-                       <ng-container *ngIf="item.estacionamiento == 1; else noEstacionamiento">
-                           Sí
-                       </ng-container>
-                       <ng-template #noEstacionamiento>
-                           No
-                       </ng-template>
-                   </td>
-               </ng-container>
-               <ng-container matColumnDef="IDgimnasio">
-                   <th mat-header-cell *matHeaderCellDef>Regaderas</th>
-                   <td mat-cell *matCellDef="let item">
-                       <ng-container *ngIf="item.energia == 1; else noEnergia">
-                           Sí
-                       </ng-container>
-                       <ng-template #noEnergia>
-                           No
-                       </ng-template>
-                   </td>
-               </ng-container>
-               <ng-container matColumnDef="ofertas">
-                   <th mat-header-cell *matHeaderCellDef>Bicicletero</th>
-                   <td mat-cell *matCellDef="let item">
-                       <ng-container *ngIf="item.bicicletero == 1; else noBicicletero">
-                           Sí
-                       </ng-container>
-                       <ng-template #noBicicletero>
-                           No
-                       </ng-template>
-                   </td>
-               </ng-container>
-               <!-- Edit and Delete Columns -->
-               <ng-container matColumnDef="actions">
-                   <th mat-header-cell *matHeaderCellDef>Acciones</th>
-                   <td mat-cell *matCellDef="let item">
-                       <button mat-icon-button color="primary" (click)="editarSucursal(item.id_bodega)">
-                           <mat-icon>edit</mat-icon>
-                         </button>
-                       <!--<button mat-icon-button color="warn" (click)="borrarSucursal(item.idGimnasio)">
-                           <mat-icon>delete</mat-icon>
-                         </button>-->
-                   </td>
-               </ng-container>
-               <ng-container matColumnDef="ubicacion">
-                   <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Ubicacion</th>
-                   <td mat-cell *matCellDef="let item">
-                       <button class="buton_location" (click)="verUbicacion(item)">
-                           <mat-icon>
-                               location_on
-                           </mat-icon>
-                       </button>
-                   </td>
-               </ng-container>
-               <ng-container matColumnDef="activar">
-                   <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Activar</th>
-                   <td mat-cell *matCellDef="let item; let i = index">
-                       <div class="toggle-container">
-                           <input type="checkbox" id="toggle{{item.idBodega}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.id_bodega)">
-                           <label for="toggle{{item.idBodega}}{{i}}" class="toggle-label"></label>
-                       </div>
-                   </td>
-               </ng-container>
-               <!--<ng-container matColumnDef="horario">
-                <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Horario</th>
-                <td mat-cell *matCellDef="let item">
-                    <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: rgb(0, 0, 0); background-color: #fd9727;" (click)="verHorario(item.idGimnasio)">Ver horario</button>
-                </td>
-            </ng-container>-->
-               <ng-container matColumnDef="documentacion">
-                <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Documentación</th>
-                <td mat-cell *matCellDef="let item">
-                    <!--<button mat-raised-button style="background-color: #fd9727; font-size: 14px; margin-right: 10px;" (click)="agregarHorario(item.idGimnasio)">+Agregar horario</button>-->
-                    <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: white;" (click)="agregarDocumentos(item.id_bodega, item.nombreBodega)">Agregar documentos</button>
-                </td>
-            </ng-container>
-
-               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-               <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
-           </table>
-           <mat-paginator
-            [pageSizeOptions]="[5, 10, 15, 20]"
-            showFirstLastButtons
-            ></mat-paginator>
-           <!--<div style="text-align: right; margin-bottom: 50px;">
-               <button mat-icon-button color="primary" (click)="prevPage()">
-                   <mat-icon>navigate_before</mat-icon>
-               </button>
-   
-               <button mat-icon-button color="primary" (click)="nextPage()">
-                   <mat-icon>navigate_next</mat-icon>
-               </button>  
-             </div>-->
-       </div>
-   </form>
-   <br/>
-   </div>
+    <div class="container mt-4">
+        <h2 mat-dialog-title class="mb-3">SUCURSALES</h2>
+        <div style="text-align: right; margin-bottom: 50px;">
+            <button mat-raised-button (click)="agregarSucursal()" style="background-color: #fd9727; font-size: 16px;">
+                <mat-icon>add</mat-icon> AGREGAR SUCURSAL
+            </button>
+        </div>
+        <div style="margin-left: 70px;color:red;font-size: 20px;">{{message}}</div>
+        <div class="mb-3">
+            <mat-form-field class="example-full-width">
+                <mat-label>Busca por columnas</mat-label>
+                <span matPrefix class="icon_search"><mat-icon>search</mat-icon></span>
+                <input matInput placeholder="Busca por columnas" #txtSearch (keyup)="onSearchPokemon($event)">
+            </mat-form-field>
+        </div>
+        <form>
+            <div class="table-container">
+                <table mat-table [dataSource]="dataSource">
+                    <ng-container matColumnDef="nombre">
+                        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                        <td mat-cell *matCellDef="let item">{{ item.nombreBodega }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="direccion">
+                        <th mat-header-cell *matHeaderCellDef>Dirección</th>
+                        <td mat-cell *matCellDef="let item">
+                            {{ item.direccion}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="telefono">
+                        <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+                        <td mat-cell *matCellDef="let item">{{ item.numeroTelefonico }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                        <td mat-cell *matCellDef="let item">
+                            <button mat-icon-button color="primary" (click)="editarSucursal(item.id_bodega)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="ubicacion">
+                        <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Ubicacion</th>
+                        <td mat-cell *matCellDef="let item">
+                            <button class="buton_location" (click)="verUbicacion(item)">
+                                <mat-icon>
+                                    location_on
+                                </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="activar">
+                        <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Activar</th>
+                        <td mat-cell *matCellDef="let item; let i = index">
+                            <div class="toggle-container">
+                                <input type="checkbox" id="toggle{{item.idBodega}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.id_bodega)">
+                                <label for="toggle{{item.idBodega}}{{i}}" class="toggle-label"></label>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="documentacion">
+                        <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Documentación</th>
+                        <td mat-cell *matCellDef="let item">
+                            <!--<button mat-raised-button style="background-color: #fd9727; font-size: 14px; margin-right: 10px;" (click)="agregarHorario(item.idGimnasio)">+Agregar horario</button>-->
+                            <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: white;" (click)="agregarDocumentos(item.id_bodega, item.nombreBodega)">Agregar documentos</button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[5, 10, 15, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+        </form>
+        <br/>
+    </div>
 </div>

@@ -96,7 +96,6 @@ list_sucursales():Observable<any> {
 
 //Consultar informacion de sucursales
 chart_sucursales(data: any):Observable<any> {
-  console.log(data, "data");
   return this.clienteHttp.post<dataChart>(this.APIv2 + 'chart_sucursales.php', data);
 }
 

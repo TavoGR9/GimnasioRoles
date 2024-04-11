@@ -1,32 +1,22 @@
-import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { VentasComponent } from '../ventas/ventas.component';
+import { Component } from "@angular/core";
+import { OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { EntradasComponent } from '../entradas/entradas.component';
-import { AuthService } from '../../service/auth.service';
-import { Router } from '@angular/router';
+import { AuthService } from "../../service/auth.service";
+import { Router } from "@angular/router";
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { format } from "date-fns";
 import { ToastrService } from "ngx-toastr";
 import { ChartOptions, ChartType, ChartDataset } from "chart.js";
 
-
 @Component({
-  selector: 'app-reports',
-  templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.css']
+  selector: "app-reports",
+  templateUrl: "./reports.component.html",
+  styleUrls: ["./reports.component.css"],
 })
-export class ReportsComponent implements OnInit{
-
-  //graficas
+export class ReportsComponent implements OnInit {
   form: FormGroup;
-  currentUser: string = '';
+  currentUser: string = "";
   opcionSeleccionada: string = "0";
   sucursales: DatosGrafico[] = [];
   sucursaless: Graficoss[] = [];
@@ -40,202 +30,191 @@ export class ReportsComponent implements OnInit{
   public barChartType: ChartType = "bar";
   public barChartLegend = true;
   public barChartData: ChartDataset[] = [];
-  public coloresPersonalizados: string[] = ['#fd9727'];
-  datosGraficosPorGimnasio: { [key: string]: { chartLabels: string[], chartData: any[] } } = {};
+  public coloresPersonalizados: string[] = ["#fd9727"];
+  datosGraficosPorGimnasio: {
+    [key: string]: { chartLabels: string[]; chartData: any[] };
+  } = {};
+  doughnutChartLegend = true;
+  doughnutChartType: ChartType = "doughnut";
 
-
-
-  // Agrega estas propiedades al componente
-doughnutChartOptions: ChartOptions = {
-  // Configuración del gráfico de dona
-};
-
-doughnutChartLegend = true; // o false según tus necesidades
-doughnutChartType: ChartType = 'doughnut';
-
-constructor(private fb: FormBuilder,private toastr: ToastrService,private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
-  this.form = this.fb.group({
-    p_inicial: ["", Validators.required],
-    p_final: ["", Validators.required],
-    tipo: ["", Validators.required],
-  });
-}
-
-  ngOnInit(): void {
-
-    this.currentUser = this.auth.getCurrentUser();
-    if(this.currentUser){
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
-
-    this.obtenerDatosParaGrafico1();
-    this.obtenerDatosParaGrafico2();
+  constructor(
+    private fb: FormBuilder,
+    private toastr: ToastrService,
+    private auth: AuthService,
+    public dialog: MatDialog,
+  ) {
+    this.form = this.fb.group({
+      p_inicial: ["", Validators.required],
+      p_final: ["", Validators.required],
+      tipo: ["", Validators.required],
+    });
   }
 
-  getSSdata(data: any){
+  ngOnInit(): void {
+    this.currentUser = this.auth.getCurrentUser();
+    if (this.currentUser) {
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    this.obtenerDatosParaGrafico1();
+    this.obtenerDatosParaGrafico2();
+    //this.obtenerDatosParaGrafico5();
+  }
+
+  getSSdata(data: any) {
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
         this.auth.loggedIn.next(true);
-          this.auth.role.next(resultData.rolUser);
-          this.auth.userId.next(resultData.id);
-          this.auth.idGym.next(resultData.idGym);
-          this.auth.nombreGym.next(resultData.nombreGym);
-          this.auth.email.next(resultData.email);
-          this.auth.encryptedMail.next(resultData.encryptedMail);
-      }, error: (error) => { console.log(error); }
+        this.auth.role.next(resultData.rolUser);
+        this.auth.userId.next(resultData.id);
+        this.auth.idGym.next(resultData.idGym);
+        this.auth.nombreGym.next(resultData.nombreGym);
+        this.auth.email.next(resultData.email);
+        this.auth.encryptedMail.next(resultData.encryptedMail);
+      },
+      error: (error) => {
+        console.log(error);
+      },
     });
   }
-////////////////////////////////////////////GRAFICAS/////////////////////////7777777
-formatearFecha(fechaOriginal: string): string {
-  const fechaObj = new Date(fechaOriginal);
-  // Formatear la fecha en el formato YYYY/MM/DD
-  const fechaFormateada = format(fechaObj, "yyyy-MM-dd");
-  return fechaFormateada;
-}
 
-obtenerDatosParaGrafico1() {
-  console.log("entra");
-  let inicial = this.formatearFecha(this.form.value.p_inicial);
-  let final = this.formatearFecha(this.form.value.p_final);
+  ////////////////////////////////////////////GRAFICAS/////////////////////////7777777
+  formatearFecha(fechaOriginal: string): string {
+    const fechaObj = new Date(fechaOriginal);
+    const fechaFormateada = format(fechaObj, "yyyy-MM-dd");
+    return fechaFormateada;
+  }
 
-  // Asignar la respuesta a las propiedades de rango de fecha
-  this.form.value.p_inicial = inicial;
-  this.form.value.p_final = final;
-
-  this.auth.chart_sucursales(this.form.value).subscribe({
-    next: (resultData: DatosGrafico[]) => {
-      console.log("resultData", resultData);
-      if (resultData.length === 0 || resultData[0].nombre === "No_result") {
-        this.toastr.error(
-          "No hay resultados disponibles...",
-          "No hay resultados",
-          {
-            positionClass: "toast-bottom-left",
+  obtenerDatosParaGrafico1() {
+    if (this.form.value.p_inicial && this.form.value.p_final) {
+      let inicial = this.formatearFecha(this.form.value.p_inicial);
+      let final = this.formatearFecha(this.form.value.p_final);
+      this.form.value.p_inicial = inicial;
+      this.form.value.p_final = final;
+   
+      this.auth.chart_sucursales(this.form.value).subscribe({
+        next: (resultData: DatosGrafico[]) => {
+          if (resultData.length === 0 || resultData[0].nombre === "No_result") {
+            this.toastr.error(
+              "No hay resultados disponibles...",
+              "No hay resultados",
+              {
+                positionClass: "toast-bottom-left",
+              }
+            );
+            return;
           }
-        );
-        return;
-      }
-
-      this.sucursales = resultData;
-
-      this.barChartDataArray = [];
-      for (const sucursal of resultData) {
-        const chartData = {
-          data: [sucursal.ventas],
-          label: sucursal.nombre,
-          backgroundColor: this.coloresPersonalizados[0], // Accede al miembro de la clase
-          borderColor: this.coloresPersonalizados[0],
-        };
-        this.barChartDataArray.push(chartData);
-      }
-    },
-    error: (error) => {
-    },
-  });
-}
-
-obtenerDatosParaGrafico2() {
-  let inicial = this.formatearFecha(this.form.value.p_inicial);
-  let final = this.formatearFecha(this.form.value.p_final);
-
-  // Asignar la respuesta a las propiedades de rango de fecha
-  this.form.value.p_inicial = inicial;
-  this.form.value.p_final = final;
-  // Simulando datos, puedes reemplazar esto con tu lógica de obtención de datos
-  this.auth.chart_sucursales(this.form.value).subscribe({
-    next: (resultData: DatosGraficoss[]) => {
-      if (resultData.length === 0 || resultData[0].nombre === "No_result") {
-        this.toastr.error(
-          "No hay resultados disponibles...",
-          "No hay resultados",
-          {
-            positionClass: "toast-bottom-left",
+          this.sucursales = resultData;
+          this.barChartDataArray = [];
+          for (const sucursal of resultData) {
+            const chartData = {
+              data: [sucursal.ventas],
+              label: sucursal.nombre,
+              backgroundColor: this.coloresPersonalizados[0], // Accede al miembro de la clase
+              borderColor: this.coloresPersonalizados[0],
+            };
+            this.barChartDataArray.push(chartData);
           }
-        );
-        return;
-      }
-
-      this.sucursalesP = resultData;
-
-      // Limpiar datos anteriores
-      this.barChartDataArray = [];
-
-      // Procesar los datos para cada sucursal
-      resultData.forEach((sucursal, i) => {
-        const chartData = {
-          data: [
-            sucursal.visita,
-            sucursal.quincena,
-            sucursal.mensualidad,
-            sucursal.anualidad,
-          ],
-          label: sucursal.nombre,
-          backgroundColor: this.coloresPersonalizados[0], // Accede al miembro de la clase
-          borderColor: this.coloresPersonalizados[0],
-        };
-        this.barChartDataArray.push(chartData);
+        },
+        error: (error) => {},
       });
-    },
-    error: (error) => {
-      console.log(error);
-    },
-  });
-}
+    }
+  }
 
-obtenerDatosParaGrafico5() {
-  // Obtener fechas formateadas
-  const inicial = this.formatearFecha(this.form.value.p_inicial);
-  const final = this.formatearFecha(this.form.value.p_final);
+  obtenerDatosParaGrafico2() {
+    if (this.form.value.p_inicial && this.form.value.p_final) {
+      let inicial = this.formatearFecha(this.form.value.p_inicial);
+      let final = this.formatearFecha(this.form.value.p_final);
+      this.form.value.p_inicial = inicial;
+      this.form.value.p_final = final;
+  
+    // Simulando datos, puedes reemplazar esto con tu lógica de obtención de datos
+      this.auth.chart_sucursales(this.form.value).subscribe({
+        next: (resultData: DatosGraficoss[]) => {
+          if (resultData.length === 0 || resultData[0].nombre === "No_result") {
+            this.toastr.error(
+              "No hay resultados disponibles...",
+              "No hay resultados",
+              {
+                positionClass: "toast-bottom-left",
+              }
+            );
+            return;
+          }
+          this.sucursalesP = resultData;
+          // Limpiar datos anteriores
+          this.barChartDataArray = [];
+          // Procesar los datos para cada sucursal
+          resultData.forEach((sucursal, i) => {
+            const chartData = {
+              data: [
+                sucursal.visita,
+                sucursal.quincena,
+                sucursal.mensualidad,
+                sucursal.anualidad,
+              ],
+              label: sucursal.nombre,
+              backgroundColor: this.coloresPersonalizados[0], // Accede al miembro de la clase
+              borderColor: this.coloresPersonalizados[0],
+            };
+            this.barChartDataArray.push(chartData);
+          });
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+    }
+  }
 
-  // Asignar fechas formateadas al formulario
-  this.form.patchValue({ p_inicial: inicial, p_final: final });
-
-
-  // Obtener datos del servicio
-  this.auth.chart_sucursales(this.form.value).subscribe({
-    next: (resultData: Graficoss[]) => {
-      // Manejar caso sin resultados
-      if (resultData.length === 0 || resultData[0].nombreGimnasio === "No_result") {
-        this.toastr.error("No hay resultados disponibles...", "No hay resultados", {
+  obtenerDatosParaGrafico5() {
+    const inicial = this.formatearFecha(this.form.value.p_inicial);
+    const final = this.formatearFecha(this.form.value.p_final);
+    this.form.patchValue({ p_inicial: inicial, p_final: final });
+    // Obtener datos del servicio
+    this.auth.chart_sucursales(this.form.value).subscribe({
+      next: (resultData: Graficoss[]) => {
+        // Manejar caso sin resultados
+        if (
+          resultData.length === 0 ||
+          resultData[0].nombreGimnasio === "No_result"
+        ) {
+          this.toastr.error(
+            "No hay resultados disponibles...",
+            "No hay resultados",
+            {
+              positionClass: "toast-bottom-left",
+            }
+          );
+          return;
+        }
+        // Inicializar la estructura de datos para almacenar la información del gráfico
+        const datosGraficosPorGimnasio: DatosGraficosPorGimnasio = {};
+        // Procesar datos
+        resultData.forEach((dato) => {
+          if (!datosGraficosPorGimnasio[dato.nombreGimnasio]) {
+            datosGraficosPorGimnasio[dato.nombreGimnasio] = {
+              chartLabels: [],
+              chartData: [{ data: [], label: "Ventas" }],
+            };
+          }
+          datosGraficosPorGimnasio[dato.nombreGimnasio].chartLabels.push(
+            String(dato.nombreProducto)
+          );
+          datosGraficosPorGimnasio[dato.nombreGimnasio].chartData[0].data.push(
+            dato.totalVentas
+          );
+        });
+        // Asignar la estructura de datos a una propiedad del componente
+        this.datosGraficosPorGimnasio = datosGraficosPorGimnasio;
+      },
+      error: (error) => {
+        this.toastr.error("Error al obtener datos.", "Error", {
           positionClass: "toast-bottom-left",
         });
-        return;
-      }
-
-      // Inicializar la estructura de datos para almacenar la información del gráfico
-      const datosGraficosPorGimnasio: DatosGraficosPorGimnasio = {};
-
-      // Procesar datos
-      resultData.forEach((dato) => {
-        if (!datosGraficosPorGimnasio[dato.nombreGimnasio]) {
-          datosGraficosPorGimnasio[dato.nombreGimnasio] = {
-            chartLabels: [],
-            chartData: [{ data: [], label: 'Ventas' }],
-            
-          };
-          
-          
-        }
-        
-
-        datosGraficosPorGimnasio[dato.nombreGimnasio].chartLabels.push(String(dato.nombreProducto));
-        datosGraficosPorGimnasio[dato.nombreGimnasio].chartData[0].data.push(dato.totalVentas);
-        
-      });
-
-      // Asignar la estructura de datos a una propiedad del componente
-      this.datosGraficosPorGimnasio = datosGraficosPorGimnasio;
-    },
-    error: (error) => {
-      this.toastr.error("Error al obtener datos.", "Error", {
-        positionClass: "toast-bottom-left",
-      });
-    },
-  });
+      },
+    });
+  }
 }
-
-}
-  
 
 interface DatosGrafico {
   nombre: string;
@@ -250,11 +229,10 @@ interface DatosGraficoss {
   anualidad: number;
 }
 
-interface Graficoss{
+interface Graficoss {
   nombreGimnasio: string;
   nombreProducto: number;
   totalVentas: number;
-  
 }
 
 interface DatosGraficosPorGimnasio {

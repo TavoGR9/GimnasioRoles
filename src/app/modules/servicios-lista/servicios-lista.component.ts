@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
 import { ActivatedRoute } from "@angular/router";
 import { ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -10,7 +9,6 @@ import { GimnasioService } from "../../service/gimnasio.service";
 import { AuthService } from "../../service/auth.service";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
-//import { DialogSelectMembershipComponent } from '../dialog-select-membership/dialog-select-membership.component';
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
 import { DialogStateService } from "../../service/dialogState.service";
 import { MembresiaService } from "../../service/membresia.service";
@@ -91,12 +89,16 @@ export class ServiciosListaComponent {
 
   listaTabla() {
     this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
-      this.services = res;
-      this.dataSource = new MatTableDataSource(this.services);
-      this.dataSource.paginator = this.paginator;
+      if (Array.isArray(res)) {
+        this.services = res;
+        this.dataSource = new MatTableDataSource(this.services);
+        this.dataSource.paginator = this.paginator;
+      } else {
+    
+      }
     });
   }
-
+  
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
