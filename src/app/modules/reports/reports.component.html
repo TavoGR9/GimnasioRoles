@@ -1,97 +1,77 @@
 <div style="margin-top: 60px;">
-<div class="container mt-4">
-  <div class="row">
-      <h2 class="title_page">REPORTES DE SUCURSALES</h2>
-      <div class="alert alert-light" role="alert">
-          <form [formGroup]="form">
-              <mat-form-field appearance="outline" class="input_css">
-                  <mat-label>Periodo</mat-label>
-                  <mat-date-range-input [rangePicker]="picker">
-                      <input matStartDate placeholder="Fecha inicial" formControlName="p_inicial">
-                      <input matEndDate placeholder="Fecha final" formControlName="p_final">
-                  </mat-date-range-input>
-                  <mat-hint>YYYY/MM/DD – YYYY/MM/DD</mat-hint>
-                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                  <mat-date-range-picker #picker></mat-date-range-picker>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="input_css">
-                  <mat-label>Tipo de reporte</mat-label>
-                  <mat-select id="sucursal" formControlName="tipo" [(ngModel)]="opcionSeleccionada">
-                      <mat-option value="1" (click)="obtenerDatosParaGrafico1()">Membresias vendidas (total)</mat-option>
-                      <mat-option value="2" (click)="obtenerDatosParaGrafico2()">Membresias vendidas (visita, quincena, mensuaidad, anualidad)</mat-option>
-                      <mat-option value="5" (click)="obtenerDatosParaGrafico5()">Productos más vendidos (productos)</mat-option>
-                    <!--  <mat-option value="3">Servicios vendidos</mat-option>
-                      <mat-option value="4">Servicios vendidos</mat-option>
-                      <mat-option value="5">Productos vendidos (productos)</mat-option>
-                      <mat-option value="6">Productos vendidos (ingresos)</mat-option>-->
-                      <!--  <mat-option *ngIf="esSupAdmin" value="7">Productos vendidos (sucursales)</mat-option>-->
-                  </mat-select>
-              </mat-form-field>
-
-            <!-- <div  *ngIf="opcionSeleccionada === '1'">
-                <br>
-                  <button style="background-color: #fd9727;font-size: 20px;" mat-raised-button  (click)="obtenerDatosParaGrafico1()">Generar reporte.</button>
-              </div>
-              <div class="container_btn" *ngIf="opcionSeleccionada === '2'">
-                  <button mat-raised-button class="btn_css btn-danger" (click)="obtenerDatosParaGrafico2()">Generar reporte.</button>
-              </div>
-              <div class="container_btn" *ngIf="opcionSeleccionada === '5'">
-                <button mat-raised-button class="btn_css btn-danger" (click)="obtenerDatosParaGrafico5()">Generar reporte.</button>
-            </div>-->
-
-          </form>
-
-
-          <div class="row" *ngIf="opcionSeleccionada === '1'">
-              <div class="col-md-6" *ngFor="let chartData of barChartDataArray">
-                <br><br><br>
-                  <h1>{{ chartData.label }}</h1>
-                  <div style="width: 90%;height: 70%;">
-                      <canvas baseChart [datasets]="[chartData]" [labels]="['Ventas']" [options]="barChartOptions" [legend]="barChartLegend" [type]="barChartType">
-                      </canvas>
+  <div class="container mt-4">
+      <div class="row">
+          <h2 class="title_page">REPORTES DE SUCURSALES</h2>
+          <div class="alert alert-light" role="alert">
+              <form [formGroup]="form">
+                  <mat-form-field appearance="outline" class="input_css">
+                      <mat-label>Periodo</mat-label>
+                      <mat-date-range-input [rangePicker]="picker">
+                          <input matStartDate placeholder="Fecha inicial" formControlName="p_inicial">
+                          <input matEndDate placeholder="Fecha final" formControlName="p_final">
+                      </mat-date-range-input>
+                      <mat-hint>YYYY/MM/DD – YYYY/MM/DD</mat-hint>
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-date-range-picker #picker></mat-date-range-picker>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="input_css">
+                      <mat-label>Tipo de reporte</mat-label>
+                      <mat-select id="sucursal" formControlName="tipo" [(ngModel)]="opcionSeleccionada">
+                          <mat-option value="1" (click)="obtenerDatosParaGrafico1()">Membresias vendidas (total)</mat-option>
+                          <mat-option value="2" (click)="obtenerDatosParaGrafico2()">Membresias vendidas (visita, quincena, mensuaidad, anualidad)</mat-option>
+                          <mat-option value="5" (click)="obtenerDatosParaGrafico5()">Productos más vendidos (productos)</mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </form>
+              <div class="row" *ngIf="opcionSeleccionada === '1'">
+                  <div class="col-md-6" *ngFor="let chartData of barChartDataArray">
+                      <br>
+                      <br>
+                      <br>
+                      <h1>{{ chartData.label }}</h1>
+                      <div style="width: 90%;height: 70%;">
+                          <canvas baseChart [datasets]="[chartData]" [labels]="['Ventas']" [options]="barChartOptions" [legend]="barChartLegend" [type]="barChartType">
+                          </canvas>
+                      </div>
                   </div>
               </div>
-          </div>
-          <div class="row" *ngIf="opcionSeleccionada === '2'">
-              <div class="col-md-6" *ngFor="let chartData of barChartDataArray">
-                  <br><br><br>
-                  <h1>{{ chartData.label }}</h1>
-                  <div style="width: 90%;height: 70%;">
-                      <canvas baseChart [datasets]="[chartData]" [labels]="['Visita', 'Quincena','Mensuaidad', 'Anualidad']" [options]="barChartOptions" [legend]="barChartLegend" [type]="barChartType">
-                      </canvas>
+              <div class="row" *ngIf="opcionSeleccionada === '2'">
+                  <div class="col-md-6" *ngFor="let chartData of barChartDataArray">
+                      <br>
+                      <br>
+                      <br>
+                      <h1>{{ chartData.label }}</h1>
+                      <div style="width: 90%;height: 70%;">
+                          <canvas baseChart [datasets]="[chartData]" [labels]="['Visita', 'Quincena','Mensuaidad', 'Anualidad']" [options]="barChartOptions" [legend]="barChartLegend" [type]="barChartType">
+                          </canvas>
+                      </div>
                   </div>
               </div>
-          </div>
-
-          <div class="row" *ngIf="opcionSeleccionada === '5'">
-            <div class="col-md-6" *ngFor="let gimnasioData of datosGraficosPorGimnasio | keyvalue">
-              <br><br><br>
-              <div >
-                <h1>{{ gimnasioData.key }}</h1>
-                <div style="width: 90%; height: 70%;">
-                  <canvas baseChart 
-                          [datasets]="gimnasioData.value.chartData" 
-                          [labels]="gimnasioData.value.chartLabels" 
-                          [options]="barChartOptions" 
-                          [legend]="barChartLegend" 
-                          [type]="barChartType">
-                  </canvas>
-                </div>
+              <div class="row" *ngIf="opcionSeleccionada === '5'">
+                  <div class="col-md-6" *ngFor="let gimnasioData of datosGraficosPorGimnasio | keyvalue">
+                      <br>
+                      <br>
+                      <br>
+                      <div>
+                          <h1>{{ gimnasioData.key }}</h1>
+                          <div style="width: 90%; height: 70%;">
+                              <canvas baseChart [datasets]="gimnasioData.value.chartData" [labels]="gimnasioData.value.chartLabels" [options]="barChartOptions" [legend]="barChartLegend" [type]="barChartType">
+                              </canvas>
+                          </div>
+                      </div>
+                  </div>
               </div>
-            </div>
-        </div>
-
           <!--<div class="row" *ngIf="opcionSeleccionada === '1'">
-            <div class="col-md-6" *ngFor="let chartData of barChartDataArray">
-              <br><br><br>
-              <h1>{{ chartData.label }}</h1>
-              <div style="width: 90%; height: 70%;">
-                <canvas baseChart [datasets]="[{ data: chartData.data }]" [labels]="['Ventas']" [options]="doughnutChartOptions" [legend]="doughnutChartLegend" [type]="doughnutChartType"></canvas>
-              </div>
+          <div class="col-md-6" *ngFor="let chartData of barChartDataArray">
+            <br><br><br>
+            <h1>{{ chartData.label }}</h1>
+            <div style="width: 90%; height: 70%;">
+              <canvas baseChart [datasets]="[{ data: chartData.data }]" [labels]="['Ventas']" [options]="doughnutChartOptions" [legend]="doughnutChartLegend" [type]="doughnutChartType"></canvas>
             </div>
+          </div>
           </div>-->
-          
+
+          </div>
       </div>
   </div>
-</div>
 </div>

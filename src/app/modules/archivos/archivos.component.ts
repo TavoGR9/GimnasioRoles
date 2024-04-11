@@ -26,7 +26,6 @@ export class ArchivosComponent implements OnInit{
   constructor(
     public dialogo: MatDialogRef<ArchivosComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-
     public form: FormBuilder,
     private archivoService: ArchivoService,
     private spinner: NgxSpinnerService,
@@ -35,7 +34,6 @@ export class ArchivosComponent implements OnInit{
     private router: Router
   ) {
     this.id_bodega = data.id_bodega;
-    console.log(this.id_bodega, "this.id_bodega");
     this.nombreBodega = data.nombreBodega;
     this.formularioArchivo = this.form.group({
       nombreArchivo: ['', Validators.required],
@@ -68,7 +66,6 @@ export class ArchivosComponent implements OnInit{
   const enlaceTemporal = document.createElement('a');
   enlaceTemporal.href = url;
   }
-
    seleccionarArchivo(event: any) {
     const archivos: FileList = event.target.files;
   
@@ -79,17 +76,15 @@ export class ArchivosComponent implements OnInit{
   
     if (archivos && archivos.length > 0) {
       const lector = new FileReader();
-  
       lector.onload = (e) => {
-        // Obtén la representación en base64 del archivo
+        // Se obtiene la representación en base64 del archivo
         const base64textString = lector.result as string;
   
-        // Asigna la representación en base64 al campo del formulario
+        // Se signa la representación en base64 al campo del formulario
         this.formularioArchivo.patchValue({
           base64textString: base64textString,
         });
       };
-  
       // Lee el contenido del primer archivo como una URL de datos
       lector.readAsDataURL(archivos[0]);
     }
@@ -103,7 +98,6 @@ export class ArchivosComponent implements OnInit{
   _handleReaderLoaded(readerEvent: any) {
     var binaryString = readerEvent.target.result;
     this.archivo.base64textString = btoa(binaryString);
-    
     this.formularioArchivo.patchValue({
       base64textString: this.archivo.base64textString, // Corrección aquí
     });
@@ -117,39 +111,12 @@ export class ArchivosComponent implements OnInit{
     }
   }
 
- /* subirArchivo(){
-    if (this.archivosSeleccionados.length > 0) {
-      // Obtén el primer archivo de la lista (puedes ajustar esto según tus necesidades)
-      const primerArchivo = this.archivosSeleccionados[0];
-
-      // Asigna los valores al formulario
-      this.formularioArchivo.patchValue({
-        nombreArchivo: primerArchivo.name,
-        tipoArchivo: primerArchivo.type,
-      });
-
-      console.log(this.formularioArchivo.value,"formulario");
-      this.archivoService.guardarArchivos(this.formularioArchivo.value).subscribe(
-        (respuesta) => {
-          // Maneja la respuesta exitosa, si es necesario
-          console.log('Carga exitosa:', respuesta);
-        },
-        (error) => {
-          // Maneja el error, si es necesario
-          console.error('Error al cargar archivos:', error);
-        }
-      );
-    }
-
-  }*/
-
   subirArchivo = async () => {
     this.spinner.show();
     if (this.archivosSeleccionados.length > 0) {
       try {
         const formData = new FormData();
         const zip = new JSZip();
-  
         // Comprimir cada archivo antes de agregarlo al ZIP
         await Promise.all(this.archivosSeleccionados.map(async (archivo) => {
           const arrayBuffer = await this.leerArchivoComoArrayBuffer(archivo);
@@ -190,7 +157,6 @@ export class ArchivosComponent implements OnInit{
             console.error('Error al guardar archivo comprimido:', error);
           }
         );
-  
         // Limpiar la lista de archivos seleccionados
         this.archivosSeleccionados = [];
       } catch (error) {

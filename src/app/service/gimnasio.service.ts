@@ -50,7 +50,7 @@ export class GimnasioService {
     let options = {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     };
-    return this.clienteHttp.post(this.API+"bodega.php", body.toString(), options);
+    return this.clienteHttp.post(this.API+"bodega.php?actualizaEstatus", body.toString(), options);
   }
 
   getAllServices(): Observable<any> {
