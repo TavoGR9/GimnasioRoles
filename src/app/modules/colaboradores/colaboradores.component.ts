@@ -6,7 +6,7 @@ import { EditarColaboradorComponent } from '../editar-colaborador/editar-colabor
 import { AuthService } from '../../service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-colaboradores',
   templateUrl: './colaboradores.component.html',
@@ -22,20 +22,25 @@ export class ColaboradoresComponent {
   colaboradores: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   
-  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService,){}
+  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private router:Router){}
 
   ngOnInit():void{
+    this.http.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
   
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaTabla();
-      this.cargarCategorias();
-      this.actualizarTabla();
-    }); 
+    
+
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.listaTabla();
+        //this.cargarCategorias();
+        //this.actualizarTabla();
+      }); 
+    }, 3000); 
   }
 
   listaTabla(){
@@ -58,29 +63,29 @@ export class ColaboradoresComponent {
     }
   }
   
-  cargarCategorias() {
-    this.http.listaRecepcionistas(this.idGym).subscribe({
-      next: (resultData) => {
-        this.empleados = resultData;
-        //this.dataSource = new MatTableDataSource(this.empleados);
-        //this.dataSource.paginator = this.paginator;
-      }
-    });
-  }
+  // cargarCategorias() {
+  //   this.http.listaRecepcionistas(this.idGym).subscribe({
+  //     next: (resultData) => {
+  //       this.empleados = resultData;
+  //       //this.dataSource = new MatTableDataSource(this.empleados);
+  //       //this.dataSource.paginator = this.paginator;
+  //     }
+  //   });
+  // }
   
-  actualizarTabla() {
-    if (!this.dataSource) {
-      // Asegúrate de que this.dataSource esté definido antes de actualizar
-      this.cargarCategorias();
-    } else {
-      this.http.listaRecepcionistas(this.idGym).subscribe({
-        next: (resultData) => {
-          this.empleados = resultData;
-       //   this.dataSource.data = this.empleados;
-        }
-      });
-    }
-  }
+  // actualizarTabla() {
+  //   if (!this.dataSource) {
+  //     // Asegúrate de que this.dataSource esté definido antes de actualizar
+  //     this.cargarCategorias();
+  //   } else {
+  //     this.http.listaRecepcionistas(this.idGym).subscribe({
+  //       next: (resultData) => {
+  //         this.empleados = resultData;
+  //      //   this.dataSource.data = this.empleados;
+  //       }
+  //     });
+  //   }
+  // }
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
@@ -153,7 +158,7 @@ export class ColaboradoresComponent {
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          this.actualizarTabla();
+          this.listaTabla();
         } else {
           // Hacer algo cuando se cancela el diálogo
         }

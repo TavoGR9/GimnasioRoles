@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { gimnasio } from '../models/gimnasio';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { ConnectivityService } from './connectivity.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,11 +13,27 @@ export class GimnasioService {
   botonEstado = new Subject<{respuesta: boolean, idGimnasio: any}>();
   optionSelected = new BehaviorSubject<number>(0);
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
+  isConnected: boolean = true;
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
+
+  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  APIv3: string = 'http://localhost/olimpusGym/conf/';
+  API: String = '';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private clienteHttp: HttpClient) {}
+  constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService) {}
+
+  comprobar(){
+    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+      this.isConnected = isConnected;
+      if (isConnected) {
+        this.API = this.APIv2;
+      } else {
+        this.API = this.APIv3;
+      }
+    });
+  }
 
   obternerPlan(): Observable<any[]>{
     return this.clienteHttp.get<any[]>(this.API+"bodega.php?consultar");

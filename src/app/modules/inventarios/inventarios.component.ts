@@ -6,6 +6,8 @@ import { EmergenteHistorialProductosComponent } from '../emergente-historial-pro
 import { MatDialog} from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth.service';
+import { inventarioService } from '../../service/inventario.service';
+
 @Component({
   selector: 'inventarios',
   templateUrl: './inventarios.component.html',
@@ -31,18 +33,23 @@ export class InventariosComponent implements OnInit {
     private productoService: ProductoService, 
     private auth: AuthService,
     public dialog: MatDialog,
+    private InventarioService: inventarioService,
     private toastr: ToastrService) {}
 
   ngOnInit(): void {
+    this.productoService.comprobar();
+    this.InventarioService.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
   
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaTablas();
-    }); 
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.listaTablas();
+      }); 
+    }, 3000); 
   }
 
   listaTablas(){

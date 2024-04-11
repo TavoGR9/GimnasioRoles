@@ -49,6 +49,7 @@ export class planComponent implements OnInit {
   displayedColumns: string[] = ['title', 'details','price','actions'];
 
   ngOnInit(): void {
+    this.membresiaService.comprobar();
     this.membresiaService.optionShow.next(4);
     this.membresiaService.optionShow.subscribe((option) => {
       if(option){
@@ -63,11 +64,13 @@ export class planComponent implements OnInit {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
   
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaTabla();
-    }); 
-    
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.listaTabla();
+      }); 
+    }, 3000); 
+
   }
   
   listaTabla() {

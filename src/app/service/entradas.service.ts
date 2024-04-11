@@ -6,14 +6,29 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { EntradaProducto } from '../models/entradas';
 import { ListaProductos } from '../models/listaProductos';
-
+import { ConnectivityService } from './connectivity.service';
 @Injectable({
   providedIn: 'root',
 })
 export class EntradasService {
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  isConnected: boolean = true;
 
-  constructor(private clienteHttp: HttpClient) {}
+  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  APIv3: string = 'http://localhost/olimpusGym/conf/';
+  API: String = '';
+
+  constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService) {}
+
+  comprobar(){
+    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+      this.isConnected = isConnected;
+      if (isConnected) {
+        this.API = this.APIv2;
+      } else {
+        this.API = this.APIv3;
+      }
+    });
+  }
 
   agregarEntradaProducto(entradaProductos:any):Observable<any>{
     console.log("entradaProductos", entradaProductos);

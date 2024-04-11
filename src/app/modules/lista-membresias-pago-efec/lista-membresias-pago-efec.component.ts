@@ -127,17 +127,17 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.pagoService.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-  
-    
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaClientesData();  
-      //this.updateDateLogs();  
-    }); 
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.updateDateLogs();  
+      }); 
+    }, 3000); 
 
   }
 

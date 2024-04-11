@@ -113,17 +113,20 @@ export class EntradasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.entrada.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-    
-    this.auth.idGym.subscribe((data) => {
-      if(data) {
-        this.idGym = data;
-        this.listaTablas();
-      }
-    });
+
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        if(data) {
+          this.idGym = data;
+          this.listaTablas();
+        }
+      });
+    }, 3000);
   }
 
   getSSdata(data: any){

@@ -3,7 +3,6 @@ import { AuthService } from "src/app/service/auth.service";
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit  } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-
 import { MatPaginator } from '@angular/material/paginator';
 import { FormGroup, FormBuilder, Validators} from "@angular/forms";
 import * as XLSX from 'xlsx';
@@ -56,6 +55,7 @@ export class VerCorteComponent implements OnInit  {
   DetallesCaja: any;
 
   ngOnInit(): void {
+    this.joinDetalleVentaService.comprobar();
     this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
       if (this.dialogRef) {
         if (isMaximized) {
@@ -71,13 +71,16 @@ export class VerCorteComponent implements OnInit  {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
   
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaTablas();
-      this.cargarVentas();
-      this.actualizarTabla();
-      
-    }); 
+
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.listaTablas();
+        this.cargarVentas();
+        this.actualizarTabla();
+      }); 
+    }, 3000);
+    
   }  
 
   getSSdata(data: any){

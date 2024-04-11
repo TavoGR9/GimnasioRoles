@@ -49,16 +49,20 @@ export class ServiciosListaComponent {
   ) {}
 
   ngOnInit(): void {
+    this.gimnasioService.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
 
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaTabla();
-    });
+    setTimeout(() => {
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.listaTabla();
+      });  
+    }, 3000);
 
+    
     this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
       if (this.dialogRef) {
         if (isMaximized) {

@@ -4,15 +4,35 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, map , throwError} from 'rxjs';
 import { membresia } from '../models/membresia';
 import { catchError } from 'rxjs/operators';
+import { ConnectivityService } from './connectivity.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MembresiaService {
 
-  API: string ="https://olympus.arvispace.com/olimpusGym/conf/" 
+  isConnected: boolean = true;
+
+  //API: string ="https://olympus.arvispace.com/olimpusGym/conf/" 
+
+  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  APIv3: string = 'http://localhost/olimpusGym/conf/';
+  API: String = '';
   
-  constructor(private clienteHttp:HttpClient) {
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+  }
+
+  comprobar(){
+    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+      this.isConnected = isConnected;
+      if (isConnected) {
+        //console.log("La red WiFi tiene acceso a Internet.");
+        this.API = this.APIv2;
+      } else {
+        //console.log("La red WiFi no tiene acceso a Internet.");
+        this.API = this.APIv3;
+      }
+    });
   }
 
   private datosPlan: any;
