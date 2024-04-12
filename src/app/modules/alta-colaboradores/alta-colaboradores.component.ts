@@ -41,7 +41,7 @@ export class AltaColaboradoresComponent {
       puesto: ['', Validators.compose([ Validators.required])],
       email:  [''],
       jefe: [1, Validators.compose([ Validators.required])],
-      foto: ['', Validators.compose([ Validators.required])],
+      foto: ['Foto', Validators.compose([ Validators.required])],
       correoEmp: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
       celular: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)])],
       pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])],

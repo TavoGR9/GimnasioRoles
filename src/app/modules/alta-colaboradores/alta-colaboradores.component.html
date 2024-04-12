@@ -5,7 +5,7 @@
         <form [formGroup]="form">
            <div >
               <div class="row">
-                 <div class="col-sm-6">
+                 <div class="col-sm-12">
                     <mat-label >Nombre completo: </mat-label>
                     <mat-form-field appearance="outline" style="width: 95%;">
                        <mat-label>Nombre</mat-label>
@@ -14,21 +14,6 @@
                           <strong class="txt_msg">**Numeros no permitidos</strong>
                        </mat-error>
                        <mat-error *ngIf="form.get('nombre')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                    </mat-form-field>
-                 </div>
-                 <div class="col-sm-6">
-                    <mat-label>Puesto: </mat-label>
-                    <mat-form-field appearance="outline" style="width: 95%;">
-                       <mat-label>Puesto</mat-label>
-                       <mat-select id="puesto" formControlName="puesto" id="puesto" [errorStateMatcher]="matcher">
-                          <!--<mat-option *ngIf="isSupadmin() || isAdmin()" value="2">Administrador</mat-option>
-                             <mat-option *ngIf="isAdmin()" value="4">Recepcionista</mat-option>-->
-                          <mat-option value="Administrador">Administrador</mat-option>
-                          <mat-option value="Recepcionista">Recepcionista</mat-option>
-                       </mat-select>
-                       <mat-error *ngIf="form.get('area')?.hasError('required')">
-                          <strong class="txt_msg">**Campo requerido</strong>
-                       </mat-error>
                     </mat-form-field>
                  </div>
               </div>
@@ -47,6 +32,21 @@
                     </mat-form-field>
                  </div>
                  <div class="col-sm-6">
+                  <mat-label>Puesto: </mat-label>
+                  <mat-form-field appearance="outline" style="width: 95%;">
+                     <mat-label>Puesto</mat-label>
+                     <mat-select id="puesto" formControlName="puesto" id="puesto" [errorStateMatcher]="matcher">
+                        <!--<mat-option *ngIf="isSupadmin() || isAdmin()" value="2">Administrador</mat-option>
+                           <mat-option *ngIf="isAdmin()" value="4">Recepcionista</mat-option>-->
+                        <mat-option value="Administrador">Administrador</mat-option>
+                        <mat-option value="Recepcionista">Recepcionista</mat-option>
+                     </mat-select>
+                     <mat-error *ngIf="form.get('area')?.hasError('required')">
+                        <strong class="txt_msg">**Campo requerido</strong>
+                     </mat-error>
+                  </mat-form-field>
+               </div>
+                 <!-- <div class="col-sm-6">
                     <mat-label>Foto: </mat-label>
                     <mat-form-field appearance="outline" style="width: 95%;">
                        <mat-label>Foto</mat-label>
@@ -56,7 +56,7 @@
                        </mat-error>
                        <mat-error *ngIf="form.get('salario')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                     </mat-form-field>
-                 </div>
+                 </div> -->
               </div>
               <div class="row">
                  <div class="col-sm-6">

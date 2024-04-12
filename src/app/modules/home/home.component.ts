@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import { HomeService } from '../../service/home.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SyncService } from '../../service/sync.service';
 
 @Component({
   selector: 'app-home',
@@ -31,18 +32,18 @@ export class HomeComponent implements OnInit{
   tablaHTMLVentas: SafeHtml | null = null;
   
   constructor(private homeService: HomeService, private sanitizer: DomSanitizer,
-    private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, ) {
+    private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, private syncService: SyncService ) {
   }
 
   ngOnInit(): void {
     this.auth.comprobar();
     this.homeService.comprobar();
-    this.currentUser = this.auth.getCurrentUser();
-    if(this.currentUser){
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
 
     setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
+      if(this.currentUser){
+        this.getSSdata(JSON.stringify(this.currentUser));
+      }
       this.auth.idGym.subscribe((data) => {
         if(data) {
           this.idGym = data;
@@ -50,7 +51,28 @@ export class HomeComponent implements OnInit{
         }
       });
     }, 3000); 
+
+   
   }
+
+  sync() {
+    this.syncService.getLocalUsers().subscribe(data => {
+      if (data.usuarios && data.usuarios.length) {
+        this.syncService.syncRemoteUsers(data.usuarios).subscribe(res => {
+          console.log('Usuarios locales sincronizados en remoto', res);
+        });
+      }
+    });
+
+    this.syncService.getRemoteUsers().subscribe(data => {
+      if (data.usuarios && data.usuarios.length) {
+        this.syncService.syncLocalUsers(data.usuarios).subscribe(res => {
+          console.log('Usuarios remotos sincronizados en local', res);
+        });
+      }
+    });
+  }
+  
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
