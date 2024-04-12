@@ -179,7 +179,6 @@ export class CrearProductoComponent implements OnInit {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria().subscribe({
       next: (respuesta) => {
-        console.log(respuesta.categorias, "respuesta");
         const categoriasU = new Set(
           respuesta.categorias.map((categoria: any) => categoria.nombreCategoria)
         );
@@ -199,7 +198,6 @@ export class CrearProductoComponent implements OnInit {
     const subCIngresado = this.form.get("nomsubcate")?.value;
     this.categoriaService.obtenerSubCategoria().subscribe({
       next: (respuesta) => {
-        console.log(respuesta.subCategoria, "respuesta");
         const subCategoriasU = new Set(
           respuesta.subCategoria.map((subCategoria: any) => subCategoria.nombreProducto)
         );
@@ -219,7 +217,6 @@ export class CrearProductoComponent implements OnInit {
     const marcaIngresado = this.form.get("marcaP")?.value;
     this.categoriaService.obtenerMarcas().subscribe({
       next: (respuesta) => {
-        console.log(respuesta.marcas, "respuesta");
         const marcasU = new Set(
           respuesta.marcas.map((marca: any) => marca.marca)
         );
@@ -251,16 +248,13 @@ export class CrearProductoComponent implements OnInit {
   }
 
   registrarProd() {
-    console.log(this.form.value, "formulario");
     if (this.form.valid) {
-      console.log(this.form.value, "formulario");
       this.spinner.show();
       ///********** Verifica si la categoria ya existe */
       this.categoriaService
         .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
         .subscribe((categoriaExistente) => {
           if (categoriaExistente.success == 1) {
-            console.log("la categoria ya existe");
             ///********** Verifica si la subcategoria ya existe */
             this.categoriaService
               .obtenerSubCategoriaPorNombre(
@@ -269,7 +263,6 @@ export class CrearProductoComponent implements OnInit {
               )
               .subscribe((subCategoriaExistente) => {
                 if (subCategoriaExistente.success == 1) {
-                  console.log("la subcategoria ya existe");
                   ///********** Verifica si la marca ya existe */
                   this.categoriaService
                     .obtenerMarcaPorNombre(this.form.value.marcaP)
@@ -412,7 +405,6 @@ export class CrearProductoComponent implements OnInit {
                         .obtenerMarcaPorNombre(this.form.value.marcaP)
                         .subscribe((marcaExistente) => {
                           if (marcaExistente.success == 1) {
-                            console.log("la marca ya existe");
                             this.spinner.hide();
                             //agregar producto
 
@@ -567,7 +559,6 @@ export class CrearProductoComponent implements OnInit {
             this.categoriaService
               .agregarCategoria(this.form.value)
               .subscribe((respuesta) => {
-                console.log("categoria agregada");
 
                 ///********** Verifica si la subcategoria ya existe */
                 this.categoriaService
@@ -577,13 +568,11 @@ export class CrearProductoComponent implements OnInit {
                   )
                   .subscribe((subCategoriaExistente) => {
                     if (subCategoriaExistente.success == 1) {
-                      console.log("la subcategoria ya existe");
 
                       this.categoriaService
                         .obtenerMarcaPorNombre(this.form.value.marcaP)
                         .subscribe((marcaExistente) => {
                           if (marcaExistente.success == 1) {
-                            console.log("la marca ya existe");
                             //agregar producto
 
                             const formularioP = {
@@ -737,14 +726,12 @@ export class CrearProductoComponent implements OnInit {
                       this.categoriaService
                         .agregarSubCategoria(formSub)
                         .subscribe((respuestaSub) => {
-                          console.log("subcategoria agregada");
 
                           ///********** Verifica si la marca ya existe */
                           this.categoriaService
                             .obtenerMarcaPorNombre(this.form.value.marcaP)
                             .subscribe((marcaExistente) => {
                               if (marcaExistente.success == 1) {
-                                console.log("la marca ya existe");
 
                                 const formularioP = {
                                   idProducto:respuestaSub.id_producto,

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { GimnasioService } from 'src/app/service/gimnasio.service';
+import { GimnasioService } from '../../service/gimnasio.service';
 
 @Component({
   selector: 'app-mensaje-desactivar',

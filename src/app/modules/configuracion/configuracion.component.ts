@@ -96,7 +96,6 @@ export class ConfiguracionComponent  implements OnInit{
   verHorario(){
     this.HorarioService.consultarHorario(this.idGym).subscribe(
       respuesta => {
-        console.log(respuesta, "respuesta");
         this.diasSemana.forEach(dia => {
           this.agregarHorarioExistente(dia, respuesta);
         });
@@ -108,7 +107,6 @@ export class ConfiguracionComponent  implements OnInit{
   listaTabla(){
     this.gimnasioService.consultarPlan(this.idGym).subscribe(
       (respuesta) => {
-        console.log(respuesta, "respuesta");
         
         this.formularioSucursales.setValue({
           nombreBodega: respuesta[0]['nombreBodega'],
@@ -143,13 +141,11 @@ export class ConfiguracionComponent  implements OnInit{
       id_bod: idGym
     };  
     const horariosData = this.formularioHorarios.value;
-    console.log(planData, "planData");
   
     // Realizar las solicitudes de actualización
     const actualizarPlan = this.gimnasioService.actualizarSucursal(planData).pipe(
       tap(respuesta => {
         if (respuesta.success === 1) {
-          console.log("La actualización del plan fue exitosa");
         }
       }),
       catchError(error => {
@@ -160,9 +156,7 @@ export class ConfiguracionComponent  implements OnInit{
   
     const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData).pipe(
       tap(respuesta => {
-        console.log(respuesta, "respuestaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         if (respuesta.success === 1) {
-          console.log("La actualización del plan fue exitosa");
         }
       }),
       catchError(error => {

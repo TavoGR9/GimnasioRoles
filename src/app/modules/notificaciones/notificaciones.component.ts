@@ -4,7 +4,7 @@ import { notificaciones } from './../../service/email-noti.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 //import { MensajeCargandoComponent } from '../mensaje-cargando/mensaje-cargando.component';
 
 @Component({

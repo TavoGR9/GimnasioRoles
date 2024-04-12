@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild , Inject} from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table"; //para controlar los datos del api y ponerlos en una tabla
 import { Producto } from "../../models/producto";
 import { ProductoService } from "../../service/producto.service";
-import { AuthService } from "src/app/service/auth.service";
+import { AuthService } from "../../service/auth.service";
 import {
   FormGroup,
   FormBuilder,
@@ -14,7 +14,7 @@ import {
 } from "@angular/forms";
 import { DetalleVentaService } from "../../service/detalle-venta.service";
 import { MatDialog } from "@angular/material/dialog";
-import { ClienteService } from "src/app/service/cliente.service";
+import { ClienteService } from "../../service/cliente.service";
 import { Ventas } from "../../models/ventas";
 import { VentasService } from "../../service/ventas.service";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -25,7 +25,7 @@ import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HomeComponent } from "../home/home.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { detalleVenta } from "src/app/models/detalleVenta";
+import { detalleVenta } from "../../models/detalleVenta";
 import { DialogStateService } from "../../service/dialogState.service";
 interface Cliente {
   ID_Cliente: number;

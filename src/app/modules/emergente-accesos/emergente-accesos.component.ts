@@ -105,7 +105,6 @@ export class EmergenteAccesosComponent implements OnInit{
 
     async cerrarPuertoSerial(): Promise<void> {
       if (!this.selectedPort) {
-        console.log('No hay puerto abierto');
         return;
       }
     
@@ -126,7 +125,6 @@ export class EmergenteAccesosComponent implements OnInit{
         // Cierra el puerto serial
         await this.selectedPort.close();
         this.selectedPort = null;
-        console.log('Puerto serie cerrado correctamente');
       } catch (error) {
         console.error('Error al cerrar el puerto serie:', error);
       }
@@ -142,8 +140,6 @@ export class EmergenteAccesosComponent implements OnInit{
               if(data){
                 this.clientSelected = true;
                 this.cliente = data.cliente; // Asigna directamente los datos del cliente
-                console.log("info: ", this.cliente);
-                console.log("el id del cliente es: ", this.cliente.ID);
                 // Ajusta el tamaño del diálogo después de que se han cargado los datos del cliente
                 this.dialogo.updateSize('600px', 'auto');
               }
@@ -178,7 +174,6 @@ export class EmergenteAccesosComponent implements OnInit{
         this.serviceHuella.insertarAsistencia(this.cliente.ID).subscribe((data: any) => {
           if(data){
             this.enviarDatosPorPuertoSerial();
-            console.log("data: ", data);
             this.IdFormControl.setValue('');
           }
           /*if(data.status == "success"){
@@ -216,7 +211,6 @@ async requestSerialPort() {
           async function enviarDatos(texto: string) {
             const encoder = new TextEncoder();
             await writer.write(encoder.encode(texto));
-            console.log("dato enviado");
           }
 
           // Enviar un texto a través del puerto serie
@@ -231,10 +225,8 @@ async requestSerialPort() {
               while (true) {
                 const { value, done } = await reader.read();
                 if (done) {
-                  console.log('Lector finalizado');
                   break;
                 }
-                console.log('Datos recibidos:', new TextDecoder().decode(value));
               }
             } catch (error) {
               console.error('Error al leer los datos:', error);
@@ -264,10 +256,8 @@ async requestSerialPort() {
   
         // Almacena el puerto seleccionado y los objetos writer y reader
         this.selectedPort = port;
-        console.log('Puerto serie abierto:', port.getInfo());
         this.writer = port.writable.getWriter();
         this.reader = port.readable.getReader();
-        console.log('Puerto serie abierto:', port);
       } catch (error) {
         console.error('Error al interactuar con el puerto serie:', error);
       }
@@ -280,7 +270,6 @@ async requestSerialPort() {
   async enviarDatos(texto: string) {
     const encoder = new TextEncoder();
     await this.writer.write(encoder.encode(texto));
-    console.log("enviado");
     this.toastr.success('Apertura de torniquete correcta, puedes acceder!!!', 'Éxito');
     //this.dialogo.close(true);
   }
@@ -291,10 +280,8 @@ async requestSerialPort() {
       while (true) {
         const { value, done } = await this.reader.read();
         if (done) {
-          console.log('Lector finalizado');
           break;
         }
-        console.log('Datos recibidos:', new TextDecoder().decode(value));
       }
     } catch (error) {
       console.error('Error al leer los datos:', error);
