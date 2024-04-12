@@ -174,9 +174,7 @@ export class FormPagoEmergenteComponent implements OnInit{
     imprimirResumen() {       
       if (this.precio <= this.moneyRecibido) {
         const PrecioCalcular = this.moneyRecibido - this.precio ;
-        console.log(this.data.idCliente);
         this.membresiaService.ticketPagoInfo(this.data.idCliente).subscribe((respuesta) => {
-          console.log(respuesta);
           
           if (respuesta && respuesta.length > 0) {
             const ticketInfo = respuesta[0];
@@ -345,7 +343,6 @@ export class FormPagoEmergenteComponent implements OnInit{
           } else {
               this.duracion = Number(this.duracion); 
               fechaFin.setDate(fechaFin.getDate() + this.duracion -1);
-              console.log(fechaFin, "feca fin");
           }
 
           const fechaFormateadaFin: string = fechaFin.toISOString().split('T')[0];                    
