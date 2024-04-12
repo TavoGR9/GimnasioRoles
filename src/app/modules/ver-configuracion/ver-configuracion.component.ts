@@ -29,16 +29,20 @@ export class VerConfiguracionComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.currentUser = this.auth.getCurrentUser();
+    this.gimnasioService.comprobar();
+    
+    setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-  
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.consultarHorario();
-      this.consultarGym();
-    }); 
+      this.auth.idGym.subscribe((data) => {
+        this.idGym = data;
+        this.consultarHorario();
+        this.consultarGym();
+      }); 
+    }, 3000); 
+
   }
 
   consultarGym(){
