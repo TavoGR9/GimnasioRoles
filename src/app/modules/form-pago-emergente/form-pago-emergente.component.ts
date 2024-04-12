@@ -18,8 +18,8 @@ export class FormPagoEmergenteComponent implements OnInit{
   idMembresiaSelec: any;
   nombreMembresia: any;
   precio: any;
-  duracion: any;
-  moneyRecibido: number = 0; // =0
+  duracion: number = 0;
+  moneyRecibido: number = 0; 
   ticketInfo: any;
   @Output() actualizarTablas = new EventEmitter<boolean>();
   
@@ -38,7 +38,7 @@ export class FormPagoEmergenteComponent implements OnInit{
     //console.log(this.data, "data");
     // Llamar al servicio para obtener la lista de membresías
     this.precio = 0;
-    this.duracion = 'días';
+    //this.duracion = 'días';
     //console.log('el detalle membresia del cliente es: ', this.data.detMemID )
     /*if(this.data.action == 'Online' ){
       this.idMembresiaSelec = this.data.idMem;
@@ -61,7 +61,8 @@ export class FormPagoEmergenteComponent implements OnInit{
 
   onMembresiaChange(): void {
     this.membresiaService.membresiasInfo(this.membresiaSeleccionada).subscribe((resultado)=> {
-      this.duracion = `${resultado.Duracion} dias `;
+     // this.duracion = `${resultado.Duracion} dias `;
+      this.duracion = resultado.Duracion;
       this.precio = `${resultado.Precio}`;
       this.nombreMembresia = `${resultado.Membresia}`;
     });
@@ -173,7 +174,10 @@ export class FormPagoEmergenteComponent implements OnInit{
     imprimirResumen() {       
       if (this.precio <= this.moneyRecibido) {
         const PrecioCalcular = this.moneyRecibido - this.precio ;
+        console.log(this.data.idCliente);
         this.membresiaService.ticketPagoInfo(this.data.idCliente).subscribe((respuesta) => {
+          console.log(respuesta);
+          
           if (respuesta && respuesta.length > 0) {
             const ticketInfo = respuesta[0];
             const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.precio);
@@ -325,37 +329,28 @@ export class FormPagoEmergenteComponent implements OnInit{
         //console.log('membresia seleccionada antes de pagar:', this.membresiaSeleccionada );
         if(this.moneyRecibido >= this.precio){
           const PrecioCalcular = this.moneyRecibido - this.precio;
-
           // Obtener la fecha actual
           const fechaActual: Date = new Date();
-
           // Formatear la fecha en el formato deseado (yyyy-mm-dd)
           const fechaFormateada: string = fechaActual.toISOString().split('T')[0];
-
           let fechaFin: Date = new Date(fechaActual); // Crear una copia de la fecha actual
-         // console.log(this.duracion, "this.duracion");
-         /* if (this.duracion === 1) {
-             // console.log("hola");
-          } else if (this.duracion === 30) {
-              // Si la duración es 30 días, sumar un mes y restar un día
+
+         if (this.duracion == 1) {
+          } else if (this.duracion == 30) {
               fechaFin.setMonth(fechaFin.getMonth() + 1);
-              fechaFin.setDate(0); // Establecer el último día del mes anterior
+              if (fechaFin.getMonth() == 0) {
+                fechaFin.setFullYear(fechaFin.getFullYear() + 1);
+              }   
+              fechaFin.setDate(fechaFin.getDate() - 1);
           } else {
-              // Si la duración es diferente, simplemente sumar los días
-              fechaFin.setDate(fechaFin.getDate() + this.duracion - 1);
-          }*/
+              this.duracion = Number(this.duracion); 
+              fechaFin.setDate(fechaFin.getDate() + this.duracion -1);
+              console.log(fechaFin, "feca fin");
+          }
 
+          const fechaFormateadaFin: string = fechaFin.toISOString().split('T')[0];                    
 
-          // Imprimir la fecha actual
-          //console.log("Fecha actual:", fechaActual);
-          //console.log(this.duracion, "console data");
-          //console.log("Fecha de finalización:", fechaFin.toISOString().split('T')[0]);
-
-          //console.log(this.membresiaSeleccionada, "console data");
-          
-                                                                                                        //this.data.detMemID
-          this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada, this.data.detMemID, this.precio).subscribe((dataResponse: any)=> {
-           // console.log(dataResponse, "dataResponse");
+          this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada, this.data.detMemID, this.precio, fechaFormateadaFin).subscribe((dataResponse: any)=> {
           this.actualizarTablas.emit(true);
           
           this.dialogo.close(true);

@@ -159,6 +159,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     // Verifica si las fechas han cambiado y actualiza los logs
     if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
       this.updateDateLogs();
+      this.listaClientesData();
     }
   }
 
