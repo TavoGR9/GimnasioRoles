@@ -51,13 +51,18 @@ export class ReportsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentUser = this.auth.getCurrentUser();
-    if (this.currentUser) {
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
-    this.obtenerDatosParaGrafico1();
-    this.obtenerDatosParaGrafico2();
-    //this.obtenerDatosParaGrafico5();
+    this.auth.comprobar();
+
+    setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
+      if (this.currentUser) {
+        this.getSSdata(JSON.stringify(this.currentUser));
+      }
+      this.obtenerDatosParaGrafico1();
+      this.obtenerDatosParaGrafico2();
+      //this.obtenerDatosParaGrafico5();
+    }, 3000); 
+    
   }
 
   getSSdata(data: any) {

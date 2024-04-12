@@ -8,6 +8,8 @@ import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 import { AuthService } from "../../service/auth.service";
 import { ArchivosComponent } from "../archivos/archivos.component";
+import { ColaboradorService } from "../../service/colaborador.service";
+import { PostalCodeService } from "./../../service/cp.service";
 @Component({
   selector: "app-sucursal-lista",
   templateUrl: "./sucursal-lista.component.html",
@@ -29,7 +31,9 @@ export class SucursalListaComponent implements OnInit {
   constructor(
     private gimnasioService: GimnasioService,
     public dialog: MatDialog,
-    private auth: AuthService
+    private auth: AuthService,
+    private colaborador: ColaboradorService,
+    private postalCodeService: PostalCodeService
   ) {}
 
   displayedColumns: string[] = [
@@ -83,15 +87,24 @@ export class SucursalListaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentUser = this.auth.getCurrentUser();
-    if (this.currentUser) {
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
-    this.gimnasioService.obternerPlan().subscribe((data) => {
-      this.gimnasio = data;
-      this.dataSource = new MatTableDataSource(this.gimnasio);
-      this.dataSource.paginator = this.paginator;
-    });
+
+    this.gimnasioService.comprobar();
+    this.auth.comprobar();
+    this.colaborador.comprobar();
+    this.postalCodeService.comprobar();
+
+    setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
+      if (this.currentUser) {
+        this.getSSdata(JSON.stringify(this.currentUser));
+      }
+      this.gimnasioService.obternerPlan().subscribe((data) => {
+        this.gimnasio = data;
+        this.dataSource = new MatTableDataSource(this.gimnasio);
+        this.dataSource.paginator = this.paginator;
+      });
+    }, 3000); 
+
 
     this.gimnasioService.botonEstado.subscribe((data) => {
       if (data.respuesta) {
