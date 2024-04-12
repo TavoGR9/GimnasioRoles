@@ -48,7 +48,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     private pagoService: PagoMembresiaEfectivoService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     @Inject(MAT_DIALOG_DATA)  public data: any) { 
-      console.log(data, "dataaaaaaaaaaaaaaaaa");
       // Agregar campos el formulario 
       this.form = this.fb.group({
         id_cliente: [this.data.idCliente, Validators.required],
@@ -77,7 +76,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     this.huella = this.data.huella;
 
     this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
-      console.log(respuesta, "respuesta");
       this.membresiaHisto = respuesta;
       this.dataSource = new MatTableDataSource(this.membresiaHisto);
       this.dataSource.paginator = this.paginator;
@@ -165,7 +163,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
   }
 
   capturarHuella(): void {
-    console.log("URL QUE ABRE EL BOTON DE CAPTURAR HUELLA: ",this.url);
     this.spinner.show();
 
     setTimeout(() => {

@@ -183,7 +183,6 @@ export class EntradasComponent implements OnInit {
       const fechaFormateada = `${año}-${mes}-${día}`;
 
       if (productoSeleccionado) {
-        console.log(this.tablaDatos, "datos");
         // Verificar si el producto ya está en la tabla
         const indiceProducto = this.tablaDatos.findIndex(item => item.id_Probob === idProductoSeleccionado);
         if (indiceProducto !== -1) {
@@ -264,10 +263,8 @@ export class EntradasComponent implements OnInit {
     if (this.tablaDatos.length > 0) {
       this.spinner.show();
       const dataToSend: any[] = this.tablaDatos;
-      console.log(dataToSend, "dataToSenddataToSenddataToSend");
       this.entrada.agregarEntradaProducto(dataToSend).subscribe({
         next: (respuesta) => {
-          console.log(respuesta, "respuesta");
           if (respuesta.success == 1) {
             this.spinner.hide();
             this.dialog

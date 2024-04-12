@@ -183,7 +183,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                                     this.formatDate(this.fechaFin),
                                     this.auth.idGym.getValue()).subscribe(
       response => {
-        console.log(response);
           if (response.msg == 'No hay resultados') {
           this.clienteActivo = [];
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -211,7 +210,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   listaClientesData(): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (response: any) => {
-        console.log('Respuesta del servicio:', response.data);
         this.clienteActivo = response.data;
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
         this.dataSourceActivos.paginator = this.paginatorActivos;
@@ -230,7 +228,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   abrirInfoCliente(prod: any): void{ 
-    console.log(prod, "prod");
     this.dialog
             .open(EmergenteInfoClienteComponent, {
               data: {
@@ -271,7 +268,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   abrirEmergente(prod: any) {
-    console.log(prod, "prod");
     // Abre el diálogo y almacena la referencia
     const dialogRef = this.dialog.open(FormPagoEmergenteComponent, {
       data: {
@@ -300,7 +296,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
         this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((respuesta) => {
           this.clienteActivo = respuesta.data;
-          console.log('datos en tabla: ',this.clienteActivo);
           // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
           this.dataSourceActivos.data = this.clienteActivo.slice();
           // Notificar a la tabla sobre el cambio

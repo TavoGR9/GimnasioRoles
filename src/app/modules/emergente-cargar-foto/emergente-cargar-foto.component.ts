@@ -184,7 +184,6 @@ export class EmergenteCargarFotoComponent implements OnInit{
     }
     this.ServiceCliente.updatePhoto(this.archivo).subscribe({
       next: (resultData) => { 
-        console.log(resultData); // Imprimir resultData en la consola
         this.toastr.success('Se guardó la foto exitosamente...', 'Éxito');
         this.dialogo.close(true);
       }, 

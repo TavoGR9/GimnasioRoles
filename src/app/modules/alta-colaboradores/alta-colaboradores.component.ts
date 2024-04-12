@@ -119,7 +119,6 @@ export class AltaColaboradoresComponent {
   registrar(): any {
     if (this.form.valid) {
       this.spinner.show();
-      console.log(this.form.value);
       this.http.agregarEmpleado(this.form.value).subscribe({
         next: (resultData) => {
           if (resultData.message === 'MailExists') {

@@ -102,7 +102,6 @@ export class HorariosComponent implements OnInit {
       }
     });
 
-    console.log(this.formularioHorarios.value, "form");
     // Verifica si el formulario es válido
     if (this.formularioHorarios.valid) {
       this.spinner.show();

@@ -59,7 +59,6 @@ export class HomeComponent implements OnInit{
     this.syncService.getLocalUsers().subscribe(data => {
       if (data.usuarios && data.usuarios.length) {
         this.syncService.syncRemoteUsers(data.usuarios).subscribe(res => {
-          console.log('Usuarios locales sincronizados en remoto', res);
         });
       }
     });
@@ -67,7 +66,6 @@ export class HomeComponent implements OnInit{
     this.syncService.getRemoteUsers().subscribe(data => {
       if (data.usuarios && data.usuarios.length) {
         this.syncService.syncLocalUsers(data.usuarios).subscribe(res => {
-          console.log('Usuarios remotos sincronizados en local', res);
         });
       }
     });
