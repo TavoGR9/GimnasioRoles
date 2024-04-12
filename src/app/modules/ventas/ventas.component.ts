@@ -117,18 +117,13 @@ export class VentasComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-
     setTimeout(() => {
       this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
-        console.log(this.auth.idGym.getValue(), "this.auth.idGym.getValue()");
-        console.log(respuesta, "respuesta");
           this.productData = respuesta;
           this.dataSource = new MatTableDataSource(this.productData);
           this.dataSource.paginator = this.paginator; 
         });
     }, 3000);
-
-   
   }
 
   ejecutarServicio(): void {
@@ -197,9 +192,7 @@ export class VentasComponent implements OnInit {
         total: totalAPagar,
       };
 
-      console.log(datosVentas);
       this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
-        console.log(response, "response");
         const lastInsertedId3 = response.lastInsertedId3;
         // Enviar detalles de ventas
         const detallesVenta = this.selectedProducts.map((producto) => {
@@ -213,7 +206,6 @@ export class VentasComponent implements OnInit {
             importe: producto.cantidad * producto.precioSucursal,
           };
         });
-        console.log(detallesVenta);
         this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
           (response) => {
           }
@@ -472,7 +464,6 @@ export class VentasComponent implements OnInit {
   obtenerProducto(id: any, idGimnasio: any, cantidadSolicitada: number): void {
     this.InventarioService.obtenerProductoPorId(id, idGimnasio).subscribe({
       next: (data) => {
-        console.log(data, "data");
         this.producto = data; 
         if (data[0].existencia < cantidadSolicitada) {     
           this.toastr.error("No hay suficiente stock disponible para esta cantidad");
@@ -489,9 +480,7 @@ export class VentasComponent implements OnInit {
   }
 
   validarYAgregarProducto(producto: any) {
-    console.log("productooooooooo", producto);
    this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
-    
       (data) => {
         
         const productoObtenido = data[0];

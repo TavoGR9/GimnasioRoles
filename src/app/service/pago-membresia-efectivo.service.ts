@@ -41,17 +41,28 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.API+"Usuario.php?obtenerVista="+id);
   }
 
-  obtenerClientes(inicioDate: any, finDate: any, idGym: any): Observable<any>{
-    const params = new HttpParams().set('fechaInicio',inicioDate).set('fechaFin',finDate).set('GYMid',idGym);
-    return this.clienteHttp.get(this.API+'Usuario.php', {params});
+  obtenerClientes(inicioDate: any, finDate: any, idGym: any): Observable<any> {
+    const params = {
+      GYMid: idGym,
+      fechaInicio: inicioDate,
+      fechaFin: finDate
+    };
+    return this.clienteHttp.get(this.API + 'Usuario.php', { params });
   }
+  
 
   membresiasLista(idSucu: any):Observable<any>{
-    return this.clienteHttp.get(this.API+"Usuario.php?listaMembre="+idSucu);
+    const params = {
+      id_bodega: idSucu
+    };
+    return this.clienteHttp.get(this.API+"Usuario.php?listaMembre=", { params });
   }
   
   membresiasInfo(idMemb: any):Observable<any>{
-    return this.clienteHttp.get(this.API+"Usuario.php?infoMembre="+idMemb);
+    const params = {
+      id_mem: idMemb
+    };
+    return this.clienteHttp.get(this.API+"Usuario.php?infoMembre=", { params });
   }
 
   actualizacionMemebresia(idCli:any,idMem:any, fecha: any, detMemID: any, precio: any):Observable<any>{
@@ -61,7 +72,10 @@ export class PagoMembresiaEfectivoService {
   }
 
   histoClienteMemb(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"Usuario.php?histoCliente="+id);
+    const params = {
+      idCliente: id
+    };
+    return this.clienteHttp.get(this.API+"Usuario.php?histoCliente=", { params });
   }
 
   actualizaDatosCliente(data: any): Observable<any> {

@@ -30,10 +30,10 @@ export class JoinDetalleVentaService {
     });
   }
 
-  consultarProductosVentas(Gimnasio_idGimnasio: number | null):Observable<any[]>{
-    const url = `${this.API}venta_detalleVenta.php?ventasDetalle=${Gimnasio_idGimnasio}`;
-    console.log(url, "url");
-    return this.clienteHttp.get<any[]>(url);
+  consultarProductosVentas(Gimnasio_idGimnasio: number | null): Observable<any[]> {
+    const body = { Gimnasio_idGimnasio };
+    const url = `${this.API}venta_detalleVenta.php?ventasDetalle`;
+    return this.clienteHttp.post<any[]>(url, body);
   }
 
   consultarProductosGimnasio(idGimnasio: number | null): Observable<any[]> {
