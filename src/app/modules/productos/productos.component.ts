@@ -38,13 +38,13 @@ export class ProductosComponent implements OnInit {
 
   ngOnInit(): void {
     this.productoService.comprobar();
-
-    this.currentUser = this.auth.getCurrentUser();
+    this.auth.comprobar();
+  
+    setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-  
-    setTimeout(() => {
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
         this.listaTabla();

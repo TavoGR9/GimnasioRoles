@@ -39,12 +39,13 @@ export class InventariosComponent implements OnInit {
   ngOnInit(): void {
     this.productoService.comprobar();
     this.InventarioService.comprobar();
+    this.auth.comprobar();
     this.currentUser = this.auth.getCurrentUser();
-    if(this.currentUser){
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
   
     setTimeout(() => {
+      if(this.currentUser){
+        this.getSSdata(JSON.stringify(this.currentUser));
+      }
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
         this.listaTablas();

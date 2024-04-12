@@ -65,8 +65,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   dataSource: any; // instancia para matTableDatasource
   dataSourceActivos: any;
   dataSourceReenovacion: any;
-  fechaInicio: Date = new Date(); // Inicializa como una nueva fecha
-  fechaFin: Date = new Date();    // Inicializa como una nueva fecha
+  fechaInicio: Date = new Date('0000-00-00'); // Inicializa como una nueva fecha
+  fechaFin: Date = new Date('0000-00-00');    // Inicializa como una nueva fecha
   id: any;
   //titulos de columnas de la tabla clientes activos
   displayedColumnsActivos: string[] = [
@@ -128,14 +128,17 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   ngOnInit(): void {
     this.pagoService.comprobar();
-    this.currentUser = this.auth.getCurrentUser();
+    this.auth.comprobar();
+    
+    setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-    setTimeout(() => {
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
-        this.updateDateLogs();  
+        this.listaClientesData();
+        //this.updateDateLogs();  
       }); 
     }, 3000); 
 

@@ -50,6 +50,7 @@ export class planComponent implements OnInit {
 
   ngOnInit(): void {
     this.membresiaService.comprobar();
+    this.auth.comprobar();
     this.membresiaService.optionShow.next(4);
     this.membresiaService.optionShow.subscribe((option) => {
       if(option){
@@ -59,12 +60,11 @@ export class planComponent implements OnInit {
       }
     });
     
-    this.currentUser = this.auth.getCurrentUser();
+    setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-  
-    setTimeout(() => {
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
         this.listaTabla();

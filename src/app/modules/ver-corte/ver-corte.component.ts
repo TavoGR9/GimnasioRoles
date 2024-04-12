@@ -56,6 +56,7 @@ export class VerCorteComponent implements OnInit  {
 
   ngOnInit(): void {
     this.joinDetalleVentaService.comprobar();
+    this.auth.comprobar();
     this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
       if (this.dialogRef) {
         if (isMaximized) {
@@ -64,15 +65,13 @@ export class VerCorteComponent implements OnInit  {
           this.dialogRef.updateSize('auto', 'auto');
         }
       }
-    });
+    });  
 
-    this.currentUser = this.auth.getCurrentUser();
+    setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-  
-
-    setTimeout(() => {
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
         this.listaTablas();

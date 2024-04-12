@@ -50,12 +50,13 @@ export class MembresiasComponent implements OnInit {
 
   ngOnInit(): void {
     this.membresiaService.comprobar();
-    this.currentUser = this.auth.getCurrentUser();
-    if (this.currentUser) {
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
-
+    this.auth.comprobar();
+    
     setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
+      if (this.currentUser) {
+        this.getSSdata(JSON.stringify(this.currentUser));
+      }
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
         this.listaTabla();
