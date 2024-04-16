@@ -117,13 +117,12 @@ export class VentasComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    
       this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
           this.productData = respuesta;
           this.dataSource = new MatTableDataSource(this.productData);
           this.dataSource.paginator = this.paginator; 
         });
-    }, 3000);
   }
 
   ejecutarServicio(): void {
@@ -138,26 +137,23 @@ export class VentasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.productoService.comprobar();
-    this.DetalleVenta.comprobar();
-    this.InventarioService.comprobar();
-    this.ventasService.comprobar();
+    // this.productoService.comprobar();
+    // this.DetalleVenta.comprobar();
+    // this.InventarioService.comprobar();
+    // this.ventasService.comprobar();
     interval(10000)
     .pipe(takeUntil(this.destroy$))
     .subscribe(() => {
       this.ejecutarServicio();
     });
 
-    setTimeout(() => {
-      this.ubicacion = this.auth.nombreGym.getValue();
+    this.ubicacion = this.auth.nombreGym.getValue();
     //datos de detalle venta
     this.DetalleVenta.obternerVentaDetalle().subscribe({
       next: (resultData) => {
         this.detalle = resultData;
       },
     });
-    }, 3000);
-
   }
 
   /*FILTRO*/

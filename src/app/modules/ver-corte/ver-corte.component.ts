@@ -12,6 +12,10 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { VentasComponent } from "../ventas/ventas.component";
 import { DialogStateService } from "../../service/dialogState.service";
+import { ProductoService } from "../../service/producto.service";
+import { VentasService } from "../../service/ventas.service";
+import { DetalleVentaService } from "../../service/detalle-venta.service";
+import { inventarioService } from "../../service/inventario.service";
 @Component({
   selector: 'app-ver-corte',
   templateUrl: './ver-corte.component.html',
@@ -25,7 +29,11 @@ export class VerCorteComponent implements OnInit  {
     public formulario: FormBuilder,
     private joinDetalleVentaService: JoinDetalleVentaService,
     private dialogStateService: DialogStateService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private productoService: ProductoService,
+    private ventasService: VentasService,
+    private DetalleVenta: DetalleVentaService,
+    private InventarioService: inventarioService
   ) {
   }
 
@@ -55,6 +63,10 @@ export class VerCorteComponent implements OnInit  {
   DetallesCaja: any;
 
   ngOnInit(): void {
+    this.productoService.comprobar();
+    this.DetalleVenta.comprobar();
+    this.InventarioService.comprobar();
+    this.ventasService.comprobar();
     this.joinDetalleVentaService.comprobar();
     this.auth.comprobar();
     this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
