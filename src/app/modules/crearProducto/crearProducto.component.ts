@@ -109,7 +109,6 @@ export class CrearProductoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.categoriaService.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));

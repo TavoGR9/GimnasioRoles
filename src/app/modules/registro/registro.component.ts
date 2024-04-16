@@ -180,14 +180,20 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.planService.consultarPlanId(this.auth.idGym.getValue()).subscribe((respuesta) => {
-      const valorMembresia$ = this.obtenerValorMembresia(respuesta);
-      valorMembresia$.subscribe((valorMembresia) => {
-        this.form.patchValue({
-          Membresia_idMem: valorMembresia
+    this.planService.comprobar();
+    this.auth.comprobar();
+    this.usuario.comprobar();
+
+    setTimeout(() => {
+      this.planService.consultarPlanId(this.auth.idGym.getValue()).subscribe((respuesta) => {
+        const valorMembresia$ = this.obtenerValorMembresia(respuesta);
+        valorMembresia$.subscribe((valorMembresia) => {
+          this.form.patchValue({
+            Membresia_idMem: valorMembresia
+          });
         });
       });
-    });
+    }, 3000);
   }
 
   obtenerValorMembresia(respuesta: any[]): Observable<any> {
@@ -479,7 +485,7 @@ export class RegistroComponent implements OnInit {
         direccion: direccionCompleta,
         nombre: nombreCompleto
       });
-
+      console.log(this.form.value);
       this.usuario.agregarUsuario(this.form.value).subscribe({
         next: (resultData) => {
           this.spinner.show();

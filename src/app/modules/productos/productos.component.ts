@@ -7,6 +7,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from '../../service/auth.service';
 import { CrearProductoComponent } from '../crearProducto/crearProducto.component';
 import { EditarProductoComponent } from '../editar-producto/editar-producto.component';
+import { CategoriaService } from "../../service/categoria.service";
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
@@ -33,12 +34,14 @@ export class ProductosComponent implements OnInit {
     private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog,
+    private categoriaService: CategoriaService
   ) { 
   }
 
   ngOnInit(): void {
     this.productoService.comprobar();
     this.auth.comprobar();
+    this.categoriaService.comprobar();
   
     setTimeout(() => {
       this.currentUser = this.auth.getCurrentUser();
