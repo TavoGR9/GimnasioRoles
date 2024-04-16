@@ -493,9 +493,8 @@ export class RegistroComponent implements OnInit {
             this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
             this.spinner.hide();
           } else if (resultData.success == '1') {
-            console.log(resultData, "resultData");
-            // this.add.enviarMail(resultData.email).subscribe(
-            // );
+            this.add.enviarMail(resultData.email).subscribe(
+            );
             this.cerrarDialogo();
             this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
@@ -510,7 +509,6 @@ export class RegistroComponent implements OnInit {
           }
         },
         error: (error) => {
-          console.log(error, "error");
           this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
         }
       });

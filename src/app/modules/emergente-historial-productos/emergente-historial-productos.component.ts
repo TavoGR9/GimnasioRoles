@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
-import { AuthService } from 'src/app/service/auth.service';
+import { AuthService } from '../../service/auth.service';
 
 export interface Historial {
   Sucursal: string;
@@ -85,8 +85,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   private updateDateLogs(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
-  
-    console.log(this.auth.idGym.getValue(), "this.auth.idGym.getValue()");
+
     this.ServiceHistorInventario.HistorialInventario(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
@@ -94,7 +93,6 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       
     ).subscribe(
       response => {
-        console.log(response, "response");
         if (response.msg == 'No hay resultados') {
           // Si no hay datos, resetea la tabla
           this.dataHistorial = [];
@@ -116,7 +114,6 @@ export class EmergenteHistorialProductosComponent implements OnInit{
         this.dataHistorial = [];
         this.dataSource = new MatTableDataSource(this.dataHistorial);
         this.dataSource.paginator = this.paginatorHistorial;
-        console.log(error, "error");
         //console.log('Ocurrio un error.');
         this.toastr.error('Ocurrio un error.', 'Error!!!');
       },

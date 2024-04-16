@@ -92,8 +92,6 @@ export class planEditarComponent {
                 serviciosPlan.includes(servicio.titulo)
               );
 
-              console.log(serviciosCoincidentes, "serviciosCoincidentes");
-
               serviciosCoincidentes.forEach((servicio) => {});
 
               this.formulariodePlan.setValue({

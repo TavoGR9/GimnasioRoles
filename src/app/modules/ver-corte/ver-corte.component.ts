@@ -111,12 +111,10 @@ export class VerCorteComponent implements OnInit  {
   listaTablas(){
     this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
       (data) => {
-        console.log(data, "data");
         this.detallesCaja = data;
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.dataSource.paginator = this.paginator; 
         this.dataSource.data = this.detallesCaja;
-        console.log(this.detallesCaja, "this.detallesCaja");
         const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
         this.fechaFiltro = fechaActual;
         this.aplicarFiltro();

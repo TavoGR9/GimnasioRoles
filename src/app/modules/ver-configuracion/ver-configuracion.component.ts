@@ -48,7 +48,6 @@ export class VerConfiguracionComponent implements OnInit {
 
   consultarGym(){
     this.gimnasioService.consultarPlan(this.idGym).subscribe(respuesta => {
-      console.log(respuesta, "respuesta");
       this.gimnasio = respuesta;
     });
   }
@@ -56,7 +55,6 @@ export class VerConfiguracionComponent implements OnInit {
   consultarHorario() {
     this.HorarioService.consultarHorario(this.idGym).subscribe(
       (data) => {
-        console.log(data, "data");
         this.datosHorario = data; 
       },
       (error) => {
