@@ -50,6 +50,10 @@ export class ColaboradorService {
         return this.clienteHttp.post(this.API + "empleado.php?insertar=1", datosEmpleado);
     }
 
+    correoEmpleado(correo: string): Observable<any> {
+        return this.clienteHttp.post<any>(this.API + "empleado.php?consultarCorreo", { correo });
+    }
+
     agregarUsuario(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuario", datosEmpleado);
     }
