@@ -5,6 +5,7 @@ import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { HorarioEditarComponent } from "../horario-editar/horario-editar.component";
 import { MatDialog } from "@angular/material/dialog";
+import { ToastrService } from "ngx-toastr";
 import {
   FormGroup,
   FormBuilder,
@@ -67,6 +68,7 @@ export class HorariosVistaComponent implements OnInit {
     private formulario: FormBuilder,
     private auth: AuthService,
     private http: ColaboradorService,
+    private toastr: ToastrService,
     private router: Router,
     private postalCodeService: PostalCodeService
   ) {
@@ -198,9 +200,8 @@ export class HorariosVistaComponent implements OnInit {
     const mensaje = `Hola ${nombre} estos son tus accesos... Correo: ${this.correoEmp}, Contraseña: ${this.pass}`;
 
     // Crear la URL para abrir WhatsApp con el mensaje predefinido
-    const url = `https://wa.me/${numeroTelefonico}?text=${encodeURIComponent(
-      mensaje
-    )}`;
+    const url = `https://wa.me/${numeroTelefonico}?text=${encodeURIComponent(mensaje)}`;
+
     // Abrir WhatsApp en una nueva ventana o pestaña
     window.open(url, "_blank");
   }
@@ -328,7 +329,13 @@ export class HorariosVistaComponent implements OnInit {
       ? this.personaForm.value.apPaterno.replace(/\s/g, "")
       : "";
 
-    if (nombreSinEspacios && apellidoPaternoSinEspacios) {
+      const cadenaConAcentos = this.personaForm.value.nombreS;
+      const cadenaSinAcentos = cadenaConAcentos.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      const cadenaConAcentosA = this.personaForm.value.apPaterno;
+      const cadenaSinAcentosA = cadenaConAcentosA.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    if (nombreSinEspacios && apellidoPaternoSinEspacios && cadenaSinAcentos && cadenaSinAcentosA) {
       this.correoEmp = `${nombreSinEspacios.toLowerCase()}.${apellidoPaternoSinEspacios.toLowerCase()}@gmail.com`;
       this.pass = this.generarContrasena(8);
     } else {
@@ -341,7 +348,7 @@ export class HorariosVistaComponent implements OnInit {
   // Método para generar la contraseña
   private generarContrasena(longitud: number): string {
     const caracteresPermitidos =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=";
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let pass = "";
 
     for (let i = 0; i < longitud; i++) {
@@ -356,93 +363,105 @@ export class HorariosVistaComponent implements OnInit {
 
   enviarSucursal(): void {
     if (this.formularioSucursales.valid && this.personaForm.valid) {
-      const codigoPostal = this.formularioSucursales.get("codigoPostal")?.value;
-      const estado = this.formularioSucursales.get("estado")?.value;
-      const ciudad = this.formularioSucursales.get("ciudad")?.value;
-      const colonia = this.formularioSucursales.get("colonia")?.value;
-      const calle = this.formularioSucursales.get("calle")?.value;
-      const numExt = this.formularioSucursales.get("numExt")?.value;
-      const numInt = this.formularioSucursales.get("numInt")?.value;
+     
+      const nombreS = this.personaForm.get("nombreS")?.value;
+      const apPaterno = this.personaForm.get("apPaterno")?.value;
+      const apMaterno = this.personaForm.get("apMaterno")?.value;
 
-      const direccionCompleta = `${calle} ${numExt} ${
-        numInt ? "Int. " + numInt : ""
-      }, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
-      this.formularioSucursales.patchValue({
-        direccion: direccionCompleta,
+      const nombreCompleto = `${nombreS} ${apPaterno} ${apMaterno}`;
+
+      this.personaForm.patchValue({
+        nombre: nombreCompleto,
       });
 
-      this.gimnasioService
-        .agregarSucursal(this.formularioSucursales.value)
-        .subscribe(
-          (respuestaSucursal) => {
-            if (respuestaSucursal && respuestaSucursal.success === 1) {
-              this.personaForm.patchValue({
-                idGym: respuestaSucursal.id_bodega,
-              });
+      const datosFormulario = this.personaForm.value;
+      datosFormulario.correoEmp = this.correoEmp;
+      datosFormulario.pass = this.pass;
+     
+      this.http.correoEmpleado(datosFormulario.correoEmp).subscribe((respuesta) => {
+        if(respuesta.message === 'MailExists'){
+          this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+        }else{
+          const codigoPostal = this.formularioSucursales.get("codigoPostal")?.value;
+          const estado = this.formularioSucursales.get("estado")?.value;
+          const ciudad = this.formularioSucursales.get("ciudad")?.value;
+          const colonia = this.formularioSucursales.get("colonia")?.value;
+          const calle = this.formularioSucursales.get("calle")?.value;
+          const numExt = this.formularioSucursales.get("numExt")?.value;
+          const numInt = this.formularioSucursales.get("numInt")?.value;
 
-              const nombreS = this.personaForm.get("nombreS")?.value;
-              const apPaterno = this.personaForm.get("apPaterno")?.value;
-              const apMaterno = this.personaForm.get("apMaterno")?.value;
+          const direccionCompleta = `${calle} ${numExt} ${
+            numInt ? "Int. " + numInt : ""
+          }, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
+          this.formularioSucursales.patchValue({
+            direccion: direccionCompleta,
+          });
 
-              const nombreCompleto = `${nombreS} ${apPaterno} ${apMaterno}`;
-
-              this.personaForm.patchValue({
-                nombre: nombreCompleto,
-              });
-
-              const datosFormulario = this.personaForm.value;
-              datosFormulario.correoEmp = this.correoEmp;
-              datosFormulario.pass = this.pass;
-
-              this.http.agregarEmpleado(datosFormulario).subscribe(
-                (respuestaEmpleado) => {
-                  if (respuestaEmpleado.success == "1") {
-                    this.enviarMensajeWhatsApp();
-                    this.dialog
-                      .open(MensajeEmergentesComponent, {
-                        data: `Empleado agregado exitosamente`,
-                        disableClose: true,
-                      })
-                      .afterClosed()
-                      .subscribe((cerrarDialogo: Boolean) => {
-                        if (cerrarDialogo) {
-                          this.dialogo.close();
-                          this.personaForm.reset();
-                        }
-                      });
-                  } else {
-                    if (respuestaEmpleado) {
-                      console.error(
-                        "Error al agregar empleado:",
-                        respuestaEmpleado.error
-                      );
+          this.gimnasioService
+          .agregarSucursal(this.formularioSucursales.value)
+          .subscribe(
+            (respuestaSucursal) => {
+              
+              if (respuestaSucursal && respuestaSucursal.success === 1) {
+  
+                this.personaForm.patchValue({
+                  idGym: respuestaSucursal.id_bodega,
+                });
+            
+  
+                this.http.agregarEmpleado(datosFormulario).subscribe(
+                  (respuestaEmpleado) => {
+                     if (respuestaEmpleado.success == "1") {
+                      this.enviarMensajeWhatsApp();
+                      this.dialog
+                        .open(MensajeEmergentesComponent, {
+                          data: `Empleado agregado exitosamente`,
+                          disableClose: true,
+                        })
+                        .afterClosed()
+                        .subscribe((cerrarDialogo: Boolean) => {
+                          if (cerrarDialogo) {
+                            this.dialogo.close();
+                            this.personaForm.reset();
+                          }
+                        });
                     } else {
-                      console.error(
-                        "Error al agregar empleado: respuesta vacía"
-                      );
+                      if (respuestaEmpleado) {
+                        console.error(
+                          "Error al agregar empleado:",
+                          respuestaEmpleado.error
+                        );
+                      } else {
+                        console.error(
+                          "Error al agregar empleado: respuesta vacía"
+                        );
+                      }
                     }
+                  },
+                  (error) => {
+                    // Manejo de errores en la solicitud al servidor para agregarEmpleado
+                    console.error(
+                      "Error en la solicitud al servidor para agregarEmpleado:",
+                      error
+                    );
+                    // Aquí puedes mostrar un mensaje de error o ejecutar alguna otra acción
                   }
-                },
-                (error) => {
-                  // Manejo de errores en la solicitud al servidor para agregarEmpleado
-                  console.error(
-                    "Error en la solicitud al servidor para agregarEmpleado:",
-                    error
-                  );
-                  // Aquí puedes mostrar un mensaje de error o ejecutar alguna otra acción
-                }
+                );
+              } else {
+              }
+            },
+            (error) => {
+              // Manejo de errores en la solicitud al servidor para agregarSucursal
+              console.error(
+                "Error en la solicitud al servidor para agregarSucursal:",
+                error
               );
-            } else {
             }
-          },
-          (error) => {
-            // Manejo de errores en la solicitud al servidor para agregarSucursal
-            console.error(
-              "Error en la solicitud al servidor para agregarSucursal:",
-              error
-            );
-          }
-        );
+          );
+        }
+  
+      });
+     
     } else {
       this.message = "Por favor, complete todos los campos requeridos.";
       this.marcarCamposInvalidos(this.formularioSucursales);

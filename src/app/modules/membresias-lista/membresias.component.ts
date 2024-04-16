@@ -51,6 +51,7 @@ export class MembresiasComponent implements OnInit {
   ngOnInit(): void {
     this.membresiaService.comprobar();
     this.auth.comprobar();
+    this.gimnasioService.comprobar();
     
     setTimeout(() => {
       this.currentUser = this.auth.getCurrentUser();

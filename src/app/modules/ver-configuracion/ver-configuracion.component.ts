@@ -30,7 +30,7 @@ export class VerConfiguracionComponent implements OnInit {
 
   ngOnInit(): void {
     this.gimnasioService.comprobar();
-    
+    this.auth.comprobar(); 4
     setTimeout(() => {
       this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
