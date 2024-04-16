@@ -20,11 +20,11 @@ export class SyncService {
     return this.http.get(this.remoteApiUrl);
   }
 
-  syncLocalUsers(users: any[]): Observable<any> {
-    return this.http.post(this.localApiUrl, { usuarios: users });
+  updateLocalUser(user: any): Observable<any> {
+    return this.http.post(this.localApiUrl, { usuarios: [user] });
   }
 
-  syncRemoteUsers(users: any[]): Observable<any> {
-    return this.http.post(this.remoteApiUrl, { usuarios: users });
+  updateRemoteUser(user: any): Observable<any> {
+    return this.http.post(this.remoteApiUrl, { usuarios: [user] });
   }
 }
