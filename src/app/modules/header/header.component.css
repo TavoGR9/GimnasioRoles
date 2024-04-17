@@ -27,3 +27,13 @@
   z-index: 1000; /* Ajusta el índice z para asegurarte de que esté sobre otros elementos */
   border-bottom: 0px solid #fd9727; /* Otras propiedades de estilo según sea necesario */
 }
+
+.Offline{
+  color: red;
+  size: 50px;
+}
+
+.Online{
+  color: green;
+  size: 50px;
+}

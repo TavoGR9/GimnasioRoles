@@ -67,59 +67,39 @@ export class HomeComponent implements OnInit{
   compareAndUpdate(localUsers: any[], remoteUsers: any[]) {
     // Actualizar o insertar usuarios remotos basados en los usuarios locales
     localUsers.forEach(localUser => {
-      const remoteUser = remoteUsers.find(user => user.id === localUser.id);
+      const remoteUser = remoteUsers.find(user => user.email === localUser.email);
       if (remoteUser) {
         if (new Date(localUser.fecha_registro) > new Date(remoteUser.fecha_registro)) {
           this.syncService.updateRemoteUser(localUser).subscribe({
-            error: error => console.error(`Error updating remote user ${localUser.id}`, error)
+            error: error => console.error(`Error updating remote user ${localUser.email}`, error)
           });
         }
       } else {
         // Si no existe en remoto, insertar
         this.syncService.updateRemoteUser(localUser).subscribe({
-          error: error => console.error(`Error adding new remote user ${localUser.id}`, error)
+          error: error => console.error(`Error adding new remote user ${localUser.email}`, error)
         });
       }
     });
   
     // Actualizar o insertar usuarios locales basados en los usuarios remotos
     remoteUsers.forEach(remoteUser => {
-      const localUser = localUsers.find(user => user.id === remoteUser.id);
+      const localUser = localUsers.find(user => user.email === remoteUser.email);
       if (localUser) {
         if (new Date(remoteUser.fecha_registro) > new Date(localUser.fecha_registro)) {
           this.syncService.updateLocalUser(remoteUser).subscribe({
-            error: error => console.error(`Error updating local user ${remoteUser.id}`, error)
+            error: error => console.error(`Error updating local user ${remoteUser.email}`, error)
           });
         }
       } else {
         // Si no existe en local, insertar
         this.syncService.updateLocalUser(remoteUser).subscribe({
-          error: error => console.error(`Error adding new local user ${remoteUser.id}`, error)
+          error: error => console.error(`Error adding new local user ${remoteUser.email}`, error)
         });
       }
     });
   }
   
-
-  // compareAndUpdate(localUsers: any[], remoteUsers: any[]) {
-  //   localUsers.forEach(localUser => {
-  //     const remoteUser = remoteUsers.find(user => user.id === localUser.id);
-  //     if (remoteUser && new Date(localUser.fecha_registro) > new Date(remoteUser.fecha_registro)) {
-  //       // Actualizar el registro remoto porque el local es más reciente
-  //       this.syncService.updateRemoteUser(localUser).subscribe();
-  //     }
-  //   });
-
-  //   remoteUsers.forEach(remoteUser => {
-  //     const localUser = localUsers.find(user => user.id === remoteUser.id);
-  //     if (localUser && new Date(remoteUser.fecha_registro) > new Date(localUser.fecha_registro)) {
-  //       // Actualizar el registro local porque el remoto es más reciente
-  //       this.syncService.updateLocalUser(remoteUser).subscribe();
-  //     }
-  //   });
-  // }
-  
-
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {

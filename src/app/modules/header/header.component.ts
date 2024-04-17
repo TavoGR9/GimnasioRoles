@@ -3,6 +3,11 @@ import { AuthService } from '../../service/auth.service';
 import { RegistroComponent } from '../registro/registro.component';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { SidebarService } from '../../service/sidebar.service';
+import { ConnectivityService } from '../../service/connectivity.service';
+import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
+import { interval } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-header',
@@ -10,8 +15,9 @@ import { SidebarService } from '../../service/sidebar.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  constructor(private auth: AuthService, public dialog: MatDialog,private sidebarService: SidebarService) {}
-
+  constructor(private auth: AuthService, public dialog: MatDialog,private sidebarService: SidebarService, private connectivityService: ConnectivityService) {}
+  isConnected: boolean = true;
+  mostrarElementoA: boolean = true;
  
   public isBarraLateralVisible: boolean = true;
 
@@ -20,7 +26,44 @@ export class HeaderComponent implements OnInit {
     this.isBarraLateralVisible = !this.isBarraLateralVisible;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+        interval(30000).pipe(
+          switchMap(() => this.connectivityService.checkInternetConnectivity())
+        ).subscribe((isConnected: boolean) => {
+          this.isConnected = isConnected;
+          this.mostrarElementoA = isConnected;
+          //console.log("intervalo");
+        });
+  }
+
+
+  Online(){
+    console.log("modo online");
+    this.dialog.open(MensajeEmergentesComponent, {
+    data: `"Estás en modo online."`,
+    disableClose: true
+     })
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+     if (cerrarDialogo) {
+      this.dialog.closeAll();
+       }
+     });
+  }
+
+  Offline(){
+    console.log("modo online");
+    this.dialog.open(MensajeEmergentesComponent, {
+      data: `"Estás en modo offline."`,
+      disableClose: true
+       })
+        .afterClosed()
+        .subscribe((cerrarDialogo: Boolean) => {
+       if (cerrarDialogo) {
+        this.dialog.closeAll();
+         }
+       });
+  }
 
   logoutBS(): void {
     this.auth.logoutBS();
