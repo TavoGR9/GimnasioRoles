@@ -189,6 +189,7 @@ export class VentasComponent implements OnInit {
       };
 
       this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
+       // console.log(datosVentas, "datosVentas");
         const lastInsertedId3 = response.lastInsertedId3;
         // Enviar detalles de ventas
         const detallesVenta = this.selectedProducts.map((producto) => {
@@ -202,6 +203,7 @@ export class VentasComponent implements OnInit {
             importe: producto.cantidad * producto.precioSucursal,
           };
         });
+       // console.log(detallesVenta, "detallesVenta");
         this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
           (response) => {
           }
@@ -318,10 +320,10 @@ export class VentasComponent implements OnInit {
                     .map(
                       (producto) => `
                       <tr>
-                        <td>${producto.nombre}</td>
+                        <td>${producto.nombreProducto}</td>
                         <td>${producto.cantidad}</td>
-                        <td>$${producto.precio}</td>
-                        <td>$${producto.precio * producto.cantidad}</td>
+                        <td>$${producto.precioSucursal}</td>
+                        <td>$${producto.precioSucursal * producto.cantidad}</td>
                       </tr>
                     `
                     )

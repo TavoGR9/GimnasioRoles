@@ -31,7 +31,6 @@ export class EntradasService {
   }
 
   agregarEntradaProducto(entradaProductos:any):Observable<any>{
-    console.log("entradaProductos", entradaProductos);
     return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaPro",entradaProductos);
   }
   

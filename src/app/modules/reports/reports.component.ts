@@ -21,20 +21,23 @@ export class ReportsComponent implements OnInit {
   sucursales: DatosGrafico[] = [];
   sucursaless: Graficoss[] = [];
   sucursalesP: DatosGraficoss[] = [];
+
   public barChartDataArray: { data: number[]; label: string }[] = [];
-  barChartLabels: string[] = [];
+  barChartLabels: string[] = []; // array que contiene las etiquetas que se mostrarán en el eje X del.
   public barChartOptions: ChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-  public barChartType: ChartType = "bar";
+    responsive: true, //resposivo
+    maintainAspectRatio: false, //tamaño fijo
+  }; // opciones de configuración, como si debe ser responsivo (responsive).
+
+
+  public barChartType: ChartType = "bar"; //tipo de grafico
   public barChartLegend = true;
-  public barChartData: ChartDataset[] = [];
-  public coloresPersonalizados: string[] = ["#fd9727"];
+  public barChartData: ChartDataset[] = []; //array de objetos que contiene los datos, necesario 
+  public coloresPersonalizados: string[] = ["#fd9727"]; //color
   datosGraficosPorGimnasio: {
     [key: string]: { chartLabels: string[]; chartData: any[] };
-  } = {};
-  doughnutChartLegend = true;
+  } = {}; //almacena datos para gráficos específicos de cada gimnasio
+  doughnutChartLegend = true; 
   doughnutChartType: ChartType = "doughnut";
 
   constructor(
@@ -194,6 +197,7 @@ export class ReportsComponent implements OnInit {
         }
         // Inicializar la estructura de datos para almacenar la información del gráfico
         const datosGraficosPorGimnasio: DatosGraficosPorGimnasio = {};
+        
         // Procesar datos
         resultData.forEach((dato) => {
           if (!datosGraficosPorGimnasio[dato.nombreGimnasio]) {

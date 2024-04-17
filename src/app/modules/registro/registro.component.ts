@@ -485,34 +485,45 @@ export class RegistroComponent implements OnInit {
         direccion: direccionCompleta,
         nombre: nombreCompleto
       });
-      console.log(this.form.value);
-      this.usuario.agregarUsuario(this.form.value).subscribe({
-        next: (resultData) => {
-          this.spinner.show();
-          if (resultData.message === 'MailExists') {
-            this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
-            this.spinner.hide();
-          } else if (resultData.success == '1') {
-            this.add.enviarMail(resultData.email).subscribe(
-            );
-            this.cerrarDialogo();
-            this.spinner.hide();
-            this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
-              if (cerrarDialogo) {
-                this.router.navigateByUrl(`/home`);
-                // Realizar alguna acción si se cierra el diálogo
-              } else {
-                // Realizar alguna acción si no se cierra el diálogo
-              }
-            });
-  
+      if(this.form.valid){
+        this.usuario.agregarUsuario(this.form.value).subscribe({
+          next: (resultData) => {
+            this.spinner.show();
+            if (resultData.message === 'MailExists') {
+              this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+              this.spinner.hide();
+            } else if (resultData.success == '1') {
+              this.add.enviarMail(resultData.email).subscribe(
+              );
+              this.cerrarDialogo();
+              this.spinner.hide();
+              this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
+                if (cerrarDialogo) {
+                  this.router.navigateByUrl(`/listaMembresias`);
+                  // Realizar alguna acción si se cierra el diálogo
+                } else {
+                  // Realizar alguna acción si no se cierra el diálogo
+                }
+              });
+    
+            }
+          },
+          error: (error) => {
+            this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
           }
-        },
-        error: (error) => {
-          this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
-        }
-      });
+        });
+      } else{
+        this.toastr.error('Complete los campos requeridos', 'Error', {
+          positionClass: 'toast-bottom-left',
+        });
+        this.marcarCamposInvalidos(this.form);
+
+      }
+      
     }
+
+
+    
 
   // registrar(): any {
   //   console.log(this.form.value, "formulario");
@@ -592,4 +603,5 @@ export class RegistroComponent implements OnInit {
 
   //   }
   // }
+
 }

@@ -48,6 +48,16 @@ export class FormPagoEmergenteComponent implements OnInit{
     //console.log('ID del cliente:', this.data.idCliente);
 
     this.getMembresiasLista(this.data.idSucursal);
+    
+
+     // Verificar si hay datos proporcionados
+     if (this.data ) {
+      // Establecer la membresía seleccionada con el valor proporcionado en this.data
+      this.membresiaSeleccionada = this.data.idMem;
+      this.precio = this.data.precio;
+      this.duracion = this.data.duracion;
+    }
+
   }
 
   getMembresiasLista(idgimnasio: number): void {
