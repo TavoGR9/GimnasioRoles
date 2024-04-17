@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit {
   constructor(private auth: AuthService, public dialog: MatDialog,private sidebarService: SidebarService, private connectivityService: ConnectivityService) {}
   isConnected: boolean = true;
   mostrarElementoA: boolean = true;
+  private lastIsConnected: boolean | null = null;
  
   public isBarraLateralVisible: boolean = true;
 
@@ -32,10 +33,26 @@ export class HeaderComponent implements OnInit {
         ).subscribe((isConnected: boolean) => {
           this.isConnected = isConnected;
           this.mostrarElementoA = isConnected;
-          //console.log("intervalo");
+          if (this.lastIsConnected !== isConnected) {
+            this.updateConnectivityStatus(isConnected);
+            this.lastIsConnected = isConnected;
+          }
         });
   }
 
+
+  private updateConnectivityStatus(isConnected: boolean): void {
+    const mode = isConnected ? 'online' : 'offline';
+    console.log(`Modo ${mode}`);
+    this.dialog.open(MensajeEmergentesComponent, {
+      data: `Estás en modo ${mode}.`,
+      disableClose: true
+    }).afterClosed().subscribe((cerrarDialogo: boolean) => {
+      if (cerrarDialogo) {
+        this.dialog.closeAll();
+      }
+    });
+  }
 
   Online(){
     console.log("modo online");
