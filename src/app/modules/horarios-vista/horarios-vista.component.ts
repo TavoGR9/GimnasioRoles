@@ -404,11 +404,8 @@ export class HorariosVistaComponent implements OnInit {
               
               if (respuestaSucursal && respuestaSucursal.success === 1) {
   
-                this.personaForm.patchValue({
-                  idGym: respuestaSucursal.id_bodega,
-                });
-            
-  
+                datosFormulario.idGym = respuestaSucursal.id_bodega;
+          
                 this.http.agregarEmpleado(datosFormulario).subscribe(
                   (respuestaEmpleado) => {
                      if (respuestaEmpleado.success == "1") {
