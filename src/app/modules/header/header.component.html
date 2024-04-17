@@ -7,6 +7,19 @@
   </div>
 
   <div class="right-buttons">
+    
+    <div *ngIf="mostrarElementoA; else otroElemento">
+      <button mat-icon-button (click)="Online()" >
+        <mat-icon class="Online">wifi</mat-icon>
+      </button>
+    </div>
+    
+    <ng-template #otroElemento>
+      <button mat-icon-button (click)="Offline()" >
+        <mat-icon class="Offline">wifi_off</mat-icon>
+      </button>
+    </ng-template>
+
     <button mat-icon-button *ngIf="isAdmin()" routerLink="./verConfiguracion">
       <mat-icon>settings</mat-icon>
     </button>
