@@ -93,7 +93,7 @@ export class MembresiasComponent implements OnInit {
         }
       },
       (error) => {
-        console.error('Error al obtener los datos del servicio:', error);
+        //console.error('Error al obtener los datos del servicio:', error);
       }
     );
   }

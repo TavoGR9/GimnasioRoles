@@ -36,8 +36,8 @@ const routes: Routes = [
     path: '',
     component: AdminDashboardComponent,
     children: [
-      { path: 'home', component: HomeComponent },
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      
+     // { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
         path: '',
         canActivate: [RoleGuard], 
@@ -74,6 +74,7 @@ const routes: Routes = [
           { path: 'plan', component:planComponent}, 
           { path: 'editar-plan', component:planEditarComponent},
           { path: 'Ventas', component: VentasComponent},
+          { path: 'home', component: HomeComponent },
         ]
       },
       {

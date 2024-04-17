@@ -33,6 +33,7 @@ export class CategoriaService {
       }
     });
   }
+  
   agregarSubCategoria(datosSubCategoria:any):Observable<any>{
     return this.clienteHttp.post(this.API+"categoria.php?insertarSubC=1",datosSubCategoria);
   }

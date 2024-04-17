@@ -18,20 +18,30 @@
 
             </div>
             <div class="col-sm-6">
-                <div >
+               <!---- <div >
                     <mat-form-field appearance="outline" style="width: 100%;">
                         <mat-label for="membresiaSelect">Membresía</mat-label>
-                        <!-- Si this.data.action es 'Online', mostrar un input -->
-                        <!--<input matInput *ngIf="this.data.action === 'Online'" type="text" [value]="this.data.membresia" [disabled]='true'>-->
-    
-                        <!-- Si this.data.action no es 'Online', mostrar el mat-select -->
-                        <mat-select id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaSeleccionada" (ngModelChange)="onMembresiaChange()"> <!---id="membresiaSelect"; *ngIf="this.data.action !== 'Online'"-->
-                            <mat-option *ngFor="let membresia of membresias" [value]="membresia.IDmembresia">
+
+                        <mat-select id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaSeleccionada" (ngModelChange)="onMembresiaChange()"> 
+                            <mat-option *ngFor="let membresia of membresias" [value]="membresia.IDmembresia" >
                             {{ membresia.Membresia }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                </div>
+                </div>-->
+
+
+                <div>
+                    <mat-form-field appearance="outline" style="width: 100%;">
+                      <mat-label for="membresiaSelect">Membresía</mat-label>
+                      <mat-select id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaSeleccionada" (ngModelChange)="onMembresiaChange()">
+                        <mat-option *ngFor="let membresia of membresias" [value]="membresia.IDmembresia">
+                          {{ membresia.Membresia }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  
 
             </div>
         </div>

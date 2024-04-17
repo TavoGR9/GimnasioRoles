@@ -70,9 +70,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   id: any;
   //titulos de columnas de la tabla clientes activos
   displayedColumnsActivos: string[] = [
-
     'Nombre',
-  
     'Membresia',
     'Precio',
     'Fecha Inicio',
@@ -81,7 +79,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     //'Dinero Recibido',
     //'Pagar',
     'Reenovación',
-    'Info Cliente'
+    'Info Cliente',
+    'Huella'
   ];
   dineroRecibido: number = 0; 
   moneyRecibido: number = 0; 
