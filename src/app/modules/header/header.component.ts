@@ -15,7 +15,9 @@ import { switchMap } from 'rxjs/operators';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  constructor(private auth: AuthService, public dialog: MatDialog,private sidebarService: SidebarService, private connectivityService: ConnectivityService) {}
+  constructor(private auth: AuthService, 
+    public dialog: MatDialog,private sidebarService: SidebarService, 
+    private connectivityService: ConnectivityService) {}
   isConnected: boolean = true;
   mostrarElementoA: boolean = true;
   private lastIsConnected: boolean | null = null;
@@ -43,45 +45,45 @@ export class HeaderComponent implements OnInit {
 
   private updateConnectivityStatus(isConnected: boolean): void {
     const mode = isConnected ? 'online' : 'offline';
-    console.log(`Modo ${mode}`);
-    this.dialog.open(MensajeEmergentesComponent, {
+    const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
       data: `Estás en modo ${mode}.`,
       disableClose: true
-    }).afterClosed().subscribe((cerrarDialogo: boolean) => {
+    });
+  
+    dialogRef.afterClosed().subscribe((cerrarDialogo: boolean) => {
       if (cerrarDialogo) {
-        this.dialog.closeAll();
+        dialogRef.close(); // Cerrar el diálogo actual
+      }
+    });
+  }
+  
+
+  Online() {
+    const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
+      data: `"Estás en modo online."`,
+      disableClose: true
+    });
+  
+    dialogRef.afterClosed().subscribe((cerrarDialogo: boolean) => {
+      if (cerrarDialogo) {
+        dialogRef.close(); // Cerrar el diálogo
       }
     });
   }
 
-  Online(){
-    console.log("modo online");
-    this.dialog.open(MensajeEmergentesComponent, {
-    data: `"Estás en modo online."`,
-    disableClose: true
-     })
-      .afterClosed()
-      .subscribe((cerrarDialogo: Boolean) => {
-     if (cerrarDialogo) {
-      this.dialog.closeAll();
-       }
-     });
-  }
-
-  Offline(){
-    console.log("modo online");
-    this.dialog.open(MensajeEmergentesComponent, {
+  Offline() {
+    const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
       data: `"Estás en modo offline."`,
       disableClose: true
-       })
-        .afterClosed()
-        .subscribe((cerrarDialogo: Boolean) => {
-       if (cerrarDialogo) {
-        this.dialog.closeAll();
-         }
-       });
+    });
+  
+    dialogRef.afterClosed().subscribe((cerrarDialogo: boolean) => {
+      if (cerrarDialogo) {
+        dialogRef.close(); // Cerrar el diálogo actual
+      }
+    });
   }
-
+  
   logoutBS(): void {
     this.auth.logoutBS();
   }
@@ -98,23 +100,6 @@ export class HeaderComponent implements OnInit {
     return this.auth.isRecepcion();
   }
 
-   // Dentro de tu componente
-AbrirRegistro() {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.data = `Empleado agregado correctamente.`;
-  dialogConfig.disableClose = true; // Bloquea el cierre del diálogo haciendo clic fuera de él
-  dialogConfig.width = '75%';
-  dialogConfig.height = '95%';
- 
-  this.dialog.open(RegistroComponent, dialogConfig)
-    .afterClosed()
-    .subscribe((cerrarDialogo: Boolean) => {
-      if (cerrarDialogo) {
-        // Aquí puedes realizar acciones si se desea cerrar el diálogo
-      } else {
-        // Aquí puedes realizar acciones si se cancela el cierre del diálogo
-      }
-    });
-}
+
 
 }

@@ -86,7 +86,6 @@ export class planComponent implements OnInit {
         }
       } else if (respuesta.warning) {
       } else {
-        console.error('Error en la respuesta del servicio:', respuesta.error);
       }
     });
   }

@@ -67,21 +67,17 @@ export class planEditarComponent {
       if (data) {
         this.dataToUpdate = data;
       }
- 
     });
 
     this.membresiaService
       .consultarPlanIdMem(this.auth.idGym.getValue())
       .subscribe((respuesta) => {
-     
         this.servicios = respuesta;
-        
+
         this.membresiaService
           .consultarPlan(this.dataToUpdate.id)
           .subscribe((respuesta) => {
-    
             if (respuesta) {
-              
               this.serviceToUpdate = respuesta;
 
               const serviciosPlan = this.serviceToUpdate[0].servicios.map(
@@ -107,16 +103,37 @@ export class planEditarComponent {
                 fechaFin: this.serviceToUpdate[0].fechaFin,
                 membresias: serviciosCoincidentes,
               });
-
             }
           });
       });
   }
 
-  actualizar() {  
+  actualizar() {
     if (this.formulariodePlan.valid) {
+      const membresiasSeleccionadas =
+        this.formulariodePlan.get("membresias")?.value;
+
+      // Inicializar la duración más alta con un valor inicial bajo, por ejemplo, 0
+      let duracionMasAlta = 0;
+
+      // Iterar sobre todas las membresías seleccionadas para encontrar la duración más alta
+      membresiasSeleccionadas.forEach((m: any) => {
+        // Obtener la duración de la membresía actual
+        const duracionActual = parseInt(m.duracion);
+
+        // Si la duración de la membresía actual es mayor que la duración más alta encontrada hasta ahora, actualizar la duración más alta
+        if (duracionActual > duracionMasAlta) {
+          duracionMasAlta = duracionActual;
+        }
+      });
+
+      this.formulariodePlan.get("duracion")?.setValue(duracionMasAlta);
+
       this.spinner.show();
-      this.membresiaService.actualizarPlan(this.idMem, this.formulariodePlan.value).subscribe((respuesta) => {
+      this.membresiaService
+        .actualizarPlan(this.idMem, this.formulariodePlan.value)
+        .subscribe(
+          (respuesta) => {
             this.spinner.hide();
             this.dialog
               .open(MensajeEmergentesComponent, {
@@ -136,14 +153,10 @@ export class planEditarComponent {
             this.spinner.hide();
             // Puedes mostrar un mensaje al usuario o manejar el error de alguna manera
             // Por ejemplo, puedes usar Toastr para mostrar un mensaje de error.
-           
           }
         );
     }
   }
-  
-  
-  
 
   cerrarDialogo() {
     this.dialogo.close(true);

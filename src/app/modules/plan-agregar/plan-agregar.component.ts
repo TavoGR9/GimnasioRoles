@@ -1,5 +1,10 @@
 import { Component, OnInit, Inject } from "@angular/core";
-import { FormGroup, FormBuilder, Validators, AbstractControl} from "@angular/forms";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+} from "@angular/forms";
 import { MembresiaService } from "../../service/membresia.service";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
@@ -8,7 +13,7 @@ import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { plan } from "../../models/plan";
 import { NgxSpinnerService } from "ngx-spinner";
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService } from "ngx-toastr";
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
 
 @Component({
@@ -59,9 +64,11 @@ export class planAgregarComponent {
       if (id) {
         this.idGym = id;
       }
-      this.membresiaService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
-        this.plan = respuesta;
-      });
+      this.membresiaService
+        .consultarPlanIdMem(this.idGym)
+        .subscribe((respuesta) => {
+          this.plan = respuesta;
+        });
     });
 
     this.formulariodePlan.get("membresias")?.valueChanges.subscribe(() => {
@@ -70,11 +77,25 @@ export class planAgregarComponent {
   }
 
   cancelar() {
-    this.formulariodePlan.reset(); 
+    this.formulariodePlan.reset();
     this.router.navigateByUrl("admin/misMembresias");
   }
 
   enviar(): any {
+    const membresiasSeleccionadas = this.formulariodePlan.get("membresias")?.value;
+    let duracionMasAlta = 0;
+    // Iterar sobre todas las membresías seleccionadas para encontrar la duración más alta
+    membresiasSeleccionadas.forEach((m: any) => {
+      // Obtener la duración de la membresía actual
+      const duracionActual = parseInt(m.duracion);
+      // Si la duración de la membresía actual es mayor que la duración más alta encontrada hasta ahora, actualizar la duración más alta
+      if (duracionActual > duracionMasAlta) {
+        duracionMasAlta = duracionActual;
+      }
+    });
+
+    this.formulariodePlan.get("duracion")?.setValue(duracionMasAlta);
+
     if (this.formulariodePlan.valid) {
       this.spinner.show();
       this.membresiaService
@@ -93,7 +114,7 @@ export class planAgregarComponent {
                   this.spinner.hide();
                   this.dialog
                     .open(MensajeEmergentesComponent, {
-                      data: `Plan y membresias agregados exitosamente`,
+                      data: `Plan agregado exitosamente`,
                     })
                     .afterClosed()
                     .subscribe((cerrarDialogo: Boolean) => {
@@ -114,11 +135,19 @@ export class planAgregarComponent {
           }
         });
     } else {
-      if(!this.formulariodePlan.value.membresias || this.formulariodePlan.value.membresias.length === 0){
-        this.toastr.error('Agregar o seleccionar primero un servicio', 'Error');
+      if (
+        !this.formulariodePlan.value.membresias ||
+        this.formulariodePlan.value.membresias.length === 0
+      ) {
+        this.toastr.error("Agregar o seleccionar primero un servicio", "Error");
       }
-      if(!this.formulariodePlan.value.precio || !this.formulariodePlan.value.fechaInicio|| !this.formulariodePlan.value.fechaFin || !this.formulariodePlan.value.titulo){
-        this.toastr.error('Llenar los campos requeridos', 'Error');
+      if (
+        !this.formulariodePlan.value.precio ||
+        !this.formulariodePlan.value.fechaInicio ||
+        !this.formulariodePlan.value.fechaFin ||
+        !this.formulariodePlan.value.titulo
+      ) {
+        this.toastr.error("Llenar los campos requeridos", "Error");
       }
       //this.toastr.error('Llenar los campos requeridos', 'Error');
       this.marcarCamposInvalidos(this.formulariodePlan);
@@ -148,7 +177,7 @@ export class planAgregarComponent {
   }
 
   setDuration() {
-    if (this.formulariodePlan.get("membresias")?.value.length > 0) {
+    /* if (this.formulariodePlan.get("membresias")?.value.length > 0) {
       let duracion = this.formulariodePlan
         .get("membresias")
         ?.value.reduce((acc: number, item: any) => {
@@ -157,7 +186,7 @@ export class planAgregarComponent {
       this.formulariodePlan.get("duracion")?.setValue(duracion);
     } else {
       this.formulariodePlan.get("duracion")?.setValue(0);
-    }
+    }*/
   }
 
   requireMinItems(min: number) {
@@ -195,7 +224,7 @@ export class planAgregarComponent {
         if (!Array.isArray(this.plan)) {
           this.plan = [];
         }
-        this.plan.push( nuevoServicio.registroInsertado);
+        this.plan.push(nuevoServicio.registroInsertado);
         this.formulariodePlan.get("servicioseleccionado")?.setValue(this.plan);
       }
     });
