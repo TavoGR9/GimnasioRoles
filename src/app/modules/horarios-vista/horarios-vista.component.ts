@@ -321,23 +321,20 @@ export class HorariosVistaComponent implements OnInit {
     });
   }
 
+   removerAcentos(texto: string): string {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+  
   generarCorreoYContrasena() {
-    const nombreSinEspacios = this.personaForm.value.nombreS
-      ? this.personaForm.value.nombreS.replace(/\s/g, "")
-      : "";
-    const apellidoPaternoSinEspacios = this.personaForm.value.apPaterno
-      ? this.personaForm.value.apPaterno.replace(/\s/g, "")
-      : "";
-
-      const cadenaConAcentos = this.personaForm.value.nombreS;
-      const cadenaSinAcentos = cadenaConAcentos.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-      const cadenaConAcentosA = this.personaForm.value.apPaterno;
-      const cadenaSinAcentosA = cadenaConAcentosA.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-    if (nombreSinEspacios && apellidoPaternoSinEspacios && cadenaSinAcentos && cadenaSinAcentosA) {
+    const nombreSinAcentos = this.personaForm.value.nombreS ? this.removerAcentos(this.personaForm.value.nombreS) : "";
+    const apellidoPaternoSinAcentos = this.personaForm.value.apPaterno ? this.removerAcentos(this.personaForm.value.apPaterno) : "";
+  
+    const nombreSinEspacios = nombreSinAcentos.replace(/\s/g, "");
+    const apellidoPaternoSinEspacios = apellidoPaternoSinAcentos.replace(/\s/g, "");
+  
+    if (nombreSinEspacios && apellidoPaternoSinEspacios) {
       this.correoEmp = `${nombreSinEspacios.toLowerCase()}.${apellidoPaternoSinEspacios.toLowerCase()}@gmail.com`;
-      this.pass = this.generarContrasena(8);
+      this.pass = this.generarContrasena(8); // Generar contraseña
     } else {
       // Manejo si no se proporciona el nombre y/o apellido
       this.correoEmp = "";

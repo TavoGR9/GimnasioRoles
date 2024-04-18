@@ -101,7 +101,6 @@ export class MembresiaService {
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
-    console.log(id, "id", datosPlan, "datos");
     return this.clienteHttp.post(this.API+"membresias.php?actualizarPlan="+id,datosPlan);
   }  
 
