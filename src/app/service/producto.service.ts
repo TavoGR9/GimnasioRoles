@@ -64,6 +64,11 @@ export class ProductoService {
       const data = { id_bodega_param: id };
       return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodega=",data);
     }
+
+    obternerProductosV(id:any):Observable<any>{
+      const data = { id_bodega_param: id };
+      return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodegaVenta=",data);
+    }
   
     obternerInventario(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };

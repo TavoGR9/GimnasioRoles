@@ -117,8 +117,7 @@ export class VentasComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    
-      this.productoService.obternerProductos(this.auth.idGym.getValue()).subscribe((respuesta) => {
+      this.productoService.obternerProductosV(this.auth.idGym.getValue()).subscribe((respuesta) => {
           this.productData = respuesta;
           this.dataSource = new MatTableDataSource(this.productData);
           this.dataSource.paginator = this.paginator; 
@@ -463,12 +462,12 @@ export class VentasComponent implements OnInit {
     this.InventarioService.obtenerProductoPorId(id, idGimnasio).subscribe({
       next: (data) => {
         this.producto = data; 
-        if (data[0].existencia < cantidadSolicitada) {     
+        if (data[0].cantidadDisponible < cantidadSolicitada) {     
           this.toastr.error("No hay suficiente stock disponible para esta cantidad");
         } else {
         }
-        if (data[0].existencia < 5) {
-          this.toastr.warning(`Quedan solo ${data[0].existencia} productos disponibles`);
+        if (data[0].cantidadDisponible < 5) {
+          this.toastr.warning(`Quedan solo ${data[0].cantidadDisponible} productos disponibles`);
         }
       },
       error: (error) => {
@@ -480,7 +479,6 @@ export class VentasComponent implements OnInit {
   validarYAgregarProducto(producto: any) {
    this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
       (data) => {
-        
         const productoObtenido = data[0];
         if (!productoObtenido) {
           this.toastr.error("Producto no encontrado");
