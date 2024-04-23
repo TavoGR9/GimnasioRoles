@@ -7,6 +7,7 @@ import { AuthService } from '../../service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
+import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desactivar.component";
 @Component({
   selector: 'app-colaboradores',
   templateUrl: './colaboradores.component.html',
@@ -16,6 +17,7 @@ export class ColaboradoresComponent {
   public empleados: any;
   public page: number = 0;
   public search: string = '';
+  colaborador: any;
   currentUser: string = '';
   idGym: number = 0;
   dataSource: any;
@@ -162,6 +164,48 @@ export class ColaboradoresComponent {
           // Hacer algo cuando se cancela el diálogo
         }
       });
+  }
+
+
+  onToggle(event: Event, idEmpleado: any, correo:any) {
+  console.log(idEmpleado, "idGimnasio");
+    let colab = this.empleados.find(
+      (e: { id_empleado: any }) => e.id_empleado == idEmpleado
+    );
+    let mensaje =
+    colab.estatus == 1
+        ? "¿Deseas desactivar esta sucursal?"
+        : "¿Deseas activar esta sucursal?";
+    const dialogRef = this.dialog.open(MensajeDesactivarComponent, {
+      data: { mensaje: mensaje, idEmpleado: colab },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Invertir el valor del estatus
+        const nuevoEstatus = colab.estatus == 1 ? 0 : 1;
+        // Actualizar la base de datos y refrescar los datos
+        this.http
+          .actualizarEstatus(idEmpleado, nuevoEstatus, correo)
+          .subscribe(
+            (response) => {
+              if (response && response.success === 1) {
+                colab.estatus = nuevoEstatus;
+              } else if (response) {
+                console.error(
+                  "Error al actualizar el estatus: ",
+                  response.error
+                );
+              } else {
+                console.error("Error: la respuesta es null");
+              }
+            },
+            (error) => {
+              console.error("Error en la petición: ", error);
+            }
+          );
+      } else {
+      }
+    });
   }
 
 }

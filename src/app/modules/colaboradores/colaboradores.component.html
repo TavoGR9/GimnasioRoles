@@ -34,6 +34,18 @@
           <th mat-header-cell *matHeaderCellDef> Telefono </th>
           <td mat-cell *matCellDef="let empleados"> {{ empleados.telefono }} </td>
         </ng-container>
+
+        <ng-container matColumnDef="activar">
+          <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Estatus</th>
+          <td mat-cell *matCellDef="let item; let i = index">
+              <div class="toggle-container">
+                  <!-- Usar item.idBodega en lugar de empleados.id_empleado -->
+                  <input type="checkbox" id="toggle{{item.id_empleado}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.id_empleado, item.correoEmpleado)">
+                  <label for="toggle{{item.id_empleado}}{{i}}" class="toggle-label"></label>
+              </div>
+          </td>
+      </ng-container>
+      
       
         <ng-container matColumnDef="acciones">
           <th mat-header-cell *matHeaderCellDef> Acciones </th>
@@ -44,8 +56,8 @@
           </td>
         </ng-container>
       
-        <tr mat-header-row *matHeaderRowDef="['nombre', 'email', 'telefono', 'acciones']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['nombre', 'email', 'telefono', 'acciones'];"></tr>
+        <tr mat-header-row *matHeaderRowDef="['nombre', 'email', 'telefono','activar', 'acciones']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['nombre', 'email', 'telefono', 'activar','acciones'];"></tr>
       </table>
       
       </div>

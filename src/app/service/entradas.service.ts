@@ -31,11 +31,44 @@ export class EntradasService {
   }
 
   agregarEntradaProducto(entradaProductos:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaPro",entradaProductos);
+    return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaProHisto",entradaProductos);
   }
+
+ /* agregarEntradaProducto(entradaProductos:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaPro",entradaProductos);
+  }*/
   
+  verficarProducto(id_bodega: any, id_producto:any):Observable<any>{
+    const data = {
+      p_id_bodega: id_bodega,
+      p_id_producto: id_producto
+    }
+    return this.clienteHttp.post(this.API+"producto_bod.php?ObtenerProductoPorBodegaYID",data);
+  }
+
+  existencias(id_bodega: any,id_producto: any):Observable<any>{
+    const data = {
+      p_id_bodega: id_bodega,
+      p_id_producto: id_producto
+    }
+    console.log(data, "data");
+    return this.clienteHttp.post(this.API+"producto_bod.php?existencias",data);
+  }
+
+  actualizarProducto(data:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1Histo",data);
+  }
+
+ /* actualizarProducto(data:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1",data);
+  }*/
+
   listaProductos(): Observable<any> {
     return this.clienteHttp.get<any>(this.API+'producto_bod.php?getProBodPre');
+  }
+
+  insertarHistorial(data:any): Observable<any>{
+    return this.clienteHttp.post<any>(this.API+'producto_bod.php?addHistorialInventario',data);
   }
 
 }

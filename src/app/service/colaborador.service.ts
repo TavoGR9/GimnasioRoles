@@ -120,5 +120,20 @@ export class ColaboradorService {
         let params = 'pid_bodega=' + pid_bodega + '&pnombreCompleto=' + pnombreCompleto + '&pCorreoEmpleado=' + pCorreoEmpleado + '&ptelefono=' + ptelefono + '&pidEmp=' + pidEmp;
         return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
       }
+
+      actualizarEstatus(idGimnasio: any, estatus: any, correo:any): Observable<any> {
+        console.log(idGimnasio, "idGimnasio");
+        console.log(estatus, "estatus");
+        console.log(correo, "correo");
+        let body = new URLSearchParams();
+        body.set('idEmpleado', idGimnasio);
+        body.set('correo', correo);
+        body.set('estatus', estatus.toString());
+        body.set('actualizarEstatus', '1');
+        let options = {
+          headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+        };
+        return this.clienteHttp.post(this.API+"empleado.php?actualizaEstatus", body.toString(), options);
+      }
   }
   

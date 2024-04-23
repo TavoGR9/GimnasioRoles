@@ -41,7 +41,7 @@
             Planes 
         </button>
         
-        <button *ngIf="isAdmin()" routerLink="./productos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productos')"> 
+        <button *ngIf="isAdmin() || isRecep()" routerLink="./productos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productos')"> 
             <mat-icon>shopping_cart</mat-icon> 
             Productos 
         </button>

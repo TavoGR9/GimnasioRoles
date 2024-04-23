@@ -60,6 +60,7 @@ export class GimnasioService {
   }
 
   actualizarEstatus(idGimnasio: any, estatus: any): Observable<any> {
+    
     let body = new URLSearchParams();
     body.set('idBodega', idGimnasio);
     body.set('estatus', estatus.toString());

@@ -93,7 +93,7 @@ table {
 
 
 .estatus-activo {
-  background-color: rgb(0, 170, 28);
+  background-color: #00aa1c;
   color: white;
   border-radius: 5px; /* Ajusta el radio según tus preferencias para hacerlo más o menos ovalado */
   padding: 3px; /* Añade un poco de espacio alrededor del contenido */
@@ -103,7 +103,7 @@ table {
 
 
 .estatus-inactivo {
-  background-color: rgb(163, 0, 0);
+  background-color: #a30000;
   color: rgb(255, 255, 255);
   border-radius: 5px; /* Ajusta el radio según tus preferencias para hacerlo más o menos ovalado */
   padding: 3px; /* Añade un poco de espacio alrededor del contenido */

@@ -259,42 +259,248 @@ export class EntradasComponent implements OnInit {
   }*/
 
 
-  registrar(): any {
+ /* registrar(): any {
+
     if (this.tablaDatos.length > 0) {
       this.spinner.show();
       const dataToSend: any[] = this.tablaDatos;
-      this.entrada.agregarEntradaProducto(dataToSend).subscribe({
-        next: (respuesta) => {
-          if (respuesta.success == 1) {
-            this.spinner.hide();
-            this.dialog
-              .open(MensajeEmergentesComponent, {
-                data: `Entrada agregada exitosamente`,
-              })
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-                if (cerrarDialogo) {
-                  this.form.reset();
-                  this.tablaDatos = [];
-                } else {
-                }
+      this.entrada.verficarProducto(this.auth.idGym.getValue(),dataToSend[0].id_Probob).subscribe({next:(data) =>{
+        if(data.success == 0){
+          console.log("dataToSend", dataToSend);
+          this.entrada.agregarEntradaProducto(dataToSend).subscribe({
+            next: (respuesta) => {
+              if (respuesta.success == 1) {
+                console.log(respuesta, "respuesta");
+                const fechaActual: Date = new Date();
+                const dia: string = fechaActual.getDate().toString().padStart(2, '0'); // Obtiene el día y lo convierte en texto, agregando un cero delante si es necesario
+                const mes: string = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Obtiene el mes (los meses van de 0 a 11 en JavaScript), le suma 1 y lo convierte en texto, agregando un cero delante si es necesario
+                const año: string = fechaActual.getFullYear().toString(); // Obtiene el año y lo convierte en texto
+                const fechaFormateada: string = `${año}-${mes}-${dia}`; // Formatea la fecha en el formato deseado
+                const historial = dataToSend.map(item => {
+                  return {
+                      accion: "Registro de nuevo producto",
+                      fecha_actu: fechaFormateada,
+                      precioSucursal: item.precciosucu,
+                      precioCaja: item.precioCaja,
+                      existencias: item.exis,
+                      idBodPro: respuesta.ultimo_id
+                  };
               });
-            
-          } else {
-            this.toastr.error(respuesta.message, 'Error', {
-              positionClass: 'toast-bottom-left',
-            });
-          
-          }
-        },
-        error: (paramError) => {
-          console.error(paramError); // Muestra el error del API en la consola para diagnóstico
-          // accedemos al atributo error y al key
-          this.toastr.error(paramError.error.message, 'Error', {
-            positionClass: 'toast-bottom-left',
+              
+                const dataHisto: any[] = historial;
+                console.log("dataHisto", dataHisto);
+                this.entrada.insertarHistorial(dataHisto).subscribe({next: (dataH) =>{
+                  console.log(dataH);
+                }});
+
+                this.spinner.hide();
+                this.dialog
+                  .open(MensajeEmergentesComponent, {
+                    data: `Entrada agregada exitosamente`,
+                  })
+                  .afterClosed()
+                  .subscribe((cerrarDialogo: Boolean) => {
+                    if (cerrarDialogo) {
+                      this.form.reset();
+                      this.tablaDatos = [];
+                    } else {
+                    }
+                  });
+                
+              } else {
+                this.toastr.error(respuesta.message, 'Error', {
+                  positionClass: 'toast-bottom-left',
+                });
+              
+              }
+            },
+            error: (paramError) => {
+              console.error(paramError); // Muestra el error del API en la consola para diagnóstico
+              // accedemos al atributo error y al key
+              this.toastr.error(paramError.error.message, 'Error', {
+                positionClass: 'toast-bottom-left',
+              });
+            },
           });
-        },
+        } else if (data.success == 1){
+          this.entrada.existencias(this.auth.idGym.getValue(), dataToSend[0].id_Probob).subscribe({next:(existencia) =>{
+
+            const update = {
+              existencia: existencia[0].existencia + dataToSend[0].exis,
+              p_id_producto: dataToSend[0].id_Probob,
+              precioSucursal:dataToSend[0].precciosucu,
+              precioCaja: dataToSend[0].precioCaja,
+              p_id_bodega: this.auth.idGym.getValue(),
+            }
+            this.entrada.actualizarProducto(update).subscribe({next: (update) =>{
+              if (update.success == 1) {
+
+                const fechaActual: Date = new Date();
+                const dia: string = fechaActual.getDate().toString().padStart(2, '0'); // Obtiene el día y lo convierte en texto, agregando un cero delante si es necesario
+                const mes: string = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Obtiene el mes (los meses van de 0 a 11 en JavaScript), le suma 1 y lo convierte en texto, agregando un cero delante si es necesario
+                const año: string = fechaActual.getFullYear().toString(); // Obtiene el año y lo convierte en texto
+                const fechaFormateada: string = `${año}-${mes}-${dia}`; // Formatea la fecha en el formato deseado
+
+                console.log(fechaFormateada, "fechaFormateada");
+                const historial ={
+                  accion: "Edición de nuevo producto",
+                  fecha_actu:fechaFormateada,
+                  precioSucursal:dataToSend[0].precciosucu,
+                  precioCaja: dataToSend[0].precioCaja,
+                  existencias: dataToSend[0].exis,
+                  idBodPro: existencia[0].idBodPro
+                };
+                this.entrada.insertarHistorial(historial).subscribe({next: (dataH) =>{
+                  console.log(dataH);
+                }});
+
+
+                this.spinner.hide();
+                this.dialog
+                  .open(MensajeEmergentesComponent, {
+                    data: `Entrada agregada exitosamente`,
+                  })
+                  .afterClosed()
+                  .subscribe((cerrarDialogo: Boolean) => {
+                    if (cerrarDialogo) {
+                      this.form.reset();
+                      this.tablaDatos = [];
+                    } else {
+                    }
+                  });
+                
+              } else {
+                this.toastr.error(update.message, 'Error', {
+                  positionClass: 'toast-bottom-left',
+                });
+              
+              }
+  
+            }});
+          }});
+        }
+      }});
+    } else {
+      // Aquí mostramos la notificación específica
+      this.toastr.error('Agrega algo a la tabla antes de enviar', 'Error', {
+        positionClass: 'toast-bottom-left',
       });
+      this.message = 'Por favor, complete todos los campos requeridos.';
+      this.marcarCamposInvalidos(this.form);
+    }
+    
+  }*/
+
+  registrar(): any {
+    
+    if (this.tablaDatos.length > 0) {
+
+      this.spinner.show();
+      const dataToSend: any[] = this.tablaDatos;
+
+
+      for (let i = 0; i < dataToSend.length; i++) {
+        const id_Probob = dataToSend[i].id_Probob;
+        this.entrada.verficarProducto(this.auth.idGym.getValue(),id_Probob).subscribe({next:(data) =>{
+          if(data.success == 0){
+            console.log("dataToSend", dataToSend);
+            const datosRe: any[] = dataToSend.map(item => {
+              return {
+                  exis: item.exis, // Acceder a las propiedades de cada elemento de dataToSend
+                  precioCaja: item.precioCaja,
+                  precciosucu: item.precciosucu,
+                  preccio: item.preccio,
+                  id_Probob: item.id_Probob,
+                  valor: item.valor,
+                  fechaE: item.fechaE,
+                  fechaEntrada: item.fechaEntrada,
+                  accion: "Registro de nuevo producto",
+                  fecha_actu: "2001-01-10"
+              };
+          });
+          
+            this.entrada.agregarEntradaProducto(datosRe).subscribe({
+              next: (respuesta) => {
+                if (respuesta.success == 1) {
+                
+                  this.spinner.hide();
+                  this.dialog
+                    .open(MensajeEmergentesComponent, {
+                      data: `Entrada agregada exitosamente`,
+                    })
+                    .afterClosed()
+                    .subscribe((cerrarDialogo: Boolean) => {
+                      if (cerrarDialogo) {
+                        this.form.reset();
+                        this.tablaDatos = [];
+                      } else {
+                      }
+                    });
+                  
+                } else {
+                  this.toastr.error(respuesta.message, 'Error', {
+                    positionClass: 'toast-bottom-left',
+                  });
+                
+                }
+              },
+              error: (paramError) => {
+                console.error(paramError); // Muestra el error del API en la consola para diagnóstico
+                // accedemos al atributo error y al key
+                this.toastr.error(paramError.error.message, 'Error', {
+                  positionClass: 'toast-bottom-left',
+                });
+              },
+            });
+          } else if (data.success == 1){
+            this.entrada.existencias(this.auth.idGym.getValue(), id_Probob).subscribe({next:(existencia) =>{
+
+              const fechaActual: Date = new Date();
+              const dia: string = fechaActual.getDate().toString().padStart(2, '0'); // Obtiene el día y lo convierte en texto, agregando un cero delante si es necesario
+              const mes: string = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Obtiene el mes (los meses van de 0 a 11 en JavaScript), le suma 1 y lo convierte en texto, agregando un cero delante si es necesario
+              const año: string = fechaActual.getFullYear().toString(); // Obtiene el año y lo convierte en texto
+              const fechaFormateada: string = `${año}-${mes}-${dia}`; // Formatea la fecha en el formato deseado
+              const update: any[] = dataToSend.map(item => {
+                return {
+                    accion: "Edición de nuevo producto",
+                    fecha_actu: fechaFormateada,
+                    existencia: existencia && existencia.length > 0 ? existencia[0].existencia + item.exis : item.exis,
+                    p_id_producto: item.id_Probob,
+                    precioSucursal: item.precciosucu,
+                    precioCaja: item.precioCaja,
+                    p_id_bodega: this.auth.idGym.getValue(),
+                    ultimo_id: existencia[i].idBodPro
+                };
+            });
+            
+              this.entrada.actualizarProducto(update).subscribe({next: (update) =>{
+                if (update.success == 1) {
+                  this.spinner.hide();
+                  this.dialog
+                    .open(MensajeEmergentesComponent, {
+                      data: `Entrada agregada exitosamente`,
+                    })
+                    .afterClosed()
+                    .subscribe((cerrarDialogo: Boolean) => {
+                      if (cerrarDialogo) {
+                        this.form.reset();
+                        this.tablaDatos = [];
+                      } else {
+                      }
+                    });
+                  
+                } else {
+                  this.toastr.error(update.message, 'Error', {
+                    positionClass: 'toast-bottom-left',
+                  });
+                
+                }
+    
+              }});
+            }});
+          }
+        }});
+      }
     } else {
       // Aquí mostramos la notificación específica
       this.toastr.error('Agrega algo a la tabla antes de enviar', 'Error', {

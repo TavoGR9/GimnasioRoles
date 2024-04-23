@@ -17,6 +17,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Observable, Subject } from "rxjs";
 import { ToastrService } from "ngx-toastr";
+import { EntradasService } from '../../service/entradas.service';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = formulario && formulario.submitted;
@@ -38,6 +39,7 @@ export class EditarProductoComponent implements OnInit{
   idCategoria: number = 0;
   listaCategorias: any;
   idProducto: any;
+  
   fechaCreacion: string;
   private idGym: number = 0;
   currentUser: string = '';
@@ -56,6 +58,7 @@ export class EditarProductoComponent implements OnInit{
     public fb:FormBuilder,
     private toastr: ToastrService,
     private activeRoute: ActivatedRoute, 
+    private entrada: EntradasService,
     private productoService:ProductoService,
     private datePipe: DatePipe,
     private router:Router,
@@ -67,9 +70,10 @@ export class EditarProductoComponent implements OnInit{
 
     this.idProducto = data.idProducto;
     //llamar al servicio datos empleado - pasando el parametro capturado por url
+    console.log(this.idProducto, "this.idProducto");
     this.productoService.consultarProductosJ(this.idProducto).subscribe(
-     
       respuesta=>{
+        console.log(respuesta, "respuesta");
         this.form.setValue({
          // nombre:respuesta [0]['nombreProducto'],
           codigoBarra:respuesta [0]['codigoBarras'],
@@ -81,6 +85,12 @@ export class EditarProductoComponent implements OnInit{
           marcaP:respuesta [0]['marca'],
           detalleCompra:respuesta [0]['detalleCompra'],
           detalleUnidadMedida:respuesta [0]['marca'],
+          precioCaja:respuesta [0]['precioCaja'],
+          existencia:respuesta [0]['existencia'],
+          precioSucursal:respuesta [0]['precioSucursal'],
+          idBodPro:respuesta [0]['idBodPro'],
+          idProbob:respuesta [0]['idProbob'],
+          id_bodega:respuesta [0]['id_bodega']
         });
       }
       
@@ -90,22 +100,18 @@ export class EditarProductoComponent implements OnInit{
    
     this.form = this.fb.group({
       detalleUnidadMedida: ["pza", Validators.required],
-      //precioCompra: [""],
       detalleCompra: [""],
       marcaP: [""],
-      //activo: [1],
-      //ItemNumber: [0],
       codigoBarra: [""],
-      //ieps: [0],
-      //iva: [0],
-      //sat: [0],
-     nombreCategoriaP: [""],
+      nombreCategoriaP: [""],
       nomsubcate: [""],
-      //factura: [0],
-      //STYLE_ITEM_ID: ["0"],
-      //precioCaja: ["0"],
-      //cantidadMayoreo: ["0"],
       descripcion: [""],
+      precioCaja: [''],
+      existencia: [''],
+      precioSucursal: [''],
+      idBodPro: [''],
+      idProbob: [''],
+      id_bodega: ['']
     });
   }
 
@@ -180,581 +186,49 @@ export class EditarProductoComponent implements OnInit{
   }
 
   actualizar(){
+console.log(this.form.value, "formulario");
+const fechaActual: Date = new Date();
+const dia: string = fechaActual.getDate().toString().padStart(2, '0'); // Obtiene el día y lo convierte en texto, agregando un cero delante si es necesario
+const mes: string = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Obtiene el mes (los meses van de 0 a 11 en JavaScript), le suma 1 y lo convierte en texto, agregando un cero delante si es necesario
+const año: string = fechaActual.getFullYear().toString(); // Obtiene el año y lo convierte en texto
+const fechaFormateada: string = `${año}-${mes}-${dia}`;
 
-    if (this.form.valid) {
-      this.spinner.show();
-      ///********** Verifica si la categoria ya existe */
-      this.categoriaService
-        .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
-        .subscribe((categoriaExistente) => {
-          if (categoriaExistente.success == 1) {
-            ///********** Verifica si la subcategoria ya existe */
-            this.categoriaService
-              .obtenerSubCategoriaPorNombre(
-                this.form.value.nomsubcate,
-                categoriaExistente.categoria.id_categoria
-              )
-              .subscribe((subCategoriaExistente) => {
-                if (subCategoriaExistente.success == 1) {
-                  ///********** Verifica si la marca ya existe */
-                  this.categoriaService
-                    .obtenerMarcaPorNombre(this.form.value.marcaP)
-                    .subscribe((marcaExistente) => {
-                      if (marcaExistente.success == 1) {
-                        const formularioP = {
-                          id_probod :this.idProducto,
-                          idProducto:subCategoriaExistente.producto.id_producto,
-                          detalleCompra: this.form.value.detalleCompra,
-                          idMarcaProducto: marcaExistente.marcasproducto.id_marcas,
-                          descripcion: this.form.value.descripcion,
-                          codigoBarras: this.form.value.codigoBarra,
-                        };
-                        this.productoService
-                          .actualizarProducto(formularioP)
-                          .subscribe({
-                            next: (respuesta) => {
-                              if (respuesta.success) {
-                                this.spinner.hide();
-                                this.dialog
-                                  .open(MensajeEmergentesComponent, {
-                                    data: `Producto actualizado exitosamente`,
-                                  })
-                                  .afterClosed()
-                                  .subscribe((cerrarDialogo: Boolean) => {
-                                    if (cerrarDialogo) {
-                                      this.productoSubject.next();
-                                      this.dialogo.close(true);
-                                    } else {
-                                      // Puedes agregar lógica adicional aquí si es necesario
-                                    }
-                                  });
-                              } else {
-                               
-                                this.toastr.error(respuesta.message, "Error", {
-                                  positionClass: "toast-bottom-left",
-                                });
-                              }
-                            },
-                            error: (paramError) => {
-                              this.toastr.error(
-                                paramError.error.message,
-                                "Error",
-                                {
-                                  positionClass: "toast-bottom-left",
-                                }
-                              );
-                            },
-                          });
-                      } else {
-                        const formMarca = {
-                          marcaP: this.form.value.marcaP,
-                        };
-                        this.categoriaService
-                          .agregarMarca(formMarca)
-                          .subscribe((respuestaMarca) => {
-                            const formularioP = {
-                              id_probod :this.idProducto,
-                              idProducto: subCategoriaExistente.producto.id_producto,
-                              detalleCompra: this.form.value.detalleCompra,
-                              idMarcaProducto: respuestaMarca.id_marcas,
-                              descripcion: this.form.value.descripcion,
-                              codigoBarras: this.form.value.codigoBarra,
-                            };
+const data = {
+  ultimo_id:this.form.value.idBodPro,
+  existencia:this.form.value.existencia,
+  precioSucursal:this.form.value.precioSucursal,
+  precioCaja:this.form.value.precioCaja,
+  accion: "Edición de nuevo producto",
+  fecha_actu: fechaFormateada,
+  p_id_producto: this.form.value.idProbob,
+  p_id_bodega: this.form.value.id_bodega
+}
 
-                            this.productoService
-                              .actualizarProducto(formularioP)
-                              .subscribe({
-                                next: (respuesta) => {
-                                  if (respuesta.success) {
-                                    this.spinner.hide();
-                                    this.dialog
-                                      .open(MensajeEmergentesComponent, {
-                                        data: `Producto actualizado exitosamente`,
-                                      })
-                                      .afterClosed()
-                                      .subscribe((cerrarDialogo: Boolean) => {
-                                        if (cerrarDialogo) {
-                                          this.productoSubject.next();
-                                          this.dialogo.close(true);
-                                        } else {
-                                          // Puedes agregar lógica adicional aquí si es necesario
-                                        }
-                                      });
-                                  } else {
-                                    this.toastr.error(
-                                      respuesta.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  }
-                                },
-                                error: (paramError) => {
-                                  this.toastr.error(
-                                    paramError.error.message,
-                                    "Error",
-                                    {
-                                      positionClass: "toast-bottom-left",
-                                    }
-                                  );
-                                },
-                              });
-                          });
-                      }
-                    });
-                } else {
-                  ///********** Si la sub no existe */
-                  const formSub = {
-                    idcatte: categoriaExistente.categoria.id_categoria,
-                    nomsubcate: this.form.value.nomsubcate,
-                  };
+console.log(data, "data");
+      this.entrada.actualizarProducto(data).subscribe({next: (update) =>{
+        if (update.success == 1) {
+          this.spinner.hide();
+          this.dialog
+            .open(MensajeEmergentesComponent, {
+              data: `Entrada agregada exitosamente`,
+            })
+            .afterClosed()
+            .subscribe((cerrarDialogo: Boolean) => {
+              if (cerrarDialogo) {
 
-                  this.categoriaService
-                    .agregarSubCategoria(formSub)
-                    .subscribe((respuestaSub) => {
-                      ///********** Verifica si la marca ya existe */
-                      this.categoriaService
-                        .obtenerMarcaPorNombre(this.form.value.marcaP)
-                        .subscribe((marcaExistente) => {
-                          if (marcaExistente.success == 1) {
-                            this.spinner.hide();
-                            //agregar producto
-                            const formularioP = {
-                              id_probod :this.idProducto,
-                              idProducto:respuestaSub.id_producto,
-                              detalleCompra: this.form.value.detalleCompra,
-                              idMarcaProducto:marcaExistente.marcasproducto.id_marcas,
-                              descripcion: this.form.value.descripcion,
-                              codigoBarras: this.form.value.codigoBarra,    
-                            };
+              } else {
+              }
+            });
+          
+        } else {
+          this.toastr.error(update.message, 'Error', {
+            positionClass: 'toast-bottom-left',
+          });
+        
+        }
 
-                            this.productoService
-                              .actualizarProducto(formularioP)
-                              .subscribe({
-                                next: (respuesta) => {
-                                  if (respuesta.success) {
-                                    this.spinner.hide();
-                                    this.dialog
-                                      .open(MensajeEmergentesComponent, {
-                                        data: `Producto actualizado exitosamente`,
-                                      })
-                                      .afterClosed()
-                                      .subscribe((cerrarDialogo: Boolean) => {
-                                        if (cerrarDialogo) {
-                                          this.productoSubject.next();
-                                          this.dialogo.close(true);
-                                        } else {
-                                          // Puedes agregar lógica adicional aquí si es necesario
-                                        }
-                                      });
-                                  } else {
-                                    this.toastr.error(
-                                      respuesta.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  }
-                                },
-                                error: (paramError) => {
-                                  this.toastr.error(
-                                    paramError.error.message,
-                                    "Error",
-                                    {
-                                      positionClass: "toast-bottom-left",
-                                    }
-                                  );
-                                },
-                              });
-                          } else {
-                            const formMarca = {
-                              marcaP: this.form.value.marcaP,
-                            };
-                            this.categoriaService
-                              .agregarMarca(formMarca)
-                              .subscribe((respuestaMarca) => {
-                               
-                                const formularioP = {
-                                  id_probod :this.idProducto,
-                                  idProducto:respuestaSub.id_producto,
-                                  detalleCompra: this.form.value.detalleCompra,
-                                  idMarcaProducto:respuestaMarca.id_marcas,
-                                  descripcion: this.form.value.descripcion,
-                                  codigoBarras: this.form.value.codigoBarra,                                 
-                                };
-
-                                this.productoService
-                                  .actualizarProducto(formularioP)
-                                  .subscribe({
-                                    next: (respuesta) => {
-                                      if (respuesta.success) {
-                                        this.spinner.hide();
-                                        this.dialog
-                                          .open(MensajeEmergentesComponent, {
-                                            data: `Producto actualizado exitosamente`,
-                                          })
-                                          .afterClosed()
-                                          .subscribe(
-                                            (cerrarDialogo: Boolean) => {
-                                              if (cerrarDialogo) {
-                                                this.productoSubject.next();
-                                                this.dialogo.close(true);
-                                              } else {
-                                                // Puedes agregar lógica adicional aquí si es necesario
-                                              }
-                                            }
-                                          );
-                                      } else {
-                                        this.toastr.error(
-                                          respuesta.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      }
-                                    },
-                                    error: (paramError) => {
-                                      this.toastr.error(
-                                        paramError.error.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    },
-                                  });
-
-                                //agregar producto
-
-                                this.spinner.hide();
-                               /* const dialogRefConfirm = this.dialog.open(
-                                  MensajeEmergentesComponent,
-                                  {
-                                    data: `Se agregó exitosamente`,
-                                  }
-                                );
-                                dialogRefConfirm
-                                  .afterClosed()
-                                  .subscribe((result) => {});*/
-                              });
-                          }
-                        });
-                    });
-                }
-              });
-          } else {
-            // Si la categoría no existe, se agrega
-            this.categoriaService
-              .agregarCategoria(this.form.value)
-              .subscribe((respuesta) => {
-
-                ///********** Verifica si la subcategoria ya existe */
-                this.categoriaService
-                  .obtenerSubCategoriaPorNombre(
-                    this.form.value.nomsubcate,
-                    respuesta.id_categoria
-                  )
-                  .subscribe((subCategoriaExistente) => {
-                    if (subCategoriaExistente.success == 1) {
-
-                      this.categoriaService
-                        .obtenerMarcaPorNombre(this.form.value.marcaP)
-                        .subscribe((marcaExistente) => {
-                          if (marcaExistente.success == 1) {
-                            //agregar producto
-                            const formularioP = {
-                              id_probod :this.idProducto,
-                              idProducto:subCategoriaExistente.producto.id_producto,
-                              detalleCompra: this.form.value.detalleCompra,
-                              idMarcaProducto:marcaExistente.marcasproducto.id_marcas,
-                              descripcion: this.form.value.descripcion,
-                              codigoBarras: this.form.value.codigoBarra,
-                            };
-
-                            this.productoService
-                              .actualizarProducto(formularioP)
-                              .subscribe({
-                                next: (respuesta) => {
-                                  if (respuesta.success) {
-                                    this.spinner.hide();
-                                    this.dialog
-                                      .open(MensajeEmergentesComponent, {
-                                        data: `Producto actualizado exitosamente`,
-                                      })
-                                      .afterClosed()
-                                      .subscribe((cerrarDialogo: Boolean) => {
-                                        if (cerrarDialogo) {
-                                          this.productoSubject.next();
-                                          this.dialogo.close(true);
-                                        } else {
-                                          // Puedes agregar lógica adicional aquí si es necesario
-                                        }
-                                      });
-                                  } else {
-                                    this.toastr.error(
-                                      respuesta.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  }
-                                },
-                                error: (paramError) => {
-                                  this.toastr.error(
-                                    paramError.error.message,
-                                    "Error",
-                                    {
-                                      positionClass: "toast-bottom-left",
-                                    }
-                                  );
-                                },
-                              });
-                          } else {
-                            const formMarca = {
-                              marcaP: this.form.value.marcaP,
-                            };
-                            this.categoriaService
-                              .agregarMarca(formMarca)
-                              .subscribe((respuestaMarca) => {
-                                //agregar producto
-
-                                const formularioP = {
-                                  id_probod :this.idProducto,
-                                  idProducto:subCategoriaExistente.producto.id_producto,
-                                  detalleCompra: this.form.value.detalleCompra,
-                                  idMarcaProducto:respuestaMarca.id_marcas,
-                                  descripcion: this.form.value.descripcion,
-                                  codigoBarras: this.form.value.codigoBarra,  
-                                };
-
-                                this.productoService
-                                  .actualizarProducto(formularioP)
-                                  .subscribe({
-                                    next: (respuesta) => {
-                                      if (respuesta.success) {
-                                        this.spinner.hide();
-                                        this.dialog
-                                          .open(MensajeEmergentesComponent, {
-                                            data: `Producto actualizado exitosamente`,
-                                          })
-                                          .afterClosed()
-                                          .subscribe(
-                                            (cerrarDialogo: Boolean) => {
-                                              if (cerrarDialogo) {
-                                                this.productoSubject.next();
-                                                this.dialogo.close(true);
-                                              } else {
-                                                // Puedes agregar lógica adicional aquí si es necesario
-                                              }
-                                            }
-                                          );
-                                      } else {
-                                        this.toastr.error(
-                                          respuesta.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      }
-                                    },
-                                    error: (paramError) => {
-                                      this.toastr.error(
-                                        paramError.error.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    },
-                                  });
-
-                                this.spinner.hide();
-                                /*const dialogRefConfirm = this.dialog.open(
-                                  MensajeEmergentesComponent,
-                                  {
-                                    data: `Se agregó exitosamente`,
-                                  }
-                                );
-                                dialogRefConfirm
-                                  .afterClosed()
-                                  .subscribe((result) => {});*/
-                              });
-                          }
-                        });
-                    } else {
-                      // Si la subcategoría no existe, agregarla
-                      const formSub = {
-                        idcatte: respuesta.id_categoria,
-                        nomsubcate: this.form.value.nomsubcate,
-                      };
-
-                      this.categoriaService
-                        .agregarSubCategoria(formSub)
-                        .subscribe((respuestaSub) => {
-
-                          ///********** Verifica si la marca ya existe */
-                          this.categoriaService
-                            .obtenerMarcaPorNombre(this.form.value.marcaP)
-                            .subscribe((marcaExistente) => {
-                              if (marcaExistente.success == 1) {
-
-                                const formularioP = {
-                                  id_probod :this.idProducto,
-                                  idProducto:respuestaSub.id_producto,
-                                  detalleCompra: this.form.value.detalleCompra,
-                                  idMarcaProducto:marcaExistente.marcasproducto.id_marcas,
-                                  descripcion: this.form.value.descripcion,
-                                  codigoBarras: this.form.value.codigoBarra,
-                                };
-
-                                this.productoService
-                                  .actualizarProducto(formularioP)
-                                  .subscribe({
-                                    next: (respuesta) => {
-                                      if (respuesta.success) {
-                                        this.spinner.hide();
-                                        this.dialog
-                                          .open(MensajeEmergentesComponent, {
-                                            data: `Producto actualizado exitosamente`,
-                                          })
-                                          .afterClosed()
-                                          .subscribe(
-                                            (cerrarDialogo: Boolean) => {
-                                              if (cerrarDialogo) {
-                                                this.productoSubject.next();
-                                                this.dialogo.close(true);
-                                              } else {
-                                                // Puedes agregar lógica adicional aquí si es necesario
-                                              }
-                                            }
-                                          );
-                                      } else {
-                                        this.toastr.error(
-                                          respuesta.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      }
-                                    },
-                                    error: (paramError) => {
-                                      this.toastr.error(
-                                        paramError.error.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    },
-                                  });
-
-                                //agregar producto
-                              } else {
-                                const formMarca = {
-                                  marcaP: this.form.value.marcaP,
-                                };
-
-                                this.categoriaService
-                                  .agregarMarca(formMarca)
-                                  .subscribe((respuestaMarca) => { 
-
-                                    const formularioP = {
-                                      id_probod :this.idProducto,
-                                      idProducto:respuestaSub.id_producto,
-                                      detalleCompra:this.form.value.detalleCompra,
-                                      idMarcaProducto:respuestaMarca.id_marcas,
-                                      descripcion: this.form.value.descripcion,
-                                      codigoBarras: this.form.value.codigoBarra,
-                                    };
-
-                                    this.productoService
-                                      .actualizarProducto(formularioP)
-                                      .subscribe({
-                                        next: (respuesta) => {
-                                          if (respuesta.success) {
-                                            this.spinner.hide();
-                                            this.dialog
-                                              .open(
-                                                MensajeEmergentesComponent,
-                                                {
-                                                  data: `Producto actualizado exitosamente`,
-                                                }
-                                              )
-                                              .afterClosed()
-                                              .subscribe(
-                                                (cerrarDialogo: Boolean) => {
-                                                  if (cerrarDialogo) {
-                                                    this.productoSubject.next();
-                                                    this.dialogo.close(true);
-                                                  } else {
-                                                    // Puedes agregar lógica adicional aquí si es necesario
-                                                  }
-                                                }
-                                              );
-                                          } else {
-                                            this.toastr.error(
-                                              respuesta.message,
-                                              "Error",
-                                              {
-                                                positionClass:
-                                                  "toast-bottom-left",
-                                              }
-                                            );
-                                          }
-                                        },
-                                        error: (paramError) => {
-                                          this.toastr.error(
-                                            paramError.error.message,
-                                            "Error",
-                                            {
-                                              positionClass:
-                                                "toast-bottom-left",
-                                            }
-                                          );
-                                        },
-                                      });
-                                    //agregar producto
-
-                                    this.spinner.hide();
-                                   /* const dialogRefConfirm = this.dialog.open(
-                                      MensajeEmergentesComponent,
-                                      {
-                                        data: `Se agregó exitosamente`,
-                                      }
-                                    );
-                                    dialogRefConfirm
-                                      .afterClosed()
-                                      .subscribe((result) => {});*/
-                                  });
-                              }
-                            });
-                        });
-                    }
-                  });
-              });
-          }
-        });
-    } else {
-      this.message = "Por favor, complete todos los campos requeridos.";
-      this.marcarCamposInvalidos(this.form);
-    }
-
-
-
-
-
-
-
-
-
-    
-   
+      }});
+        
 }
 
 infoCategoria(event: number) {
@@ -765,61 +239,6 @@ cerrarDialogo(): void {
   this.dialogo.close(true);
 }
 
-buscarCategorias() {
-  const saborIngresado = this.form.get("nombreCategoriaP")?.value;
-  this.categoriaService.obtenerCategoria().subscribe({
-    next: (respuesta) => {
-      const categoriasU = new Set(
-        respuesta.categorias.map((categoria: any) => categoria.nombreCategoria)
-      );
 
-      this.categorias = Array.from(categoriasU) as string[];
-
-      this.filteredCategorias = this.categorias.filter(
-        (categoria) =>
-          !saborIngresado ||
-          categoria.toLowerCase().includes(saborIngresado.toLowerCase())
-      );
-    },
-  });
-}
-
-buscarSubCategorias() {
-  const subCIngresado = this.form.get("nomsubcate")?.value;
-  this.categoriaService.obtenerSubCategoria().subscribe({
-    next: (respuesta) => {
-      const subCategoriasU = new Set(
-        respuesta.subCategoria.map((subCategoria: any) => subCategoria.nombreProducto)
-      );
-
-      this.subcategorias = Array.from(subCategoriasU) as string[];
-
-      this.filteredSubCategorias = this.subcategorias.filter(
-        (subcategoria) =>
-          !subCIngresado ||
-          subcategoria.toLowerCase().includes(subCIngresado.toLowerCase())
-      );
-    },
-  });
-}
-
-buscarMarca() {
-  const marcaIngresado = this.form.get("marcaP")?.value;
-  this.categoriaService.obtenerMarcas().subscribe({
-    next: (respuesta) => {
-      const marcasU = new Set(
-        respuesta.marcas.map((marca: any) => marca.marca)
-      );
-
-      this.marcas = Array.from(marcasU) as string[];
-
-      this.filteredMarcas = this.marcas.filter(
-        (marca) =>
-          !marcaIngresado ||
-          marca.toLowerCase().includes(marcaIngresado.toLowerCase())
-      );
-    },
-  });
-}
 
 }

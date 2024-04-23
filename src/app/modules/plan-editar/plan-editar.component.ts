@@ -87,9 +87,7 @@ export class planEditarComponent {
               const serviciosCoincidentes = this.servicios.filter((servicio) =>
                 serviciosPlan.includes(servicio.titulo)
               );
-
               serviciosCoincidentes.forEach((servicio) => {});
-
               this.formulariodePlan.setValue({
                 titulo: this.serviceToUpdate[0].titulo,
                 detalles: this.serviceToUpdate[0].detalles,
