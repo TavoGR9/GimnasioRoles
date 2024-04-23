@@ -6,11 +6,15 @@ table {
     font-size: 14px;
     width: 100%;
 }
+
 .table-container {
     overflow-x: auto; /* Permite desplazamiento horizontal */
     max-width: 100%;  /* Evita que la tabla sea más ancha que el contenedor */
   }
 
+  .table-container .mat-cell {
+    text-align: center; /* Centrar el texto horizontalmente solo en las celdas de esta tabla */
+  }
 
 
   
@@ -54,4 +58,23 @@ table {
     background-color: #4CAF50; /* Color de fondo cuando está activo */
     left: 0; /* Mantiene la "bolita" a la izquierda cuando está activo */
   }
+  
 
+
+
+  .custom-cell span {
+    padding: 10px 40px; /* Espacio entre el texto y el borde */
+    color: rgb(255, 255, 255); /* Color del texto */
+    border-radius: 5px;
+  }
+  
+  
+  
+
+  .centered-table {
+    margin: auto; /* Centrar horizontalmente */
+}
+
+.mat-table {
+    table-layout: auto; /* Ajustar el ancho de las columnas automáticamente */
+}

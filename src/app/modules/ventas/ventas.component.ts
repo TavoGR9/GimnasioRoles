@@ -169,28 +169,23 @@ export class VentasComponent implements OnInit {
 
   imprimirResumen() {
     if (this.totalAPagar <= this.dineroRecibido) {
-      const userId = this.auth.userId.getValue(); //ID del usuario actual
-      const lastInsertedIdString = localStorage.getItem(`lastInsertedId_${userId}`); // Obtener el último ID insertado para ese usuario
-      const lastInsertedId = lastInsertedIdString? parseInt(lastInsertedIdString, 10): null;
+      /**FECHA */
       const fechaActual = new Date();
       const offset = fechaActual.getTimezoneOffset(); // Obtiene el offset en minutos
       fechaActual.setMinutes(fechaActual.getMinutes() - offset);
       const fechaVenta = fechaActual.toISOString().replace("T", " ").split(".")[0];
-      const idCliente = this.cliente?.ID_Cliente || null; // Acceder al ID del cliente seleccionado
-      const totalAPagar = this.selectedProducts.reduce(
-        (total, producto) => total + producto.precioSucursal * producto.cantidad,0);
+      const totalAPagar = this.selectedProducts.reduce((total, producto) => total + producto.precioSucursal * producto.cantidad,0);
       // Enviar datos de ventas
       const datosVentas = {
-        Cliente_ID_Cliente: idCliente,
+        Cliente_ID_Cliente: 0,
         Caja_idCaja: 1,
         fechaVenta: fechaVenta,
         total: totalAPagar,
       };
-
       this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
-       // console.log(datosVentas, "datosVentas");
         const lastInsertedId3 = response.lastInsertedId3;
-        // Enviar detalles de ventas
+
+        console.log(this.producto);
         const detallesVenta = this.selectedProducts.map((producto) => {
           return {
             Ventas_idVentas: lastInsertedId3,
@@ -205,19 +200,34 @@ export class VentasComponent implements OnInit {
        // console.log(detallesVenta, "detallesVenta");
         this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
           (response) => {
+            const existencias = this.selectedProducts.map((producto) => {
+              return {
+              codigo: producto.codigoBarras,
+              cantidad: producto.cantidad
+            }
+            });
+            console.log(existencias, "existencias");
+            this.DetalleVenta.updateExistencias(existencias).subscribe((data) =>{
+              console.log(data, "data");
+
+            })
+
+          console.log(existencias, "exitencias");
+            this.dialog.open(MensajeEmergentesComponent, {
+              data: `Productos registrados correctamente`,
+            })
+            .afterClosed()
+            .subscribe((cerrarDialogo: Boolean) => {
+              if (cerrarDialogo) {
+                this.dialogo.close(true);
+                this.resetearValores();
+              } else {
+              }
+            });
+
           }
         );
-        this.dialog.open(MensajeEmergentesComponent, {
-            data: `Productos registrados correctamente`,
-          })
-          .afterClosed()
-          .subscribe((cerrarDialogo: Boolean) => {
-            if (cerrarDialogo) {
-              this.dialogo.close(true);
-              this.resetearValores();
-            } else {
-            }
-          });
+       
       });
     } else {
       this.toastr.error("Pago incorrecto, verifica");
@@ -461,13 +471,14 @@ export class VentasComponent implements OnInit {
   obtenerProducto(id: any, idGimnasio: any, cantidadSolicitada: number): void {
     this.InventarioService.obtenerProductoPorId(id, idGimnasio).subscribe({
       next: (data) => {
+        console.log(data, "data");
         this.producto = data; 
-        if (data[0].cantidadDisponible < cantidadSolicitada) {     
+        if (data[0].existencia < cantidadSolicitada) {     
           this.toastr.error("No hay suficiente stock disponible para esta cantidad");
         } else {
         }
-        if (data[0].cantidadDisponible < 5) {
-          this.toastr.warning(`Quedan solo ${data[0].cantidadDisponible} productos disponibles`);
+        if (data[0].existencia < 5) {
+          this.toastr.warning(`Quedan solo ${data[0].existencia} productos disponibles`);
         }
       },
       error: (error) => {
@@ -484,7 +495,7 @@ export class VentasComponent implements OnInit {
           this.toastr.error("Producto no encontrado");
           return;
         }
-        const cantidadDisponible = productoObtenido.cantidadDisponible;
+        const cantidadDisponible = productoObtenido.existencia;
         const cantidadSolicitada = producto.cantidad;
         if (cantidadDisponible < cantidadSolicitada) {
           this.toastr.error("No hay suficiente stock disponible para esta cantidad");

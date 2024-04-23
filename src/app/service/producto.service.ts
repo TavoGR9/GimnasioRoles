@@ -54,6 +54,16 @@ export class ProductoService {
           })
         );
     }
+
+    consultarAllProducto(id: any): Observable<any[]> {
+      const data = { id_pro_param: id };
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?getAllProductos", data)
+        .pipe(
+          tap((nuevosProductos: any[]) => {
+            this.productoSubject.next(nuevosProductos);
+          })
+        );
+    }
     
     actualizarProducto(datosP: any): Observable<any> {
       const url = `${this.API}producto_bod.php?actualizarP`;
@@ -67,6 +77,7 @@ export class ProductoService {
 
     obternerProductosV(id:any):Observable<any>{
       const data = { id_bodega_param: id };
+      console.log(data, "data");
       return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodegaVenta=",data);
     }
   

@@ -9,6 +9,8 @@ import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import { HomeService } from '../../service/home.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SyncService } from '../../service/sync.service';
+import { NgxSpinnerService } from "ngx-spinner";
+
 
 @Component({
   selector: 'app-home',
@@ -31,7 +33,7 @@ export class HomeComponent implements OnInit{
   tablaHTML: SafeHtml | null = null;
   tablaHTMLVentas: SafeHtml | null = null;
   
-  constructor(private homeService: HomeService, private sanitizer: DomSanitizer,
+  constructor(private homeService: HomeService, private sanitizer: DomSanitizer, private spinner: NgxSpinnerService,
     private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, private syncService: SyncService ) {
   }
 
@@ -48,11 +50,10 @@ export class HomeComponent implements OnInit{
         if(data) {
           this.idGym = data;
           this.listaTablas();
+          
         }
       });
     }, 3000); 
-
-   
   }
 
   sync() {
@@ -62,7 +63,6 @@ export class HomeComponent implements OnInit{
       });
     });
   }
-
 
   compareAndUpdate(localUsers: any[], remoteUsers: any[]) {
     // Actualizar o insertar usuarios remotos basados en los usuarios locales
@@ -81,7 +81,6 @@ export class HomeComponent implements OnInit{
         });
       }
     });
-  
     // Actualizar o insertar usuarios locales basados en los usuarios remotos
     remoteUsers.forEach(remoteUser => {
       const localUser = localUsers.find(user => user.email === remoteUser.email);

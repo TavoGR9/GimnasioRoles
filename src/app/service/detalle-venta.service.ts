@@ -47,4 +47,9 @@ export class DetalleVentaService {
     return this.clienteHttp.get(this.API+"venta_detalleVenta.php?consultar="+id);
   }
 
+  updateExistencias(data:any):Observable<any>{
+    console.log(data, "data");
+    return this.clienteHttp.post(this.API+"producto_bod.php?updateExistencias",data)
+  }
+
 }

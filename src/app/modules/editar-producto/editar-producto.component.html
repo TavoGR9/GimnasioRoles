@@ -11,6 +11,55 @@
                   <div style="color:red">{{message}}</div>
                   <fieldset>
                      <div class="row">
+                        <div class="col-sm-6">
+                        <p>
+                           <mat-form-field appearance="outline"  style="width: 100%;" required>
+                              <mat-label>Precio compra</mat-label>
+                              <input
+                                 matInput
+                                 type="text"
+                                 placeholder="Precio compra"
+                                 id="precioC"
+                                 formControlName="precioCaja"
+                                 autocomplete="off"
+                                 />
+                           </mat-form-field>
+                        </p>
+                     </div>
+                        <div class="col-sm-6">
+                           <p>
+                              <mat-form-field style="width: 100%;" required appearance="outline">
+                                 <mat-label>Precio venta</mat-label>
+                                 <input 
+                                    matInput
+                                    placeholder="Precio venta"
+                                    type="text"
+                                    id="precioV"
+                                    autocomplete="off"
+                                    formControlName="precioSucursal"
+                                    />
+                              </mat-form-field>
+                           </p>
+                        </div>
+                     </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                           <p>
+                              <mat-form-field style="width: 100%;" required appearance="outline">
+                                 <mat-label>Existencia</mat-label>
+                                 <input 
+                                    matInput
+                                    placeholder="Existencia del producto"
+                                    type="text"
+                                    id="descripcion"
+                                    autocomplete="off"
+                                    formControlName="existencia"
+                                    />
+                              </mat-form-field>
+                           </p>
+                        </div>
+                     </div>
+                    <!---- <div class="row">
                         <p>
                            <mat-form-field appearance="outline"  style="width: 100%;" required>
                               <mat-label>Codigo de barra</mat-label>
@@ -25,7 +74,7 @@
                            </mat-form-field>
                         </p>
                      </div>
-                     <div class="row">
+                    <div class="row">
                         <div class="col-sm-12">
                            <p>
                               <mat-form-field style="width: 100%;" required appearance="outline">
@@ -61,19 +110,7 @@
                                  </mat-autocomplete>
                                </mat-form-field>
                            </p>
-                          <!-- <p>
-                              <mat-form-field appearance="outline"  style="width: 100%;" required>
-                                 <mat-label>Nombre de la categoria</mat-label>
-                                 <input
-                                    id="nombreCategoriaP"
-                                    formControlName="nombreCategoriaP"
-                                    type="text"
-                                    matInput
-                                    autocomplete="off"
-                                    placeholder="Categoria"
-                                    />
-                              </mat-form-field>
-                           </p>-->
+                       
 
                         </div>
                         <div class="col-sm-6">
@@ -98,21 +135,7 @@
                         </div>
                      </div>
                      <div class="row">
-                        <!--<div class="col-sm-6">
-                           <p>
-                              <mat-form-field appearance="outline"  style="width: 100%;" required>
-                                 <mat-label>Precio de compra</mat-label>
-                                 <input
-                                    id="precioCompra"
-                                    formControlName="precioCompra"
-                                    type="text"
-                                    matInput
-                                    autocomplete="off"
-                                    placeholder="precioCompra"
-                                    />
-                              </mat-form-field>
-                           </p>
-                        </div>-->
+                       
                         <div class="col-sm-6">
                            <p>
 
@@ -148,7 +171,7 @@
                               </mat-form-field>
                            </p>
                         </div>  
-                     </div>
+                     </div>-->
                   </fieldset>
                </div>
             </form>
