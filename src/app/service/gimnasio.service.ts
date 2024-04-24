@@ -14,26 +14,27 @@ export class GimnasioService {
   optionSelected = new BehaviorSubject<number>(0);
 
   isConnected: boolean = true;
-  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
 
-  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  APIv3: string = 'http://localhost/olimpusGym/conf/';
-  API: String = '';
+  // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  // APIv3: string = 'http://localhost/olimpusGym/conf/';
+  // API: String = '';
+
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService) {}
 
-  comprobar(){
-    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-      this.isConnected = isConnected;
-      if (isConnected) {
-        this.API = this.APIv2;
-      } else {
-        this.API = this.APIv3;
-      }
-    });
-  }
+  // comprobar(){
+  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+  //     this.isConnected = isConnected;
+  //     if (isConnected) {
+  //       this.API = this.APIv2;
+  //     } else {
+  //       this.API = this.APIv3;
+  //     }
+  //   });
+  // }
 
   obternerPlan(): Observable<any[]>{
     return this.clienteHttp.get<any[]>(this.API+"bodega.php?consultar");

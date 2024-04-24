@@ -50,11 +50,11 @@ export class MembresiasComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.membresiaService.comprobar();
-    this.auth.comprobar();
-    this.gimnasioService.comprobar();
+    // this.membresiaService.comprobar();
+    // this.auth.comprobar();
+    // this.gimnasioService.comprobar();
     
-    setTimeout(() => {
+    
       this.currentUser = this.auth.getCurrentUser();
       if (this.currentUser) {
         this.getSSdata(JSON.stringify(this.currentUser));
@@ -63,7 +63,7 @@ export class MembresiasComponent implements OnInit {
         this.idGym = data;
         this.listaTabla();
       });
-    }, 3000);
+   
     this.loadData();
   }
 
@@ -87,7 +87,7 @@ export class MembresiasComponent implements OnInit {
     setTimeout(() => {
       // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   listaTabla() {

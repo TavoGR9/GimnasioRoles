@@ -11,22 +11,24 @@ export class PostalCodeService {
 
   isConnected: boolean = true;
   //Servicio que obtiene los datos mediante el codigo postal
-  APIv2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/';
-  APIv3: string = 'http://localhost/olimpusGym/conf/';
-  API: String = '';
+  // APIv2: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/';
+  // APIv3: string = 'http://localhost/olimpusGym/conf/';
+  // API: String = '';
+
+  API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/administrador/';
 
   constructor(private http: HttpClient, private connectivityService: ConnectivityService) { }
 
-  comprobar(){
-    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-      this.isConnected = isConnected;
-      if (isConnected) {
-        this.API = this.APIv2;
-      } else {
-        this.API = this.APIv3;
-      }
-    });
-  }
+  // comprobar(){
+  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+  //     this.isConnected = isConnected;
+  //     if (isConnected) {
+  //       this.API = this.APIv2;
+  //     } else {
+  //       this.API = this.APIv3;
+  //     }
+  //   });
+  // }
 
   consultarCodigoPostal(codigoPostal: string): Observable<any> {
     const url = `${this.API}cp.php?consultarCodigoP=${codigoPostal}`;

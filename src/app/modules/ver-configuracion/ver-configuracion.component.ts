@@ -29,10 +29,10 @@ export class VerConfiguracionComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.gimnasioService.comprobar();
-    this.auth.comprobar();
-    this.HorarioService.comprobar();
-    setTimeout(() => {
+    // this.gimnasioService.comprobar();
+    // this.auth.comprobar();
+    // this.HorarioService.comprobar();
+   
       this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -42,8 +42,7 @@ export class VerConfiguracionComponent implements OnInit {
         this.consultarHorario();
         this.consultarGym();
       }); 
-    }, 3000); 
-
+   
   }
 
   consultarGym(){

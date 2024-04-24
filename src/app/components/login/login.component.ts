@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.auth.comprobar();
+    //this.auth.comprobar();
     if(this.auth.isLoggedInBS() || this.auth.getCurrentUser()){
       this.router.navigate(['/home']);
     }

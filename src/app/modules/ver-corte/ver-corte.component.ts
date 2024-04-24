@@ -64,12 +64,12 @@ export class VerCorteComponent implements OnInit  {
   DetallesCaja: any;
 
   ngOnInit(): void {
-    this.productoService.comprobar();
-    this.DetalleVenta.comprobar();
-    this.InventarioService.comprobar();
-    this.ventasService.comprobar();
-    this.joinDetalleVentaService.comprobar();
-    this.auth.comprobar();
+    // this.productoService.comprobar();
+    // this.DetalleVenta.comprobar();
+    // this.InventarioService.comprobar();
+    // this.ventasService.comprobar();
+    // this.joinDetalleVentaService.comprobar();
+    // this.auth.comprobar();
     this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
       if (this.dialogRef) {
         if (isMaximized) {
@@ -80,7 +80,7 @@ export class VerCorteComponent implements OnInit  {
       }
     });  
 
-    setTimeout(() => {
+    
       this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -91,7 +91,7 @@ export class VerCorteComponent implements OnInit  {
         this.cargarVentas();
         this.actualizarTabla();
       }); 
-    }, 3000);
+   
     this.loadData();
   }  
 
@@ -99,7 +99,7 @@ export class VerCorteComponent implements OnInit  {
     setTimeout(() => {
       // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any){

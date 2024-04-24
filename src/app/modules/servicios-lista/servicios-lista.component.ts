@@ -50,10 +50,10 @@ export class ServiciosListaComponent {
   ) {}
 
   ngOnInit(): void {
-    this.gimnasioService.comprobar();
-    this.auth.comprobar();
+    // this.gimnasioService.comprobar();
+    // this.auth.comprobar();
     
-    setTimeout(() => {
+    
       this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -62,7 +62,7 @@ export class ServiciosListaComponent {
         this.idGym = data;
         this.listaTabla();
       });  
-    }, 3000);
+  
 
     this.loadData();
   }
@@ -71,7 +71,7 @@ export class ServiciosListaComponent {
     setTimeout(() => {
       // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any) {

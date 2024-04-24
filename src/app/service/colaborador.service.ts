@@ -19,23 +19,25 @@ export class ColaboradorService {
     //Servicio para la manipulacion de datos de un colaborador.
 
     private categoriasSubject = new BehaviorSubject<any[]>([]);
-    APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-    APIv3: string = 'http://localhost/olimpusGym/conf/';
-    API: String = '';
+    // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+    // APIv3: string = 'http://localhost/olimpusGym/conf/';
+    // API: String = '';
+
+    API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
         //this.comprobar();
     }
-    comprobar(){
-        this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-          this.isConnected = isConnected;
-          if (isConnected) {
-            this.API = this.APIv2;
-          } else {
-            this.API = this.APIv3;
-          }
-        });
-      }
+    // comprobar(){
+    //     this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+    //       this.isConnected = isConnected;
+    //       if (isConnected) {
+    //         this.API = this.APIv2;
+    //       } else {
+    //         this.API = this.APIv3;
+    //       }
+    //     });
+    //   }
     
     //servicio correspondiente a llenado de los datos del combo nombre Gym
     comboDatosGym(gimID: any){
