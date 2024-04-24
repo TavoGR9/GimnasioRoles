@@ -499,7 +499,7 @@ export class RegistroComponent implements OnInit {
               this.spinner.hide();
               this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
                 if (cerrarDialogo) {
-                  this.router.navigateByUrl(`/listaMembresias`);
+                  this.router.navigateByUrl(`/home`);
                   // Realizar alguna acción si se cierra el diálogo
                 } else {
                   // Realizar alguna acción si no se cierra el diálogo

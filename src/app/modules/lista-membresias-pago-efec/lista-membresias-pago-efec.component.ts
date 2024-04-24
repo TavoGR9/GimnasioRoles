@@ -78,7 +78,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     'Estatus',
     //'Dinero Recibido',
     //'Pagar',
-    'Reenovación',
+    'Pago',
     'Info Cliente',
     'Huella'
   ];
@@ -90,6 +90,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   idGym: number = 0;
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
+  isLoading: boolean = true; 
 
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorPagoOnline', { static: true }) paginator!: MatPaginator;
@@ -140,7 +141,14 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         //this.updateDateLogs();  
       }); 
     }, 3000); 
+    this.loadData();
+  }
 
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any){
@@ -189,6 +197,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         } else if(response.data){
           // Si hay datos, actualiza la tabla
           this.clienteActivo = response.data;
+         
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
         }
@@ -203,8 +212,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       }
     );
   }
-
-
 
   listaClientesData(): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
@@ -261,6 +268,15 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                 // Recargar la página actual
                 //location.reload();
                 //this.router.navigateByUrl(`/index/`);
+                this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((respuesta) => {
+                  this.clienteActivo = respuesta.data;
+                  // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
+                  this.dataSourceActivos.data = this.clienteActivo.slice();
+                  // Notificar a la tabla sobre el cambio
+                  this.dataSourceActivos.data.paginator = this.paginator; // Actualizar el paginador si es necesario
+                  // Notificar a la tabla sobre el cambio
+                  this.dataSourceActivos._updateChangeSubscription();
+                });
               } else {
               }
             });

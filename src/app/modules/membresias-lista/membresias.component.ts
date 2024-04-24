@@ -28,6 +28,7 @@ export class MembresiasComponent implements OnInit {
   currentUser: string = "";
   services: any[] = [];
   idGym: number = 0;
+  isLoading: boolean = true; 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -63,6 +64,7 @@ export class MembresiasComponent implements OnInit {
         this.listaTabla();
       });
     }, 3000);
+    this.loadData();
   }
 
   getSSdata(data: any) {
@@ -79,6 +81,13 @@ export class MembresiasComponent implements OnInit {
       error: (error) => {
       },
     });
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   listaTabla() {

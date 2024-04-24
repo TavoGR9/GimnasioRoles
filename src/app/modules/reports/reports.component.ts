@@ -2,8 +2,6 @@ import { Component } from "@angular/core";
 import { OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from "../../service/auth.service";
-import { Router } from "@angular/router";
-import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { format } from "date-fns";
 import { ToastrService } from "ngx-toastr";
@@ -28,8 +26,6 @@ export class ReportsComponent implements OnInit {
     responsive: true, //resposivo
     maintainAspectRatio: false, //tamaño fijo
   }; // opciones de configuración, como si debe ser responsivo (responsive).
-
-
   public barChartType: ChartType = "bar"; //tipo de grafico
   public barChartLegend = true;
   public barChartData: ChartDataset[] = []; //array de objetos que contiene los datos, necesario 
@@ -39,6 +35,7 @@ export class ReportsComponent implements OnInit {
   } = {}; //almacena datos para gráficos específicos de cada gimnasio
   doughnutChartLegend = true; 
   doughnutChartType: ChartType = "doughnut";
+  isLoading: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -55,17 +52,21 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
     this.auth.comprobar();
-
     setTimeout(() => {
       this.currentUser = this.auth.getCurrentUser();
       if (this.currentUser) {
         this.getSSdata(JSON.stringify(this.currentUser));
       }
-      this.obtenerDatosParaGrafico1();
-      this.obtenerDatosParaGrafico2();
-      //this.obtenerDatosParaGrafico5();
     }, 3000); 
-    
+   
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any) {

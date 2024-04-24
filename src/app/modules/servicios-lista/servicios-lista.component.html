@@ -1,50 +1,59 @@
-<div style="margin-top: 60px;">
-<div class="container mt-4">
-  <h2 class="mb-3">SERVICIOS DISPONIBLES</h2>
-  <div style="text-align: right;">
-     <button mat-raised-button style="background-color: #fd9727; font-size: 16px;" (click)="openDialog()">
-        <mat-icon>add</mat-icon>
-        AGREGAR SERVICIO
-     </button>
-  </div>
-  <br/>
-  <div style="margin-left: 70px;color:red;font-size: 20px;">{{message}}</div>
-  <h3>Ingresa el valor de una columna</h3>
-  <mat-form-field class="full-width">
-     <mat-label>Filtro</mat-label>
-     <input
-     matInput
-     (keyup)="applyFilter($event)"
-     placeholder="Busca por columnas"
-     #input
-     />
-  </mat-form-field>
-  <div  class="table-container">
-     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <ng-container matColumnDef="title">
-           <th mat-header-cell *matHeaderCellDef>Título</th>
-           <td mat-cell *matCellDef="let item">{{ item.nombre_servicio }}</td>
-        </ng-container>
-        <ng-container matColumnDef="details">
-           <th mat-header-cell *matHeaderCellDef>Detalles</th>
-           <td mat-cell *matCellDef="let item">{{item.detalles}}</td>
-        </ng-container>
-        <ng-container matColumnDef="price">
-           <th mat-header-cell *matHeaderCellDef>Precio</th>
-           <td mat-cell *matCellDef="let item">${{ item.precio_unitario }}</td>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-           <th mat-header-cell *matHeaderCellDef>Acciones</th>
-           <td mat-cell *matCellDef="let item">
-              <button mat-icon-button color="primary" (click)="editarServicio(item.id_servicios_individuales)">
-                 <mat-icon>edit</mat-icon>
-              </button>
-           </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
-     </table>
-  </div>
-  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+
+<div class="custom-spinner-container" *ngIf="isLoading">
+   <div class="custom-spinner">
+       <div class="spinner-circle"></div>
+       <div class="spinner-text">Cargando...</div>
+   </div>
 </div>
+<div *ngIf="!isLoading">
+   <div style="margin-top: 60px;">
+      <div class="container mt-4">
+      <h2 class="mb-3">SERVICIOS DISPONIBLES</h2>
+      <div style="text-align: right;">
+         <button mat-raised-button style="background-color: #fd9727; font-size: 16px;" (click)="openDialog()">
+            <mat-icon>add</mat-icon>
+            AGREGAR SERVICIO
+         </button>
+      </div>
+      <br/>
+      <div style="margin-left: 70px;color:red;font-size: 20px;">{{message}}</div>
+      <h3>Ingresa el valor de una columna</h3>
+      <mat-form-field class="full-width">
+         <mat-label>Filtro</mat-label>
+         <input
+         matInput
+         (keyup)="applyFilter($event)"
+         placeholder="Busca por columnas"
+         #input
+         />
+      </mat-form-field>
+      <div  class="table-container">
+         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container matColumnDef="title">
+               <th mat-header-cell *matHeaderCellDef>Título</th>
+               <td mat-cell *matCellDef="let item">{{ item.nombre_servicio }}</td>
+            </ng-container>
+            <ng-container matColumnDef="details">
+               <th mat-header-cell *matHeaderCellDef>Detalles</th>
+               <td mat-cell *matCellDef="let item">{{item.detalles}}</td>
+            </ng-container>
+            <ng-container matColumnDef="price">
+               <th mat-header-cell *matHeaderCellDef>Precio</th>
+               <td mat-cell *matCellDef="let item">${{ item.precio_unitario }}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+               <th mat-header-cell *matHeaderCellDef>Acciones</th>
+               <td mat-cell *matCellDef="let item">
+                  <button mat-icon-button color="primary" (click)="editarServicio(item.id_servicios_individuales)">
+                     <mat-icon>edit</mat-icon>
+                  </button>
+               </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
+         </table>
+      </div>
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+      </div>
+   </div>
 </div>

@@ -26,6 +26,7 @@ export class InventariosComponent implements OnInit {
   dataSource: any; 
   idGym: number = 0;
   currentUser: string = '';
+  isLoading: boolean = true; 
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
@@ -41,7 +42,6 @@ export class InventariosComponent implements OnInit {
     this.InventarioService.comprobar();
     this.auth.comprobar();
     this.currentUser = this.auth.getCurrentUser();
-  
     setTimeout(() => {
       if(this.currentUser){
         this.getSSdata(JSON.stringify(this.currentUser));
@@ -51,6 +51,15 @@ export class InventariosComponent implements OnInit {
         this.listaTablas();
       }); 
     }, 3000); 
+
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   listaTablas(){

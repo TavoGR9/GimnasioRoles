@@ -1,65 +1,73 @@
-<div style="margin-top: 60px;">
-<div class="container mt-4">
-   <h2>VENTAS</h2>
-   <label style="font-size: medium;">Reporte que muestra las ventas del gimnasio por fechas</label> <br><br>
-   <button (click)="ventas()"  class="boton-transparente"><img src="https://cdn-icons-png.flaticon.com/512/6822/6822288.png" style="width: 20%; margin-right: 10px;">Nueva venta</button>
-   <div >
-      <br>
-      <div class="row">
-         <div class="col-sm-6">
-            <p>Filtro por fecha:</p>
-            <select [(ngModel)]="opcionSeleccionada" style="margin-right: 20px;">
-            <option value="diario">Diario</option>
-            <option value="rango">Rango Personalizado</option>
-            </select>
-            <ng-container *ngIf="opcionSeleccionada === 'diario'">
-               <input type="date" [(ngModel)]="fechaFiltro" (ngModelChange)="aplicarFiltro()" class="input-date" style="margin-right: 20px;">
-            </ng-container>
-            <ng-container *ngIf="opcionSeleccionada === 'rango'">
-               <input type="date" [(ngModel)]="fechaInicio" (change)="aplicarFiltross()" class="input-date">
-               <input type="date" [(ngModel)]="fechaFin" (change)="aplicarFiltross()" class="input-date">
-            </ng-container>
-         </div>
-         <div class="col-sm-6">
-            <div style="display: flex; justify-content: flex-end;margin-top: 30px;">
-               <button mat-button [matMenuTriggerFor]="menu2" class="download-button">
-                  <mat-icon class="download-icon">cloud_download</mat-icon>
-                  <span class="download-text">Descargar Reporte</span>
-               </button>
-               <mat-menu #menu2="matMenu">
-                  <!--<button mat-menu-item (click)="descargarPDF2()">.pdf</button>-->
-                  <button mat-menu-item (click)="descargarExcel2()">.xlsx</button>
-               </mat-menu>
-            </div>
-         </div>
-      </div>
-      
-      <div class="total-ventas">
-         <p class="total-label">Total: <strong style="margin-left: 20px;">{{ totalVentas | currency:'USD':'symbol':'1.2-2' }}</strong></p>
-         <p class="total-amount"></p>
-      </div>
-      <table mat-table [dataSource]="dataSource"  >
-         <ng-container matColumnDef="nombreProducto">
-            <th mat-header-cell *matHeaderCellDef> Nombre Producto </th>
-            <td mat-cell *matCellDef="let detalle"> {{ detalle.nombreProducto }} </td>
-         </ng-container>
-         <ng-container matColumnDef="cantidadElegida">
-            <th mat-header-cell *matHeaderCellDef> Cantidad </th>
-            <td mat-cell *matCellDef="let detalle"> {{ detalle.cantidadElegida }} </td>
-         </ng-container>
-         <ng-container matColumnDef="precioUnitario">
-            <th mat-header-cell *matHeaderCellDef> Precio Unitario </th>
-            <td mat-cell *matCellDef="let detalle"> {{ detalle.precioUnitario }} </td>
-         </ng-container>
-         <ng-container matColumnDef="fechaVenta">
-            <th mat-header-cell *matHeaderCellDef> Fecha </th>
-            <td mat-cell *matCellDef="let detalle"> {{ detalle.fechaVenta }} </td>
-         </ng-container>
-         <tr mat-header-row *matHeaderRowDef="columnas; sticky: true"></tr>
-         <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
-      </table>
-      <mat-paginator #paginatorHistorial [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
-      <br><br><br>
+<div class="custom-spinner-container" *ngIf="isLoading">
+   <div class="custom-spinner">
+       <div class="spinner-circle"></div>
+       <div class="spinner-text">Cargando...</div>
    </div>
 </div>
+<div *ngIf="!isLoading">
+   <div style="margin-top: 60px;">
+      <div class="container mt-4">
+         <h2>VENTAS</h2>
+         <label style="font-size: medium;">Reporte que muestra las ventas del gimnasio por fechas</label> <br><br>
+         <button (click)="ventas()"  class="boton-transparente"><img src="https://cdn-icons-png.flaticon.com/512/6822/6822288.png" style="width: 20%; margin-right: 10px;">Nueva venta</button>
+         <div >
+            <br>
+            <div class="row">
+               <div class="col-sm-6">
+                  <p>Filtro por fecha:</p>
+                  <select [(ngModel)]="opcionSeleccionada" style="margin-right: 20px;">
+                  <option value="diario">Diario</option>
+                  <option value="rango">Rango Personalizado</option>
+                  </select>
+                  <ng-container *ngIf="opcionSeleccionada === 'diario'">
+                     <input type="date" [(ngModel)]="fechaFiltro" (ngModelChange)="aplicarFiltro()" class="input-date" style="margin-right: 20px;">
+                  </ng-container>
+                  <ng-container *ngIf="opcionSeleccionada === 'rango'">
+                     <input type="date" [(ngModel)]="fechaInicio" (change)="aplicarFiltross()" class="input-date">
+                     <input type="date" [(ngModel)]="fechaFin" (change)="aplicarFiltross()" class="input-date">
+                  </ng-container>
+               </div>
+               <div class="col-sm-6">
+                  <div style="display: flex; justify-content: flex-end;margin-top: 30px;">
+                     <button mat-button [matMenuTriggerFor]="menu2" class="download-button">
+                        <mat-icon class="download-icon">cloud_download</mat-icon>
+                        <span class="download-text">Descargar Reporte</span>
+                     </button>
+                     <mat-menu #menu2="matMenu">
+                        <!--<button mat-menu-item (click)="descargarPDF2()">.pdf</button>-->
+                        <button mat-menu-item (click)="descargarExcel2()">.xlsx</button>
+                     </mat-menu>
+                  </div>
+               </div>
+            </div>
+            
+            <div class="total-ventas">
+               <p class="total-label">Total: <strong style="margin-left: 20px;">{{ totalVentas | currency:'USD':'symbol':'1.2-2' }}</strong></p>
+               <p class="total-amount"></p>
+            </div>
+            <table mat-table [dataSource]="dataSource"  >
+               <ng-container matColumnDef="nombreProducto">
+                  <th mat-header-cell *matHeaderCellDef> Nombre Producto </th>
+                  <td mat-cell *matCellDef="let detalle"> {{ detalle.nombreProducto }} </td>
+               </ng-container>
+               <ng-container matColumnDef="cantidadElegida">
+                  <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+                  <td mat-cell *matCellDef="let detalle"> {{ detalle.cantidadElegida }} </td>
+               </ng-container>
+               <ng-container matColumnDef="precioUnitario">
+                  <th mat-header-cell *matHeaderCellDef> Precio Unitario </th>
+                  <td mat-cell *matCellDef="let detalle"> {{ detalle.precioUnitario }} </td>
+               </ng-container>
+               <ng-container matColumnDef="fechaVenta">
+                  <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                  <td mat-cell *matCellDef="let detalle"> {{ detalle.fechaVenta }} </td>
+               </ng-container>
+               <tr mat-header-row *matHeaderRowDef="columnas; sticky: true"></tr>
+               <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+            </table>
+            <mat-paginator #paginatorHistorial [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+            <br><br><br>
+         </div>
+      </div>
+   </div>
 </div>

@@ -17,6 +17,7 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from "ngx-spinner";
+import { forkJoin } from 'rxjs';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -55,6 +56,7 @@ export class EntradasComponent implements OnInit {
   currentUser: string = '';
   idGym: number = 0;
   tablaDatos: any[] = [];
+  isLoading: boolean = true; 
 
   constructor(
    // public dialogo: MatDialogRef<EntradasComponent>,
@@ -128,6 +130,14 @@ export class EntradasComponent implements OnInit {
         }
       });
     }, 3000);
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any){
@@ -391,14 +401,10 @@ export class EntradasComponent implements OnInit {
     
   }*/
 
-  registrar(): any {
-    
+/*registrar(): any {
     if (this.tablaDatos.length > 0) {
-
       this.spinner.show();
       const dataToSend: any[] = this.tablaDatos;
-
-
       for (let i = 0; i < dataToSend.length; i++) {
         const id_Probob = dataToSend[i].id_Probob;
         this.entrada.verficarProducto(this.auth.idGym.getValue(),id_Probob).subscribe({next:(data) =>{
@@ -510,8 +516,146 @@ export class EntradasComponent implements OnInit {
       this.marcarCamposInvalidos(this.form);
     }
     
+  }*/
+
+  registrar(): any {
+    if (this.tablaDatos.length > 0) {
+      this.spinner.show();
+      const dataToSend: any[] = this.tablaDatos;
+      const registrosParaEnviar: any[] = [];
+      const registrosAc: any[] = [];
+      let hayRegistrosNuevos = false;
+      let hayRegistrosParaEditar = false;
+      let update: any[] = [];
+      // Arreglaremos el código para manejar los registros existentes y nuevos por separado
+    
+      // Creamos un arreglo de observables para almacenar todas las solicitudes de verificación
+      const verificaciones = dataToSend.map((item) =>
+        this.entrada.verficarProducto(this.auth.idGym.getValue(), item.id_Probob)
+      );
+    
+      // Usamos forkJoin para esperar todas las respuestas antes de procesar los resultados
+      forkJoin(verificaciones).subscribe((results) => {
+        results.forEach((data, index) => {
+          const id_Probob = dataToSend[index].id_Probob;
+    
+          if (data.success === 0) {
+            // Producto no existe, agregar a registrosParaEnviar
+            registrosParaEnviar.push({
+              exis: dataToSend[index].exis,
+              precioCaja: dataToSend[index].precioCaja,
+              precciosucu: dataToSend[index].precciosucu,
+              preccio: dataToSend[index].preccio,
+              id_Probob: id_Probob,
+              valor: dataToSend[index].valor,
+              fechaE: dataToSend[index].fechaE,
+              fechaEntrada: dataToSend[index].fechaEntrada,
+              accion: "Registro de nuevo producto",
+              fecha_actu: "2001-01-10",
+            });
+            hayRegistrosNuevos = true;
+          } else if (data.success === 1) {
+            // Producto existe, agregar a registrosAc para editar
+            hayRegistrosParaEditar = true;
+            const fechaActual: Date = new Date();
+            const dia: string = fechaActual.getDate().toString().padStart(2, "0");
+            const mes: string = (fechaActual.getMonth() + 1)
+              .toString()
+              .padStart(2, "0");
+            const año: string = fechaActual.getFullYear().toString();
+            const fechaFormateada: string = `${año}-${mes}-${dia}`;
+    
+            registrosAc.push({
+              accion: "Edición de nuevo producto",
+              fecha_actu: fechaFormateada,
+              existencias: dataToSend[index].exis,
+              p_id_producto: id_Probob,
+              precioSucursal: dataToSend[index].precciosucu,
+              precioCaja: dataToSend[index].precioCaja,
+              p_id_bodega: this.auth.idGym.getValue(),
+              ultimo_id: data.idBodPro,
+            });
+          }
+        });
+    
+        // Procesamos los registros después de recibir todas las respuestas
+        if (hayRegistrosNuevos) {
+          this.enviarRegistros(registrosParaEnviar);
+        }
+    
+        if (hayRegistrosParaEditar) {
+          this.actualizarReg(registrosAc);
+        }
+      });
+    } else {
+      // Mensaje de error si no hay datos en la tabla
+      this.toastr.error("Agrega algo a la tabla antes de enviar", "Error", {
+        positionClass: "toast-bottom-left",
+      });
+      this.message = "Por favor, complete todos los campos requeridos.";
+      this.marcarCamposInvalidos(this.form);
+    }    
+  }
+  
+  // Función para enviar los registros
+  enviarRegistros(registrosParaEnviar: any[]) {
+    this.entrada.agregarEntradaProducto(registrosParaEnviar).subscribe({
+      next: (respuesta) => {
+        if (respuesta.success == 1) {
+          this.spinner.hide();
+          this.dialog
+            .open(MensajeEmergentesComponent, {
+              data: `Entrada agregada exitosamente`,
+            })
+            .afterClosed()
+            .subscribe((cerrarDialogo: Boolean) => {
+              if (cerrarDialogo) {
+                this.form.reset();
+                this.tablaDatos = [];
+              }
+            });
+        } else {
+          this.toastr.error(respuesta.message, 'Error', {
+            positionClass: 'toast-bottom-left',
+          });
+        }
+      },
+      error: (paramError) => {
+        console.error(paramError);
+        this.toastr.error(paramError.error.message, 'Error', {
+          positionClass: 'toast-bottom-left',
+        });
+      },
+    });
   }
 
+  actualizarReg(registrosAc: any[]){
+    this.entrada.actualizarProducto(registrosAc).subscribe({
+      next: (update) => {
+        if (update.success == 1) {
+          this.spinner.hide();
+          this.dialog
+            .open(MensajeEmergentesComponent, {
+              data: `Entrada agregada exitosamente`,
+            })
+            .afterClosed()
+            .subscribe((cerrarDialogo: Boolean) => {
+              if (cerrarDialogo) {
+                this.form.reset();
+                this.tablaDatos = [];
+              } else {
+              }
+            });
+        } else {
+          this.toastr.error(update.message, "Error", {
+            positionClass: "toast-bottom-left",
+          });
+        }
+      },
+    });
+  }
+  
+  
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);

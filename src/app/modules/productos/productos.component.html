@@ -1,92 +1,96 @@
-<div style="margin-top: 60px;">
-  <div class="container mt-4">
-     <h2 class="mb-3">LISTA DE PRODUCTOS</h2>
-     <div style="text-align: right; margin-bottom: 50px">
-        <button
-           mat-raised-button
-           (click)="crearProducto()"
-           style="background-color: #fd9727; font-size: 16px"
-           >
-           <mat-icon>add</mat-icon>
-           AGREGAR PRODUCTO
-        </button>
-     </div>
-     <h3>Ingresa el valor de una columna</h3>
-     <mat-form-field class="full-width">
-        <mat-label>Filtro</mat-label>
-        <input
-        matInput
-        (keyup)="applyFilter($event)"
-        placeholder="Busca por columnas"
-        #input
-        />
-     </mat-form-field>
-     <div  class="table-container">
-        <div >
-           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-              <ng-container matColumnDef="nombre">
-                 <th mat-header-cell *matHeaderCellDef> Nombre </th>
-                 <td mat-cell *matCellDef="let producto"> {{ producto.nombreProducto }} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="existencia">
-               <th mat-header-cell *matHeaderCellDef> Existencia </th>
-               <td mat-cell *matCellDef="let producto" class="custom-cell">
-                 <span [ngStyle]="{'background-color': (producto.existencia == 0 || producto.existencia == null) ? '#a30000' : '#00aa1c'}">
-                   {{ producto.existencia == null ? '00' : producto.existencia }}
-                 </span>
-               </td>
-             </ng-container>
-             
-              <ng-container matColumnDef="estatus">
-                 <th mat-header-cell *matHeaderCellDef> Estatus </th>
-                 <td mat-cell *matCellDef="let producto">
-                    {{ producto.activo == '1' ? 'Activo' : 'Inactivo' }}
-                 </td>
-              </ng-container>
-
-              <ng-container matColumnDef="categoria">
-                 <th mat-header-cell *matHeaderCellDef> Categoría </th>
-                 <td mat-cell *matCellDef="let producto"> {{ producto.nombreCategoria}} </td>
-              </ng-container>
-
-
-              <ng-container matColumnDef="acciones" *ngIf="isAdmin()">
-               <th mat-header-cell *matHeaderCellDef> Acciones </th>
-               <td mat-cell *matCellDef="let producto">
-                 <!-- Verificar si el valor de id_bodega está presente -->
-                 <ng-container *ngIf="producto.existencia; else iconoNoIdBodega">
-                   <button mat-icon-button color="primary" (click)="editarProducto(producto.idProbob)">
-                     <mat-icon>edit</mat-icon>
-                   </button>
+<div class="custom-spinner-container" *ngIf="isLoading">
+   <div class="custom-spinner">
+       <div class="spinner-circle"></div>
+       <div class="spinner-text">Cargando...</div>
+   </div>
+</div>
+<div *ngIf="!isLoading">
+   <div style="margin-top: 60px;">
+      <div class="container mt-4">
+         <h2 class="mb-3">LISTA DE PRODUCTOS</h2>
+         <div style="text-align: right; margin-bottom: 50px">
+            <button
+               mat-raised-button
+               (click)="crearProducto()"
+               style="background-color: #fd9727; font-size: 16px"
+               >
+               <mat-icon>add</mat-icon>
+               AGREGAR PRODUCTO
+            </button>
+         </div>
+         <h3>Ingresa el valor de una columna</h3>
+         <mat-form-field class="full-width">
+            <mat-label>Filtro</mat-label>
+            <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Busca por columnas"
+            #input
+            />
+         </mat-form-field>
+         <div  class="table-container">
+            <div >
+               <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                  <ng-container matColumnDef="nombre">
+                     <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                     <td mat-cell *matCellDef="let producto"> {{ producto.nombreProducto }} </td>
+                  </ng-container>
+    
+                  <ng-container matColumnDef="existencia">
+                   <th mat-header-cell *matHeaderCellDef> Existencia </th>
+                   <td mat-cell *matCellDef="let producto" class="custom-cell">
+                     <span [ngStyle]="{'background-color': (producto.existencia == 0 || producto.existencia == null) ? '#a30000' : '#00aa1c'}">
+                       {{ producto.existencia == null ? '00' : producto.existencia }}
+                     </span>
+                   </td>
                  </ng-container>
-                 <!-- Si no hay valor de id_bodega, mostrar un icono de prohibido -->
-                 <ng-template #iconoNoIdBodega>
-                   <mat-icon color="warn">block</mat-icon>
-                 </ng-template>
-               </td>
-             </ng-container>
-
-
-             <ng-container matColumnDef="acciones" *ngIf="isRecep()">
-               <th mat-header-cell *matHeaderCellDef> Acciones </th>
-               <td mat-cell *matCellDef="let producto">d
-                 <ng-container >
-                  <mat-icon color="warn">block</mat-icon>
+                 
+                  <ng-container matColumnDef="estatus">
+                     <th mat-header-cell *matHeaderCellDef> Estatus </th>
+                     <td mat-cell *matCellDef="let producto">
+                        {{ producto.activo == '1' ? 'Activo' : 'Inactivo' }}
+                     </td>
+                  </ng-container>
+    
+                  <ng-container matColumnDef="categoria">
+                     <th mat-header-cell *matHeaderCellDef> Categoría </th>
+                     <td mat-cell *matCellDef="let producto"> {{ producto.nombreCategoria}} </td>
+                  </ng-container>
+    
+    
+                  <ng-container matColumnDef="acciones" *ngIf="isAdmin()">
+                   <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                   <td mat-cell *matCellDef="let producto">
+                     <!-- Verificar si el valor de id_bodega está presente -->
+                     <ng-container *ngIf="producto.existencia; else iconoNoIdBodega">
+                       <button mat-icon-button color="primary" (click)="editarProducto(producto.idProbob)">
+                         <mat-icon>edit</mat-icon>
+                       </button>
+                     </ng-container>
+                     <!-- Si no hay valor de id_bodega, mostrar un icono de prohibido -->
+                     <ng-template #iconoNoIdBodega>
+                       <mat-icon color="warn">block</mat-icon>
+                     </ng-template>
+                   </td>
                  </ng-container>
-               </td>
-             </ng-container>
-             
-             
-              <tr mat-header-row *matHeaderRowDef="['nombre', 'existencia', 'estatus', 'categoria', 'acciones']"></tr>
-              <tr mat-row *matRowDef="let row; columns: ['nombre','existencia', 'estatus', 'categoria', 'acciones'];"></tr>
-           </table>
-        </div>
-     </div>
-     <mat-paginator
-        [pageSizeOptions]="[5, 10, 15, 20]"
-        showFirstLastButtons
-        ></mat-paginator>
-     <br />
-  </div>
+                 <ng-container matColumnDef="acciones" *ngIf="isRecep()">
+                   <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                   <td mat-cell *matCellDef="let producto">d
+                     <ng-container >
+                      <mat-icon color="warn">block</mat-icon>
+                     </ng-container>
+                   </td>
+                 </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="['nombre', 'existencia', 'estatus', 'categoria', 'acciones']"></tr>
+                  <tr mat-row *matRowDef="let row; columns: ['nombre','existencia', 'estatus', 'categoria', 'acciones'];"></tr>
+               </table>
+            </div>
+         </div>
+         <mat-paginator
+            [pageSizeOptions]="[5, 10, 15, 20]"
+            showFirstLastButtons
+            ></mat-paginator>
+         <br />
+      </div>
+    </div>
 </div>
