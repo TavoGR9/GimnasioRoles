@@ -54,8 +54,10 @@ export class FormPagoEmergenteComponent implements OnInit{
      if (this.data ) {
       // Establecer la membresía seleccionada con el valor proporcionado en this.data
       this.membresiaSeleccionada = this.data.idMem;
-      this.precio = this.data.precio;
-      this.duracion = this.data.duracion;
+      //this.precio = this.data.precio
+      this.precio = this.data.precio !== 'null' ? this.data.precio : 'N/A';
+      //this.duracion = this.data.duracion;
+      this.duracion = this.data.duracion !== 'null' ? this.data.duracion : 'N/A';
     }
 
   }
@@ -184,8 +186,8 @@ export class FormPagoEmergenteComponent implements OnInit{
     imprimirResumen() {       
       if (this.precio <= this.moneyRecibido) {
         const PrecioCalcular = this.moneyRecibido - this.precio ;
+        console.log(this.data.idCliente, "this.data.idCliente");
         this.membresiaService.ticketPagoInfo(this.data.idCliente).subscribe((respuesta) => {
-          
           if (respuesta && respuesta.length > 0) {
             const ticketInfo = respuesta[0];
             const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.precio);

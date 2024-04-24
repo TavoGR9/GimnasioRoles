@@ -1,67 +1,75 @@
-<div style="margin-top: 60px;">
-  <mat-card *ngIf="isAdmin() || isRecep()">
-      <mat-card-content>
-          <div class="dashboard-cards">
-              <mat-card class="orange-card" *ngFor="let card of homeCard">
-                  <mat-card-header>
-                      <mat-card-title>{{card.titulo}}</mat-card-title>
-                  </mat-card-header>
-                  <mat-card-content>
-                      <br>
-                      <div class="row">
-                          <div class="col-sm-5">
-                              <img src="https://olympus.arvispace.com/gimnasioRoles/assets/img/{{card.icono}}" alt="icnono" class="card-image">
-                          </div>
-                          <div class="col-sm-7">
-                              <br>
-                              <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
-                          </div>
-                      </div>
-                  </mat-card-content>
-              </mat-card>
-          </div>
-      </mat-card-content>
-  </mat-card>
+<div class="custom-spinner-container" *ngIf="isLoading">
+    <div class="custom-spinner">
+        <div class="spinner-circle"></div>
+        <div class="spinner-text">Cargando...</div>
+    </div>
+</div>
+<div *ngIf="!isLoading">
+    <div style="margin-top: 60px;">
+    <mat-card *ngIf="isAdmin() || isRecep()">
+        <mat-card-content>
+            <div class="dashboard-cards">
+                <mat-card class="orange-card" *ngFor="let card of homeCard">
+                    <mat-card-header>
+                        <mat-card-title>{{card.titulo}}</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <img src="https://olympus.arvispace.com/gimnasioRoles/assets/img/{{card.icono}}" alt="icnono" class="card-image">
+                            </div>
+                            <div class="col-sm-7">
+                                <br>
+                                <p style="color: rgb(0, 0, 0); font-size: 45px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </mat-card-content>
+    </mat-card>
 
-  <mat-card *ngIf="isAdmin() || isRecep()">
-      <mat-card-content>
-          <div class="dashboard-cardss">
-              <mat-card>
-                  <mat-card-content>
-                      <div class="dashboard-cardss" *ngIf="isAdmin() || isRecep()">
-                          <mat-card class="ancho-1">
-                              <mat-card-header>
-                                  <h3 class="icon-title">
-                                    <mat-icon class="icon">grid_view</mat-icon>
-                                    PRODUCTOS MÁS VENDIDOS
-                                  </h3>
-                              </mat-card-header>
-                              <mat-card-content>
-                                  <p style="border-top: 2px solid orange;"></p>
-                                  <div *ngIf="tablaHTML" [innerHTML]="tablaHTML "></div>
+    <mat-card *ngIf="isAdmin() || isRecep()">
+        <mat-card-content>
+            <div class="dashboard-cardss">
+                <mat-card>
+                    <mat-card-content>
+                        <div class="dashboard-cardss" *ngIf="isAdmin() || isRecep()">
+                            <mat-card class="ancho-1">
+                                <mat-card-header>
+                                    <h3 class="icon-title">
+                                        <mat-icon class="icon">grid_view</mat-icon>
+                                        PRODUCTOS MÁS VENDIDOS
+                                    </h3>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <p style="border-top: 2px solid orange;"></p>
+                                    <div *ngIf="tablaHTML" [innerHTML]="tablaHTML "></div>
 
-                              </mat-card-content>
-                          </mat-card>
-                          <mat-card class="ancho-2">
-                              <mat-card-header>
-                                  <h3 class="icon-title">
-                                    <mat-icon class="icon">grid_view</mat-icon>
-                                    ÚLTIMAS VENTAS
-                                  </h3>
-                              </mat-card-header>
-                              <mat-card-content>
-                                <p style="border-top: 2px solid orange;"></p>
-                                <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
-                              </mat-card-content>
-                          </mat-card>
-                      </div>
-                  </mat-card-content>
-              </mat-card>
-           </div>
-      </mat-card-content>
-  </mat-card>
+                                </mat-card-content>
+                            </mat-card>
+                            <mat-card class="ancho-2">
+                                <mat-card-header>
+                                    <h3 class="icon-title">
+                                        <mat-icon class="icon">grid_view</mat-icon>
+                                        ÚLTIMAS VENTAS
+                                    </h3>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <p style="border-top: 2px solid orange;"></p>
+                                    <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </mat-card-content>
+    </mat-card>
 
-  <div>
-<button (click)="sync()">Iniciar Sincronización</button>
-  </div> 
+    <div>
+    <button (click)="sync()">Iniciar Sincronización</button>
+    </div> 
+    </div>
 </div>

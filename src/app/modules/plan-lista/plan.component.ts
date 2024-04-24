@@ -33,6 +33,7 @@ export class planComponent implements OnInit {
   section: number = 0;
   option: number = 0;
   currentUser: string = '';
+  isLoading: boolean = true; 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -70,7 +71,14 @@ export class planComponent implements OnInit {
         this.listaTabla();
       }); 
     }, 3000); 
+    this.loadData();
+  }
 
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
   
   listaTabla() {

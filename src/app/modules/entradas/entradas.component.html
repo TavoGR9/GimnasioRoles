@@ -1,178 +1,174 @@
-<div style="margin-top: 60px;">
-  <div class="container mt-4">
-
-    <h2>ENTRADAS</h2>
-    <div >
-      <br>
-      <form [formGroup]="form">
-         <div style="color:red">{{message}}</div>
-        <div class="row">
-          <div class="col-sm-12">
-            <p>
-               <label>Productos:</label>
-               <mat-form-field appearance="outline" style="width: 100%;" >
-                  <mat-label>Productos</mat-label>
-                  <mat-select
-                  id="idProbob"
-                  name="idProbob"
-                  formControlName="idProbob"
-                  (ngModelChange)="infoProducto(showProduct.value)"
-                  #showProduct
-                  >
-                  <mat-option
-                  *ngFor="let item of listaProductos"
-                  [value]="item.idProbob"
-                  >{{ item.descripcion }}</mat-option
-                     >
-                  </mat-select>
-                  <mat-error *ngIf="form.get('idProbob')?.hasError('required')"
-                     ><strong class="txt_msg">**Campo requerido</strong></mat-error
-                     >
-               </mat-form-field>
-            </p>
-          </div>
-        </div>
-        <div class="row">
-         <div class="col-sm-4">
-            <p>
-               <label class="text-left">Cantidad:</label>
-               <mat-form-field appearance="outline" style=" width: 100%;">
-                  <mat-label>Cantidad de producto</mat-label>
-                  <input
-                     type="number"
-                     min="0"
-                     matInput
-                     placeholder="Cantidad de producto"
-                     autocomplete="off"
-                     formControlName="exis"
-                     id="exis"
-                     [errorStateMatcher]="matcher"
-                     />
-                  <mat-error
-                     *ngIf="
-                     form.get('exis')?.hasError('pattern') &&
-                     !form.get('exis')?.hasError('required')
-                     "
-                     >
-                     <strong class="txt_msg">**Solo se admiten numeros enteros</strong>
-                  </mat-error>
-                  <mat-error *ngIf="form.get('exis')?.hasError('required')"
-                     ><strong class="txt_msg">**Campo requerido</strong></mat-error
-                     >
-               </mat-form-field>
-            </p>
-         </div>
-         <div class="col-sm-3">
-            <p>
-               <label class="text-left">Precio compra:</label>
-               <mat-form-field appearance="outline"  style=" width: 100%;" required>
-                  <mat-label>Precio de compra</mat-label>
-                  <input
-                     matInput
-                     placeholder="$"
-                     type="number"
-                     min="0"
-                     step="0.01"
-                     autocomplete="off"
-                     formControlName="precioCaja"
-                     id="precioCaja"
-                     [errorStateMatcher]="matcher"
-                     />
-                  <mat-error
-                     *ngIf="
-                     form.get('precioCaja')?.hasError('pattern') &&
-                     !form.get('precioCaja')?.hasError('required')
-                     "
-                     >
-                     <strong class="txt_msg">**Solo se admiten dos decimales</strong>
-                  </mat-error>
-                  <mat-error *ngIf="form.get('precioCaja')?.hasError('required')"
-                     ><strong class="txt_msg">**Campo requerido</strong></mat-error
-                     >
-               </mat-form-field>
-            </p>
-         </div>
-         <div class="col-sm-3">
-            <P>
-               <label class="text-left">Precio venta:</label>
-               <mat-form-field appearance="outline"  style=" width: 100%;" required>
-                  <mat-label >Precio de venta</mat-label>
-                  <input
-                     matInput
-                     placeholder="$"
-                     type="number"
-                     min="0"
-                     step="0.01"
-                     autocomplete="off"
-                     formControlName="precciosucu"
-                     id="precciosucu"
-                     [errorStateMatcher]="matcher"
-                     />
-                  <mat-error
-                     *ngIf="
-                     form.get('precciosucu')?.hasError('pattern') &&
-                     !form.get('precciosucu')?.hasError('required')
-                     "
-                     >
-                     <strong class="txt_msg">**Solo se admiten dos decimales</strong>
-                  </mat-error>
-                  <mat-error *ngIf="form.get('precciosucu')?.hasError('required')"
-                     ><strong class="txt_msg">**Campo requerido</strong></mat-error
-                     >
-               </mat-form-field>
-            </P>
-         </div>
-         <div class="col-sm-2">
-            <button type="button" mat-raised-button (click)="agregarATabla()" style="margin-top: 10px;background-color: #fde49c; width: 100%; height: 35px;">
-               <mat-icon>add</mat-icon>
-               Agregar
-            </button>
-         </div>
-         </div> 
-        <div *ngIf="tablaDatos && tablaDatos.length > 0">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio compra</th>
-                <th>Precio venta</th>
-                <th>Fecha</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let dato of tablaDatos">
-                <td>{{ dato.descripcion }}</td>
-                <td>{{ dato.exis }}</td>
-                <td>{{ dato.precioCaja }}</td>
-                <td>{{ dato.precciosucu }}</td>
-                <td>{{ dato.fechaEntrada }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </form>
-    </div>
-    
-   <!-- <div style="display: flex; justify-content: center;" mat-dialog-actions>
-      <button mat-raised-button (click)="registrar()" id="btn_guardar"
-        style="background-color: #fd9727; font-size: 20px; margin-top: 50px; height: 35px; width: 120px; color: black">
-        Guardar
-      </button>
-      <button style="background-color: #000000; font-size: 20px; margin-left: 30px; margin-top: 50px; height: 35px; width: 120px;color: rgb(255, 255, 255);"
-        mat-raised-button id="btn_canelar" (click)="cerrarDialogo()">Cancelar
-      </button>
-    </div>-->
-
-    <div style="display: flex; justify-content: center;" >
-      <button mat-raised-button (click)="registrar()" style="background-color: #fd9727;font-size: 20px;"
-       >
-        Guardar
-      </button>
-     <!-- <button  mat-raised-button style="background-color: #000000;margin-left: 51px;font-size: 20px;color: rgb(255, 255, 255);"
-          (click)="cerrarDialogo()">Cancelar
-      </button>-->
-    </div>
-    
+<div class="custom-spinner-container" *ngIf="isLoading">
+   <div class="custom-spinner">
+       <div class="spinner-circle"></div>
+       <div class="spinner-text">Cargando...</div>
    </div>
-</div> 
+</div>
+<div *ngIf="!isLoading">
+   <div style="margin-top: 60px;">
+   <div class="container mt-4">
+      <h2>ENTRADAS</h2>
+      <div >
+         <br>
+         <form [formGroup]="form">
+            <div style="color:red">{{message}}</div>
+         <div class="row">
+            <div class="col-sm-12">
+               <p>
+                  <label>Productos:</label>
+                  <mat-form-field appearance="outline" style="width: 100%;" >
+                     <mat-label>Productos</mat-label>
+                     <mat-select
+                     id="idProbob"
+                     name="idProbob"
+                     formControlName="idProbob"
+                     (ngModelChange)="infoProducto(showProduct.value)"
+                     #showProduct
+                     >
+                     <mat-option
+                     *ngFor="let item of listaProductos"
+                     [value]="item.idProbob"
+                     >{{ item.descripcion }}-{{ item.codigoBarras }}</mat-option
+                        >
+                     </mat-select>
+                     <mat-error *ngIf="form.get('idProbob')?.hasError('required')"
+                        ><strong class="txt_msg">**Campo requerido</strong></mat-error
+                        >
+                  </mat-form-field>
+               </p>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-sm-4">
+               <p>
+                  <label class="text-left">Cantidad:</label>
+                  <mat-form-field appearance="outline" style=" width: 100%;">
+                     <mat-label>Cantidad de producto</mat-label>
+                     <input
+                        type="number"
+                        min="0"
+                        matInput
+                        placeholder="Cantidad de producto"
+                        autocomplete="off"
+                        formControlName="exis"
+                        id="exis"
+                        [errorStateMatcher]="matcher"
+                        />
+                     <mat-error
+                        *ngIf="
+                        form.get('exis')?.hasError('pattern') &&
+                        !form.get('exis')?.hasError('required')
+                        "
+                        >
+                        <strong class="txt_msg">**Solo se admiten numeros enteros</strong>
+                     </mat-error>
+                     <mat-error *ngIf="form.get('exis')?.hasError('required')"
+                        ><strong class="txt_msg">**Campo requerido</strong></mat-error
+                        >
+                  </mat-form-field>
+               </p>
+            </div>
+            <div class="col-sm-3">
+               <p>
+                  <label class="text-left">Precio compra:</label>
+                  <mat-form-field appearance="outline"  style=" width: 100%;" required>
+                     <mat-label>Precio de compra</mat-label>
+                     <input
+                        matInput
+                        placeholder="$"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        autocomplete="off"
+                        formControlName="precioCaja"
+                        id="precioCaja"
+                        [errorStateMatcher]="matcher"
+                        />
+                     <mat-error
+                        *ngIf="
+                        form.get('precioCaja')?.hasError('pattern') &&
+                        !form.get('precioCaja')?.hasError('required')
+                        "
+                        >
+                        <strong class="txt_msg">**Solo se admiten dos decimales</strong>
+                     </mat-error>
+                     <mat-error *ngIf="form.get('precioCaja')?.hasError('required')"
+                        ><strong class="txt_msg">**Campo requerido</strong></mat-error
+                        >
+                  </mat-form-field>
+               </p>
+            </div>
+            <div class="col-sm-3">
+               <P>
+                  <label class="text-left">Precio venta:</label>
+                  <mat-form-field appearance="outline"  style=" width: 100%;" required>
+                     <mat-label >Precio de venta</mat-label>
+                     <input
+                        matInput
+                        placeholder="$"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        autocomplete="off"
+                        formControlName="precciosucu"
+                        id="precciosucu"
+                        [errorStateMatcher]="matcher"
+                        />
+                     <mat-error
+                        *ngIf="
+                        form.get('precciosucu')?.hasError('pattern') &&
+                        !form.get('precciosucu')?.hasError('required')
+                        "
+                        >
+                        <strong class="txt_msg">**Solo se admiten dos decimales</strong>
+                     </mat-error>
+                     <mat-error *ngIf="form.get('precciosucu')?.hasError('required')"
+                        ><strong class="txt_msg">**Campo requerido</strong></mat-error
+                        >
+                  </mat-form-field>
+               </P>
+            </div>
+            <div class="col-sm-2">
+               <button type="button" mat-raised-button (click)="agregarATabla()" style="margin-top: 10px;background-color: #fde49c; width: 100%; height: 35px;">
+                  <mat-icon>add</mat-icon>
+                  Agregar
+               </button>
+            </div>
+            </div> 
+         <div *ngIf="tablaDatos && tablaDatos.length > 0">
+            <table class="table">
+               <thead>
+               <tr>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Precio compra</th>
+                  <th>Precio venta</th>
+                  <th>Fecha</th>
+               </tr>
+               </thead>
+               <tbody>
+               <tr *ngFor="let dato of tablaDatos">
+                  <td>{{ dato.descripcion }}</td>
+                  <td>{{ dato.exis }}</td>
+                  <td>{{ dato.precioCaja }}</td>
+                  <td>{{ dato.precciosucu }}</td>
+                  <td>{{ dato.fechaEntrada }}</td>
+               </tr>
+               </tbody>
+            </table>
+         </div>
+         </form>
+      </div>
+      <div style="display: flex; justify-content: center;" >
+         <button mat-raised-button (click)="registrar()" style="background-color: #fd9727;font-size: 20px;"
+         >
+         Guardar
+         </button>
+      <!-- <button  mat-raised-button style="background-color: #000000;margin-left: 51px;font-size: 20px;color: rgb(255, 255, 255);"
+            (click)="cerrarDialogo()">Cancelar
+         </button>-->
+      </div>
+      
+      </div>
+   </div> 
+</div>

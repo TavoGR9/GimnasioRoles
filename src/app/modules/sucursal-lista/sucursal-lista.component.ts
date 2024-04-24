@@ -26,6 +26,7 @@ export class SucursalListaComponent implements OnInit {
   optionToShow: number = 0;
   currentUser: string = "";
   dataSource = new MatTableDataSource<any>();
+  isLoading: boolean = true; 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(
@@ -45,6 +46,34 @@ export class SucursalListaComponent implements OnInit {
     "activar",
     "documentacion",
   ];
+
+  ngOnInit(): void {
+    this.gimnasioService.comprobar();
+    this.auth.comprobar();
+    this.colaborador.comprobar();
+    this.postalCodeService.comprobar();
+
+    setTimeout(() => {
+      this.currentUser = this.auth.getCurrentUser();
+      if (this.currentUser) {
+        this.getSSdata(JSON.stringify(this.currentUser));
+      }
+      this.gimnasioService.obternerPlan().subscribe((data) => {
+        this.gimnasio = data;
+        this.dataSource = new MatTableDataSource(this.gimnasio);
+        this.dataSource.paginator = this.paginator;
+      });
+    }, 3000); 
+
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
+  }
 
   onToggle(event: Event, idGimnasio: any) {
     let gimnasio = this.gimnasio.find(
@@ -82,64 +111,6 @@ export class SucursalListaComponent implements OnInit {
             }
           );
       } else {
-      }
-    });
-  }
-
-  ngOnInit(): void {
-
-    this.gimnasioService.comprobar();
-    this.auth.comprobar();
-    this.colaborador.comprobar();
-    this.postalCodeService.comprobar();
-
-    setTimeout(() => {
-      this.currentUser = this.auth.getCurrentUser();
-      if (this.currentUser) {
-        this.getSSdata(JSON.stringify(this.currentUser));
-      }
-      this.gimnasioService.obternerPlan().subscribe((data) => {
-        this.gimnasio = data;
-        this.dataSource = new MatTableDataSource(this.gimnasio);
-        this.dataSource.paginator = this.paginator;
-      });
-    }, 3000); 
-
-
-    this.gimnasioService.botonEstado.subscribe((data) => {
-      if (data.respuesta) {
-        let gimnasio = this.gimnasio.find(
-          (g: { idGimnasio: any }) => g.idGimnasio === data.idGimnasio
-        );
-        if (!gimnasio) {
-          return;
-        }
-        let datosPlan = {
-          estatus: gimnasio.estatus === 1 ? 0 : 1,
-        };
-        this.gimnasioService
-          .actualizarEstatus(data.idGimnasio, datosPlan.estatus)
-          .subscribe(
-            (response) => {
-              if (response && response.success === 1) {
-                gimnasio.estatus = datosPlan.estatus;
-                this.gimnasioService.obternerPlan().subscribe((data) => {
-                  this.gimnasio = data;
-                });
-              } else if (response) {
-                console.error(
-                  "Error al actualizar el estatus: ",
-                  response.error
-                );
-              } else {
-                console.error("Error: la respuesta es null");
-              }
-            },
-            (error) => {
-              console.error("Error en la petición: ", error);
-            }
-          );
-      } else if (!data.respuesta) {
       }
     });
   }

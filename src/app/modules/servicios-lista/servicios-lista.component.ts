@@ -34,6 +34,7 @@ export class ServiciosListaComponent {
   membresiaActiva: boolean = true; 
   displayedColumns: string[] = ["title", "details", "price", "actions"];
   dialogRef: any;
+  isLoading: boolean = true; 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -63,16 +64,14 @@ export class ServiciosListaComponent {
       });  
     }, 3000);
 
-    
-    this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
-      if (this.dialogRef) {
-        if (isMaximized) {
-          this.dialogRef.updateSize('100vw', '100vh');
-        } else {
-          this.dialogRef.updateSize('auto', 'auto');
-        }
-      }
-    });
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any) {

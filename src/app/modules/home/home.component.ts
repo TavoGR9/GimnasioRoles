@@ -10,8 +10,6 @@ import { HomeService } from '../../service/home.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SyncService } from '../../service/sync.service';
 import { NgxSpinnerService } from "ngx-spinner";
-
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -32,6 +30,7 @@ export class HomeComponent implements OnInit{
   homeCard: any;
   tablaHTML: SafeHtml | null = null;
   tablaHTMLVentas: SafeHtml | null = null;
+  isLoading: boolean = true; 
   
   constructor(private homeService: HomeService, private sanitizer: DomSanitizer, private spinner: NgxSpinnerService,
     private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, private syncService: SyncService ) {
@@ -50,10 +49,17 @@ export class HomeComponent implements OnInit{
         if(data) {
           this.idGym = data;
           this.listaTablas();
-          
         }
       });
     }, 3000); 
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   sync() {

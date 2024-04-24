@@ -23,6 +23,7 @@ export class ColaboradoresComponent {
   dataSource: any;
   colaboradores: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  isLoading: boolean = true; 
   
   constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private router:Router){}
 
@@ -42,6 +43,14 @@ export class ColaboradoresComponent {
         //this.actualizarTabla();
       }); 
     }, 3000); 
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   listaTabla(){

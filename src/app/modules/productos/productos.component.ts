@@ -28,6 +28,7 @@ export class ProductosComponent implements OnInit {
   idGym: number = 0;
   dataSource: any;
   productoActiva: boolean = true;
+  isLoading: boolean = true; 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(
@@ -52,7 +53,15 @@ export class ProductosComponent implements OnInit {
         this.idGym = data;
         this.listaTabla();
       }); 
-    }, 3000);   
+    }, 3000);  
+    this.loadData(); 
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any){
@@ -70,25 +79,8 @@ export class ProductosComponent implements OnInit {
   }
 
   listaTabla(){
-    /*this.productoService.consultarProductoId(this.idGym).subscribe({
-      next: (resultData: any) => {
-        if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
-        this.productos = Array.isArray(resultData) ? resultData : [];
-        this.dataSource = new MatTableDataSource(this.productos);
-        if (this.paginator) {
-        this.dataSource.paginator = this.paginator;
-        }
-      } else {
-        console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
-      }
-      },
-      error: (error) => {
-        console.error('Error al consultar categorías:', error);
-      }
-    })*/
     this.productoService.consultarAllProducto(this.idGym).subscribe({
       next: (resultData: any) => {
-        console.log(resultData, "resultData");
         if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
         this.productos = Array.isArray(resultData) ? resultData : [];
         this.dataSource = new MatTableDataSource(this.productos);

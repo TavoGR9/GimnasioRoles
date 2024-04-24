@@ -35,6 +35,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   dataSource: any; 
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
+  isLoading: boolean = true; 
   displayedColumns: string[] = [
     'Producto',
     'Cantidad',
@@ -65,6 +66,14 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
         this.updateDateLogs(); 
       }); 
     }, 4000); 
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      // Una vez que los datos se han cargado, establece isLoading en false
+      this.isLoading = false;
+    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any){

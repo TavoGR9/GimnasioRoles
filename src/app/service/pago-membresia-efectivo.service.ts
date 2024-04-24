@@ -32,7 +32,6 @@ export class PagoMembresiaEfectivoService {
     });
   }
 
-
   ticketPagoInfo(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"Usuario.php?infoTicketMembresia="+id);
   }

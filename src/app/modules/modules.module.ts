@@ -96,6 +96,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgChartsModule } from 'ng2-charts';
 import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos.component';
 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -193,7 +196,8 @@ import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos
     MatAutocompleteModule,
     MatSidenavModule,
     NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
-    NgChartsModule
+    NgChartsModule,
+    MatProgressSpinnerModule
   ]
 })
 export class ModulesModule {
