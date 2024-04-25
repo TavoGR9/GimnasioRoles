@@ -32,11 +32,11 @@ export class AuthService {
   //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
   //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-
-  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  APIv3: string = 'http://localhost/olimpusGym/conf/';
-  API: String = '';
+  // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  // APIv3: string = 'http://localhost/olimpusGym/conf/';
+  // API: String = '';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -47,18 +47,18 @@ export class AuthService {
     }
   }
 
-  comprobar(){
-    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-      this.isConnected = isConnected;
-      if (isConnected) {
-        //console.log("La red WiFi tiene acceso a Internet.");
-        this.API = this.APIv2;
-      } else {
-        //console.log("La red WiFi no tiene acceso a Internet.");
-        this.API = this.APIv3;
-      }
-    });
-  }
+  // comprobar(){
+  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+  //     this.isConnected = isConnected;
+  //     if (isConnected) {
+  //       //console.log("La red WiFi tiene acceso a Internet.");
+  //       this.API = this.APIv2;
+  //     } else {
+  //       //console.log("La red WiFi no tiene acceso a Internet.");
+  //       this.API = this.APIv3;
+  //     }
+  //   });
+  // }
 
   loginBS(data: User): Observable<any> {
   const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;

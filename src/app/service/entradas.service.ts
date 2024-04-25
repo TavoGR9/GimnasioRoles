@@ -13,22 +13,24 @@ import { ConnectivityService } from './connectivity.service';
 export class EntradasService {
   isConnected: boolean = true;
 
-  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  APIv3: string = 'http://localhost/olimpusGym/conf/';
-  API: String = '';
+  // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  // APIv3: string = 'http://localhost/olimpusGym/conf/';
+  // API: String = '';
 
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService) {}
 
-  comprobar(){
-    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-      this.isConnected = isConnected;
-      if (isConnected) {
-        this.API = this.APIv2;
-      } else {
-        this.API = this.APIv3;
-      }
-    });
-  }
+  // comprobar(){
+  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+  //     this.isConnected = isConnected;
+  //     if (isConnected) {
+  //       this.API = this.APIv2;
+  //     } else {
+  //       this.API = this.APIv3;
+  //     }
+  //   });
+  // }
 
   agregarEntradaProducto(entradaProductos:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaProHisto",entradaProductos);

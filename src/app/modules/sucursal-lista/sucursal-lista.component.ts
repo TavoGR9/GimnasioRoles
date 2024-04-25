@@ -48,12 +48,12 @@ export class SucursalListaComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.gimnasioService.comprobar();
-    this.auth.comprobar();
-    this.colaborador.comprobar();
-    this.postalCodeService.comprobar();
+    // this.gimnasioService.comprobar();
+    // this.auth.comprobar();
+    // this.colaborador.comprobar();
+    // this.postalCodeService.comprobar();
 
-    setTimeout(() => {
+    
       this.currentUser = this.auth.getCurrentUser();
       if (this.currentUser) {
         this.getSSdata(JSON.stringify(this.currentUser));
@@ -63,7 +63,7 @@ export class SucursalListaComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.gimnasio);
         this.dataSource.paginator = this.paginator;
       });
-    }, 3000); 
+   
 
     this.loadData();
   }
@@ -72,7 +72,7 @@ export class SucursalListaComponent implements OnInit {
     setTimeout(() => {
       // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   onToggle(event: Event, idGimnasio: any) {

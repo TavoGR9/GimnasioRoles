@@ -53,10 +53,10 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     private auth: AuthService,){}
   
     ngOnInit(): void{
-    this.prodVendidosService.comprobar();
-    this.auth.comprobar();
+    // this.prodVendidosService.comprobar();
+    // this.auth.comprobar();
 
-    setTimeout(() => {
+    
       this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -65,7 +65,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
         this.idGym = data;
         this.updateDateLogs(); 
       }); 
-    }, 4000); 
+    
     this.loadData();
   }
 
@@ -73,7 +73,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     setTimeout(() => {
       // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any){

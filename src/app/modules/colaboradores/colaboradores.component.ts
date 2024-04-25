@@ -28,10 +28,10 @@ export class ColaboradoresComponent {
   constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private router:Router){}
 
   ngOnInit():void{
-    this.http.comprobar();
-    this.auth.comprobar();
+    // this.http.comprobar();
+    // this.auth.comprobar();
 
-    setTimeout(() => {
+    
       this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -42,7 +42,7 @@ export class ColaboradoresComponent {
         //this.cargarCategorias();
         //this.actualizarTabla();
       }); 
-    }, 3000); 
+   
     this.loadData();
   }
 
@@ -50,7 +50,7 @@ export class ColaboradoresComponent {
     setTimeout(() => {
       // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   listaTabla(){

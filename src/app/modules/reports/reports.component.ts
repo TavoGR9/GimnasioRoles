@@ -51,13 +51,13 @@ export class ReportsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.auth.comprobar();
-    setTimeout(() => {
+    // this.auth.comprobar();
+    
       this.currentUser = this.auth.getCurrentUser();
       if (this.currentUser) {
         this.getSSdata(JSON.stringify(this.currentUser));
       }
-    }, 3000); 
+    
    
     this.loadData();
   }
@@ -66,7 +66,7 @@ export class ReportsComponent implements OnInit {
     setTimeout(() => {
       // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 3000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   getSSdata(data: any) {

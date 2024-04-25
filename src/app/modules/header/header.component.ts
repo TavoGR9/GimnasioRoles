@@ -30,32 +30,32 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-        interval(30000).pipe(
-          switchMap(() => this.connectivityService.checkInternetConnectivity())
-        ).subscribe((isConnected: boolean) => {
-          this.isConnected = isConnected;
-          this.mostrarElementoA = isConnected;
-          if (this.lastIsConnected !== isConnected) {
-            this.updateConnectivityStatus(isConnected);
-            this.lastIsConnected = isConnected;
-          }
-        });
+        // interval(30000).pipe(
+        //   switchMap(() => this.connectivityService.checkInternetConnectivity())
+        // ).subscribe((isConnected: boolean) => {
+        //   this.isConnected = isConnected;
+        //   this.mostrarElementoA = isConnected;
+        //   if (this.lastIsConnected !== isConnected) {
+        //     this.updateConnectivityStatus(isConnected);
+        //     this.lastIsConnected = isConnected;
+        //   }
+        // });
   }
 
 
-  private updateConnectivityStatus(isConnected: boolean): void {
-    const mode = isConnected ? 'online' : 'offline';
-    const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
-      data: `Estás en modo ${mode}.`,
-      disableClose: true
-    });
+  // private updateConnectivityStatus(isConnected: boolean): void {
+  //   const mode = isConnected ? 'online' : 'offline';
+  //   const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
+  //     data: `Estás en modo ${mode}.`,
+  //     disableClose: true
+  //   });
   
-    dialogRef.afterClosed().subscribe((cerrarDialogo: boolean) => {
-      if (cerrarDialogo) {
-        dialogRef.close(); // Cerrar el diálogo actual
-      }
-    });
-  }
+  //   dialogRef.afterClosed().subscribe((cerrarDialogo: boolean) => {
+  //     if (cerrarDialogo) {
+  //       dialogRef.close(); // Cerrar el diálogo actual
+  //     }
+  //   });
+  // }
   
 
   Online() {

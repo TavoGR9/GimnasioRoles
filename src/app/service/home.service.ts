@@ -11,25 +11,25 @@ export class HomeService {
 
   isConnected: boolean = true;
 
-  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
-
-  APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  APIv3: string = 'http://localhost/olimpusGym/conf/';
-  API: String = '';
+  // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  // APIv3: string = 'http://localhost/olimpusGym/conf/';
+  // API: String = '';
   
+  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService ) {
   }
 
-  comprobar(){
-    this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-      this.isConnected = isConnected;
-      if (isConnected) {
-        this.API = this.APIv2;
-      } else {
-        this.API = this.APIv3;
-      }
-    });
-  }
+  // comprobar(){
+  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
+  //     this.isConnected = isConnected;
+  //     if (isConnected) {
+  //       this.API = this.APIv2;
+  //     } else {
+  //       this.API = this.APIv3;
+  //     }
+  //   });
+  // }
 
   consultarHome(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHome="+id);
