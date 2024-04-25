@@ -26,7 +26,7 @@ export class InventariosComponent implements OnInit {
   dataSource: any; 
   idGym: number = 0;
   currentUser: string = '';
-  isLoading: boolean = true; 
+  isLoading: boolean = false; 
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
@@ -38,6 +38,7 @@ export class InventariosComponent implements OnInit {
     private toastr: ToastrService) {}
 
   ngOnInit(): void {
+    
     // this.productoService.comprobar();
     // this.InventarioService.comprobar();
     // this.auth.comprobar();
@@ -45,20 +46,22 @@ export class InventariosComponent implements OnInit {
     
       if(this.currentUser){
         this.getSSdata(JSON.stringify(this.currentUser));
+        
       }
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
         this.listaTablas();
+        
       }); 
-
-    this.loadData();
+this.loadData();
+    
   }
 
   loadData() {
     setTimeout(() => {
       // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 100); // Este valor representa el tiempo de carga simulado en milisegundos
   }
 
   listaTablas(){
@@ -66,6 +69,7 @@ export class InventariosComponent implements OnInit {
       this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);
       this.dataSource.paginator = this.paginator;
+     
     });
   }
 
