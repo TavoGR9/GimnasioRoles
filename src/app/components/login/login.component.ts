@@ -58,11 +58,11 @@ export class LoginComponent implements OnInit {
             this.auth.encryptedMail.next(resultData.encryptedMail);
             this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
             if(resultData.rol == 'SuperAdmin'){
-              this.router.navigate(['/listaSucursales']);
+              this.router.navigate(['/listaSucursales'],{ replaceUrl: true });
             }else if (resultData.rol == 'Administrador'){
-              this.router.navigate(['/home']);
+              this.router.navigate(['/home'],{ replaceUrl: true });
             } else if (resultData.rol == 'Recepcionista'){
-              this.router.navigate(['/home']);
+              this.router.navigate(['/home'],{ replaceUrl: true });
             } else {
               this.toastr.error('Acceso denegado', 'Error', {
                 positionClass: 'toast-bottom-left',
