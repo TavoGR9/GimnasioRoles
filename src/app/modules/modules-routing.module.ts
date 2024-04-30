@@ -41,7 +41,7 @@ const routes: Routes = [
       {
         path: '',
         canActivate: [RoleGuard], 
-        data: { expectedRole: 'SuperAdmin'},
+        data: { userRole: 'SuperAdmin'},
         children: [
           { path: 'listaSucursales', component:SucursalListaComponent},
           { path: 'alta-sucursal', component:SucursalAltaComponent},
@@ -53,7 +53,7 @@ const routes: Routes = [
       {
         path: '',
         canActivate: [RoleGuard], 
-        data: { expectedRole: 'Administrador'},
+        data: { userRole: 'Administrador'},
         children: [
           { path: 'misMembresias', component: MembresiasComponent },
           { path: 'entradas', component: EntradasComponent },
@@ -61,11 +61,9 @@ const routes: Routes = [
           { path: 'productos', component: ProductosComponent },
           { path: 'editar-producto/:id', component:EditarProductoComponent},
           { path: 'productosVendidos', component: ProductosVendidosComponent},
-          { path: 'notificacion', component:NotificacionesComponent},
-          { path: 'reportes', component: ReportsComponent },
+         // { path: 'notificacion', component:NotificacionesComponent},
           { path: 'verConfiguracion', component: VerConfiguracionComponent},
           { path: 'configuracion', component: ConfiguracionComponent},
-          { path: 'inventarios', component: InventariosComponent},
           { path: 'colaboradores', component: ColaboradoresComponent},
           { path: 'misServicios', component: ServiciosListaComponent},
           { path: 'alta-colaborador', component:AltaColaboradoresComponent},
@@ -73,15 +71,22 @@ const routes: Routes = [
           { path: 'agregar-plan', component:planAgregarComponent}, 
           { path: 'plan', component:planComponent}, 
           { path: 'editar-plan', component:planEditarComponent},
-          { path: 'Ventas', component: VentasComponent},
+  
           { path: 'home', component: HomeComponent },
+          { path: 'listaMembresias', component: ListaMembresiasPagoEfecComponent},
+          { path: 'inventarios', component: InventariosComponent},
+          { path: 'registrar', component: RegistroComponent},
+          { path: 'Ventas', component: VentasComponent},
+          { path: 'verCorte', component: VerCorteComponent},
+          { path: 'AperturaManual', component: EmergenteAperturaPuertoSerialComponent},
         ]
       },
       {
         path: '',
         canActivate: [RoleGuard], 
-        data: { expectedRole: 'Recepcionista'},
+        data: { userRole: 'Recepcionista'},
         children: [
+          { path: 'home', component: HomeComponent },
           { path: 'listaMembresias', component: ListaMembresiasPagoEfecComponent},
           { path: 'inventarios', component: InventariosComponent},
           { path: 'registrar', component: RegistroComponent},

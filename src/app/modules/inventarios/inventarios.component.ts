@@ -66,7 +66,6 @@ this.loadData();
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      console.log(respuesta, "respuesta");
       this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);
       this.dataSource.paginator = this.paginator;
