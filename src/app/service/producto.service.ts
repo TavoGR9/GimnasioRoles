@@ -6,6 +6,7 @@ import { HttpParams } from '@angular/common/http';
 import { tap, catchError} from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
+import { IndexedDBService } from './indexed-db.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +21,7 @@ export class ProductoService {
   // API: String = '';
   API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-    constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+    constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
     }
 
     // comprobar(){
@@ -61,8 +62,42 @@ export class ProductoService {
         .pipe(
           tap((nuevosProductos: any[]) => {
             this.productoSubject.next(nuevosProductos);
+            this.saveDataToIndexedDB(nuevosProductos);
+          }),
+          catchError(error => {
+            console.log("Datos Almacenados en cache");
+            return this.getServiceDatos2();
           })
-        );
+        ) as Observable<any[]>; // Añadir una conversión de tipo
+    }
+      
+
+    private saveDataToIndexedDB(data: any) {
+      // Guarda los datos en IndexedDB
+      this.indexedDBService.saveProductosData('Productos', data);
+    }
+    
+    getServiceDatos2() {
+      return new Observable(observer => {
+        this.indexedDBService.getProductosData('Productos').then(data => {
+          if (data && data.length > 0) {
+            let maxId = -1;
+            let lastData: any;
+            data.forEach((record: any) => {
+              if (record.id > maxId) {
+                maxId = record.id;
+                lastData = record.data;
+              }
+            });
+            observer.next(lastData); // Emitir el último dato encontrado
+          } else {
+            observer.next(null); // Emitir null si no hay datos en IndexedDB
+          }
+          observer.complete();
+        }).catch(error => {
+          observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+        });
+      });
     }
     
     actualizarProducto(datosP: any): Observable<any> {
@@ -83,9 +118,44 @@ export class ProductoService {
   
     obternerInventario(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };
-      return this.clienteHttp.post<any[]>(this.API +'producto_bod.php?listaInventario=',data);
+      return this.clienteHttp.post<any[]>(this.API +'producto_bod.php?listaInventario=',data).pipe(
+        tap((dataResponse: any[])=> {
+          this.saveDataToIndexedDB3(dataResponse);
+        }),
+        catchError(error => {
+          console.log("Datos Almacenados en cache");
+          return this.getServiceDatos3();
+        })
+      ) as Observable<any[]>; 
     }
   
+    private saveDataToIndexedDB3(data: any) {
+      // Guarda los datos en IndexedDB
+      this.indexedDBService.saveInventarioData('Inventario', data);
+    }
+    
+    getServiceDatos3() {
+      return new Observable(observer => {
+        this.indexedDBService.getInventarioData('Inventario').then(data => {
+          if (data && data.length > 0) {
+            let maxId = -1;
+            let lastData: any;
+            data.forEach((record: any) => {
+              if (record.id > maxId) {
+                maxId = record.id;
+                lastData = record.data;
+              }
+            });
+            observer.next(lastData); // Emitir el último dato encontrado
+          } else {
+            observer.next(null); // Emitir null si no hay datos en IndexedDB
+          }
+          observer.complete();
+        }).catch(error => {
+          observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+        });
+      });
+    }
     updateProductoStatus(id: number, estado: { estatus: number }): Observable<any> {
       return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
     }
@@ -95,10 +165,49 @@ export class ProductoService {
       return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto });
     }
 
+
+
+
     obtenerListaProduct(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
       const url = `${this.API}producto_bod.php?consultarVentasPorFecha`;
       const body = { gimnasioId: idGym, fechaInicioParam: dateInicio, fechaFinParam: dateFin };
-      return this.clienteHttp.post(url, body);
+      return this.clienteHttp.post(url, body).pipe(
+        tap(dataResponse => {
+          this.saveDataToIndexedDB2(dataResponse);
+        }),
+        catchError(error => {
+          console.log("Datos Almacenados en cache");
+          return this.getServiceDatos();
+        })
+      );
+    }
+  
+    private saveDataToIndexedDB2(data: any) {
+      // Guarda los datos en IndexedDB
+      this.indexedDBService.saveProductosVendidosData('ProductosVendidos', data);
+    }
+    
+    getServiceDatos() {
+      return new Observable(observer => {
+        this.indexedDBService.getProductosVendidosData('ProductosVendidos').then(data => {
+          if (data && data.length > 0) {
+            let maxId = -1;
+            let lastData: any;
+            data.forEach((record: any) => {
+              if (record.id > maxId) {
+                maxId = record.id;
+                lastData = record.data;
+              }
+            });
+            observer.next(lastData); // Emitir el último dato encontrado
+          } else {
+            observer.next(null); // Emitir null si no hay datos en IndexedDB
+          }
+          observer.complete();
+        }).catch(error => {
+          observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+        });
+      });
     }
     
 }

@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { msgResult } from '../models/empleado';
 import { ConnectivityService } from './connectivity.service';
+import { IndexedDBService } from './indexed-db.service';
+import { catchError, tap } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +18,7 @@ export class PagoMembresiaEfectivoService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) { }
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) { }
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
 
@@ -38,8 +40,45 @@ export class PagoMembresiaEfectivoService {
   }
 
   obtenerActivos(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"Usuario.php?obtenerVista="+id);
+    return this.clienteHttp.get(this.API+"Usuario.php?obtenerVista="+id).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB2(dataResponse);
+      }),
+      catchError(error => {
+        console.log("Datos Almacenados en cache");
+        return this.getServiceDatos();
+      })
+    );
   }
+
+  private saveDataToIndexedDB2(data: any) {
+    // Guarda los datos en IndexedDB
+    this.indexedDBService.saveObtenerActivosData('ObtenerActivos', data);
+  }
+  
+  getServiceDatos() {
+    return new Observable(observer => {
+      this.indexedDBService.getObtenerActivosData('ObtenerActivos').then(data => {
+        if (data && data.length > 0) {
+          let maxId = -1;
+          let lastData: any;
+          data.forEach((record: any) => {
+            if (record.id > maxId) {
+              maxId = record.id;
+              lastData = record.data;
+            }
+          });
+          observer.next(lastData); // Emitir el último dato encontrado
+        } else {
+          observer.next(null); // Emitir null si no hay datos en IndexedDB
+        }
+        observer.complete();
+      }).catch(error => {
+        observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+      });
+    });
+  }
+
 
   obtenerClientes(inicioDate: any, finDate: any, idGym: any): Observable<any> {
     const params = {

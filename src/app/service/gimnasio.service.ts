@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { gimnasio } from '../models/gimnasio';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
+import { tap } from 'rxjs/operators';
+import { IndexedDBService } from './indexed-db.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +25,7 @@ export class GimnasioService {
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService) {}
+  constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {}
 
   // comprobar(){
   //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
@@ -77,6 +79,34 @@ export class GimnasioService {
   }
 
   getServicesForId(id: any): Observable<any> {
-    return this.clienteHttp.post(this.API+"serviciosGym.php", { id: id });
+    return this.clienteHttp.post(this.API+"serviciosGym.php", { id: id }).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB(dataResponse);
+      }),
+      catchError(error => {
+        console.log("Datos Almacenados en cache");
+        return this.getServiceDatos();
+      })
+    );
+  }
+
+  private saveDataToIndexedDB(data: any) {
+    // Guarda los datos en IndexedDB
+    this.indexedDBService.saveServiceData('service', data);
+  }
+  
+  getServiceDatos() {
+    return new Observable(observer => {
+      this.indexedDBService.getServiceData('service').then(data => {
+          if (data) {
+              observer.next(data.data);
+          } else {
+              observer.next(null); // Devuelve null si no hay datos en IndexedDB
+          }
+          observer.complete();
+      }).catch(error => {
+          observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+      });
+  });
   }
 }
