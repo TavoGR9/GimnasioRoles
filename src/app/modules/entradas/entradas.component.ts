@@ -539,6 +539,14 @@ export class EntradasComponent implements OnInit {
     
           if (data.success === 0) {
             // Producto no existe, agregar a registrosParaEnviar
+            const fechaActual: Date = new Date();
+            const dia: string = fechaActual.getDate().toString().padStart(2, "0");
+            const mes: string = (fechaActual.getMonth() + 1)
+              .toString()
+              .padStart(2, "0");
+            const año: string = fechaActual.getFullYear().toString();
+            const fechaFormateada: string = `${año}-${mes}-${dia}`;
+
             registrosParaEnviar.push({
               exis: dataToSend[index].exis,
               precioCaja: dataToSend[index].precioCaja,
@@ -549,7 +557,7 @@ export class EntradasComponent implements OnInit {
               fechaE: dataToSend[index].fechaE,
               fechaEntrada: dataToSend[index].fechaEntrada,
               accion: "Registro de nuevo producto",
-              fecha_actu: "2001-01-10",
+              fecha_actu: fechaFormateada
             });
             hayRegistrosNuevos = true;
           } else if (data.success === 1) {

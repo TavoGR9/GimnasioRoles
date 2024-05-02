@@ -116,7 +116,7 @@ export class HorariosVistaComponent implements OnInit {
           Validators.pattern(/^(0|[1-9][0-9]*)$/),
         ]),
       ],
-      estatus: [1, Validators.required],
+      estatus: [0, Validators.required],
       direccion: [""],
     });
 

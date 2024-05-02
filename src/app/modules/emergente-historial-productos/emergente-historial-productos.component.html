@@ -43,13 +43,7 @@
                 <ng-container *ngIf="column === 'Fecha Movimiento'">
                   {{ hist.FechaMovimiento }}
                 </ng-container>
-                <ng-container *ngIf="column === 'Stock Actual'">
-                  {{ hist.ActualStock }} {{ 'pzas'}}
-                </ng-container>
                 <ng-container *ngIf="column === 'Stock Movimiento'">
-                  {{ hist.MovimientoStock }} {{ 'pzas'}}
-                </ng-container>
-                <ng-container *ngIf="column === 'Stock Nuevo'">
                   {{ hist.NuevoStock }} {{ 'pzas'}}
                 </ng-container>
               </td>

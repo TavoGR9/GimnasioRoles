@@ -104,13 +104,12 @@ isSupadmin():boolean {
   return this.role.getValue() === 'SuperAdmin';
 }
 
+
 getRole(): string {
   return this.role.getValue();
 }
 
-setUserRole(role: string): void {
-  this.userRole = role;
-}
+
 
 //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
 //Traer lista de sucursales

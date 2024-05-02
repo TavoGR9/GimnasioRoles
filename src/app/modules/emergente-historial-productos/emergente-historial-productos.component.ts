@@ -39,9 +39,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     'Producto',
     'Concepto',
     'Fecha Movimiento',
-    'Stock Actual',
     'Stock Movimiento',
-    'Stock Nuevo',
   ];
   fechaInicio: Date = new Date(); // Inicializa como una nueva fecha
   fechaFin: Date = new Date();    // Inicializa como una nueva fecha

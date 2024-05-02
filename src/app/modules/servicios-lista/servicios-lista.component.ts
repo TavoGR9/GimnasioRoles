@@ -1,6 +1,4 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { plan } from "../../models/plan";
 import { serviciosService } from "../../service/servicios.service";
@@ -10,7 +8,6 @@ import { AuthService } from "../../service/auth.service";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
-import { DialogStateService } from "../../service/dialogState.service";
 import { MembresiaService } from "../../service/membresia.service";
 
 @Component({
@@ -18,7 +15,7 @@ import { MembresiaService } from "../../service/membresia.service";
   templateUrl: "./servicios-lista.component.html",
   styleUrls: ["./servicios-lista.component.css"],
 })
-export class ServiciosListaComponent {
+export class ServiciosListaComponent implements OnInit{
   plan: plan[] = [];
   services: any[] = [];
   membresias: plan[] = [];
@@ -35,45 +32,36 @@ export class ServiciosListaComponent {
   displayedColumns: string[] = ["title", "details", "price", "actions"];
   dialogRef: any;
   isLoading: boolean = true; 
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
     private auth: AuthService,
-    private route: ActivatedRoute,
-    private cd: ChangeDetectorRef,
     private ServiciosService: serviciosService,
     private gimnasioService: GimnasioService,
-    private membresiaService: MembresiaService,
-    private dialogStateService: DialogStateService
+    private membresiaService: MembresiaService
   ) {}
 
   ngOnInit(): void {
     // this.gimnasioService.comprobar();
     // this.auth.comprobar();
-    
-    
       this.currentUser = this.auth.getCurrentUser();
-    if (this.currentUser) {
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
+      if (this.currentUser) {
+        this.getSSdata(JSON.stringify(this.currentUser));
+      }
       this.auth.idGym.subscribe((data) => {
         this.idGym = data;
-        this.listaTabla();
+        this.listaTabla(); 
       });  
-  
-
-    this.loadData();
   }
-
+  
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
-      this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+      this.isLoading = false; 
+      this.dataSource.paginator = this.paginator; 
+    }, 1000); 
   }
-
+  
   getSSdata(data: any) {
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -96,9 +84,8 @@ export class ServiciosListaComponent {
       if (Array.isArray(res)) {
         this.services = res;
         this.dataSource = new MatTableDataSource(this.services);
-        this.dataSource.paginator = this.paginator;
+        this.loadData(); 
       } else {
-    
       }
     });
   }
@@ -109,7 +96,6 @@ export class ServiciosListaComponent {
   }
 
   toggleCheckbox(idMem: number, status: number) {
-    // Guarda el estado actual en una variable temporal
     const estadoOriginal = status;
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea cambiar el estatus de la categoría?`,
@@ -119,7 +105,6 @@ export class ServiciosListaComponent {
       if (confirmado) {
         // Invierte el estado actual de la categoría
         const nuevoEstado = status == 1 ? { status: 0 } : { status: 1 };
-
         // Actualiza el estado solo si el usuario confirma en el diálogo
         this.actualizarEstatusMembresia(idMem, nuevoEstado);
       } else {

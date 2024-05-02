@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth.service';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -58,11 +57,16 @@ export class LoginComponent implements OnInit {
             this.auth.email.next(resultData.email);
             this.auth.encryptedMail.next(resultData.encryptedMail);
             this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
-            if(resultData.rol= 'supAdmin'){
-              this.router.navigate(['/listaSucursales']);
-
-            }else{
-              this.router.navigate(['/home']);
+            if(resultData.rol == 'SuperAdmin'){
+              this.router.navigate(['/listaSucursales'],{ replaceUrl: true });
+            }else if (resultData.rol == 'Administrador'){
+              this.router.navigate(['/home'],{ replaceUrl: true });
+            } else if (resultData.rol == 'Recepcionista'){
+              this.router.navigate(['/home'],{ replaceUrl: true });
+            } else {
+              this.toastr.error('Acceso denegado', 'Error', {
+                positionClass: 'toast-bottom-left',
+              });
             }
           } else {
             this.toastr.error('Por favor, verifica las credenciales proporcionadas....', 'Error', {
