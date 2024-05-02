@@ -36,6 +36,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
   isLoading: boolean = true; 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
     'Producto',
     'Cantidad',
@@ -45,36 +46,61 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     'Total'
   ];
   
-  //paginator es una variable de la clase MatPaginator
-  @ViewChild('paginatorProductos', { static: true }) paginator!: MatPaginator;
   constructor(private prodVendidosService: ProductoService, 
     private datePipe: DatePipe, 
     private toastr: ToastrService,
     private auth: AuthService,){}
   
-    ngOnInit(): void{
+  ngOnInit(): void{
     // this.prodVendidosService.comprobar();
     // this.auth.comprobar();
-
-    
-      this.currentUser = this.auth.getCurrentUser();
+    this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-      this.auth.idGym.subscribe((data) => {
-        this.idGym = data;
-        this.updateDateLogs(); 
-      }); 
-    
-    this.loadData();
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.updateDateLogs(); 
+    }); 
   }
 
+  private updateDateLogs(): void {
+    this.fechaInicioAnterior = this.fechaInicio;
+    this.fechaFinAnterior = this.fechaFin;
+    this.prodVendidosService.obtenerListaProduct(
+      this.formatDate(this.fechaInicio),
+      this.formatDate(this.fechaFin),
+      this.idGym
+    ).subscribe(
+      response => {
+        if (response) {
+          this.productosVendidos = response;
+          this.dataSource = new MatTableDataSource(this.productosVendidos);
+          this.loadData();
+        } else {
+          this.productosVendidos = [];
+          this.dataSource = new MatTableDataSource(this.productosVendidos);
+          this.loadData();
+        }
+      },
+      error => {
+        console.error('Error en la solicitud:', error);
+        this.productosVendidos = [];
+        this.dataSource = new MatTableDataSource(this.productosVendidos);
+        this.loadData();
+      }
+    );
+  }
+  
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
-      this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+      this.isLoading = false; 
+      if (this.dataSource) {
+        this.dataSource.paginator = this.paginator;
+      }
+    }, 1000); 
   }
+  
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
@@ -91,7 +117,6 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
   }
 
   ngDoCheck(): void {
-    // Verifica si las fechas han cambiado y actualiza los logs
     if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
       this.updateDateLogs();
     }
@@ -111,61 +136,30 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     return this.datePipe.transform(date, 'dd/MM/yyyy') || '';
   }
 
-  private updateDateLogs(): void {
-    this.fechaInicioAnterior = this.fechaInicio;
-    this.fechaFinAnterior = this.fechaFin;
-    this.prodVendidosService.obtenerListaProduct(
-      this.formatDate(this.fechaInicio),
-      this.formatDate(this.fechaFin),
-      this.idGym
-    ).subscribe(
-      response => {
-        if (response) {
-          this.productosVendidos = response;
-          this.dataSource = new MatTableDataSource(this.productosVendidos);
-          this.dataSource.paginator = this.paginator;
-        } else {
-          this.productosVendidos = [];
-          this.dataSource = new MatTableDataSource(this.productosVendidos);
-          this.dataSource.paginator = this.paginator;
-        }
-      },
-      error => {
-        console.error('Error en la solicitud:', error);
-        this.productosVendidos = [];
-        this.dataSource = new MatTableDataSource(this.productosVendidos);
-        this.dataSource.paginator = this.paginator;
-      },
-      () => {
-      }
-    );
-  }
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   descargarExcel(): void {
-  if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
-    this.toastr.error('No hay datos para exportar.', 'Error!!!');
-    return;
-  }
+    if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
+      this.toastr.error('No hay datos para exportar.', 'Error!!!');
+      return;
+    }
 
-  const datos = [
-    ['Nombre', 'Sucursal', 'Producto', 'Cantidad', 'Precio unitario', 'Importe por producto', 'Fecha venta', 'Total'],
-    ...this.dataSource.filteredData.map((producto: Producto) => [
-      producto.Nombre,
-      producto.Sucursal,
-      producto.Producto,
-      producto.Cantidad,
-      producto.Precio_Unitario,  // Asegúrate de que la propiedad tenga el nombre correcto
-      producto.Importe_x_Producto,
-      producto.Fecha_Venta,
-      producto.Total
-    ])
-  ];
-  
+    const datos = [
+      ['Nombre', 'Sucursal', 'Producto', 'Cantidad', 'Precio unitario', 'Importe por producto', 'Fecha venta', 'Total'],
+      ...this.dataSource.filteredData.map((producto: Producto) => [
+        producto.Nombre,
+        producto.Sucursal,
+        producto.Producto,
+        producto.Cantidad,
+        producto.Precio_Unitario,  // Asegúrate de que la propiedad tenga el nombre correcto
+        producto.Importe_x_Producto,
+        producto.Fecha_Venta,
+        producto.Total
+      ])
+    ];
     // Crear un objeto de libro de Excel
     const workbook = XLSX.utils.book_new();
     const hojaDatos = XLSX.utils.aoa_to_sheet(datos);
@@ -200,9 +194,6 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     saveAs(newBlob, 'Productos Vendidos.xlsx');
   }
 
-
-
-  //Descarga el archivo en PDF
   descargarPDF(): void {
     // Verifica si hay datos para exportar
     if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
@@ -210,17 +201,13 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
       console.warn('No hay datos filtrados para exportar a PDF.');
       return;
     }
-  
     // Crear un objeto jsPDF
     const pdf = new (jsPDF as any)();  // Utilizar 'as any' para evitar problemas de tipo
-  
     // Obtener las fechas seleccionadas
     const fechaInicio = this.formatDateV2(this.fechaInicio);
     const fechaFin = this.formatDateV2(this.fechaFin);
-
     // Encabezado del PDF con las fechas
     pdf.text(`Reporte de Productos Vendidos (${fechaInicio} - ${fechaFin})`, 10, 10);
-    
     // Contenido del PDF
     const datos = this.dataSource.filteredData.map((producto: Producto) => [
       producto.Nombre,
@@ -232,9 +219,8 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
       producto.Fecha_Venta,
       producto.Total
     ]);
-  
     // Añadir filas al PDF con encabezado naranja
-  pdf.autoTable({
+    pdf.autoTable({
     head: [['Nombre', 'Sucursal', 'Producto', 'Cantidad', 'Precio unitario', 'Importe por producto', 'Fecha venta', 'Total']],
     body: datos,
     startY: 20,  // Ajusta la posición inicial del contenido
@@ -242,8 +228,7 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
       fillColor: [249, 166, 64],  // Color naranja RGB
       textColor: [255, 255, 255]  // Color blanco para el texto
     }
-  });
-  
+    });
     // Descargar el archivo PDF
     pdf.save('Productos Vendidos.pdf');
     //pdf.save(`Productos Vendidos (${fechaInicio} - ${fechaFin}).pdf`);

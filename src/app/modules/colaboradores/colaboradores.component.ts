@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ColaboradorService } from './../../service/colaborador.service';
-import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AltaColaboradoresComponent } from '../alta-colaboradores/alta-colaboradores.component';
 import { EditarColaboradorComponent } from '../editar-colaborador/editar-colaborador.component';
 import { AuthService } from '../../service/auth.service';
@@ -30,27 +30,21 @@ export class ColaboradoresComponent {
   ngOnInit():void{
     // this.http.comprobar();
     // this.auth.comprobar();
-
-    
-      this.currentUser = this.auth.getCurrentUser();
+    this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-      this.auth.idGym.subscribe((data) => {
-        this.idGym = data;
-        this.listaTabla();
-        //this.cargarCategorias();
-        //this.actualizarTabla();
-      }); 
-   
-    this.loadData();
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    }); 
   }
 
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+      this.dataSource.paginator = this.paginator;
+    }, 1000); 
   }
 
   listaTabla(){
@@ -67,35 +61,11 @@ export class ColaboradoresComponent {
           this.empleados = dataResponse;
           //console.log(this.empleados);
           this.dataSource = new MatTableDataSource(this.empleados);
-        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+          this.loadData(); 
         }
       })
     }
   }
-  
-  // cargarCategorias() {
-  //   this.http.listaRecepcionistas(this.idGym).subscribe({
-  //     next: (resultData) => {
-  //       this.empleados = resultData;
-  //       //this.dataSource = new MatTableDataSource(this.empleados);
-  //       //this.dataSource.paginator = this.paginator;
-  //     }
-  //   });
-  // }
-  
-  // actualizarTabla() {
-  //   if (!this.dataSource) {
-  //     // Asegúrate de que this.dataSource esté definido antes de actualizar
-  //     this.cargarCategorias();
-  //   } else {
-  //     this.http.listaRecepcionistas(this.idGym).subscribe({
-  //       next: (resultData) => {
-  //         this.empleados = resultData;
-  //      //   this.dataSource.data = this.empleados;
-  //       }
-  //     });
-  //   }
-  // }
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
@@ -142,42 +112,31 @@ export class ColaboradoresComponent {
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          // Hacer algo cuando se cierra el diálogo
-          //this.actualizarTabla();
           this.listaTabla();
         } else {
-          // Hacer algo cuando se cancela el diálogo
         }
       });
   }
   
-
   OpenEditar(empleados: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '70%';
     dialogConfig.height = '90%';
     dialogConfig.disableClose = true; // Evita que el diálogo se cierre haciendo clic fuera de él
-    
     dialogConfig.data = {
       empleadoID: `${empleados.id_empleado}`
     };
-
-    //console.log(empleados.id_empleado);
-  
     this.dialog.open(EditarColaboradorComponent, dialogConfig)
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
           this.listaTabla();
         } else {
-          // Hacer algo cuando se cancela el diálogo
         }
       });
   }
 
-
   onToggle(event: Event, idEmpleado: any, correo:any) {
-  console.log(idEmpleado, "idGimnasio");
     let colab = this.empleados.find(
       (e: { id_empleado: any }) => e.id_empleado == idEmpleado
     );
@@ -190,7 +149,6 @@ export class ColaboradoresComponent {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Invertir el valor del estatus
         const nuevoEstatus = colab.estatus == 1 ? 0 : 1;
         // Actualizar la base de datos y refrescar los datos
         this.http

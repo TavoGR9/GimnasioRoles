@@ -1,22 +1,20 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
-import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
-import { MatTableDataSource } from '@angular/material/table'; //para controlar los datos del api y ponerlos en una tabla
-import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Router, ActivatedRoute } from '@angular/router';
+import { MatPaginator } from '@angular/material/paginator'; 
+import { MatTableDataSource } from '@angular/material/table'; 
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { FormPagoEmergenteComponent } from '../form-pago-emergente/form-pago-emergente.component';
 import { MensajeListaComponent } from '../ListaClientes/mensaje-cargando.component';
 import { listarClientesService } from '../../service/listarClientes.service';
 import { ClienteService } from '../../service/cliente.service';
-import { HuellaService } from '../../service/huella.service';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { DatePipe } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { EmergenteInfoClienteComponent } from '../emergente-info-cliente/emergente-info-cliente.component';
 import { AuthService } from '../../service/auth.service';
@@ -31,7 +29,6 @@ interface ClientesActivos {
   Fecha_Fin: string;
   Status: string;
 }
-
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -45,7 +42,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     );
   }
 }
-
 @Component({
   selector: 'app-lista-membresias-pago-efec',
   templateUrl: './lista-membresias-pago-efec.component.html',
@@ -54,21 +50,18 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 
 export class ListaMembresiasPagoEfecComponent implements OnInit {
-  
   form: FormGroup;
   matcher = new MyErrorStateMatcher();
   clientePago: any;
-  //clienteActivo: any;
   clienteReenovacion: any;
   cliente: any;
-  clienteActivo: ClientesActivos[] = [];   //clienteActivo debe tener el tipo adecuado (en este caso, un array de ClientesActivos)
-  dataSource: any; // instancia para matTableDatasource
+  clienteActivo: ClientesActivos[] = [];  
+  dataSource: any; 
   dataSourceActivos: any;
   dataSourceReenovacion: any;
-  fechaInicio: Date = new Date('0000-00-00'); // Inicializa como una nueva fecha
-  fechaFin: Date = new Date('0000-00-00');    // Inicializa como una nueva fecha
+  fechaInicio: Date = new Date('0000-00-00'); 
+  fechaFin: Date = new Date('0000-00-00');    
   id: any;
-  //titulos de columnas de la tabla clientes activos
   displayedColumnsActivos: string[] = [
     'Nombre',
     'Membresia',
@@ -94,7 +87,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorPagoOnline', { static: true }) paginator!: MatPaginator;
-  @ViewChild('paginatorActivos', { static: true }) paginatorActivos!: MatPaginator;
+  @ViewChild('paginatorActivos') paginatorActivos!: MatPaginator;
   @ViewChild('paginatorReenovacionMem', { static: true }) paginatorReenovacion!: MatPaginator;
 
   constructor(
@@ -104,7 +97,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private ListarClientesService: listarClientesService,
-    private huellasService: HuellaService,
     private clienteService: ClienteService,
     private datePipe: DatePipe,
     private auth: AuthService,
@@ -112,15 +104,12 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.form = this.fb.group({
       idUsuario: [''],
       action: ['add'],
-      // id_module: ['', Validators.compose([Validators.required])],
     });
 
-    //obtener id del cliente
     this.clienteService.data$.subscribe((data: any) => {
       if (data && data.idCliente) {
-        this.obtenerCliente(data.idCliente); // Obtener cliente usando el ID recibido
+        this.obtenerCliente(data.idCliente);
         this.id = data.idCliente;
-        // Actualizar el valor del control 'id' en el formulario
         this.form.get('idUsuario')?.setValue(this.id);
       }
     });
@@ -129,26 +118,21 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ngOnInit(): void {
     // this.pagoService.comprobar();
     // this.auth.comprobar();
-    
-    
-      this.currentUser = this.auth.getCurrentUser();
+    this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-      this.auth.idGym.subscribe((data) => {
-        this.idGym = data;
-        this.listaClientesData();
-        //this.updateDateLogs();  
-      }); 
-
-    this.loadData();
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaClientesData();   
+    }); 
   }
 
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+      this.dataSourceActivos.paginator = this.paginatorActivos;
+    }, 1000); 
   }
 
   getSSdata(data: any){
@@ -166,7 +150,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   ngDoCheck(): void {
-    // Verifica si las fechas han cambiado y actualiza los logs
     if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
       this.updateDateLogs();
       this.listaClientesData();
@@ -179,7 +162,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   onFechaFinChange(event: any): void {
   }
 
-  private formatDate(date: Date): string {
+  formatDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
   }
 
@@ -195,9 +178,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
         } else if(response.data){
-          // Si hay datos, actualiza la tabla
           this.clienteActivo = response.data;
-         
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
         }
@@ -218,12 +199,10 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       (response: any) => {
         this.clienteActivo = response.data;
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        this.dataSourceActivos.paginator = this.paginatorActivos;
-        // Aquí puedes realizar otras operaciones con la respuesta, si es necesario
+        this.loadData();
       },
       (error: any) => {
         console.error('Error al obtener activos:', error);
-        // Manejo de errores, si es necesario
       }
     );
   }
@@ -239,10 +218,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
               data: {
                 idCliente: `${prod.ID}`,
                 nombre: `${prod.Nombre}`,
-
-               // nombre_cl: `${prod.nombre_cliente}`,
-                //paterno: `${prod.apPaterno}`,
-                //materno: `${prod.apMaterno}`,
                 telefono: `${prod.telefono}`,
                 email: `${prod.email}`,
                 peso: `${prod.peso}`,
@@ -260,14 +235,10 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
               width: '80%',
               height: '90%',
               disableClose: true,
-              //data: `Mi nombre es: ${prod.Nombre}`,
             })
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
-                // Recargar la página actual
-                //location.reload();
-                //this.router.navigateByUrl(`/index/`);
                 this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((respuesta) => {
                   this.clienteActivo = respuesta.data;
                   // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
@@ -330,9 +301,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       // Manejar el caso en que se cierra el diálogo sin cancelar
     }
   });
-}
+  }
 
-  /*********PARTE DEL DIALOGO *************/
   abrirDialogo() {
     this.dialog
       .open(MensajeListaComponent, {

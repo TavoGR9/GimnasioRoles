@@ -17,17 +17,12 @@ export class RoleGuard implements CanActivate {
   private rol: string = '';
 
   constructor(private authService: AuthService, private router: Router) {
-    console.log("RoleGuard constructor called");
-    // Coloca aquí la lógica que deseas ejecutar al iniciar el guardia de ruta
-    // Por ejemplo, obtener y configurar el estado de autenticación y los datos del usuario
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
       this.getSSdata(JSON.stringify(currentUser));
     }
     this.authService.role.subscribe((data) => {
     this.rol = data;
-   
-    
     });  
   }
 

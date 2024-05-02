@@ -1,16 +1,12 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ChangeDetectorRef } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { plan } from "../../models/plan";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
-import { GimnasioService } from "../../service/gimnasio.service";
 import { AuthService } from "../../service/auth.service";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
 import { MembresiaService } from "../../service/membresia.service";
-
 @Component({
   selector: "app-membresias",
   templateUrl: "./membresias.component.html",
@@ -29,15 +25,11 @@ export class MembresiasComponent implements OnInit {
   services: any[] = [];
   idGym: number = 0;
   isLoading: boolean = true; 
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private membresiaService: MembresiaService,
-    private gimnasioService: GimnasioService,
     private auth: AuthService,
-    private route: ActivatedRoute,
-    private cd: ChangeDetectorRef,
     public dialog: MatDialog
   ) {}
 
@@ -53,18 +45,14 @@ export class MembresiasComponent implements OnInit {
     // this.membresiaService.comprobar();
     // this.auth.comprobar();
     // this.gimnasioService.comprobar();
-    
-    
-      this.currentUser = this.auth.getCurrentUser();
-      if (this.currentUser) {
-        this.getSSdata(JSON.stringify(this.currentUser));
-      }
-      this.auth.idGym.subscribe((data) => {
-        this.idGym = data;
-        this.listaTabla();
-      });
-   
-    this.loadData();
+    this.currentUser = this.auth.getCurrentUser();
+    if (this.currentUser) {
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    });
   }
 
   getSSdata(data: any) {
@@ -85,9 +73,9 @@ export class MembresiasComponent implements OnInit {
 
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+      this.dataSource.paginator = this.paginator;
+    }, 1000);
   }
 
   listaTabla() {
@@ -96,13 +84,10 @@ export class MembresiasComponent implements OnInit {
         if (respuesta) {
           this.plan = respuesta;
           this.dataSource = new MatTableDataSource(this.plan);
-          this.dataSource.paginator = this.paginator;
-        } else {
-    
-        }
+          this.loadData();
+        } else {}
       },
       (error) => {
-        //console.error('Error al obtener los datos del servicio:', error);
       }
     );
   }
@@ -113,7 +98,6 @@ export class MembresiasComponent implements OnInit {
   }
 
   toggleCheckbox(idMem: number, status: number) {
-    // Guarda el estado actual en una variable temporal
     const estadoOriginal = status;
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea cambiar el estatus de la categoría?`,
@@ -157,7 +141,6 @@ export class MembresiasComponent implements OnInit {
             this.dataSource = new MatTableDataSource(this.plan);
             this.dataSource.paginator = this.paginator;
           } else {
-      
           }
         },
         (error) => {
@@ -167,7 +150,6 @@ export class MembresiasComponent implements OnInit {
     });
   }
   
-
   openDialogService(idMem: number, tipo_membresia: number) {
     this.membresiaService.optionShow.next(2);
     this.membresiaService.optionShow.subscribe((option) => {});
@@ -190,7 +172,6 @@ export class MembresiasComponent implements OnInit {
       disableClose: true,
       data: { name: "Editar membresia", id: idMem },
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       this.membresiaService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
         this.plan = respuesta;

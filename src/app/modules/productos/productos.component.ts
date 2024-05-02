@@ -7,7 +7,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from '../../service/auth.service';
 import { CrearProductoComponent } from '../crearProducto/crearProducto.component';
 import { EditarProductoComponent } from '../editar-producto/editar-producto.component';
-import { CategoriaService } from "../../service/categoria.service";
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
@@ -22,46 +21,34 @@ export class ProductosComponent implements OnInit {
     'categoria', 
   ];
 
-  public productos: any;
+  productos: any[] = [];
   currentUser: string = '';
   listProductData: ListaProductos[] = [];
   idGym: number = 0;
   dataSource: any;
   productoActiva: boolean = true;
   isLoading: boolean = true; 
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog,
-    private categoriaService: CategoriaService
   ) { 
   }
 
   ngOnInit(): void {
     // this.productoService.comprobar();
     // this.auth.comprobar();
-    // this.categoriaService.comprobar();
-  
-   
-      this.currentUser = this.auth.getCurrentUser();
+    // this.categoriaService.comprobar(); 
+    this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-      this.auth.idGym.subscribe((data) => {
-        this.idGym = data;
-        this.listaTabla();
-      }); 
-    
-    this.loadData(); 
-  }
-
-  loadData() {
-    setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
-      this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla();
+    }); 
   }
 
   getSSdata(data: any){
@@ -79,22 +66,18 @@ export class ProductosComponent implements OnInit {
   }
 
   listaTabla(){
-    this.productoService.consultarAllProducto(this.idGym).subscribe({
-      next: (resultData: any) => {
-        if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
-        this.productos = Array.isArray(resultData) ? resultData : [];
-        this.dataSource = new MatTableDataSource(this.productos);
-        if (this.paginator) {
-        this.dataSource.paginator = this.paginator;
-        }
-      } else {
-        console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
-      }
-      },
-      error: (error) => {
-        console.error('Error al consultar categorías:', error);
-      }
+    this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+      this.productos = resultData
+      this.dataSource = new MatTableDataSource(this.productos);
+      this.loadData(); 
     });
+  }
+
+  loadData() {
+    setTimeout(() => {
+      this.isLoading = false;
+      this.dataSource.paginator = this.paginator;
+    }, 1000);
   }
 
   crearProducto(): void {
