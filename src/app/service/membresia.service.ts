@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, map , throwError} from 'rxjs';
 import { membresia } from '../models/membresia';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { ConnectivityService } from './connectivity.service';
+import { IndexedDBService } from './indexed-db.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class MembresiaService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
   
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
   }
 
   // comprobar(){
@@ -66,13 +67,86 @@ export class MembresiaService {
     return this.clienteHttp.post(this.API+"membresias.php?insertarplan",datosPlan);
   }
 
+
+
   consultarPlanIdMem(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMMem="+id);
+    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMMem="+id).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB(dataResponse);
+      }),
+      catchError(error => {
+        console.log("Datos Almacenados en cache");
+        return this.getMembresiaDatos();
+      })
+    );
   }
+  
+  private saveDataToIndexedDB(data: any) {
+    // Guarda los datos en IndexedDB
+    this.indexedDBService.saveMembresiaData('membresia', data);
+  }
+  
+  getMembresiaDatos() {
+    return new Observable(observer => {
+      this.indexedDBService.getMembresiaData('membresia').then(data => {
+          if (data) {
+              observer.next(data.data);
+          } else {
+              observer.next(null); // Devuelve null si no hay datos en IndexedDB
+          }
+          observer.complete();
+      }).catch(error => {
+          observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+      });
+  });
+  }
+  
+
+
 
   consultarPlanIdPlan2(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMPlanT="+id);
+    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMPlanT="+id).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB2(dataResponse);
+      }),
+      catchError(error => {
+        console.log("Datos Almacenados en cache");
+        return this.getServiceDatos();
+      })
+    );
   }
+
+  private saveDataToIndexedDB2(data: any) {
+    // Guarda los datos en IndexedDB
+    this.indexedDBService.savePlanData('Plan', data);
+  }
+  
+  getServiceDatos() {
+    return new Observable(observer => {
+      this.indexedDBService.getPlanData('Plan').then(data => {
+        if (data && data.length > 0) {
+          let maxId = -1;
+          let lastData: any;
+          data.forEach((record: any) => {
+            if (record.id > maxId) {
+              maxId = record.id;
+              lastData = record.data;
+            }
+          });
+          observer.next(lastData); // Emitir el último dato encontrado
+        } else {
+          observer.next(null); // Emitir null si no hay datos en IndexedDB
+        }
+        observer.complete();
+      }).catch(error => {
+        observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+      });
+    });
+  }
+  
+
+
+
 
   setDataToupdate(id:number, tipo_membresia: number){
     this.data = {

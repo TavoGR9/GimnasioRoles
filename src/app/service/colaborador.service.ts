@@ -7,6 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ConnectivityService } from './connectivity.service';
+import { IndexedDBService } from './indexed-db.service';
 
 @Injectable({
     providedIn: 'root'
@@ -25,7 +26,7 @@ export class ColaboradorService {
 
     API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-    constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+    constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
     }
     // comprobar(){
@@ -105,12 +106,53 @@ export class ColaboradorService {
 
 
 
+    // MostrarRecepcionistas(idGym: any) {
+    //     let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+    //     let params = 'idGym=' + idGym;
+    //     return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
+    //   }
+
+
     MostrarRecepcionistas(idGym: any) {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'idGym=' + idGym;
-        return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
-      }
+        return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers }).pipe(
+            tap(dataResponse => {
+                this.saveDataToIndexedDB(dataResponse);
+            }),
+            catchError(error => {
+                console.log("Datos Almacenados en cache");
+                // Intenta obtener los datos de IndexedDB en caso de error
+                return this.getDataFromIndexedDB();
+            })
+        );
+    }
+    
+    private saveDataToIndexedDB(data: any) {
+        // Guarda los datos en IndexedDB
+        this.indexedDBService.saveData('receptionists', data);
+    }
+    
+     getDataFromIndexedDB() {
+        // Intenta obtener los datos de IndexedDB
+        return new Observable(observer => {
+            this.indexedDBService.getData('receptionists').then(data => {
+                if (data) {
+                    observer.next(data.data);
+                } else {
+                    observer.next(null); // Devuelve null si no hay datos en IndexedDB
+                }
+                observer.complete();
+            }).catch(error => {
+                observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+            });
+        });
+    }
 
+
+
+
+    
     InfoIdEmpleado(idEmp: any) {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'idEmp=' + idEmp;

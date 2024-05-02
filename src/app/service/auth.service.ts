@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
-//para conectarse al api
+import { of, from  } from 'rxjs'; 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
 import { msgResult } from '../models/empleado';
 import { ConnectivityService } from './connectivity.service';
+import { IndexedDBService } from './indexed-db.service';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +42,7 @@ export class AuthService {
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private router: Router, private clienteHttp: HttpClient, private connectivityService: ConnectivityService) {
+  constructor(private router: Router, private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
     const encryptedMail = sessionStorage.getItem(this.USER_KEY);
     if (encryptedMail) {
       this.encryptedMail.next(encryptedMail);
@@ -157,9 +159,42 @@ clearCurrentUser(): void {
 }
 
 // Traer datos de usuario logeaddo
+// dataUser(data: any): Observable<any> {
+//   return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders});
+// }
+
 dataUser(data: any): Observable<any> {
-  return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders});
+  return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
+    tap(dataResponse => {
+      this.saveDataToIndexedDB(dataResponse);
+    }),
+    catchError(error => {
+      console.log("Datos Almacenados en cache");
+      return this.getUserDatos();
+    })
+  );
 }
+
+private saveDataToIndexedDB(data: any) {
+  // Guarda los datos en IndexedDB
+  this.indexedDBService.saveUserData('userData', data);
+}
+
+getUserDatos() {
+  return new Observable(observer => {
+    this.indexedDBService.getUserData('userData').then(data => {
+        if (data) {
+            observer.next(data.data);
+        } else {
+            observer.next(null); // Devuelve null si no hay datos en IndexedDB
+        }
+        observer.complete();
+    }).catch(error => {
+        observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+    });
+});
+}
+
 
 hasAnyRole(expectedRoles: string[]): boolean {
   const userRole = this.role.getValue();
