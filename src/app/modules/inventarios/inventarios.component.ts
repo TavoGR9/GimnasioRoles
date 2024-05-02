@@ -4,10 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ProductoService } from '../../service/producto.service';
 import { EmergenteHistorialProductosComponent } from '../emergente-historial-productos/emergente-historial-productos.component';
 import { MatDialog} from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth.service';
-import { inventarioService } from '../../service/inventario.service';
-
 @Component({
   selector: 'inventarios',
   templateUrl: './inventarios.component.html',
@@ -33,35 +30,27 @@ export class InventariosComponent implements OnInit {
   constructor(
     private productoService: ProductoService, 
     private auth: AuthService,
-    public dialog: MatDialog,
-    private InventarioService: inventarioService,
-    private toastr: ToastrService) {}
+    public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    
     // this.productoService.comprobar();
     // this.InventarioService.comprobar();
     // this.auth.comprobar();
     this.currentUser = this.auth.getCurrentUser();
-    
-      if(this.currentUser){
-        this.getSSdata(JSON.stringify(this.currentUser));
-        
-      }
-      this.auth.idGym.subscribe((data) => {
-        this.idGym = data;
-        this.listaTablas();
-        
-      }); 
-this.loadData();
-    
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTablas();
+    }); 
+    this.loadData();
   }
 
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 100); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 100); 
   }
 
   listaTablas(){
@@ -69,7 +58,6 @@ this.loadData();
       this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);
       this.dataSource.paginator = this.paginator;
-     
     });
   }
 
@@ -100,9 +88,7 @@ this.loadData();
     .afterClosed()
     .subscribe((cerrarDialogo: Boolean) => {
       if (cerrarDialogo) {
-        
       } else {
-        
       }
     });
   }

@@ -1,10 +1,10 @@
 import { MatTableDataSource } from "@angular/material/table";
 import { AuthService } from "../../service/auth.service";
 import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit  } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from '@angular/material/paginator';
-import { FormGroup, FormBuilder, Validators} from "@angular/forms";
+import { FormBuilder} from "@angular/forms";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
@@ -12,10 +12,6 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { VentasComponent } from "../ventas/ventas.component";
 import { DialogStateService } from "../../service/dialogState.service";
-import { ProductoService } from "../../service/producto.service";
-import { VentasService } from "../../service/ventas.service";
-import { DetalleVentaService } from "../../service/detalle-venta.service";
-import { inventarioService } from "../../service/inventario.service";
 @Component({
   selector: 'app-ver-corte',
   templateUrl: './ver-corte.component.html',
@@ -30,12 +26,7 @@ export class VerCorteComponent implements OnInit  {
     private joinDetalleVentaService: JoinDetalleVentaService,
     private dialogStateService: DialogStateService,
     private toastr: ToastrService,
-    private productoService: ProductoService,
-    private ventasService: VentasService,
-    private DetalleVenta: DetalleVentaService,
-    private InventarioService: inventarioService
-  ) {
-  }
+  ) {}
 
   totalVentas: number = 0;
   idGym: number = 0;
@@ -79,27 +70,21 @@ export class VerCorteComponent implements OnInit  {
         }
       }
     });  
-
-    
-      this.currentUser = this.auth.getCurrentUser();
+    this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-      this.auth.idGym.subscribe((data) => {
-        this.idGym = data;
-        this.listaTablas();
-        this.cargarVentas();
-        this.actualizarTabla();
-      }); 
-   
-    this.loadData();
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTablas();
+    }); 
   }  
 
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+      this.dataSource.paginator = this.paginator;
+    }, 1000);
   }
 
   getSSdata(data: any){
@@ -121,52 +106,16 @@ export class VerCorteComponent implements OnInit  {
       (data) => {
         this.detallesCaja = data;
         this.dataSource = new MatTableDataSource(this.detallesCaja);
-        this.dataSource.paginator = this.paginator; 
+        this.loadData(); 
         this.dataSource.data = this.detallesCaja;
         const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
         this.fechaFiltro = fechaActual;
         this.aplicarFiltro();
-        this.cargarVentas();
       },
       (error) => {
         console.error("Error al obtener detalles de la caja:", error);
       }
     );
-  }
-
-  private cargarVentas() {
-    this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
-      (resultData) => {
-        this.detallesCaja = resultData;
-        this.dataSource = new MatTableDataSource(this.detallesCaja);
-        this.dataSource.paginator = this.paginator;
-        const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
-        this.fechaFiltro = fechaActual;
-        this.aplicarFiltro();
-      },
-      (error) => {
-        console.error('Error al cargar categorías:', error);
-      }
-    );
-  }
-  
-  private actualizarTabla() {
-    if (!this.dataSource) {
-      this.cargarVentas();
-    } else {
-      this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
-        (resultData) => {
-          this.detallesCaja = resultData;
-          this.dataSource.data = this.detallesCaja;
-          const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
-          this.fechaFiltro = fechaActual;
-          this.aplicarFiltro();
-        },
-        (error) => {
-          console.error('Error al actualizar categorías:', error);
-        }
-      );
-    }
   }
 
   private obtenerFechaActual(): Date {
@@ -209,12 +158,10 @@ export class VerCorteComponent implements OnInit  {
   calcularTotalVentas(): number {
     // Obtén los datos visibles después de aplicar filtros
     const datosVisibles = this.dataSource.filteredData || this.dataSource.data;
-  
     // Realiza el cálculo del total
     return datosVisibles.reduce((total, detalle) => {
       const cantidad = parseFloat(detalle.cantidadElegida);
       const precioUnitario = parseFloat(detalle.precioUnitario);
-  
       if (!isNaN(cantidad) && !isNaN(precioUnitario)) {
         return total + (cantidad * precioUnitario);
       } else {
@@ -230,7 +177,6 @@ export class VerCorteComponent implements OnInit  {
       console.warn('No hay datos filtrados para exportar a PDF.');
       return;
     }
-  
     // Crear un objeto jsPDF
     const pdf = new (jsPDF as any)();  // Utilizar 'as any' para evitar problemas de tipo
   
@@ -338,7 +284,20 @@ export class VerCorteComponent implements OnInit  {
       disableClose: true
     });
     this.dialogRef.afterClosed().subscribe(() => {
-      this.actualizarTabla();
+      this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
+        (data) => {
+          this.detallesCaja = data;
+          this.dataSource = new MatTableDataSource(this.detallesCaja);
+          this.loadData(); 
+          this.dataSource.data = this.detallesCaja;
+          const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
+          this.fechaFiltro = fechaActual;
+          this.aplicarFiltro();
+        },
+        (error) => {
+          console.error("Error al obtener detalles de la caja:", error);
+        }
+      );
     });
   }
 

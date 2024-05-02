@@ -29,7 +29,6 @@
             />
          </mat-form-field>
          <div  class="table-container">
-            <div >
                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
                   <ng-container matColumnDef="nombre">
                      <th mat-header-cell *matHeaderCellDef> Nombre </th>
@@ -84,9 +83,8 @@
                   <tr mat-header-row *matHeaderRowDef="['nombre', 'existencia', 'estatus', 'categoria', 'acciones']"></tr>
                   <tr mat-row *matRowDef="let row; columns: ['nombre','existencia', 'estatus', 'categoria', 'acciones'];"></tr>
                </table>
-            </div>
          </div>
-         <mat-paginator
+         <mat-paginator #paginator
             [pageSizeOptions]="[5, 10, 15, 20]"
             showFirstLastButtons
             ></mat-paginator>
