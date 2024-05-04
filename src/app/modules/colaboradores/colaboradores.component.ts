@@ -8,6 +8,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desactivar.component";
+import { IndexedDBService } from './../../service/indexed-db.service';
+import { Observable, map , throwError} from 'rxjs';
 @Component({
   selector: 'app-colaboradores',
   templateUrl: './colaboradores.component.html',
@@ -25,7 +27,7 @@ export class ColaboradoresComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   isLoading: boolean = true; 
   
-  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private router:Router){}
+  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private router:Router, private indexedDBService: IndexedDBService){}
 
   ngOnInit():void{
     // this.http.comprobar();
@@ -173,6 +175,28 @@ export class ColaboradoresComponent {
       } else {
       }
     });
+  }
+
+
+
+
+  Sincronizar() {
+      this.indexedDBService.getAgregarEmpleadoData('AgregarEmpleado').then(data => {
+        if (data && data.length > 0) {
+          let maxId = -1;
+          let lastData: any;
+          data.forEach((record: any) => {
+            this.http.agregarEmpleado(record.data).subscribe({
+            });
+            console.log(record.data);
+          });
+          this.indexedDBService.VaciarAgregarEmpleadoData();
+          this.listaTabla();
+          //observer.next(lastData); // Emitir el último dato encontrado
+        } else {
+          console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
+        }
+      });
   }
 
 }

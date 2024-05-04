@@ -21,6 +21,7 @@ export class IndexedDBService extends Dexie {
   private ProductosVendidosDataTable: Dexie.Table<any, string>;
   private ObtenerActivosDataTable: Dexie.Table<any, string>;
   private InventarioDataTable: Dexie.Table<any, string>;
+  private AgregarEmpleadoDataTable: Dexie.Table<any, string>;
 
   constructor() {
     super('OlimpusGym');
@@ -40,6 +41,7 @@ export class IndexedDBService extends Dexie {
       ProductosVendidos: '++id,key,data',
       ObtenerActivos: '++id,key,data',
       Inventario: '++id,key,data',
+      AgregarEmpleado: '++id,key,data',
 
     });
     this.receptionistsTable = this.table('receptionists');
@@ -56,6 +58,7 @@ export class IndexedDBService extends Dexie {
     this.ProductosVendidosDataTable = this.table("ProductosVendidos");
     this.ObtenerActivosDataTable = this.table ("ObtenerActivos");
     this.InventarioDataTable = this.table ('Inventario');
+    this.AgregarEmpleadoDataTable = this.table('AgregarEmpleado');
   }
 
   async saveData(key: string, data: any) {
@@ -63,7 +66,10 @@ export class IndexedDBService extends Dexie {
   }
 
   async getData(key: string) {
-    return await this.receptionistsTable.get({ key });
+    return await this.table('receptionists')
+        .where('key')
+        .equals(key)
+        .toArray();
 
   }
 
@@ -72,7 +78,10 @@ export class IndexedDBService extends Dexie {
   }
 
   async getUserData(key: string) {
-    return await this.userDataTable.get({ key });
+    return await this.table('userData')
+        .where('key')
+        .equals(key)
+        .toArray();
   }
 
   async saveServiceData(key: string, data: any) {
@@ -80,7 +89,10 @@ export class IndexedDBService extends Dexie {
   }
 
   async getServiceData(key: string) {
-    return await this.ServiceDataTable.get({ key });
+    return await this.table('service')
+    .where('key')
+    .equals(key)
+    .toArray();
   }
 
   async saveMembresiaData(key: string, data: any) {
@@ -88,7 +100,10 @@ export class IndexedDBService extends Dexie {
   }
 
   async getMembresiaData(key: string) {
-    return await this.MembresiaDataTable.get({ key });
+    return await this.table('membresia')
+        .where('key')
+        .equals(key)
+        .toArray();
   }
 
   async savePlanData(key: string, data: any) {
@@ -200,5 +215,24 @@ async getInventarioData(key: string) {
       .equals(key)
       .toArray();
 }
+
+/////////////////////////////////////////////////////////////
+
+async saveAgregarEmpleadoData(key: string, data: any) {
+  await this.AgregarEmpleadoDataTable.put({ key, data });
+}
+
+async getAgregarEmpleadoData(key: string) {
+  return await this.table('AgregarEmpleado')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarEmpleadoData(){
+  await this.AgregarEmpleadoDataTable.clear();
+  //return console.log("Eliminados");
+}
+
 
 }

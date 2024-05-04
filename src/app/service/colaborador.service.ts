@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject  } from 'rxjs';
 import { listaEmpleados, msgResult, registrarEmpleado } from '../models/empleado';
 import { tap } from 'rxjs/operators';
-import { catchError } from 'rxjs/operators';
+import { catchError, of } from 'rxjs';
 import { throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ConnectivityService } from './connectivity.service';
@@ -50,8 +50,25 @@ export class ColaboradorService {
     }
 
     agregarEmpleado(datosEmpleado: any): Observable<any> {
-        return this.clienteHttp.post(this.API + "empleado.php?insertar=1", datosEmpleado);
-    }
+        return this.clienteHttp.post(this.API + "empleado.php?insertar=1", datosEmpleado).pipe(
+            tap(dataResponse => {
+            console.log("Data Response Service: ", dataResponse);
+            }),
+            catchError(error => {
+              console.log("Datos Almacenados en cache");
+              this.saveDataToIndexedDB(datosEmpleado);
+              const resultData = { success: '2' };
+              return of(resultData);        
+            })
+          );
+        }
+
+        private saveDataToIndexedDB(data: any) {
+            // Guarda los datos en IndexedDB
+            this.indexedDBService.saveAgregarEmpleadoData('AgregarEmpleado', data);
+        }
+
+
 
     correoEmpleado(correo: string): Observable<any> {
         return this.clienteHttp.post<any>(this.API + "empleado.php?consultarCorreo", { correo });
@@ -118,7 +135,7 @@ export class ColaboradorService {
         let params = 'idGym=' + idGym;
         return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers }).pipe(
             tap(dataResponse => {
-                this.saveDataToIndexedDB(dataResponse);
+                this.saveDataToIndexedDB1(dataResponse);
             }),
             catchError(error => {
                 console.log("Datos Almacenados en cache");
@@ -128,7 +145,7 @@ export class ColaboradorService {
         );
     }
     
-    private saveDataToIndexedDB(data: any) {
+    private saveDataToIndexedDB1(data: any) {
         // Guarda los datos en IndexedDB
         this.indexedDBService.saveData('receptionists', data);
     }
@@ -137,17 +154,25 @@ export class ColaboradorService {
         // Intenta obtener los datos de IndexedDB
         return new Observable(observer => {
             this.indexedDBService.getData('receptionists').then(data => {
-                if (data) {
-                    observer.next(data.data);
-                } else {
-                    observer.next(null); // Devuelve null si no hay datos en IndexedDB
-                }
-                observer.complete();
-            }).catch(error => {
-                observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+                if (data && data.length > 0) {
+                    let maxId = -1;
+                    let lastData: any;
+                    data.forEach((record: any) => {
+                      if (record.id > maxId) {
+                        maxId = record.id;
+                        lastData = record.data;
+                      }
+                    });
+                    observer.next(lastData); // Emitir el último dato encontrado
+                  } else {
+                    observer.next(null); // Emitir null si no hay datos en IndexedDB
+                  }
+                  observer.complete();
+                }).catch(error => {
+                  observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+                });
             });
-        });
-    }
+        }
 
 
 
