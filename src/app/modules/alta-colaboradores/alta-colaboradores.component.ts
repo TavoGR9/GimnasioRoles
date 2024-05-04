@@ -140,6 +140,23 @@ export class AltaColaboradoresComponent {
             });
             this.form.markAsPristine(); 
             this.form.markAsUntouched();
+          } else if (resultData.success == '2') {
+            this.cerrarDialogo();
+            //this.enviarMensajeWhatsApp();
+            this.spinner.hide();
+            this.dialog.open(MensajeEmergentesComponent, {
+              data: 'Registro agregado a base de datos local. '
+            })
+            .afterClosed()
+            .subscribe((cerrarDialogo: boolean) => {
+              if (cerrarDialogo) {
+                // Realizar alguna acción si se cierra el diálogo
+              } else {
+                // Realizar alguna acción si no se cierra el diálogo
+              }
+            });
+            this.form.markAsPristine(); 
+            this.form.markAsUntouched();
           }
         },
         error: (error) => {

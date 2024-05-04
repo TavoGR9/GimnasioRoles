@@ -183,15 +183,23 @@ private saveDataToIndexedDB(data: any) {
 getUserDatos() {
   return new Observable(observer => {
     this.indexedDBService.getUserData('userData').then(data => {
-        if (data) {
-            observer.next(data.data);
+       if (data && data.length > 0) {
+          let maxId = -1;
+          let lastData: any;
+          data.forEach((record: any) => {
+            if (record.id > maxId) {
+              maxId = record.id;
+              lastData = record.data;
+            }
+          });
+          observer.next(lastData); // Emitir el último dato encontrado
         } else {
-            observer.next(null); // Devuelve null si no hay datos en IndexedDB
+          observer.next(null); // Emitir null si no hay datos en IndexedDB
         }
         observer.complete();
-    }).catch(error => {
+      }).catch(error => {
         observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
-    });
+      });
 });
 }
 
