@@ -506,6 +506,18 @@ export class RegistroComponent implements OnInit {
                 }
               });
     
+            } else if(resultData.success == '2') {
+              this.cerrarDialogo();
+              this.spinner.hide();
+              this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
+                if (cerrarDialogo) {
+                  this.router.navigateByUrl(`/home`);
+                  // Realizar alguna acción si se cierra el diálogo
+                } else {
+                  // Realizar alguna acción si no se cierra el diálogo
+                }
+              });
+    
             }
           },
           error: (error) => {

@@ -74,8 +74,23 @@ export class ColaboradorService {
         return this.clienteHttp.post<any>(this.API + "empleado.php?consultarCorreo", { correo });
     }
 
+    private saveDataToIndexedDBC(data: any) {
+        // Guarda los datos en IndexedDB
+        this.indexedDBService.saveAgregarRegistroData('AgregarRegistro', data);
+    }
+
     agregarUsuario(datosEmpleado: any): Observable<any> {
-        return this.clienteHttp.post(this.API + "empleado.php?insertarUsuario", datosEmpleado);
+        return this.clienteHttp.post(this.API + "empleado.php?insertarUsuario", datosEmpleado).pipe(
+            tap(dataResponse => {
+            console.log("Data Response Service: ", dataResponse);
+            }),
+            catchError(error => {
+              console.log("Datos Almacenados en cache");
+              this.saveDataToIndexedDBC(datosEmpleado);
+              const resultData = { success: '2' };
+              return of(resultData);        
+            })
+          );
     }
 
     agregarUsuarioBodega(datosEmpleado: any): Observable<any> {
@@ -128,7 +143,6 @@ export class ColaboradorService {
     //     let params = 'idGym=' + idGym;
     //     return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
     //   }
-
 
     MostrarRecepcionistas(idGym: any) {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });

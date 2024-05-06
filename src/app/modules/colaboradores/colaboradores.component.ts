@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desactivar.component";
 import { IndexedDBService } from './../../service/indexed-db.service';
 import { Observable, map , throwError} from 'rxjs';
+//////////////////////////////
+import { serviciosService } from '../../service/servicios.service';
 @Component({
   selector: 'app-colaboradores',
   templateUrl: './colaboradores.component.html',
@@ -27,7 +29,12 @@ export class ColaboradoresComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   isLoading: boolean = true; 
   
-  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private router:Router, private indexedDBService: IndexedDBService){}
+  constructor(private http: ColaboradorService, 
+    public dialog: MatDialog, private auth: AuthService, 
+    private router:Router, private indexedDBService: IndexedDBService,
+  /////////////////
+    private servicio: serviciosService
+){}
 
   ngOnInit():void{
     // this.http.comprobar();
@@ -197,6 +204,11 @@ export class ColaboradoresComponent {
           console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
         }
       });
-  }
+
+
+      
+   }
+
+      
 
 }

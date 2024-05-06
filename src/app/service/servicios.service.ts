@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { plan } from '../models/plan';
 import { ConnectivityService } from './connectivity.service';
+import { IndexedDBService } from './indexed-db.service';
+import { tap } from 'rxjs/operators';
+import { catchError, of } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -25,7 +28,7 @@ export class serviciosService {
   services: any[] = [];
   data: any = {};
   
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private indexedDBService:IndexedDBService) {
     // this.comprobar();
   }
 
@@ -43,7 +46,22 @@ export class serviciosService {
   ///************************SERVICIOS */
 
   newService(data: any): Observable<any> {
-    return this.clienteHttp.post(this.API+"servicesMembresia.php?insertarservicio", data);
+    return this.clienteHttp.post(this.API+"servicesMembresia.php?insertarservicio", data).pipe(
+      tap(dataResponse => {
+      console.log("Data Response Service: ", dataResponse);
+      }),
+      catchError(error => {
+        console.log("Datos Almacenados en cache");
+        this.saveDataToIndexedDB(data);
+        const resultData = { success: '2' };
+        return of(resultData);        
+      })
+    );
+  }
+
+  private saveDataToIndexedDB(data: any) {
+    // Guarda los datos en IndexedDB
+    this.indexedDBService.saveAgregarServicioData('AgregarServicio', data);
   }
 
   updateService(data: any): Observable<any> {
