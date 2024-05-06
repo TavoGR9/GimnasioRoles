@@ -298,6 +298,20 @@ export class DialogSelectMembershipComponent implements OnInit {
                 this.ServiciosService.confirmButton.next(true);
                 this.dialogo.close(respuesta);
               });
+            }else if (respuesta.success == '2'){
+              this.spinner.hide();
+              const dialogRefConfirm = this.dialog.open(
+                MensajeEmergentesComponent,
+                {
+                  width: "25%",
+                  height: "30%",
+                  data: `Registro agregado a base de datos local.`,
+                } 
+              );
+              dialogRefConfirm.afterClosed().subscribe((result) => {
+                this.dialogo.close();
+              });
+
             }
           }
         });

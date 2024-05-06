@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, map , throwError} from 'rxjs';
 import { membresia } from '../models/membresia';
-import { catchError, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
+import { catchError, of } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
 
@@ -39,9 +40,28 @@ export class MembresiaService {
   data: any = {};
 
   /////////////////////************************Membresia */
-  agregarMem(datosPlan:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"membresias.php?insertar",datosPlan);
+
+  private saveDataToIndexedDBM(data: any) {
+    // Guarda los datos en IndexedDB
+    this.indexedDBService.saveAgregarMembresiaData('AgregarMembresia', data);
   }
+
+  agregarMem(datosPlan:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"membresias.php?insertar",datosPlan).pipe(
+      tap(dataResponse => {
+      }),
+      catchError(error => {
+        this.saveDataToIndexedDBM(datosPlan);
+        const resultData = { success: '2' };
+        return of(resultData);        
+      })
+    );  }
+
+
+
+
+
+
 
   updateMembresia(formData: any): Observable<any>{ 
     return this.clienteHttp.put(this.API+"membresias.php", formData);
@@ -62,8 +82,21 @@ export class MembresiaService {
   public dataToUpdate: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public section: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
+  private saveDataToIndexedDBP(data: any) {
+    this.indexedDBService.saveAgregarPlanData('AgregarPlan', data);
+  }
+
   agregarPlan(datosPlan:membresia):Observable<any>{
-    return this.clienteHttp.post(this.API+"membresias.php?insertarplan",datosPlan);
+    return this.clienteHttp.post(this.API+"membresias.php?insertarplan",datosPlan).pipe(
+      tap(dataResponse => {
+      console.log("Data Response Service: ", dataResponse);
+      }),
+      catchError(error => {
+        this.saveDataToIndexedDBP(datosPlan);
+        const resultData = { success: '2' };
+        return of(resultData);        
+      })
+    );
   }
 
 
@@ -117,7 +150,6 @@ export class MembresiaService {
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
         return this.getServiceDatos();
       })
     );

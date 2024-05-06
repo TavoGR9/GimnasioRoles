@@ -107,7 +107,7 @@ export class ServiceDialogComponent implements OnInit {
         .newService(this.serviceForm.value)
         .subscribe((respuesta) => {
           if (respuesta) {
-            if (respuesta) {
+            if (respuesta.success == '1') {
               this.spinner.hide();
               const dialogRefConfirm = this.dialog.open(
                 MensajeEmergentesComponent,
@@ -120,12 +120,26 @@ export class ServiceDialogComponent implements OnInit {
               dialogRefConfirm.afterClosed().subscribe((result) => {
                 this.dialogRef.close(respuesta);
               });
+            }else if(respuesta.success == '2'){
+              this.spinner.hide();
+              const dialogRefConfirm = this.dialog.open(
+                MensajeEmergentesComponent,
+                {
+                  width: "25%",
+                  height: "30%",
+                  data: `Registro agregado a base de datos local.`,
+                } 
+              );
+              dialogRefConfirm.afterClosed().subscribe((result) => {
+                this.dialogRef.close(respuesta);
+              });
             }
           } else {
           }
         });
     }
   }
+
 
   actualizarForm() {
     this.spinner.show();

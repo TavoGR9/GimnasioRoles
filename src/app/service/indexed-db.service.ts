@@ -22,6 +22,11 @@ export class IndexedDBService extends Dexie {
   private ObtenerActivosDataTable: Dexie.Table<any, string>;
   private InventarioDataTable: Dexie.Table<any, string>;
   private AgregarEmpleadoDataTable: Dexie.Table<any, string>;
+  /////////////////////////////////
+  private AgregarServicioDataTable: Dexie.Table<any, string>;
+  private AgregarMembresiaDataTable: Dexie.Table<any, string>;
+  private AgregarPlanDataTable: Dexie.Table<any, string>;
+  private AgregarRegistroDataTable: Dexie.Table<any, string>;
 
   constructor() {
     super('OlimpusGym');
@@ -42,6 +47,11 @@ export class IndexedDBService extends Dexie {
       ObtenerActivos: '++id,key,data',
       Inventario: '++id,key,data',
       AgregarEmpleado: '++id,key,data',
+      /////////////////////
+      AgregarServicio: '++id,key,data',
+      AgregarMembresia: '++id,key,data',
+      AgregarPlan: '++id,key,data',
+      AgregarRegistro: '++id,key,data',
 
     });
     this.receptionistsTable = this.table('receptionists');
@@ -59,6 +69,11 @@ export class IndexedDBService extends Dexie {
     this.ObtenerActivosDataTable = this.table ("ObtenerActivos");
     this.InventarioDataTable = this.table ('Inventario');
     this.AgregarEmpleadoDataTable = this.table('AgregarEmpleado');
+    /////////////////////
+    this.AgregarServicioDataTable = this.table('AgregarServicio');
+    this.AgregarMembresiaDataTable = this.table('AgregarMembresia');
+    this.AgregarPlanDataTable = this.table('AgregarPlan');
+    this.AgregarRegistroDataTable = this.table('AgregarRegistro');
   }
 
   async saveData(key: string, data: any) {
@@ -233,6 +248,78 @@ async VaciarAgregarEmpleadoData(){
   await this.AgregarEmpleadoDataTable.clear();
   //return console.log("Eliminados");
 }
+
+//servicio
+
+async saveAgregarServicioData(key: string, data: any) {
+  await this.AgregarServicioDataTable.put({ key, data });
+}
+
+async getAgregarServicioData(key: string) {
+  return await this.table('AgregarServicio')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarServicioData(){
+  await this.AgregarServicioDataTable.clear();
+  //return console.log("Eliminados");
+}
+
+//membresia
+async saveAgregarMembresiaData(key: string, data: any) {
+  await this.AgregarMembresiaDataTable.put({ key, data });
+}
+
+async getAgregarMembresiaData(key: string) {
+  return await this.table('AgregarMembresia')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarMembresiaData(){
+  await this.AgregarMembresiaDataTable.clear();
+  //return console.log("Eliminados");
+}
+
+
+//plan
+async saveAgregarPlanData(key: string, data: any) {
+  await this.AgregarPlanDataTable.put({ key, data });
+}
+
+async getAgregarPlanData(key: string) {
+  return await this.table('AgregarPlan')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarPlanData(){
+  await this.AgregarPlanDataTable.clear();
+  //return console.log("Eliminados");
+}
+
+
+//registro
+async saveAgregarRegistroData(key: string, data: any) {
+  await this.AgregarRegistroDataTable.put({ key, data });
+}
+
+async getAgregarRegistroData(key: string) {
+  return await this.table('AgregarRegistro')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarRegistroData(){
+  await this.AgregarRegistroDataTable.clear();
+  //return console.log("Eliminados");
+}
+
 
 
 }

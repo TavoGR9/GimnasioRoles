@@ -10,6 +10,12 @@ import { HomeService } from '../../service/home.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SyncService } from '../../service/sync.service';
 import { NgxSpinnerService } from "ngx-spinner";
+import { IndexedDBService } from './../../service/indexed-db.service';
+import { Observable, map , throwError} from 'rxjs';
+//////////////////////////////
+import { serviciosService } from '../../service/servicios.service';
+import { ColaboradorService } from './../../service/colaborador.service';
+import { MembresiaService } from "../../service/membresia.service";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -33,7 +39,13 @@ export class HomeComponent implements OnInit{
   isLoading: boolean = true; 
   
   constructor(private homeService: HomeService, private sanitizer: DomSanitizer, private spinner: NgxSpinnerService,
-    private auth: AuthService, public dialog: MatDialog, private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, private syncService: SyncService ) {
+    private auth: AuthService, public dialog: MatDialog, 
+    private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, 
+    private syncService: SyncService, private indexedDBService: IndexedDBService,
+    private http: ColaboradorService,
+    public membresiaService: MembresiaService,
+    /////////////////
+      private servicio: serviciosService ) {
   }
 
   ngOnInit(): void {
@@ -158,4 +170,103 @@ export class HomeComponent implements OnInit{
     });
   }
 
+
+
+
+
+  Sincronizar() {
+    this.indexedDBService.getAgregarEmpleadoData('AgregarEmpleado').then(data => {
+      if (data && data.length > 0) {
+        let maxId = -1;
+        let lastData: any;
+        data.forEach((record: any) => {
+          this.http.agregarEmpleado(record.data).subscribe({
+          });
+          console.log(record.data);
+        });
+        this.indexedDBService.VaciarAgregarEmpleadoData();
+        //observer.next(lastData); // Emitir el último dato encontrado
+      } else {
+        console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
+      }
+    });
+
+
+    this.indexedDBService.getAgregarServicioData('AgregarServicio').then(data => {
+      if (data && data.length > 0) {
+        let maxId = -1;
+        let lastData: any;
+        data.forEach((record: any) => {
+          this.servicio.newService(record.data).subscribe({
+          });
+          console.log(record.data);
+        });
+        this.indexedDBService.VaciarAgregarServicioData();
+        
+        //observer.next(lastData); // Emitir el último dato encontrado
+      } else {
+        console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
+      }
+    });
+
+
+
+    this.indexedDBService.getAgregarMembresiaData('AgregarMembresia').then(data => {
+      if (data && data.length > 0) {
+        let maxId = -1;
+        let lastData: any;
+        data.forEach((record: any) => {
+          this.membresiaService.agregarMem(record.data).subscribe({
+          });
+          console.log(record.data);
+        });
+        this.indexedDBService.VaciarAgregarMembresiaData();
+        
+        //observer.next(lastData); // Emitir el último dato encontrado
+      } else {
+        console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
+      }
+    });
+
+
+    this.indexedDBService.getAgregarPlanData('AgregarPlan').then(data => {
+      if (data && data.length > 0) {
+        let maxId = -1;
+        let lastData: any;
+        data.forEach((record: any) => {
+          this.membresiaService.agregarPlan(record.data).subscribe({
+          });
+          console.log(record.data);
+        });
+        this.indexedDBService.VaciarAgregarPlanData();
+        
+        //observer.next(lastData); // Emitir el último dato encontrado
+      } else {
+        console.log("No hay datos en planes"); // Emitir null si no hay datos en IndexedDB
+      }
+    });
+
+
+
+    this.indexedDBService.getAgregarRegistroData('AgregarRegistro').then(data => {
+      if (data && data.length > 0) {
+        let maxId = -1;
+        let lastData: any;
+        data.forEach((record: any) => {
+          this.http.agregarUsuario(record.data).subscribe({
+          });
+          console.log(record.data);
+        });
+        this.indexedDBService.VaciarAgregarRegistroData();
+        
+        //observer.next(lastData); // Emitir el último dato encontrado
+      } else {
+        console.log("No hay datos en planes"); // Emitir null si no hay datos en IndexedDB
+      }
+    });
+ 
+ }
+
+
+ 
 }

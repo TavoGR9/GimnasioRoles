@@ -109,6 +109,7 @@ export class planAgregarComponent {
                 duracion: m.duracion,
                 idPlan: respuesta.id,
               };
+              if(respuesta.success == '1') {
               this.membresiaService.agregarPlanMem(datosMembresias).subscribe(
                 (respuestaAgregarPlanMem) => {
                   this.spinner.hide();
@@ -130,7 +131,20 @@ export class planAgregarComponent {
                     errorAgregarPlanMem
                   );
                 }
-              );
+              );}else if(respuesta.success == '2'){
+                this.spinner.hide();
+                this.dialog
+                  .open(MensajeEmergentesComponent, {
+                    data: `Registro agregado a base de datos local.`,
+                  })
+                  .afterClosed()
+                  .subscribe((cerrarDialogo: Boolean) => {
+                    if (cerrarDialogo) {
+                      this.dialogo.close(true);
+                    }
+                  });
+
+              }
             });
           }
         });
