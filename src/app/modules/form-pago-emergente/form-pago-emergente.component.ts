@@ -35,6 +35,7 @@ export class FormPagoEmergenteComponent implements OnInit{
 
               
   ngOnInit(): void {
+    console.log(this.data, "data");
     //console.log(this.data, "data");
     // Llamar al servicio para obtener la lista de membresías
     this.precio = 0;
@@ -65,6 +66,7 @@ export class FormPagoEmergenteComponent implements OnInit{
   getMembresiasLista(idgimnasio: number): void {
     this.membresiaService.membresiasLista(idgimnasio)
       .subscribe(data => {
+        console.log(data, "dataaaaaaa");
         this.membresias = data;
       }, error => {
         console.error('Error al obtener la lista de membresías:', error);

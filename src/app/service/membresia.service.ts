@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, map , throwError} from 'rxjs';
+import { BehaviorSubject, Observable, throwError} from 'rxjs';
 import { membresia } from '../models/membresia';
 import { tap } from 'rxjs/operators';
-import { catchError, of } from 'rxjs';
+import { catchError } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
+import { forkJoin,of  } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -107,8 +109,18 @@ export class MembresiaService {
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
-        return this.getMembresiaDatos();
+        //return this.getMembresiaDatos();
+        const resultData = { success: '2' }; // Objeto que indica éxito
+        return forkJoin([
+          this.getMembresiaDatos().pipe(
+            filter(data => data !== null) // Ignora el observable si es null
+          ),
+          this.getMemDatosInsert().pipe(
+            filter((data: any) => Array.isArray(data)), // Filtra solo los arrays
+            map((data: any[]) => data.map(item => item.data)) // Obtén solo los datos de cada elemento del array
+          ),
+          of(resultData) // Convierte el objeto en un observable
+        ]);
       })
     );
   }
@@ -141,8 +153,16 @@ export class MembresiaService {
   });
   }
   
-
-
+  getMemDatosInsert() {
+    return new Observable(observer => {
+        this.indexedDBService.getAgregarMembresiaData('AgregarMembresia').then(data => {
+            observer.next(data); // Emitir los datos obtenidos de IndexedDB
+            observer.complete();
+        }).catch(error => {
+            observer.error(error); // Emitir un error si no se pueden obtener los datos de IndexedDB
+        });
+    });
+  }
 
   consultarPlanIdPlan2(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"membresias.php?consultarGYMPlanT="+id).pipe(

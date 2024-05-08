@@ -80,14 +80,29 @@ export class ServiciosListaComponent implements OnInit{
   }
 
   listaTabla() {
-    this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
+    /*this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
+      console.log(res, "rees");
       if (Array.isArray(res)) {
         this.services = res;
         this.dataSource = new MatTableDataSource(this.services);
         this.loadData(); 
       } else {
       }
+    });*/
+
+    this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {     
+      if(res[2].success == 2){
+        const combinedArray = res[0].concat(res[1]);
+        this.dataSource = new MatTableDataSource(combinedArray);
+        this.loadData(); 
+      } else {
+        this.services = res;
+        this.dataSource = new MatTableDataSource(this.services);
+        this.loadData(); 
+       }
     });
+    
+    
   }
   
   applyFilter(event: Event) {

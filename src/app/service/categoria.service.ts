@@ -1,10 +1,10 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject  } from 'rxjs';
-import { proveedor } from '../models/proveedor';
-import { Categorias } from '../models/categorias';
-import { tap } from 'rxjs/operators';
 import { ConnectivityService } from './connectivity.service';
+import { tap } from 'rxjs/operators';
+import { catchError, of } from 'rxjs';
+import { IndexedDBService } from './indexed-db.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class CategoriaService {
   // API: String = '';
   API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private indexedDBService:IndexedDBService) {
   }
 
   // comprobar(){
@@ -34,14 +34,29 @@ export class CategoriaService {
   //     }
   //   });
   // }
-  
+
   agregarSubCategoria(datosSubCategoria:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"categoria.php?insertarSubC=1",datosSubCategoria);
+    return this.clienteHttp.post(this.API+"categoria.php?insertarSubC=1",datosSubCategoria).pipe(
+      tap(dataResponse => {
+      }),
+      catchError(error => {
+        console.log("Datos Almacenados en cache");
+        this.saveDataToIndexedDB(datosSubCategoria);
+        const resultData = { success: '2' };
+        return of(resultData);        
+      })
+    );
+  }
+  
+  private saveDataToIndexedDB(data: any) {
+    // Guarda los datos en IndexedDB
+    this.indexedDBService.saveAgregarCategoriaData('AgregarCategoria', data);
   }
 
   agregarCategoria(datosCategoria:any):Observable<any>{
     return this.clienteHttp.post(this.API+"categoria.php?insertar=1",datosCategoria);
   }
+
 
   agregarMarca(datosMarca:any):Observable<any>{
     return this.clienteHttp.post(this.API+"categoria.php?insertarMarca=1",datosMarca);

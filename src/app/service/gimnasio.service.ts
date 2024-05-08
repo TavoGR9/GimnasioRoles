@@ -5,6 +5,9 @@ import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { tap } from 'rxjs/operators';
 import { IndexedDBService } from './indexed-db.service';
+import { forkJoin,of  } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -78,13 +81,22 @@ export class GimnasioService {
   }
 
   getServicesForId(id: any): Observable<any> {
-    return this.clienteHttp.post(this.API+"serviciosGym.php", { id: id }).pipe(
+    return this.clienteHttp.post(this.API + "serviciosGym.php", { id: id }).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
-        return this.getServiceDatos();
+        const resultData = { success: '2' }; // Objeto que indica éxito
+        return forkJoin([
+          this.getServiceDatos().pipe(
+            filter(data => data !== null) // Ignora el observable si es null
+          ),
+          this.getServiceDatosInsert().pipe(
+            filter((data: any) => Array.isArray(data)), // Filtra solo los arrays
+            map((data: any[]) => data.map(item => item.data)) // Obtén solo los datos de cada elemento del array
+          ),
+          of(resultData) // Convierte el objeto en un observable
+        ]);
       })
     );
   }
@@ -116,4 +128,16 @@ export class GimnasioService {
       });
   });
   }
+
+  getServiceDatosInsert() {
+    return new Observable(observer => {
+        this.indexedDBService.getAgregarServicioData('AgregarServicio').then(data => {
+            observer.next(data); // Emitir los datos obtenidos de IndexedDB
+            observer.complete();
+        }).catch(error => {
+            observer.error(error); // Emitir un error si no se pueden obtener los datos de IndexedDB
+        });
+    });
+}
+
 }

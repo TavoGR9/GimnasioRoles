@@ -401,9 +401,15 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   getServices() {
     this.GimnasioService.getServicesForId(this.idGym).subscribe((respuesta) => {
-      if (respuesta) {
+     /* if (respuesta) {
+        console.log(respuesta,"respuestaaaaaaaaaaa");
         this.servicios = respuesta;
-      }
+      }*/
+      if(respuesta[2].success == 2){
+        this.servicios = respuesta[0];
+      } else {
+        this.servicios = respuesta;
+       }
     });
   }
 }
