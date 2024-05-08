@@ -49,7 +49,7 @@ export class VerCorteComponent implements OnInit  {
   ];
   dialogRef: any;
   isLoading: boolean = true; 
-
+  habilitarBoton: boolean = false;
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   DetallesCaja: any;
@@ -60,7 +60,9 @@ export class VerCorteComponent implements OnInit  {
     // this.InventarioService.comprobar();
     // this.ventasService.comprobar();
     // this.joinDetalleVentaService.comprobar();
-    // this.auth.comprobar();
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
     this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
       if (this.dialogRef) {
         if (isMaximized) {
@@ -124,7 +126,6 @@ export class VerCorteComponent implements OnInit  {
     return fechaActual;
   }
   
-  // Función para aplicar el filtro
   aplicarFiltro() {
     this.dataSource.filter = this.fechaFiltro; // Aplica el filtro con la fecha actual
     this.dataSource.filterPredicate = (data: any, filter: string) => {

@@ -5,14 +5,11 @@ import { MatDialog } from "@angular/material/dialog";
 import { EntradasComponent } from '../entradas/entradas.component';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
-import { JoinDetalleVentaService } from "../../service/JoinDetalleVenta";
 import { HomeService } from '../../service/home.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SyncService } from '../../service/sync.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { IndexedDBService } from './../../service/indexed-db.service';
-import { Observable, map , throwError} from 'rxjs';
-//////////////////////////////
 import { serviciosService } from '../../service/servicios.service';
 import { ColaboradorService } from './../../service/colaborador.service';
 import { MembresiaService } from "../../service/membresia.service";
@@ -40,19 +37,16 @@ export class HomeComponent implements OnInit{
   
   constructor(private homeService: HomeService, private sanitizer: DomSanitizer, private spinner: NgxSpinnerService,
     private auth: AuthService, public dialog: MatDialog, 
-    private router: Router, private joinDetalleVentaService: JoinDetalleVentaService, 
+    private router: Router,
     private syncService: SyncService, private indexedDBService: IndexedDBService,
     private http: ColaboradorService,
     public membresiaService: MembresiaService,
-    /////////////////
-      private servicio: serviciosService ) {
+    private servicio: serviciosService ) {
   }
 
   ngOnInit(): void {
     // this.auth.comprobar();
     // this.homeService.comprobar();
-
-   
       this.currentUser = this.auth.getCurrentUser();
       if(this.currentUser){
         this.getSSdata(JSON.stringify(this.currentUser));
@@ -68,9 +62,8 @@ export class HomeComponent implements OnInit{
 
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+    }, 1000); 
   }
 
   sync() {
@@ -82,7 +75,6 @@ export class HomeComponent implements OnInit{
   }
 
   compareAndUpdate(localUsers: any[], remoteUsers: any[]) {
-    // Actualizar o insertar usuarios remotos basados en los usuarios locales
     localUsers.forEach(localUser => {
       const remoteUser = remoteUsers.find(user => user.email === localUser.email);
       if (remoteUser) {
@@ -92,13 +84,11 @@ export class HomeComponent implements OnInit{
           });
         }
       } else {
-        // Si no existe en remoto, insertar
         this.syncService.updateRemoteUser(localUser).subscribe({
           error: error => console.error(`Error adding new remote user ${localUser.email}`, error)
         });
       }
     });
-    // Actualizar o insertar usuarios locales basados en los usuarios remotos
     remoteUsers.forEach(remoteUser => {
       const localUser = localUsers.find(user => user.email === remoteUser.email);
       if (localUser) {
@@ -108,7 +98,6 @@ export class HomeComponent implements OnInit{
           });
         }
       } else {
-        // Si no existe en local, insertar
         this.syncService.updateLocalUser(remoteUser).subscribe({
           error: error => console.error(`Error adding new local user ${remoteUser.email}`, error)
         });
@@ -170,10 +159,6 @@ export class HomeComponent implements OnInit{
     });
   }
 
-
-
-
-
   Sincronizar() {
     this.indexedDBService.getAgregarEmpleadoData('AgregarEmpleado').then(data => {
       if (data && data.length > 0) {
@@ -182,15 +167,11 @@ export class HomeComponent implements OnInit{
         data.forEach((record: any) => {
           this.http.agregarEmpleado(record.data).subscribe({
           });
-          console.log(record.data);
         });
         this.indexedDBService.VaciarAgregarEmpleadoData();
-        //observer.next(lastData); // Emitir el último dato encontrado
       } else {
-        console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
       }
     });
-
 
     this.indexedDBService.getAgregarServicioData('AgregarServicio').then(data => {
       if (data && data.length > 0) {
@@ -199,17 +180,11 @@ export class HomeComponent implements OnInit{
         data.forEach((record: any) => {
           this.servicio.newService(record.data).subscribe({
           });
-          console.log(record.data);
         });
         this.indexedDBService.VaciarAgregarServicioData();
-        
-        //observer.next(lastData); // Emitir el último dato encontrado
       } else {
-        console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
       }
     });
-
-
 
     this.indexedDBService.getAgregarMembresiaData('AgregarMembresia').then(data => {
       if (data && data.length > 0) {
@@ -218,16 +193,11 @@ export class HomeComponent implements OnInit{
         data.forEach((record: any) => {
           this.membresiaService.agregarMem(record.data).subscribe({
           });
-          console.log(record.data);
         });
         this.indexedDBService.VaciarAgregarMembresiaData();
-        
-        //observer.next(lastData); // Emitir el último dato encontrado
       } else {
-        console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
       }
     });
-
 
     this.indexedDBService.getAgregarPlanData('AgregarPlan').then(data => {
       if (data && data.length > 0) {
@@ -236,17 +206,11 @@ export class HomeComponent implements OnInit{
         data.forEach((record: any) => {
           this.membresiaService.agregarPlan(record.data).subscribe({
           });
-          console.log(record.data);
         });
         this.indexedDBService.VaciarAgregarPlanData();
-        
-        //observer.next(lastData); // Emitir el último dato encontrado
       } else {
-        console.log("No hay datos en planes"); // Emitir null si no hay datos en IndexedDB
       }
     });
-
-
 
     this.indexedDBService.getAgregarRegistroData('AgregarRegistro').then(data => {
       if (data && data.length > 0) {
@@ -255,18 +219,10 @@ export class HomeComponent implements OnInit{
         data.forEach((record: any) => {
           this.http.agregarUsuario(record.data).subscribe({
           });
-          console.log(record.data);
         });
         this.indexedDBService.VaciarAgregarRegistroData();
-        
-        //observer.next(lastData); // Emitir el último dato encontrado
       } else {
-        console.log("No hay datos en planes"); // Emitir null si no hay datos en IndexedDB
       }
     });
- 
  }
-
-
- 
 }

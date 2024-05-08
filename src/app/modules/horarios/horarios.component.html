@@ -9,15 +9,11 @@
     <button style ="background-color: #000000; margin-right: 30px;" (click)="cancelar()">Cerrar</button>
     <button style ="background-color: #fd9727; " >Ver horario</button>
   </div>
-  
   </div>
-
-
   <div *ngIf="!horarioExistente">
   <label class="title" mat-dialog-title>AGREGA EL HORARIO DE TU GIMNASIO</label>
   <form [formGroup]="formularioHorarios"  mat-dialog-content>
       <div formArrayName="horarios">
-         
           <table>
               <thead>
                 <tr>
@@ -36,7 +32,6 @@
             </table>
       </div>
       <br/>
-     
     <br/>
     </form>
     <div style="margin: auto; display: block; text-align: center;" mat-dialog-actions>

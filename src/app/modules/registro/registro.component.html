@@ -13,17 +13,6 @@
               <div style="color: red;">{{message}}</div>
               </strong>
               </p>
-              <!--<div class="select-box">
-                 <h3>Selecciona una membresía:</h3>
-                 <p>
-                    <mat-form-field style="width: 100%; height: 90px;" >
-                       <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar</mat-label>
-                       <mat-select formControlName="Membresia_idMem">
-                          <mat-option *ngFor="let opcion of planes" [value]="opcion.value"> {{ opcion.label }}</mat-option>
-                       </mat-select>
-                    </mat-form-field>
-                 </p>
-              </div>-->
               <br />
               <div class="row">
                  <div class="col-md-6">
@@ -143,48 +132,6 @@
                              </mat-form-field>
                           </p>
                        </div>
-                       <!-- <div class="col-sm-12">
-                          <p>
-                             <mat-form-field appearance="outline" class="inputs_properties">
-                                <mat-label>Curp</mat-label>
-                                <input type="text" matInput placeholder="curp" autocomplete="off" minlength="18" maxlength="18" formControlName="curp" />
-                                <mat-error *ngIf="form.get('curp')?.hasError('minlength') && !form.get('curp')?.hasError('required')">
-                                   <strong class="txt_msg">**Minimo 18 carácteres</strong>
-                                </mat-error>
-                                <mat-error *ngIf="form.get('curp')?.hasError('pattern') && !form.get('curp')?.hasError('required')">
-                                   <strong class="txt_msg">**Formato no valido, (solo mayúsculas y números)...</strong>
-                                </mat-error>
-                             </mat-form-field>
-                          </p>
-                       </div>
-                       <div class="col-sm-6">
-                        <p>
-                           <mat-form-field appearance="outline" class="inputs_properties">
-                              <mat-label>Peso (KG)</mat-label>
-                              <input type="text" matInput placeholder="100" autocomplete="off"  formControlName="peso" />
-                              
-                              <mat-error *ngIf="form.get('peso')?.hasError('max') && !form.get('peso')?.hasError('required')">
-                                <strong class="txt_msg">**Peso no valido</strong>
-                             </mat-error>
-                              <mat-error *ngIf="form.get('peso')?.hasError('pattern') && !form.get('peso')?.hasError('required')">
-                                 <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                              </mat-error>
-                           </mat-form-field>
-                        </p>
-                     </div> -->
-                     <!-- <div class="col-sm-6">
-                        <p>
-                           <mat-form-field appearance="outline" class="inputs_properties">
-                              <mat-label>Estatura (CM)</mat-label>
-                              <input type="text" matInput placeholder="160" autocomplete="off"  formControlName="estatura" />
-                              <mat-error *ngIf="form.get('estatura')?.hasError('pattern') && !form.get('estatura')?.hasError('required')">
-                                 <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                              </mat-error>
-                              <mat-error *ngIf="form.get('estatura')?.hasError('max') && !form.get('estatura')?.hasError('required')">
-                                <strong class="txt_msg">**Estatura no valida</strong>
-                             </mat-error>
-                           </mat-form-field>
-                        </p> -->
                      </div>
                      <div class="row"> 
                         <div class="col-sm-6">

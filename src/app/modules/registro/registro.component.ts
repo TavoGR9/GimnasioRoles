@@ -402,8 +402,6 @@ export class RegistroComponent implements OnInit {
         newReader.readAsBinaryString(file);
         
       }
-
-     
     } else {
       // Si no se selecciona ninguna imagen, mostrar la imagen por defecto y resetear valores del objeto Archivo
       this.photoSelected = null;
@@ -415,7 +413,6 @@ export class RegistroComponent implements OnInit {
   }
 
   // Codificar la imagen a base64
-
   handleImage(webcamImage: WebcamImage): void {
     this.webcamImage = webcamImage;
     // Almacenar la imagen en el objeto Archivo
@@ -423,7 +420,6 @@ export class RegistroComponent implements OnInit {
     // Agregar el nombre al archivo - como tal la foto tomada no tiene nombre - por lo que se le asigna uno
     const timestamp = new Date().getTime();
     this.archivo.nombreArchivo = `imagen_${timestamp}.png`;
-  
     // Asignar la URL de la imagen tomada a photoSelected
     this.photoSelected = this.webcamImage.imageAsDataUrl;
 
@@ -440,8 +436,7 @@ export class RegistroComponent implements OnInit {
     this.uploadPhoto();
   }
 
-
- uploadPhoto() {
+  uploadPhoto() {
     if (  this.archivo.nombreArchivo === '' ) {
       this.toastr.error('Aún no haz seleccionado una imagen valida...', 'Error');
       return;
@@ -477,10 +472,6 @@ export class RegistroComponent implements OnInit {
     dialogConfig.disableClose = true; // Bloquea el cierre del diálogo haciendo clic fuera de él
     dialogConfig.data = 'Registro agregado correctamente.'; // Datos a pasar al diálogo
 
-      // Bloquea el cierre del diálogo haciendo clic fuera de él
-      //console.log("direccionCompleta", direccionCompleta);
-      //console.log("nombreCompleto:",nombreCompleto);
-      // Establecer la dirección completa en un nuevo control del formulario
       this.form.patchValue({
         direccion: direccionCompleta,
         nombre: nombreCompleto
@@ -533,87 +524,5 @@ export class RegistroComponent implements OnInit {
       }
       
     }
-
-
-    
-
-  // registrar(): any {
-  //   console.log(this.form.value, "formulario");
-  //   this.email = this.form.value.email;
-  //   if (this.form.valid) {
-  //     this.spinner.show();
-  //     this.clienteService.consultarEmail(this.email).subscribe((resultData) => {
-  //       if (resultData.msg == "emailExist") {
-  //         this.toastr.warning("El correo ingresado ya existe.", "Alerta!!!");
-  //       }
-  //       if (resultData.msg == "emailNotExist") {
-  //         this.clienteService
-  //           .guardarCliente(this.form.value)
-  //           .subscribe((respuesta) => {
-  //             this.spinner.hide();
-  //             this.dialog
-  //               .open(MensajeEmergentesComponent, {
-  //               data: `Usuario registrado exitosamente`,
-  //             })
-  //             .afterClosed()
-  //             .subscribe((cerrarDialogo: Boolean) => {
-  //               if (cerrarDialogo) {
-  //                 this.dialogo.close(true);
-  //                 this.add.enviarMail(respuesta.email).subscribe(
-  //                   (response) => {
-  //                   },
-  //                   (error) => {
-  //                     console.error('Error al enviar el correo:', error);
-  //                     // Aquí puedes manejar el error según tus necesidades
-  //                   }
-  //                 );
-                  
-  //                 this.clienteService.consultarDataPago(this.form.value.email).subscribe(respuesta =>{
-  //                   this.responseData=respuesta;
-  //                     this.clienteService.idPagoSucursal(this.responseData.ID_Cliente).subscribe((resultado)=> {
-
-  //                       this.router.navigateByUrl(`/home`);
-  //                     });
-  //                     //console.log(resultado.msg);
-  //                 });  
-  //               } 
-  //             });
-            
-  //           },
-  //           (error) => {
-  //             // Manejar errores de solicitud HTTP
-  //             if (error.status === 400) {
-  //               if (error.error && error.error.msg === 'error_tipo_archivo_no_soportado') {
-  //                 // Manejar el error específico 'error_tipo_archivo_no_soportado'
-  //                 console.error('Error 400: Tipo de archivo no soportado', error);
-  //                 this.toastr.error('Error: Tipo de archivo no soportado');
-  //               } else {
-  //                 // Otro tipo de error 400
-  //                 console.error('Error 400: Bad Request', error);
-  //                 this.toastr.error('Error: no se pudo agregar usuario. Intente de nuevo');
-  //               }
-  //             } else {
-  //               // Otro tipo de error diferente a 400
-  //               console.error('Error: Otro tipo de error', error);
-  //               this.toastr.error('Error: no se pudo agregar usuario. Intente de nuevo');
-  //             }
-              
-  //           }
-            
-  //           );
-  //       }
-        
-  //     });
-  //   } else {
-  //     // El formulario no es válido, muestra un mensaje de error
-  //     this.toastr.error('Llenar los campos requeridos', 'Error');
-  //     this.marcarCamposInvalidos(this.form);
-
-  //     if (!this.form.value.fotoUrl || this.form.value.fotoUrl.length === 0) {
-  //       this.toastr.error('Agregar o sube una imagen', 'Error');
-  //     }
-
-  //   }
-  // }
-
+ 
 }

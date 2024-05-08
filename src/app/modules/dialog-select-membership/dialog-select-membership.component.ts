@@ -1,6 +1,5 @@
-import { Component, OnInit, Inject,TemplateRef } from "@angular/core";
+import { Component, OnInit, Inject } from "@angular/core";
 import { AuthService } from "../../service/auth.service";
-import { HttpClient } from "@angular/common/http";
 import { GimnasioService } from "../../service/gimnasio.service";
 import { ToastrService } from 'ngx-toastr';
 import {
@@ -13,7 +12,6 @@ import {
 } from "@angular/forms";
 import { serviciosService } from "../../service/servicios.service";
 import { MatTableDataSource } from "@angular/material/table";
-import { EMPTY } from "rxjs";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import {
   MatDialog,
@@ -37,7 +35,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     );
   }
 }
-
 @Component({
   selector: "app-dialog-select-membership",
   templateUrl: "./dialog-select-membership.component.html",
@@ -73,7 +70,6 @@ export class DialogSelectMembershipComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
     private spinner: NgxSpinnerService,
     private AuthService: AuthService,
-    private http: HttpClient,
     private GimnasioService: GimnasioService,
     private formulario: FormBuilder,
     private toastr: ToastrService,
@@ -248,11 +244,9 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   validarFormulario() {
     if (this.formPlan.invalid) {
- 
       if (!this.formPlan.value.servicioseleccionado || this.formPlan.value.servicioseleccionado.length === 0) {
         this.toastr.error('Agregar o seleccionar primero un servicio', 'Error');
       }
-
       if (!this.formPlan.value.precio || !this.formPlan.value.duracion) {
         this.toastr.error('Llenar los campos requeridos', 'Error');
       }
@@ -272,11 +266,8 @@ export class DialogSelectMembershipComponent implements OnInit {
         tipo_membresia: this.tipo_membresia,
         Gimnasio_idGimnasio: this.idGym,
       });
-
-
       if (this.optionToShow == 1 || this.optionToShow == 2) {
         let formValue = this.formPlan.value;
-
         if (
           formValue.servicioseleccionado &&
           typeof formValue.servicioseleccionado === "object" &&
@@ -284,7 +275,6 @@ export class DialogSelectMembershipComponent implements OnInit {
         ) {
           formValue.servicioseleccionado = [formValue.servicioseleccionado];
         }
-       
         this.membresiaService.agregarMem(formValue).subscribe((respuesta) => {
           if (respuesta) {
             if (respuesta.success == 1) {
@@ -314,9 +304,7 @@ export class DialogSelectMembershipComponent implements OnInit {
 
             }
           }
-        });
-       
-       
+        }); 
       }
       if (this.optionToShow == 3) {
         this.formPlan.setValue({
@@ -347,7 +335,6 @@ export class DialogSelectMembershipComponent implements OnInit {
                       data: "La membresía se ha actualizado correctamente",
                     }
                   );
-
                   dialogRef.afterClosed().subscribe((result) => {
                     this.dialogo.close(true);
                   });
@@ -383,7 +370,7 @@ export class DialogSelectMembershipComponent implements OnInit {
   }
 
   setPrice(servicios: any[]) {
-    this.prices = []; // Vacía el array prices
+    this.prices = []; 
     if (servicios) {
       servicios.forEach((servicio) => {
         this.prices.push(servicio.precio_unitario);
@@ -401,10 +388,6 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   getServices() {
     this.GimnasioService.getServicesForId(this.idGym).subscribe((respuesta) => {
-     /* if (respuesta) {
-        console.log(respuesta,"respuestaaaaaaaaaaa");
-        this.servicios = respuesta;
-      }*/
       if(respuesta[2].success == 2){
         this.servicios = respuesta[0];
       } else {

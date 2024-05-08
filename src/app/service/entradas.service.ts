@@ -55,7 +55,6 @@ export class EntradasService {
       p_id_bodega: id_bodega,
       p_id_producto: id_producto
     }
-    console.log(data, "data");
     return this.clienteHttp.post(this.API+"producto_bod.php?existencias",data);
   }
 
@@ -73,7 +72,6 @@ export class EntradasService {
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
         return this.getEntradasDatos();
       })
     );

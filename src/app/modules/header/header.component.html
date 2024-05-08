@@ -5,21 +5,17 @@
       <mat-icon>menu</mat-icon>
     </button>
   </div>
-
   <div class="right-buttons">
-    
     <!-- <div *ngIf="mostrarElementoA; else otroElemento">
       <button mat-icon-button (click)="Online()" >
         <mat-icon class="Online">wifi</mat-icon>
       </button>
     </div>
-    
     <ng-template #otroElemento>
       <button mat-icon-button (click)="Offline()" >
         <mat-icon class="Offline">wifi_off</mat-icon>
       </button>
     </ng-template> -->
-
     <button mat-icon-button *ngIf="isAdmin()" routerLink="./verConfiguracion">
       <mat-icon>settings</mat-icon>
     </button>
@@ -29,43 +25,3 @@
   </div>
 </div>
 </div>
-
-
-
-
-
-
-<!--
-<nav class="navbar navbar-expand-lg">
-  <div class="container-fluid">
-    <img class="logo_h" src="../../../../../assets/img/logo.jpeg" />
-
-
-    <button mat-icon-button [matMenuTriggerFor]="menu" style="background: #FD9727; color: white;" class="d-block d-lg-none">
-      <mat-icon>menu</mat-icon>
-    </button>
-
-
-    <div class="d-none d-lg-flex">
-      <button class="btn" id="ops" routerLink="./home">Inicio</button>
-      <button class="btn" id="ops" routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
-      <button class="btn" id="ops" routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
-      <button class="btn" id="ops" (click)="AbrirRegistro()" *ngIf="isAdmin() || isRecep()">Registro</button>  
-      <button class="btn" id="op" (click)="logoutBS()">
-        <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
-      </button>
-    </div>
-
-
-    <mat-menu #menu="matMenu" class="d-lg-none">
-      <button mat-menu-item routerLink="./home">Inicio</button>
-      <button mat-menu-item routerLink="./verConfiguracion" *ngIf="isAdmin()">Configuración</button>
-      <button mat-menu-item routerLink="./notificacion" *ngIf="isAdmin()">Notificación</button>
-      <button mat-menu-item routerLink="./inventarios" *ngIf="isAdmin() || isRecep()">Inventario</button>
-      <button mat-menu-item (click)="AbrirRegistro()" *ngIf="isAdmin() || isRecep()">Registro</button>
-      <button mat-menu-item (click)="logoutBS()">
-        <fa-icon [icon]="['fas', 'power-off']" style="color: black;"></fa-icon>
-      </button>
-    </mat-menu>
-  </div>
-</nav>-->

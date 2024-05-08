@@ -1,14 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
-import { RegistroComponent } from '../registro/registro.component';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { SidebarService } from '../../service/sidebar.service';
-import { ConnectivityService } from '../../service/connectivity.service';
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
-import { interval } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-
-
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -16,12 +10,10 @@ import { switchMap } from 'rxjs/operators';
 })
 export class HeaderComponent implements OnInit {
   constructor(private auth: AuthService, 
-    public dialog: MatDialog,private sidebarService: SidebarService, 
-    private connectivityService: ConnectivityService) {}
+  public dialog: MatDialog,private sidebarService: SidebarService) {}
   isConnected: boolean = true;
   mostrarElementoA: boolean = true;
   private lastIsConnected: boolean | null = null;
- 
   public isBarraLateralVisible: boolean = true;
 
   toggleSidebar() {
@@ -99,7 +91,4 @@ export class HeaderComponent implements OnInit {
   isRecep(): boolean {
     return this.auth.isRecepcion();
   }
-
-
-
 }

@@ -6,12 +6,8 @@ import { EditarColaboradorComponent } from '../editar-colaborador/editar-colabor
 import { AuthService } from '../../service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
 import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desactivar.component";
 import { IndexedDBService } from './../../service/indexed-db.service';
-import { Observable, map , throwError} from 'rxjs';
-//////////////////////////////
-import { serviciosService } from '../../service/servicios.service';
 @Component({
   selector: 'app-colaboradores',
   templateUrl: './colaboradores.component.html',
@@ -28,17 +24,14 @@ export class ColaboradoresComponent {
   colaboradores: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   isLoading: boolean = true; 
+  habilitarBoton: boolean = false;
   
-  constructor(private http: ColaboradorService, 
-    public dialog: MatDialog, private auth: AuthService, 
-    private router:Router, private indexedDBService: IndexedDBService,
-  /////////////////
-    private servicio: serviciosService
-){}
+  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private indexedDBService: IndexedDBService){}
 
   ngOnInit():void{
-    // this.http.comprobar();
-    // this.auth.comprobar();
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -68,7 +61,6 @@ export class ColaboradoresComponent {
       this.http.MostrarRecepcionistas(this.idGym).subscribe({
         next: (dataResponse) => {
           this.empleados = dataResponse;
-          //console.log(this.empleados);
           this.dataSource = new MatTableDataSource(this.empleados);
           this.loadData(); 
         }
@@ -184,9 +176,6 @@ export class ColaboradoresComponent {
     });
   }
 
-
-
-
   Sincronizar() {
       this.indexedDBService.getAgregarEmpleadoData('AgregarEmpleado').then(data => {
         if (data && data.length > 0) {
@@ -195,7 +184,6 @@ export class ColaboradoresComponent {
           data.forEach((record: any) => {
             this.http.agregarEmpleado(record.data).subscribe({
             });
-            console.log(record.data);
           });
           this.indexedDBService.VaciarAgregarEmpleadoData();
           this.listaTabla();
@@ -204,11 +192,5 @@ export class ColaboradoresComponent {
           console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
         }
       });
-
-
-      
    }
-
-      
-
 }

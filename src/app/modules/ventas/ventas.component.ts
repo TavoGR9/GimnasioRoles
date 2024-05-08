@@ -184,8 +184,6 @@ export class VentasComponent implements OnInit {
       };
       this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
         const lastInsertedId3 = response.lastInsertedId3;
-
-        console.log(this.producto);
         const detallesVenta = this.selectedProducts.map((producto) => {
           return {
             Ventas_idVentas: lastInsertedId3,
@@ -197,7 +195,6 @@ export class VentasComponent implements OnInit {
             importe: producto.cantidad * producto.precioSucursal,
           };
         });
-       // console.log(detallesVenta, "detallesVenta");
         this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
           (response) => {
             const existencias = this.selectedProducts.map((producto) => {
@@ -206,13 +203,9 @@ export class VentasComponent implements OnInit {
               cantidad: producto.cantidad
             }
             });
-            console.log(existencias, "existencias");
             this.DetalleVenta.updateExistencias(existencias).subscribe((data) =>{
-              console.log(data, "data");
-
             })
 
-          console.log(existencias, "exitencias");
             this.dialog.open(MensajeEmergentesComponent, {
               data: `Productos registrados correctamente`,
             })
@@ -224,10 +217,8 @@ export class VentasComponent implements OnInit {
               } else {
               }
             });
-
           }
         );
-       
       });
     } else {
       this.toastr.error("Pago incorrecto, verifica");
@@ -471,7 +462,6 @@ export class VentasComponent implements OnInit {
   obtenerProducto(id: any, idGimnasio: any, cantidadSolicitada: number): void {
     this.InventarioService.obtenerProductoPorId(id, idGimnasio).subscribe({
       next: (data) => {
-        console.log(data, "data");
         this.producto = data; 
         if (data[0].existencia < cantidadSolicitada) {     
           this.toastr.error("No hay suficiente stock disponible para esta cantidad");

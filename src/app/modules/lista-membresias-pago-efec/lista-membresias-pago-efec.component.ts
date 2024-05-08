@@ -197,7 +197,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   listaClientesData(): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
       if (response[2] && response[2].success === '2') {
-        const combinedArray = response[0].data.concat(response[1]);
+        //const combinedArray = response[0].data.concat(response[1]);
+        const combinedArray = response[0].data;
         this.dataSourceActivos = new MatTableDataSource(combinedArray);
         this.loadData(); 
       } else {

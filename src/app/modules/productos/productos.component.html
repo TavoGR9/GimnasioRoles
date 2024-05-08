@@ -9,14 +9,14 @@
       <div class="container mt-4">
          <h2 class="mb-3">LISTA DE PRODUCTOS</h2>
          <div style="text-align: right; margin-bottom: 50px">
-            <button
-               mat-raised-button
-               (click)="crearProducto()"
-               style="background-color: #fd9727; font-size: 16px"
-               >
-               <mat-icon>add</mat-icon>
-               AGREGAR PRODUCTO
+            <button mat-raised-button
+                  (click)="crearProducto()"
+                  style="background-color: #fd9727; font-size: 16px"
+                  [disabled]="!habilitarBoton">
+            <mat-icon>add</mat-icon>
+            AGREGAR PRODUCTO
             </button>
+
          </div>
          <h3>Ingresa el valor de una columna</h3>
          <mat-form-field class="full-width">
@@ -62,7 +62,7 @@
                    <td mat-cell *matCellDef="let producto">
                      <!-- Verificar si el valor de id_bodega está presente -->
                      <ng-container *ngIf="producto.existencia; else iconoNoIdBodega">
-                       <button mat-icon-button color="primary" (click)="editarProducto(producto.idProbob)">
+                       <button mat-icon-button color="primary" (click)="editarProducto(producto.idProbob)"  [disabled]="!habilitarBoton">
                          <mat-icon>edit</mat-icon>
                        </button>
                      </ng-container>

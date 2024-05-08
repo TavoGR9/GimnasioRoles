@@ -40,7 +40,6 @@ export class CategoriaService {
       tap(dataResponse => {
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
         this.saveDataToIndexedDB(datosSubCategoria);
         const resultData = { success: '2' };
         return of(resultData);        

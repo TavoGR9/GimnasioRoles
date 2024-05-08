@@ -12,7 +12,7 @@
         </ngx-spinner>
         <h2 class="mb-3">PLANES DISPONIBLES</h2>
         <div style="text-align: right;">
-           <button mat-raised-button style="background-color: #fd9727; font-size: 16px;" (click)="openDialog()">
+           <button mat-raised-button [disabled]="!habilitarBoton" style="background-color: #fd9727; font-size: 16px;" (click)="openDialog()">
               <mat-icon>add</mat-icon>
               AGREGAR PLAN
            </button>
@@ -65,7 +65,7 @@
               <ng-container matColumnDef="actions">
                  <th mat-header-cell *matHeaderCellDef>Acciones</th>
                  <td mat-cell *matCellDef="let item">
-                    <button mat-icon-button color="primary" (click)="openDialogEdit(item.idMem, item.tipo_membresia)">
+                    <button mat-icon-button color="primary" [disabled]="!habilitarBoton" (click)="openDialogEdit(item.idMem, item.tipo_membresia)">
                        <mat-icon>edit</mat-icon>
                     </button>
                     <!--<div class="toggle-container">

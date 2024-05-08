@@ -1,6 +1,5 @@
 <h1 mat-dialog-title>Historial del inventario</h1>
     <div mat-dialog-content>
-
         <div class="grid">
             <div style="display: flex; justify-content: flex-end;">
                 <mat-form-field>
@@ -11,9 +10,7 @@
                     <mat-datepicker #pickerInicio></mat-datepicker>
                 </mat-form-field>
             </div>
-    
             <div></div>
-    
             <div style="display: flex; justify-content: flex-start;">
                 <mat-form-field>
                     <mat-label>Fecha Fin</mat-label>
@@ -24,12 +21,10 @@
                 </mat-form-field>
             </div>  
         </div>
-
         <mat-form-field style ="font-size: 14px; width: 100%;">
             <mat-label>Buscar</mat-label>
             <input matInput (keyup)="applyFilter($event)"placeholder="Buscar" #input/>
         </mat-form-field>
-
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
             <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsHistorial">
               <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
@@ -53,7 +48,6 @@
         </table>
         <mat-paginator #paginatorHistorial [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
     </div>
-    
 <div mat-dialog-actions class="grid">
     <div class="move-right">
         <button mat-button style="background-color: #F9A640;" [matMenuTriggerFor]="menu">
@@ -65,11 +59,8 @@
             <button mat-menu-item (click)="descargarPDF()">.pdf <mat-icon>picture_as_pdf</mat-icon></button>
         </mat-menu>
     </div>
-
     <div></div>
-    
     <div>
-        <!--<button mat-button style="background-color: #F9A640;" (click)="cerrarDialogo()"><mat-icon>download</mat-icon>Descargar</button>-->
         <button mat-button style="background-color: #000000; color: #ffffff" (click)="cerrarDialogo()"><mat-icon >cancel</mat-icon>Cerrar</button>
     </div>
 </div>

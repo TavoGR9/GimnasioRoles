@@ -29,6 +29,7 @@ export class ProductosComponent implements OnInit {
   productoActiva: boolean = true;
   isLoading: boolean = true; 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  habilitarBoton: boolean = false;
 
   constructor(
     private productoService: ProductoService,
@@ -39,7 +40,10 @@ export class ProductosComponent implements OnInit {
 
   ngOnInit(): void {
     // this.productoService.comprobar();
-    // this.auth.comprobar();
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
+
     // this.categoriaService.comprobar(); 
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){

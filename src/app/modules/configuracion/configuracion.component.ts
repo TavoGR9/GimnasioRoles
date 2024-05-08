@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { GimnasioService } from '../../service/gimnasio.service';
@@ -46,27 +46,20 @@ export class ConfiguracionComponent  implements OnInit{
     private HorarioService: HorarioService,
     private gimnasioService: GimnasioService, 
   ) {
-   {
+    {
       this.idGimnasio = this.auth.idGym.getValue(); // Accede a idGimnasio desde los datos
-      this.formularioHorarios = this.formularioHorario.group({
-        horarios: this.formularioHorario.array([]),
-      });
-   
+      this.formularioHorarios = this.formularioHorario.group({ horarios: this.formularioHorario.array([])});
     }
-
     this.elID = this.activeRoute.snapshot.paramMap.get('id');
     this.formularioSucursales = this.formulario.group({
       nombreBodega: [""],
       direccion: ["", Validators.required],
       numeroTelefonico:  ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
-     // estatus: [1],
     });
   }
 
-
   agregarHorarioExistente(diaSemana: string, respuesta: any): void {
     const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
-    // Si existe un horario para este día, usa esos valores, de lo contrario, usa valores por defecto
     const horaEntrada = horarioExistente ? horarioExistente.horaEntrada : '';
     const horaSalida = horarioExistente ? horarioExistente.horaSalida : '';
     const horarioFormGroup = this.formularioHorario.group({
@@ -85,7 +78,6 @@ export class ConfiguracionComponent  implements OnInit{
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-  
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
@@ -101,13 +93,11 @@ export class ConfiguracionComponent  implements OnInit{
         });
       }
     );
-
   }
 
   listaTabla(){
     this.gimnasioService.consultarPlan(this.idGym).subscribe(
       (respuesta) => {
-        
         this.formularioSucursales.setValue({
           nombreBodega: respuesta[0]['nombreBodega'],
           direccion: respuesta[0]['direccion'],
@@ -141,8 +131,6 @@ export class ConfiguracionComponent  implements OnInit{
       id_bod: idGym
     };  
     const horariosData = this.formularioHorarios.value;
-  
-    // Realizar las solicitudes de actualización
     const actualizarPlan = this.gimnasioService.actualizarSucursal(planData).pipe(
       tap(respuesta => {
         if (respuesta.success === 1) {
@@ -164,8 +152,7 @@ export class ConfiguracionComponent  implements OnInit{
         return throwError('Error al actualizar los horarios');
       })
     );
-  
-    // Realizar las solicitudes concurrentemente con forkJoin
+
     forkJoin([actualizarPlan, actualizarHorarios]).subscribe({
       next: ([planResponse, horariosResponse]) => {
         this.mostrarMensajeYRedireccionar();

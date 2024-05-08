@@ -1,15 +1,12 @@
-    <!--CONTENIDO PANTALLA ALTA DE UDUARIO-->
-    
     <div >
         <div >
           <h1 class="title" mat-dialog-title>Editar colaborador</h1>
             <div mat-dialog-content >
               <br>
-              <form [formGroup]="form">  <!--(ngSubmit)="actualizar()"-->
+              <form [formGroup]="form"> 
                   <div>
                     <div class="row">
                       <div class="col-sm-12">
-                        <!-- <label>Nombre:</label> -->
                         <mat-form-field appearance="outline" style="width: 95%;">
                           <mat-label>Nombre</mat-label>
                           <input type="text" matInput placeholder="Juan" autocomplete="off" formControlName="nombreCompleto" id="nombreCompleto" [errorStateMatcher]="matcher">
@@ -18,45 +15,10 @@
                           </mat-error>
                           <mat-error *ngIf="form.get('nombreCompleto')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                         </mat-form-field>
-
                       </div>
-                      <!-- <div class="col-sm-6">
-                        <label>Apellido paterno:</label>
-                        <mat-form-field appearance="outline" style="width: 90%;">
-                          <mat-label>Apellido paterno</mat-label>
-                          <input type="text" matInput placeholder="Pérez" autocomplete="off" formControlName="apPaterno" id="apPaterno" [errorStateMatcher]="matcher">
-                          <mat-error *ngIf="form.get('apPaterno')?.hasError('pattern') && !form.get('apPaterno')?.hasError('required')">
-                            <strong class="txt_msg">**Numeros no permitidos</strong>
-                          </mat-error>
-                          <mat-error *ngIf="form.get('apPaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                        </mat-form-field>
-                      </div> -->
                     </div>
                     <div class="row">
-                      <!-- <div class="col-sm-6">
-                        <label>Apellido materno:</label>
-                        <mat-form-field appearance="outline" style="width: 90%;">
-                          <mat-label>Apellido materno</mat-label>
-                          <input type="text" placeholder="Sanchéz" matInput autocomplete="off" formControlName="apMaterno" id="apMaterno" [errorStateMatcher]="matcher">
-                          <mat-error *ngIf="form.get('apMaterno')?.hasError('pattern') && !form.get('apMaterno')?.hasError('required')">
-                            <strong class="txt_msg">**Numeros no permitidos</strong>
-                          </mat-error>
-                          <mat-error *ngIf="form.get('apMaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                      </mat-form-field>
-                      
-                      </div> -->
                       <div class="col-sm-6">
-                        <!--<mat-form-field appearance="outline" style="width: 90%;">
-                          <mat-label>RFC</mat-label>
-                          <input type="text" placeholder="RFC" minlength="12" maxlength="13" matInput autocomplete="off" formControlName="rfc" id="rfc" [errorStateMatcher]="matcher">                  
-                          <mat-error *ngIf="form.get('rfc')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                          <mat-error *ngIf="form.get('rfc')?.hasError('pattern') && !form.get('rfc')?.hasError('required')">
-                            <strong class="txt_msg">**Formato no valido, (solo mayúsculas y números)...</strong>
-                          </mat-error>
-                          <mat-error *ngIf="form.get('rfc')?.hasError('minlength') && !form.get('rfc')?.hasError('required')">
-                            <strong class="txt_msg">**Minimo 12 y máximo 13 caracteres</strong>
-                          </mat-error>
-                      </mat-form-field>-->
                       <label>Sucursal:</label>
                         <mat-form-field appearance="outline" style="width: 90%;">
                           <mat-label>Sucursal</mat-label>
@@ -84,35 +46,8 @@
                           </mat-error>
                         </mat-form-field>
                       </div>
-
                     </div>
-                    <!-- <div class="row">
-                      <div class="col-sm-6">
-                        <label>Turno laboral:</label>
-                        <mat-form-field appearance="outline" style="width: 90%;">
-                          <mat-label>Turno laboral</mat-label>
-                          <mat-select id="turno" formControlName="turnoLaboral" id="turnoLaboral" [errorStateMatcher]="matcher">
-                            <mat-option value="Matutino">Matutino</mat-option>
-                            <mat-option value="Vespertino">Vespertino</mat-option>
-                          </mat-select>
-                         
-                        </mat-form-field>
-                      </div>
-                      <div class="col-sm-6">
-                        <label>Salario:</label>
-                        <mat-form-field appearance="outline" style="width: 90%;">
-                          <mat-label>Salario</mat-label>
-                          <input type="text" placeholder="Salario" matInput autocomplete="off" formControlName="salario" id="salario" [errorStateMatcher]="matcher">
-                          <mat-error *ngIf="form.get('salario')?.hasError('pattern') && !form.get('salario')?.hasError('required')">
-                            <strong class="txt_msg">**Formato no valido...</strong>
-                          </mat-error>
-                         
-                        </mat-form-field>
-                      </div>
-                    </div> -->
-
                     <div class="row">
-                      
                       <div class="col-sm-12">
                         <label>Email:</label><p>
                         <mat-form-field appearance="outline" style="width: 95%;">
@@ -125,11 +60,10 @@
                         </mat-form-field>
                       </div>
                     </div>
-                      
                     </div>  
                 </form>
             </div>
-            <div mat-dialog-actions fxLayoutAlign="center center"> <!--style="display: flex; justify-content: center;"-->
+            <div mat-dialog-actions fxLayoutAlign="center center">
               <button mat-raised-button (click)="actualizar()" type="submit"  style="background-color: #fd9727; font-size: 20px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
               <button mat-raised-button  (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px;  height: 40px;color: white; width: 120px;">Cancelar</button>  <!--routerLink="/home/colaboradores" -->
             </div>  

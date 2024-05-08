@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap,map } from 'rxjs/operators';
 
 import { of, from  } from 'rxjs'; 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -49,18 +49,22 @@ export class AuthService {
     }
   }
 
-  // comprobar(){
-  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-  //     this.isConnected = isConnected;
-  //     if (isConnected) {
-  //       //console.log("La red WiFi tiene acceso a Internet.");
-  //       this.API = this.APIv2;
-  //     } else {
-  //       //console.log("La red WiFi no tiene acceso a Internet.");
-  //       this.API = this.APIv3;
-  //     }
-  //   });
-  // }
+  comprobar(): Observable<any> {
+    return this.connectivityService.checkInternetConnectivity().pipe(
+      map((isConnected: boolean) => {
+        if (isConnected) {
+          return { status: true, message: "Conectado a Internet" };
+        } else {
+          return { status: false, message: "Sin conexión a Internet" };
+        }
+      }),
+      catchError(error => {
+        console.error("Error al verificar la conectividad:", error);
+        // Manejar el error según sea necesario
+        return of({ status: false, message: "Error al verificar la conectividad" });
+      })
+    );
+  }
 
   loginBS(data: User): Observable<any> {
   const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;
@@ -169,7 +173,6 @@ dataUser(data: any): Observable<any> {
       this.saveDataToIndexedDB(dataResponse);
     }),
     catchError(error => {
-      console.log("Datos Almacenados en cache");
       return this.getUserDatos();
     })
   );

@@ -3,7 +3,6 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
 import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
 import { ToastrService } from 'ngx-toastr';
-
 @Component({
   selector: 'app-form-pago-emergente',
   templateUrl: './form-pago-emergente.component.html',
@@ -23,34 +22,18 @@ export class FormPagoEmergenteComponent implements OnInit{
   ticketInfo: any;
   @Output() actualizarTablas = new EventEmitter<boolean>();
   
-
   constructor(
     private toastr: ToastrService, 
     public dialog: MatDialog, 
     @Inject(MAT_DIALOG_DATA)
-  public data: any,
+    public data: any,
     private membresiaService: PagoMembresiaEfectivoService, 
     public dialogo: MatDialogRef<FormPagoEmergenteComponent>,
   ) { }
-
-              
+     
   ngOnInit(): void {
-    console.log(this.data, "data");
-    //console.log(this.data, "data");
-    // Llamar al servicio para obtener la lista de membresías
     this.precio = 0;
-    //this.duracion = 'días';
-    //console.log('el detalle membresia del cliente es: ', this.data.detMemID )
-    /*if(this.data.action == 'Online' ){
-      this.idMembresiaSelec = this.data.idMem;
-      console.log('membresia seleccionada: ', this.idMembresiaSelec);
-    }*/
-
-    //console.log('ID del cliente:', this.data.idCliente);
-
     this.getMembresiasLista(this.data.idSucursal);
-    
-
      // Verificar si hay datos proporcionados
      if (this.data ) {
       // Establecer la membresía seleccionada con el valor proporcionado en this.data
@@ -60,13 +43,11 @@ export class FormPagoEmergenteComponent implements OnInit{
       //this.duracion = this.data.duracion;
       this.duracion = this.data.duracion !== 'null' ? this.data.duracion : 'N/A';
     }
-
   }
 
   getMembresiasLista(idgimnasio: number): void {
     this.membresiaService.membresiasLista(idgimnasio)
       .subscribe(data => {
-        console.log(data, "dataaaaaaa");
         this.membresias = data;
       }, error => {
         console.error('Error al obtener la lista de membresías:', error);
@@ -84,9 +65,8 @@ export class FormPagoEmergenteComponent implements OnInit{
 
   cancelDialogo(): void {
     this.dialogo.close(true);
-    }
+  }
 
-  
     convertirNumeroAPalabrasPesos(numero: number): string {
       const unidades = [
         "CERO",
@@ -188,7 +168,6 @@ export class FormPagoEmergenteComponent implements OnInit{
     imprimirResumen() {       
       if (this.precio <= this.moneyRecibido) {
         const PrecioCalcular = this.moneyRecibido - this.precio ;
-        console.log(this.data.idCliente, "this.data.idCliente");
         this.membresiaService.ticketPagoInfo(this.data.idCliente).subscribe((respuesta) => {
           if (respuesta && respuesta.length > 0) {
             const ticketInfo = respuesta[0];
@@ -338,7 +317,6 @@ export class FormPagoEmergenteComponent implements OnInit{
   
     successDialog() {    
       if (this.membresiaSeleccionada != undefined){
-        //console.log('membresia seleccionada antes de pagar:', this.membresiaSeleccionada );
         if(this.moneyRecibido >= this.precio){
           const PrecioCalcular = this.moneyRecibido - this.precio;
           // Obtener la fecha actual
@@ -346,7 +324,6 @@ export class FormPagoEmergenteComponent implements OnInit{
           // Formatear la fecha en el formato deseado (yyyy-mm-dd)
           const fechaFormateada: string = fechaActual.toISOString().split('T')[0];
           let fechaFin: Date = new Date(fechaActual); // Crear una copia de la fecha actual
-
          if (this.duracion == 1) {
           } else if (this.duracion == 30) {
               fechaFin.setMonth(fechaFin.getMonth() + 1);

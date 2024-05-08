@@ -39,7 +39,6 @@ export class HomeService {
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
         return this.getServiceDatos();
       })
     );
@@ -79,7 +78,6 @@ export class HomeService {
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
         return this.getServiceDatos2();
       })
     );
@@ -119,7 +117,6 @@ export class HomeService {
         this.saveDataToIndexedDB3(dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
         return this.getServiceDatos3();
       })
     );
