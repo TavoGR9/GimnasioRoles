@@ -81,11 +81,20 @@ export class MembresiasComponent implements OnInit {
   listaTabla() {
     this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
       (respuesta) => {
-        if (respuesta) {
+        if(respuesta[2].success == 2){
+          const combinedArray = respuesta[0].concat(respuesta[1]);
+          this.dataSource = new MatTableDataSource(combinedArray);
+          this.loadData(); 
+        } else {
+          this.plan = respuesta;
+          this.dataSource = new MatTableDataSource(this.plan);
+          this.loadData(); 
+         }
+       /* if (respuesta) {
           this.plan = respuesta;
           this.dataSource = new MatTableDataSource(this.plan);
           this.loadData();
-        } else {}
+        } else {}*/
       },
       (error) => {
       }

@@ -48,10 +48,8 @@ export class serviciosService {
   newService(data: any): Observable<any> {
     return this.clienteHttp.post(this.API+"servicesMembresia.php?insertarservicio", data).pipe(
       tap(dataResponse => {
-      console.log("Data Response Service: ", dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
         this.saveDataToIndexedDB(data);
         const resultData = { success: '2' };
         return of(resultData);        

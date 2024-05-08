@@ -83,7 +83,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   idGym: number = 0;
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
-  isLoading: boolean = true; 
+  isLoading: boolean = false; 
 
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorPagoOnline', { static: true }) paginator!: MatPaginator;
@@ -195,11 +195,16 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   listaClientesData(): void {
-    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
-      (response: any) => {
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
+      if (response[2] && response[2].success === '2') {
+        const combinedArray = response[0].data.concat(response[1]);
+        this.dataSourceActivos = new MatTableDataSource(combinedArray);
+        this.loadData(); 
+      } else {
         this.clienteActivo = response.data;
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
         this.loadData();
+      }      
       },
       (error: any) => {
         console.error('Error al obtener activos:', error);
@@ -258,7 +263,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     const dialogRef = this.dialog.open(FormPagoEmergenteComponent, {
       data: {
         idCliente: `${prod.ID}`,
-        nombre: `${prod.Nombre}`,
+        nombre: `${prod.Nombre ?? prod.nombre}`,
         //sucursal: `${prod.Sucursal}`,
         membresia: `${prod.Membresia}`,
         dateStart: `${prod.Fecha_Inicio}`,

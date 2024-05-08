@@ -27,6 +27,11 @@ export class IndexedDBService extends Dexie {
   private AgregarMembresiaDataTable: Dexie.Table<any, string>;
   private AgregarPlanDataTable: Dexie.Table<any, string>;
   private AgregarRegistroDataTable: Dexie.Table<any, string>;
+  private AgregarMemIdDataTable: Dexie.Table<any, string>;
+  private AgregarProductoDataTable: Dexie.Table<any, string>;
+  private AgregarCategoriaDataTable: Dexie.Table<any, string>;
+  private AgregarSubCategoriaDataTable: Dexie.Table<any, string>;
+  private AgregarMarcaDataTable: Dexie.Table<any, string>;
 
   constructor() {
     super('OlimpusGym');
@@ -52,6 +57,11 @@ export class IndexedDBService extends Dexie {
       AgregarMembresia: '++id,key,data',
       AgregarPlan: '++id,key,data',
       AgregarRegistro: '++id,key,data',
+      AgregarMemId: '++id,key,data',
+      AgregarProductoId: '++id,key,data',
+      AgregarCategoria: '++id,key,data',
+      AgregarSubCategoria: '++id,key,data',
+      AgregarMarca: '++id,key,data',
 
     });
     this.receptionistsTable = this.table('receptionists');
@@ -74,6 +84,11 @@ export class IndexedDBService extends Dexie {
     this.AgregarMembresiaDataTable = this.table('AgregarMembresia');
     this.AgregarPlanDataTable = this.table('AgregarPlan');
     this.AgregarRegistroDataTable = this.table('AgregarRegistro');
+    this.AgregarMemIdDataTable = this.table('AgregarMemId');
+    this.AgregarProductoDataTable = this.table('AgregarProductoId');
+    this.AgregarCategoriaDataTable = this.table('AgregarCategoria');
+    this.AgregarSubCategoriaDataTable = this.table('AgregarSubCategoria');
+    this.AgregarMarcaDataTable = this.table('AgregarMarca');
   }
 
   async saveData(key: string, data: any) {
@@ -320,6 +335,86 @@ async VaciarAgregarRegistroData(){
   //return console.log("Eliminados");
 }
 
+//membresiasID
+async saveMembresiaIdData(key: string, data: any) {
+  await this.AgregarMemIdDataTable.put({ key, data });
+}
 
+async getMembresiaIdData(key: string) {
+  return await this.table('AgregarMemId')
+  .where('key')
+  .equals(key)
+  .toArray();
+}
+
+
+//registro producto
+async saveAgregarProductoData(key: string, data: any) {
+  await this.AgregarProductoDataTable.put({ key, data });
+}
+
+async getAgregarProductoData(key: string) {
+  return await this.table('AgregarProductoId')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarProductoData(){
+  await this.AgregarProductoDataTable.clear();
+  //return console.log("Eliminados");
+}
+
+
+//registro categoria
+async saveAgregarCategoriaData(key: string, data: any) {
+  await this.AgregarCategoriaDataTable.put({ key, data });
+}
+
+async getAgregarCategoriaData(key: string) {
+  return await this.table('AgregarCategoria')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarCategoriaData(){
+  await this.AgregarCategoriaDataTable.clear();
+  //return console.log("Eliminados");
+}
+
+//registro subCategoria
+async saveAgregarsubCategoriaData(key: string, data: any) {
+  await this.AgregarSubCategoriaDataTable.put({ key, data });
+}
+
+async getAgregarsubCategoriaData(key: string) {
+  return await this.table('AgregarSubCategoria')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarsubCategoriaData(){
+  await this.AgregarSubCategoriaDataTable.clear();
+  //return console.log("Eliminados");
+}
+
+//registro marca
+async saveAgregarMarcaData(key: string, data: any) {
+  await this.AgregarMarcaDataTable.put({ key, data });
+}
+
+async getAgregarMarcaData(key: string) {
+  return await this.table('AgregarMarca')
+      .where('key')
+      .equals(key)
+      .toArray();
+}
+
+async VaciarAgregarMarcaData(){
+  await this.AgregarMarcaDataTable.clear();
+  //return console.log("Eliminados");
+}
 
 }
