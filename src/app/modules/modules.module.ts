@@ -11,7 +11,6 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { VerConfiguracionComponent } from './ver-configuracion/ver-configuracion.component';
 import { HorariosComponent } from './horarios/horarios.component';
 import { ProductosComponent } from './productos/productos.component';
-//Modulos Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
@@ -42,8 +41,6 @@ import { AltaColaboradoresComponent } from './alta-colaboradores/alta-colaborado
 import { SucursalListaComponent } from './sucursal-lista/sucursal-lista.component';
 import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
 import { SucursalEditarComponent } from './sucursal-editar/sucursal-editar.component';
-import { ListaCategoriaComponent } from './lista-categoria/lista-categoria.component';
-import { ListaProductoComponent } from './lista-producto/lista-producto.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
 import { HorariosVistaComponent } from './horarios-vista/horarios-vista.component';
@@ -77,7 +74,6 @@ import { FiltroFechaPipe } from 'src/app//pipes/filtro-fecha.pipe';
 import { FilterByDatePipe } from 'src/app/pipes/filtroFechas.pipe';
 import { ListarProductosPipe } from 'src/app/pipes/lista-proveedor.pipe';
 import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
-import { HorarioEditarComponent } from './horario-editar/horario-editar.component';
 import { MensajeDesactivarComponent } from './mensaje-desactivar/mensaje-desactivar.component';
 import { RouterModule } from '@angular/router';
 import { DialogSelectMembershipComponent } from './dialog-select-membership/dialog-select-membership.component';
@@ -94,8 +90,6 @@ import { ArchivosComponent } from './archivos/archivos.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgChartsModule } from 'ng2-charts';
-import { EmergenteAccesosComponent } from './emergente-accesos/emergente-accesos.component';
-
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
@@ -109,8 +103,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     SucursalListaComponent,
     SucursalAltaComponent,
     SucursalEditarComponent,
-    ListaCategoriaComponent,
-    ListaProductoComponent,
     EditarProductoComponent,
     CrearProductoComponent,
     HorariosVistaComponent,
@@ -146,7 +138,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     FilterByDatePipe,
     ListarProductosPipe,
     ProductosVendidosComponent,
-    HorarioEditarComponent,
     MensajeDesactivarComponent,
     DialogSelectMembershipComponent,
     ServiciosListaComponent,
@@ -157,7 +148,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     planEditarComponent,
     ArchivosComponent,
     SidebarComponent,
-    EmergenteAccesosComponent
     //InventarioComponent
   ],
   imports: [

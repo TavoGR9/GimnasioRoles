@@ -1,10 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ProductoService } from 'src/app/service/producto.service';
-import { listarClientesService } from "src/app/service/listarClientes.service";
-import { DetalleVentaService } from 'src/app/service/detalle-venta.service';
-//import { detalleVenta } from "../models/detalleVenta";
-import { ClienteService } from 'src/app/service/cliente.service';
+import { ProductoService } from '../../service/producto.service';
+import { listarClientesService } from "../../service/listarClientes.service";
+import { DetalleVentaService } from '../../service/detalle-venta.service';
+import { ClienteService } from '../../service/cliente.service';
 interface Cliente {
   ID_Cliente: number;
   nombre: string;

@@ -65,7 +65,6 @@ export class ProductoService {
             this.saveDataToIndexedDB(nuevosProductos);
           }),
           catchError(error => {
-            console.log("Datos Almacenados en cache");
             return this.getServiceDatos2();
           })
         ) as Observable<any[]>; // Añadir una conversión de tipo
@@ -112,7 +111,6 @@ export class ProductoService {
 
     obternerProductosV(id:any):Observable<any>{
       const data = { id_bodega_param: id };
-      console.log(data, "data");
       return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodegaVenta=",data);
     }
   
@@ -123,7 +121,6 @@ export class ProductoService {
           this.saveDataToIndexedDB3(dataResponse);
         }),
         catchError(error => {
-          console.log("Datos Almacenados en cache");
           return this.getServiceDatos3();
         })
       ) as Observable<any[]>; 
@@ -176,7 +173,6 @@ export class ProductoService {
           this.saveDataToIndexedDB2(dataResponse);
         }),
         catchError(error => {
-          console.log("Datos Almacenados en cache");
           return this.getServiceDatos();
         })
       );

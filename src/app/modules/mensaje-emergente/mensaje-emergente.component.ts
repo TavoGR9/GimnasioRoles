@@ -15,9 +15,6 @@ export class MensajeEmergenteComponent implements OnInit{
     cerrarDialogo(): void {
       this.dialogo.close(true);
     }
-    /*confirmado(): void {
-      this.dialogo.close(true);
-    }*/
 
   ngOnInit() {
   }

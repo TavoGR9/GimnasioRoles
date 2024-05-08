@@ -18,18 +18,6 @@ export class MensajeDesactivarComponent {
     this.idGimnasio = data.idGimnasio;
   }
 
-  /*confirmado(): void {
-    this.dialogo.close(true);
-    console.log("SE HA DESACTIVADO LA SUCURSAL");
-    this.gimnasioService.botonEstado.next({respuesta: this.data.mensaje.includes('desactivar'), idGimnasio: this.idGimnasio});
-  }
-  
-  cerrarDialogo(): void {
-    this.dialogo.close(false);
-    console.log("te has arrepentido ok");
-    this.gimnasioService.botonEstado.next({respuesta: this.data.mensaje.includes('activar'), idGimnasio: this.idGimnasio});
-  }*/
-
   confirmado(): void {
     this.dialogo.close(true);
     this.gimnasioService.botonEstado.next({ respuesta: true, idGimnasio: this.idGimnasio });

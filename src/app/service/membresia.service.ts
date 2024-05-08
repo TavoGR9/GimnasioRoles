@@ -91,7 +91,6 @@ export class MembresiaService {
   agregarPlan(datosPlan:membresia):Observable<any>{
     return this.clienteHttp.post(this.API+"membresias.php?insertarplan",datosPlan).pipe(
       tap(dataResponse => {
-      console.log("Data Response Service: ", dataResponse);
       }),
       catchError(error => {
         this.saveDataToIndexedDBP(datosPlan);

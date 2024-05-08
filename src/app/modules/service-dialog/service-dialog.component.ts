@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { serviciosService } from "../../service/servicios.service";
 import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { NgxSpinnerService } from "ngx-spinner";
 import { DialogStateService } from "../../service/dialogState.service";
@@ -22,7 +21,6 @@ export class ServiceDialogComponent implements OnInit {
   isMaximized = false;
 
   constructor(
-    private router: Router,
     private fb: FormBuilder,
     public dialog: MatDialog,
     private auth: AuthService,

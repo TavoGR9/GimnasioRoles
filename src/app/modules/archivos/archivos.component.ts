@@ -1,14 +1,13 @@
 import { Component, ElementRef, ViewChild, Inject} from '@angular/core';
 import * as pako from 'pako';
 import * as JSZip from 'jszip';
-import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { ArchivoService } from '../../service/archivos.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { GimnasioService } from '../../service/gimnasio.service';
 import { OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 @Component({
   selector: 'app-archivos',
   templateUrl: './archivos.component.html',
@@ -22,6 +21,10 @@ export class ArchivosComponent implements OnInit{
   nombreBodega : any;
   mostrarBoton: boolean = false;
   archivos: any[] = [];
+  archivo = {
+    nombreArchivo: '',
+    base64textString: ''
+  }
 
   constructor(
     public dialogo: MatDialogRef<ArchivosComponent>,
@@ -30,8 +33,7 @@ export class ArchivosComponent implements OnInit{
     private archivoService: ArchivoService,
     private spinner: NgxSpinnerService,
     public dialog: MatDialog, 
-    private gimnasio: GimnasioService,
-    private router: Router
+    private gimnasio: GimnasioService
   ) {
     this.id_bodega = data.id_bodega;
     this.nombreBodega = data.nombreBodega;
@@ -63,12 +65,12 @@ export class ArchivosComponent implements OnInit{
   }
   
   descargarArchivo(url: string, nombreArchivo: string): void {
-  const enlaceTemporal = document.createElement('a');
-  enlaceTemporal.href = url;
+    const enlaceTemporal = document.createElement('a');
+    enlaceTemporal.href = url;
   }
-   seleccionarArchivo(event: any) {
+
+  seleccionarArchivo(event: any) {
     const archivos: FileList = event.target.files;
-  
     // Agregar cada archivo al arreglo
     for (let i = 0; i < archivos.length; i++) {
       this.archivosSeleccionados.push(archivos[i]);
@@ -90,11 +92,6 @@ export class ArchivosComponent implements OnInit{
     }
   }
 
-  archivo = {
-    nombreArchivo: '',
-    base64textString: ''
-  }
-  
   _handleReaderLoaded(readerEvent: any) {
     var binaryString = readerEvent.target.result;
     this.archivo.base64textString = btoa(binaryString);
@@ -105,7 +102,6 @@ export class ArchivosComponent implements OnInit{
     
   onArchivoSeleccionado(event: any): void {
     const archivos: FileList = event.target.files;
-    // Agregar cada archivo al arreglo
     for (let i = 0; i < archivos.length; i++) {
       this.archivosSeleccionados.push(archivos[i]);
     }
@@ -189,6 +185,4 @@ export class ArchivosComponent implements OnInit{
   quitarArchivo(index: number): void {
     this.archivosSeleccionados.splice(index, 1);
   }
-  
-
 }

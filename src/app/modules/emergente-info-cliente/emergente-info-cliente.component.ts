@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
 import { EmergenteCargarFotoComponent } from '../emergente-cargar-foto/emergente-cargar-foto.component';
 import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
@@ -9,7 +8,6 @@ import { EmergenteAperturaPuertoSerialComponent } from '../emergente-apertura-pu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
 import { NgxSpinnerService } from "ngx-spinner";
-
 @Component({
   selector: 'app-emergente-info-cliente',
   templateUrl: './emergente-info-cliente.component.html',
@@ -24,7 +22,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
   huella: any;
   img = 'https://';
   dataSource: any;
-  //titulos de columnas de la tabla Reenovacion de membresias
   displayedColumns: string[] = [
     'ID',
     'Nombre',
@@ -37,44 +34,30 @@ export class EmergenteInfoClienteComponent implements OnInit{
   ];
   membresiaHisto: any;
   item: any;
-  //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorHistorialMembre', { static: true }) paginator!: MatPaginator;
-  // Manejar el contenido del formulario
   form: FormGroup;
-
 
   constructor(public dialog: MatDialog, private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private pagoService: PagoMembresiaEfectivoService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     @Inject(MAT_DIALOG_DATA)  public data: any) { 
-      // Agregar campos el formulario 
       this.form = this.fb.group({
         id_cliente: [this.data.idCliente, Validators.required],
         nombre: [this.data.nombre, Validators.required],
-       // apPaterno: [this.data.paterno, Validators.required],
-        //apMaterno: [this.data.materno, Validators.required],
         telefono: [this.data.telefono, Validators.required],
-        correo: [this.data.email, Validators.required],
-       // peso: [this.data.peso, Validators.required],
-        //estatura: [this.data.estatura, Validators.required]
-      });
-
-      
-    }   //public mensaje: string,
+        correo: [this.data.email, Validators.required]
+      }); 
+  }  
 
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
-  /*confirmado(): void {
-    this.dialogo.close(true);
-  }*/
 
   ngOnInit() {
     this.duracion = this.data.duracion + ' ' + 'días';
     this.photo = this.img+this.data.foto;
     this.huella = this.data.huella;
-
     this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
       this.membresiaHisto = respuesta;
       this.dataSource = new MatTableDataSource(this.membresiaHisto);
@@ -94,14 +77,13 @@ export class EmergenteInfoClienteComponent implements OnInit{
     return new Date(fechaLocal.getTime() + fechaLocal.getTimezoneOffset() * 60000);
   }
 
-
   abrirDialogFoto(data: any): void {
     this.dialogo.close(true);
     this.dialog.open(EmergenteCargarFotoComponent, {
       data: {
         clienteID: `${data.idCliente}`
       },
-      disableClose: true // Evita que el diálogo se cierre haciendo clic fuera de él
+      disableClose: true 
     })
     .afterClosed()
     .subscribe((cerrarDialogo: Boolean) => {
@@ -113,12 +95,9 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
-  // Apertura mat-dialog captura de huella
   abrirDialogCapturarHuella(data: any): void {
-   
   }
 
-  // Apertura mat-dialog apertura de puerto serial com
   abrirPuertoSerial(data: any): void {
     this.dialogo.close(true);
     this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
@@ -136,7 +115,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
   
-  // Actualizar datos de cliente
   actualizar(): void {
     if(!this.form.valid){
       return;

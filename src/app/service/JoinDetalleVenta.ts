@@ -40,7 +40,6 @@ export class JoinDetalleVentaService {
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
-        console.log("Datos Almacenados en cache");
         return this.getServiceDatos();
       })
     );

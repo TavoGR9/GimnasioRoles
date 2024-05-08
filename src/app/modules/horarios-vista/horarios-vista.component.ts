@@ -3,7 +3,6 @@ import { HorarioService } from "./../../service/horario.service";
 import { Router } from "@angular/router";
 import { Component, OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { HorarioEditarComponent } from "../horario-editar/horario-editar.component";
 import { MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import {
@@ -69,7 +68,6 @@ export class HorariosVistaComponent implements OnInit {
     private auth: AuthService,
     private http: ColaboradorService,
     private toastr: ToastrService,
-    private router: Router,
     private postalCodeService: PostalCodeService
   ) {
     this.formularioSucursales = this.formulario.group({
@@ -170,7 +168,6 @@ export class HorariosVistaComponent implements OnInit {
         this.personaForm.get("idGym")!.setValue(this.idGym);
       }
     });
-
     this.gimnasioService.optionSelected.subscribe((data) => {
       if (data) {
         this.optionToShow = data;
@@ -198,10 +195,8 @@ export class HorariosVistaComponent implements OnInit {
     const nombre = this.personaForm.value.nombreS;
     // Mensaje que se enviará
     const mensaje = `Hola ${nombre} estos son tus accesos... Correo: ${this.correoEmp}, Contraseña: ${this.pass}`;
-
     // Crear la URL para abrir WhatsApp con el mensaje predefinido
     const url = `https://wa.me/${numeroTelefonico}?text=${encodeURIComponent(mensaje)}`;
-
     // Abrir WhatsApp en una nueva ventana o pestaña
     window.open(url, "_blank");
   }
@@ -313,13 +308,13 @@ export class HorariosVistaComponent implements OnInit {
     });
   }
 
-  verHorario(idGimnasio: string): void {
+ /* verHorario(idGimnasio: string): void {
     const dialogRef = this.dialog.open(HorarioEditarComponent, {
       width: "60%",
       height: "90%",
       data: { idGimnasio: idGimnasio },
     });
-  }
+  }*/
 
    removerAcentos(texto: string): string {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -347,26 +342,21 @@ export class HorariosVistaComponent implements OnInit {
     const caracteresPermitidos =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let pass = "";
-
     for (let i = 0; i < longitud; i++) {
       const indiceAleatorio = Math.floor(
         Math.random() * caracteresPermitidos.length
       );
       pass += caracteresPermitidos.charAt(indiceAleatorio);
     }
-
     return pass;
   }
 
   enviarSucursal(): void {
     if (this.formularioSucursales.valid && this.personaForm.valid) {
-     
       const nombreS = this.personaForm.get("nombreS")?.value;
       const apPaterno = this.personaForm.get("apPaterno")?.value;
       const apMaterno = this.personaForm.get("apMaterno")?.value;
-
       const nombreCompleto = `${nombreS} ${apPaterno} ${apMaterno}`;
-
       this.personaForm.patchValue({
         nombre: nombreCompleto,
       });

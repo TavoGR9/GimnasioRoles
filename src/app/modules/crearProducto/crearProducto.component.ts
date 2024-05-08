@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  Inject,
-} from "@angular/core";
+import {ChangeDetectionStrategy,Component,OnInit,Inject} from "@angular/core";
 import {
   FormBuilder,
   FormControl,
@@ -14,20 +9,16 @@ import {
 } from "@angular/forms";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { DatePipe } from "@angular/common";
-import { MessageService } from "primeng/api"; /**siempre debes importarlo */
+import { MessageService } from "primeng/api"; 
 import { ToastrService } from "ngx-toastr";
 import { CategoriaService } from "../../service/categoria.service";
-import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatDialog } from "@angular/material/dialog";
-import { Router } from "@angular/router";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { ProductoService } from "../../service/producto.service";
-import { Observable, Subject } from "rxjs";
+import { Subject } from "rxjs";
 import { NgxSpinnerService } from "ngx-spinner";
-import { ChangeDetectorRef } from "@angular/core";
-import { NgZone } from "@angular/core";
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -41,7 +32,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     );
   }
 }
-
 @Component({
   selector: "crear-producto",
   templateUrl: "./crearProducto.component.html",
@@ -72,21 +62,16 @@ export class CrearProductoComponent implements OnInit {
   constructor(
     public dialogo: MatDialogRef<CrearProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
-    private cdr: ChangeDetectorRef,
     private toastr: ToastrService,
-    private ngZone: NgZone,
     private datePipe: DatePipe,
     private fb: FormBuilder,
     private categoriaService: CategoriaService,
     private auth: AuthService,
     private productoService: ProductoService,
-    private httpClient: HttpClient,
-    private router: Router,
     public dialog: MatDialog,
     private spinner: NgxSpinnerService
   ) {
     this.fechaCreacion = this.obtenerFechaActual();
-    // formulario
     this.form = this.fb.group({
       detalleUnidadMedida: ["pza"],
       precioCompra: [0],
@@ -113,14 +98,9 @@ export class CrearProductoComponent implements OnInit {
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      this.listaTabla();
     });
-  }
-
-  listaTabla() {
   }
 
   getSSdata(data: any) {
@@ -140,13 +120,11 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
-  
   validarNumeroDecimal(event: any) {
     const input = event.target.value;
     // Patrón para aceptar números decimales
     const pattern = /^\d+(\.\d{0,2})?$/;
     if (!pattern.test(input)) {
-      // Si el valor no coincide con el patrón, se elimina el último carácter
       this.form.get("cantidadUnidades")?.setValue(input.slice(0, -1));
     }
   }
@@ -160,20 +138,6 @@ export class CrearProductoComponent implements OnInit {
     this.dialogo.close(true);
   }
 
-  onFileSelect(event: any) {
-    for (let file of event.files) {
-      this.uploadedFiles.push(file);
-    }
-    // event.files contiene la lista de archivos seleccionados
-    const selectedFiles = event.files;
-    // Obtén el valor actual del control 'files' en el formulario
-    const currentFiles = this.form.get("files")?.value || [];
-    // Agrega los nuevos archivos al valor actual
-    const updatedFiles = [...currentFiles, ...selectedFiles];
-    // Actualiza el valor del control 'files' en el formulario con la nueva lista de archivos
-    this.form.patchValue({ files: updatedFiles });
-  }
-
   buscarCategorias() {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria().subscribe({
@@ -181,9 +145,7 @@ export class CrearProductoComponent implements OnInit {
         const categoriasU = new Set(
           respuesta.categorias.map((categoria: any) => categoria.nombreCategoria)
         );
-  
         this.categorias = Array.from(categoriasU) as string[];
-  
         this.filteredCategorias = this.categorias.filter(
           (categoria) =>
             !saborIngresado ||
@@ -200,9 +162,7 @@ export class CrearProductoComponent implements OnInit {
         const subCategoriasU = new Set(
           respuesta.subCategoria.map((subCategoria: any) => subCategoria.nombreProducto)
         );
-  
         this.subcategorias = Array.from(subCategoriasU) as string[];
-  
         this.filteredSubCategorias = this.subcategorias.filter(
           (subcategoria) =>
             !subCIngresado ||
@@ -219,9 +179,7 @@ export class CrearProductoComponent implements OnInit {
         const marcasU = new Set(
           respuesta.marcas.map((marca: any) => marca.marca)
         );
-  
         this.marcas = Array.from(marcasU) as string[];
-  
         this.filteredMarcas = this.marcas.filter(
           (marca) =>
             !marcaIngresado ||
@@ -231,8 +189,6 @@ export class CrearProductoComponent implements OnInit {
     });
   }
   
-
-
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);
@@ -534,19 +490,7 @@ export class CrearProductoComponent implements OnInit {
                                       );
                                     },
                                   });
-
-                                //agregar producto
-
                                 this.spinner.hide();
-                               /* const dialogRefConfirm = this.dialog.open(
-                                  MensajeEmergentesComponent,
-                                  {
-                                    data: `Se agregó exitosamente`,
-                                  }
-                                );
-                                dialogRefConfirm
-                                  .afterClosed()
-                                  .subscribe((result) => {});*/
                               });
                           }
                         });
@@ -639,8 +583,6 @@ export class CrearProductoComponent implements OnInit {
                             this.categoriaService
                               .agregarMarca(formMarca)
                               .subscribe((respuestaMarca) => {
-                                //agregar producto
-
                                 const formularioP = {
                                   idProducto:subCategoriaExistente.producto.id_producto,
                                   detalleUnidadMedida: "pza",
@@ -677,7 +619,6 @@ export class CrearProductoComponent implements OnInit {
                                                 this.productoSubject.next();
                                                 this.dialogo.close(true);
                                               } else {
-                                                // Puedes agregar lógica adicional aquí si es necesario
                                               }
                                             }
                                           );
@@ -701,17 +642,7 @@ export class CrearProductoComponent implements OnInit {
                                       );
                                     },
                                   });
-
                                 this.spinner.hide();
-                                /*const dialogRefConfirm = this.dialog.open(
-                                  MensajeEmergentesComponent,
-                                  {
-                                    data: `Se agregó exitosamente`,
-                                  }
-                                );
-                                dialogRefConfirm
-                                  .afterClosed()
-                                  .subscribe((result) => {});*/
                               });
                           }
                         });
@@ -750,7 +681,6 @@ export class CrearProductoComponent implements OnInit {
                                   precioCaja: this.form.value.precioCaja,
                                   cantidadMayoreo:this.form.value.cantidadMayoreo,
                                 };
-
                                 this.productoService
                                   .creaProducto(formularioP)
                                   .subscribe({
@@ -768,7 +698,6 @@ export class CrearProductoComponent implements OnInit {
                                                 this.productoSubject.next();
                                                 this.dialogo.close(true);
                                               } else {
-                                                // Puedes agregar lógica adicional aquí si es necesario
                                               }
                                             }
                                           );
@@ -792,13 +721,10 @@ export class CrearProductoComponent implements OnInit {
                                       );
                                     },
                                   });
-
-                                //agregar producto
                               } else {
                                 const formMarca = {
                                   marcaP: this.form.value.marcaP,
                                 };
-
                                 this.categoriaService
                                   .agregarMarca(formMarca)
                                   .subscribe((respuestaMarca) => {
@@ -841,7 +767,6 @@ export class CrearProductoComponent implements OnInit {
                                                     this.productoSubject.next();
                                                     this.dialogo.close(true);
                                                   } else {
-                                                    // Puedes agregar lógica adicional aquí si es necesario
                                                   }
                                                 }
                                               );
@@ -867,18 +792,7 @@ export class CrearProductoComponent implements OnInit {
                                           );
                                         },
                                       });
-                                    //agregar producto
-
                                     this.spinner.hide();
-                                   /* const dialogRefConfirm = this.dialog.open(
-                                      MensajeEmergentesComponent,
-                                      {
-                                        data: `Se agregó exitosamente`,
-                                      }
-                                    );
-                                    dialogRefConfirm
-                                      .afterClosed()
-                                      .subscribe((result) => {});*/
                                   });
                               }
                             });

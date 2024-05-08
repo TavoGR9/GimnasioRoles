@@ -13,9 +13,7 @@ export class ResetPasswordService {
 
   constructor(private clienteHttp: HttpClient) {}
 
-  enviarMail(email: string): Observable<any> {
-    console.log(this.API + 'nuevaContra.php?solicitaNuevaPass', email);
-    
+  enviarMail(email: string): Observable<any> {    
     return this.clienteHttp.post(this.API + 'nuevaContra.php?solicitaNuevaPass', email);
   }
 

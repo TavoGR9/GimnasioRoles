@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { PagoMembresiaEfectivoService } from 'src/app/service/pago-membresia-efectivo.service';
+import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 
 @Component({
   selector: 'app-emergente-apertura-puerto-serial',

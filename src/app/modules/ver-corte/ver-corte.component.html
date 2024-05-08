@@ -9,7 +9,7 @@
       <div class="container mt-4">
          <h2>VENTAS</h2>
          <label style="font-size: medium;">Reporte que muestra las ventas del gimnasio por fechas</label> <br><br>
-         <button (click)="ventas()"  class="boton-transparente"><img src="https://cdn-icons-png.flaticon.com/512/6822/6822288.png" style="width: 20%; margin-right: 10px;">Nueva venta</button>
+         <button [disabled]="!habilitarBoton" (click)="ventas()"  class="boton-transparente"><img src="https://cdn-icons-png.flaticon.com/512/6822/6822288.png" style="width: 20%; margin-right: 10px;">Nueva venta</button>
          <div >
             <br>
             <div class="row">
@@ -34,13 +34,11 @@
                         <span class="download-text">Descargar Reporte</span>
                      </button>
                      <mat-menu #menu2="matMenu">
-                        <!--<button mat-menu-item (click)="descargarPDF2()">.pdf</button>-->
                         <button mat-menu-item (click)="descargarExcel2()">.xlsx</button>
                      </mat-menu>
                   </div>
                </div>
             </div>
-            
             <div class="total-ventas">
                <p class="total-label">Total: <strong style="margin-left: 20px;">{{ totalVentas | currency:'USD':'symbol':'1.2-2' }}</strong></p>
                <p class="total-amount"></p>

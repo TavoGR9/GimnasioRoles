@@ -33,6 +33,7 @@ export class planComponent implements OnInit {
   isLoading: boolean = true; 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = ['title', 'details','price','actions'];
+  habilitarBoton: boolean = false;
 
   constructor(
     private membresiaService: MembresiaService,
@@ -42,7 +43,10 @@ export class planComponent implements OnInit {
 
   ngOnInit(): void {
     // this.membresiaService.comprobar();
-    // this.auth.comprobar();
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
+
     this.membresiaService.optionShow.next(4);
     this.membresiaService.optionShow.subscribe((option) => {
       if(option){

@@ -1,11 +1,8 @@
 <div>
     <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
-
     <h1 class="title" *ngIf="optionToShow == 1" mat-dialog-title>Agregar membresia</h1>
     <h1 class="title" *ngIf="optionToShow == 2"  mat-dialog-title>Servicios de membresia</h1>
     <h1 class="title" *ngIf="optionToShow == 3" mat-dialog-title >Editar membresia</h1>
-
-
     <div class="services_table" *ngIf="optionToShow == 2 || optionToShow == 5" mat-dialog-content>
         <h2 *ngIf="dataSource && dataSource.data && dataSource.data.length > 0">{{dataSource.data[0].titulo}}</h2>
         <div *ngIf="dataSource.data.length == 0" class="center-container">
@@ -29,14 +26,9 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
     </div>
-
-
-
-
     <div mat-dialog-content>
         <div  *ngIf="optionToShow == 1 || optionToShow == 3">
             <div>
-            <!--<h1 class="title">{{formTittle}}</h1>-->
             <form [formGroup]="formPlan">
                 <div >
                 <div style="color:red"></div>
@@ -49,7 +41,6 @@
                             <label>Precio:</label>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-sm-6">
                             <p>
@@ -74,8 +65,7 @@
                                         Solo se aceptan números.
                                       </mat-error>
                                 </mat-form-field>
-                            </p>
-                            
+                            </p> 
                         </div>
                     </div>
                     <div class="row">
@@ -101,9 +91,6 @@
                                         La duracion es requerida.
                                       </mat-error>
                                 </mat-form-field>
-
-
-                           
                             </p>
                             <p>
                                 <label for="detalles" class="large-text">Detalles:</label>
@@ -117,59 +104,28 @@
                             </p>
                         </div>
                         <div class="col-sm-6">
-                          <!--  <p>
-                                <mat-form-field required appearance="outline" style="width: 95%;">
-                                    <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar servicios</mat-label>
-                                    <mat-select formControlName="servicioseleccionado" multiple (selectionChange)="$event.value ? setPrice($event.value) : null">
-                                        
-                                        <ng-container *ngFor="let servicio of servicios" style="margin-left: 100px;">
-                                            <mat-option *ngIf="optionToShow == 1 || optionToShow == 3 && dataToUpdate.tipo_membresia == 1 || dataToUpdate.tipo_membresia == 0" [value]="servicio">
-                                              {{servicio.nombre_servicio}}
-                                            </mat-option>
-                                          </ng-container>
-                                      
-                                    </mat-select>
-                                    <mat-error *ngIf="isFieldInvalid('servicioseleccionado', 'required')">
-                                        los servicios son requeridos.
-                                      </mat-error>
-                                </mat-form-field>
-                            </p>-->
                             <p *ngIf="servicios && servicios.length > 0; else noServicios">
                                 <mat-form-field required appearance="outline" style="width: 95%;">
                                   <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar servicio</mat-label>
-                                  
                                   <mat-select formControlName="servicioseleccionado" multiple="false">
                                     <mat-option *ngFor="let servicio of servicios" [value]="servicio">
                                       {{servicio.nombre_servicio}}
                                     </mat-option>
                                   </mat-select>
-                                  
                                   <mat-error *ngIf="isFieldInvalid('servicioseleccionado', 'required')">
                                     El servicio es requerido.
                                   </mat-error>
                                 </mat-form-field>
-                                
                             </p>
                             <p *ngIf="servicios && servicios.length > 0">Agrega otro servicio:<a href="javascript:void(0)" (click)="abrirDialogo()">Agregar</a></p>
                             <ng-template #noServicios>
                                 <p>No hay servicios disponibles.</p>
                                 <p>Agrega tu servicio: <a href="javascript:void(0)" (click)="abrirDialogo()">Agregar</a></p>
                             </ng-template>                       
-                     
-
-                            <!--<p><label  class="large-text">Estatus:</label></p>
-                            <p>
-                                    <mat-radio-group aria-label="Select an option" formControlName="status">
-                                        <mat-radio-button value=1>Activo</mat-radio-button>
-                                        <mat-radio-button value=0>Inactivo</mat-radio-button>
-                                      </mat-radio-group>
-                            </p>-->
                             <br/>
                             <br/>  
                         </div>
-                       
-                    </div>
-                          
+                    </div>     
                 </div>
             </form>
         </div>
@@ -194,7 +150,6 @@
                                           </mat-error>
                                     </mat-form-field>
                                 </p>
-
                                 <p>
                                     <label for="precio" class="large-text" style="margin-right: 35px;margin-left: 45px;">Precio:</label>
                                     <mat-form-field appearance="outline" class="inputs_properties" style="margin-right: 35px;" required>

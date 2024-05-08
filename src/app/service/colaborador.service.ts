@@ -52,10 +52,8 @@ export class ColaboradorService {
     agregarEmpleado(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "empleado.php?insertar=1", datosEmpleado).pipe(
             tap(dataResponse => {
-            console.log("Data Response Service: ", dataResponse);
             }),
             catchError(error => {
-              console.log("Datos Almacenados en cache");
               this.saveDataToIndexedDB(datosEmpleado);
               const resultData = { success: '2' };
               return of(resultData);        
@@ -82,10 +80,8 @@ export class ColaboradorService {
     agregarUsuario(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuario", datosEmpleado).pipe(
             tap(dataResponse => {
-            console.log("Data Response Service: ", dataResponse);
             }),
             catchError(error => {
-              console.log("Datos Almacenados en cache");
               this.saveDataToIndexedDBC(datosEmpleado);
               const resultData = { success: '2' };
               return of(resultData);        
@@ -152,7 +148,6 @@ export class ColaboradorService {
                 this.saveDataToIndexedDB1(dataResponse);
             }),
             catchError(error => {
-                console.log("Datos Almacenados en cache");
                 // Intenta obtener los datos de IndexedDB en caso de error
                 return this.getDataFromIndexedDB();
             })
@@ -205,9 +200,6 @@ export class ColaboradorService {
       }
 
       actualizarEstatus(idGimnasio: any, estatus: any, correo:any): Observable<any> {
-        console.log(idGimnasio, "idGimnasio");
-        console.log(estatus, "estatus");
-        console.log(correo, "correo");
         let body = new URLSearchParams();
         body.set('idEmpleado', idGimnasio);
         body.set('correo', correo);

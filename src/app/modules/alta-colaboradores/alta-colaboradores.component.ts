@@ -27,6 +27,7 @@ export class AltaColaboradoresComponent {
   message: string = '';
   currentUser: string = '';
   idGym!: number;
+  matcher = new MyErrorStateMatcher();
 
   constructor (private fb: FormBuilder, 
     public dialog: MatDialog,
@@ -49,16 +50,8 @@ export class AltaColaboradoresComponent {
     })    
   }
 
-  matcher = new MyErrorStateMatcher();
   ngOnInit():void{
     if (this.isAdmin()){
-      // this.http.comboDatosGym(this.auth.idGym.getValue()).subscribe({
-      //   next: (resultData: any) => {
-      //     this.sucursales = resultData;
-      //     const idGimnasio = resultData[0].idBodega;
-      //     this.form.get('Gimnasio_idGimnasio')?.setValue(idGimnasio);
-      //   }
-      // });
     }
     if(this.isSupadmin()){
       this.http.comboDatosAllGym().subscribe({
@@ -67,13 +60,11 @@ export class AltaColaboradoresComponent {
         }
       });
     }
-
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       if (this.form.get('idGym') !== null) {
         this.form.get('idGym')!.setValue(this.idGym);
       }      
-      //console.log("OOOOOO",this.idGym)
     }); 
   }
 
@@ -92,7 +83,6 @@ export class AltaColaboradoresComponent {
   }
 
   enviarMensajeWhatsApp() {
-    // Número de teléfono al que se enviará el mensaje
     const telefono = this.form.value.telefono;
     const correo = this.form.value.email;
     const password = this.form.value.pass;
@@ -100,7 +90,6 @@ export class AltaColaboradoresComponent {
     const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
     // Crear la URL para abrir WhatsApp con el mensaje predefinido
     const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-    // Abrir WhatsApp en una nueva ventana o pestaña
     window.open(url, '_blank');
   }
 
@@ -133,9 +122,7 @@ export class AltaColaboradoresComponent {
             .afterClosed()
             .subscribe((cerrarDialogo: boolean) => {
               if (cerrarDialogo) {
-                // Realizar alguna acción si se cierra el diálogo
               } else {
-                // Realizar alguna acción si no se cierra el diálogo
               }
             });
             this.form.markAsPristine(); 
@@ -150,9 +137,7 @@ export class AltaColaboradoresComponent {
             .afterClosed()
             .subscribe((cerrarDialogo: boolean) => {
               if (cerrarDialogo) {
-                // Realizar alguna acción si se cierra el diálogo
               } else {
-                // Realizar alguna acción si no se cierra el diálogo
               }
             });
             this.form.markAsPristine(); 
@@ -160,7 +145,6 @@ export class AltaColaboradoresComponent {
           }
         },
         error: (error) => {
-          console.log(error, "error");
           this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
         }
       });
@@ -178,10 +162,8 @@ export class AltaColaboradoresComponent {
     })
       .afterClosed()
       .subscribe((cerrarDialogo:Boolean) => {
-        if(cerrarDialogo){
-          
+        if(cerrarDialogo){ 
         } else {
-
         }
       });
   }

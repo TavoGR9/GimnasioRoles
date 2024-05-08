@@ -50,7 +50,6 @@ export class DetalleVentaService {
   }
 
   updateExistencias(data:any):Observable<any>{
-    console.log(data, "data");
     return this.clienteHttp.post(this.API+"producto_bod.php?updateExistencias",data)
   }
 

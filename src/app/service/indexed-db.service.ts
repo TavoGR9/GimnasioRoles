@@ -261,7 +261,6 @@ async getAgregarEmpleadoData(key: string) {
 
 async VaciarAgregarEmpleadoData(){
   await this.AgregarEmpleadoDataTable.clear();
-  //return console.log("Eliminados");
 }
 
 //servicio

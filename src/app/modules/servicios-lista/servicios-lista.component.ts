@@ -33,6 +33,7 @@ export class ServiciosListaComponent implements OnInit{
   dialogRef: any;
   isLoading: boolean = true; 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  habilitarBoton: boolean = false;
 
   constructor(
     public dialog: MatDialog,
@@ -44,15 +45,18 @@ export class ServiciosListaComponent implements OnInit{
 
   ngOnInit(): void {
     // this.gimnasioService.comprobar();
-    // this.auth.comprobar();
-      this.currentUser = this.auth.getCurrentUser();
-      if (this.currentUser) {
-        this.getSSdata(JSON.stringify(this.currentUser));
-      }
-      this.auth.idGym.subscribe((data) => {
-        this.idGym = data;
-        this.listaTabla(); 
-      });  
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
+
+    this.currentUser = this.auth.getCurrentUser();
+    if (this.currentUser) {
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaTabla(); 
+    });  
   }
   
   loadData() {
@@ -80,16 +84,6 @@ export class ServiciosListaComponent implements OnInit{
   }
 
   listaTabla() {
-    /*this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
-      console.log(res, "rees");
-      if (Array.isArray(res)) {
-        this.services = res;
-        this.dataSource = new MatTableDataSource(this.services);
-        this.loadData(); 
-      } else {
-      }
-    });*/
-
     this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {     
       if(res[2].success == 2){
         const combinedArray = res[0].concat(res[1]);

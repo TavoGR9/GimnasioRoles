@@ -40,11 +40,14 @@ export class MembresiasComponent implements OnInit {
     "duration",
     "actions",
   ];
+  habilitarBoton: boolean = false;
 
   ngOnInit(): void {
     // this.membresiaService.comprobar();
-    // this.auth.comprobar();
     // this.gimnasioService.comprobar();
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));

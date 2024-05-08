@@ -1,16 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { forkJoin } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { GimnasioService } from '../../service/gimnasio.service';
-import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { FormGroup, FormBuilder, Validators, FormGroupDirective, NgForm, FormArray , FormControl} from "@angular/forms";
+import { FormGroup, FormBuilder, Validators, FormArray} from "@angular/forms";
 import { AbstractControl } from '@angular/forms';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { HorarioService } from '../../service/horario.service';
 import { NgxSpinnerService } from "ngx-spinner";
-
 class Horario {
   constructor(
     public diaSemana: string,
@@ -19,7 +14,6 @@ class Horario {
     public Gimnasio_idGimnasio: string
   ) {}
 }
-
 @Component({
   selector: 'app-horarios',
   templateUrl: './horarios.component.html',
@@ -35,18 +29,14 @@ export class HorariosComponent implements OnInit {
     public dialogo: MatDialogRef<HorariosComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public formularioHorario: FormBuilder,
-    private gimnasioService: GimnasioService,
     private HorarioService: HorarioService,
-    private router: Router,
     private spinner: NgxSpinnerService,
     public dialog: MatDialog,
   ) {
-    this.idGimnasio = data.idGimnasio; // Accede a idGimnasio desde los datos
+    this.idGimnasio = data.idGimnasio; 
     this.formularioHorarios = this.formularioHorario.group({
       horarios: this.formularioHorario.array([]),
     });
-
-    // Agrega horarios iniciales
     ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'].forEach(diaSemana => this.agregarHorario(diaSemana));
   }
 
@@ -54,7 +44,6 @@ export class HorariosComponent implements OnInit {
   }
 
   agregarHorario(diaSemana: string): void {
-   
     const horarioFormGroup = this.formularioHorario.group({
       diaSemana: [diaSemana],
       horaEntrada: [""],
@@ -78,8 +67,6 @@ export class HorariosComponent implements OnInit {
         console.error('Error al consultar el horario:', error);
       }
     );
-    
-  
   }
   
   getHorariosControls(): AbstractControl[] {
@@ -87,11 +74,8 @@ export class HorariosComponent implements OnInit {
     return horariosArray.controls;
   }
   
-  
   enviarHorario(): void {
     const horarios: Horario[] = this.formularioHorarios.value.horarios;
-  
-    // Itera sobre los horarios y establece los valores predeterminados si las horas están en blanco
     horarios.forEach(horario => {
       if (!horario.horaEntrada) {
         horario.horaEntrada = '00:00:00';
@@ -101,7 +85,6 @@ export class HorariosComponent implements OnInit {
         horario.horaSalida = '00:00:00';
       }
     });
-
     // Verifica si el formulario es válido
     if (this.formularioHorarios.valid) {
       this.spinner.show();

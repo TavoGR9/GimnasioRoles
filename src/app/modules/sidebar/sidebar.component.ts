@@ -5,9 +5,7 @@ import { SidebarService } from '../../service/sidebar.service';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatDrawerMode } from '@angular/material/sidenav';
 import { RegistroComponent } from '../registro/registro.component';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { EmergenteAccesosComponent } from '../emergente-accesos/emergente-accesos.component';
-import { EmergenteAperturaPuertoSerialComponent } from '../emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-sidebar',
