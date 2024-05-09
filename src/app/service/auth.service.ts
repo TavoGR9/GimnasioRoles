@@ -123,8 +123,45 @@ list_sucursales():Observable<any> {
 
 //Consultar informacion de sucursales
 chart_sucursales(data: any):Observable<any> {
-  return this.clienteHttp.post<dataChart>(this.API + 'chart_sucursales.php', data, { headers: this.httpHeaders });
+  return this.clienteHttp.post<dataChart>(this.API + 'chart_sucursales.php', data, { headers: this.httpHeaders }).pipe(
+    tap(dataResponse => {
+        this.saveDataToIndexedDB1(dataResponse);
+    }),
+    catchError(error => {
+        // Intenta obtener los datos de IndexedDB en caso de error
+        return this.getDataFromIndexedDB();
+    })
+);
 }
+
+private saveDataToIndexedDB1(data: any) {
+  // Guarda los datos en IndexedDB
+  this.indexedDBService.saveReporte1Data('Reporte1DataTable', data);
+}
+
+getDataFromIndexedDB() {
+  // Intenta obtener los datos de IndexedDB
+  return new Observable(observer => {
+      this.indexedDBService.getReporte1Data('Reporte1DataTable').then(data => {
+          if (data && data.length > 0) {
+              let maxId = -1;
+              let lastData: any;
+              data.forEach((record: any) => {
+                if (record.id > maxId) {
+                  maxId = record.id;
+                  lastData = record.data;
+                }
+              });
+              observer.next(lastData); // Emitir el último dato encontrado
+            } else {
+              observer.next(null); // Emitir null si no hay datos en IndexedDB
+            }
+            observer.complete();
+          }).catch(error => {
+            observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+          });
+      });
+  }
 
 getUserData(): any | null {
   const localData = localStorage.getItem('userData');

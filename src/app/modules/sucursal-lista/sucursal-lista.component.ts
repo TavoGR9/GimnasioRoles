@@ -27,7 +27,8 @@ export class SucursalListaComponent implements OnInit {
   currentUser: string = "";
   dataSource = new MatTableDataSource<any>();
   isLoading: boolean = true; 
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  habilitarBoton: boolean = false;
 
   constructor(
     private gimnasioService: GimnasioService,
@@ -52,8 +53,10 @@ export class SucursalListaComponent implements OnInit {
     // this.auth.comprobar();
     // this.colaborador.comprobar();
     // this.postalCodeService.comprobar();
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
 
-    
       this.currentUser = this.auth.getCurrentUser();
       if (this.currentUser) {
         this.getSSdata(JSON.stringify(this.currentUser));
@@ -61,18 +64,15 @@ export class SucursalListaComponent implements OnInit {
       this.gimnasioService.obternerPlan().subscribe((data) => {
         this.gimnasio = data;
         this.dataSource = new MatTableDataSource(this.gimnasio);
-        this.dataSource.paginator = this.paginator;
-      });
-   
-
-    this.loadData();
+        this.loadData();
+      }); 
   }
 
   loadData() {
     setTimeout(() => {
-      // Una vez que los datos se han cargado, establece isLoading en false
       this.isLoading = false;
-    }, 1000); // Este valor representa el tiempo de carga simulado en milisegundos
+      this.dataSource.paginator = this.paginator;
+    }, 1000);
   }
 
   onToggle(event: Event, idGimnasio: any) {
