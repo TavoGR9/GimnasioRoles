@@ -9,7 +9,7 @@
         <div class="container mt-4">
             <h2 mat-dialog-title class="mb-3">SUCURSALES</h2>
             <div style="text-align: right; margin-bottom: 50px;">
-                <button mat-raised-button (click)="agregarSucursal()" style="background-color: #fd9727; font-size: 16px;">
+                <button mat-raised-button [disabled]="!habilitarBoton" (click)="agregarSucursal()" style="background-color: #fd9727; font-size: 16px;">
                     <mat-icon>add</mat-icon> AGREGAR SUCURSAL
                 </button>
             </div>
@@ -41,7 +41,7 @@
                         <ng-container matColumnDef="actions">
                             <th mat-header-cell *matHeaderCellDef>Acciones</th>
                             <td mat-cell *matCellDef="let item">
-                                <button mat-icon-button color="primary" (click)="editarSucursal(item.id_bodega)">
+                                <button [disabled]="!habilitarBoton" mat-icon-button color="primary" (click)="editarSucursal(item.id_bodega)">
                                     <mat-icon>edit</mat-icon>
                                 </button>
                             </td>
@@ -49,7 +49,7 @@
                         <ng-container matColumnDef="ubicacion">
                             <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Ubicacion</th>
                             <td mat-cell *matCellDef="let item">
-                                <button class="buton_location" (click)="verUbicacion(item)">
+                                <button [disabled]="!habilitarBoton" class="buton_location" (click)="verUbicacion(item)">
                                     <mat-icon>
                                         location_on
                                     </mat-icon>
@@ -60,7 +60,7 @@
                             <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Activar</th>
                             <td mat-cell *matCellDef="let item; let i = index">
                                 <div class="toggle-container">
-                                    <input type="checkbox" id="toggle{{item.idBodega}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.id_bodega)">
+                                    <input type="checkbox" id="toggle{{item.idBodega}}{{i}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="onToggle($event, item.id_bodega)" [disabled]="!habilitarBoton">
                                     <label for="toggle{{item.idBodega}}{{i}}" class="toggle-label"></label>
                                 </div>
                             </td>
@@ -69,7 +69,7 @@
                             <th mat-header-cell style="margin: 0;" *matHeaderCellDef>Documentación</th>
                             <td mat-cell *matCellDef="let item">
                                 <!--<button mat-raised-button style="background-color: #fd9727; font-size: 14px; margin-right: 10px;" (click)="agregarHorario(item.idGimnasio)">+Agregar horario</button>-->
-                                <button mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: white;" (click)="agregarDocumentos(item.id_bodega, item.nombreBodega)">Agregar documentos</button>
+                                <button [disabled]="!habilitarBoton" mat-raised-button style="background-color: #0a0a0a; font-size: 14px; color: white;" (click)="agregarDocumentos(item.id_bodega, item.nombreBodega)">Agregar documentos</button>
                             </td>
                         </ng-container>
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -41,8 +41,45 @@ export class GimnasioService {
   //   });
   // }
 
-  obternerPlan(): Observable<any[]>{
-    return this.clienteHttp.get<any[]>(this.API+"bodega.php?consultar");
+  private saveDataToIndexedDB1(data: any) {
+    // Guarda los datos en IndexedDB
+    this.indexedDBService.saveSucursalesData('Sucursales', data);
+}
+
+getDataFromIndexedDB() {
+  // Intenta obtener los datos de IndexedDB
+  return new Observable(observer => {
+      this.indexedDBService.getSucursalesData('Sucursales').then(data => {
+          if (data && data.length > 0) {
+              let maxId = -1;
+              let lastData: any;
+              data.forEach((record: any) => {
+                if (record.id > maxId) {
+                  maxId = record.id;
+                  lastData = record.data;
+                }
+              });
+              observer.next(lastData); // Emitir el último dato encontrado
+            } else {
+              observer.next(null); // Emitir null si no hay datos en IndexedDB
+            }
+            observer.complete();
+          }).catch(error => {
+            observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+          });
+      });
+  }
+
+  obternerPlan(){
+    return this.clienteHttp.get<any[]>(this.API+"bodega.php?consultar").pipe(
+      tap(dataResponse => {
+          this.saveDataToIndexedDB1(dataResponse);
+      }),
+      catchError(error => {
+          // Intenta obtener los datos de IndexedDB en caso de error
+          return this.getDataFromIndexedDB();
+      })
+  );
   }
 
   getCategoriasSubject() {

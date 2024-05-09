@@ -139,7 +139,6 @@ export class ColaboradorService {
     //     let params = 'idGym=' + idGym;
     //     return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
     //   }
-
     MostrarRecepcionistas(idGym: any) {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'idGym=' + idGym;

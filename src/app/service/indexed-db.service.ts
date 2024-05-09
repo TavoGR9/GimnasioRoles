@@ -21,6 +21,12 @@ export class IndexedDBService extends Dexie {
   private ProductosVendidosDataTable: Dexie.Table<any, string>;
   private ObtenerActivosDataTable: Dexie.Table<any, string>;
   private InventarioDataTable: Dexie.Table<any, string>;
+  private SucursalesDataTable: Dexie.Table<any, string>;
+
+  private Reporte1DataTable: Dexie.Table<any, string>;
+  private Reporte2DataTable: Dexie.Table<any, string>;
+  private Reporte3DataTable: Dexie.Table<any, string>;
+
   private AgregarEmpleadoDataTable: Dexie.Table<any, string>;
   /////////////////////////////////
   private AgregarServicioDataTable: Dexie.Table<any, string>;
@@ -51,6 +57,12 @@ export class IndexedDBService extends Dexie {
       ProductosVendidos: '++id,key,data',
       ObtenerActivos: '++id,key,data',
       Inventario: '++id,key,data',
+      Sucursales: '++id,key,data',
+
+      Reporte1DataTable: '++id,key,data',
+      Reporte2DataTable: '++id,key,data',
+      Reporte3DataTable: '++id,key,data',
+
       AgregarEmpleado: '++id,key,data',
       /////////////////////
       AgregarServicio: '++id,key,data',
@@ -78,6 +90,12 @@ export class IndexedDBService extends Dexie {
     this.ProductosVendidosDataTable = this.table("ProductosVendidos");
     this.ObtenerActivosDataTable = this.table ("ObtenerActivos");
     this.InventarioDataTable = this.table ('Inventario');
+    this.SucursalesDataTable = this.table ('Sucursales');
+
+    this.Reporte1DataTable = this.table ("Reporte1DataTable");
+    this.Reporte2DataTable = this.table ('Reporte2DataTable');
+    this.Reporte3DataTable = this.table ('Reporte3DataTable');
+
     this.AgregarEmpleadoDataTable = this.table('AgregarEmpleado');
     /////////////////////
     this.AgregarServicioDataTable = this.table('AgregarServicio');
@@ -124,6 +142,53 @@ export class IndexedDBService extends Dexie {
     .equals(key)
     .toArray();
   }
+
+  async saveSucursalesData(key: string, data: any) {
+    await this.SucursalesDataTable.put({ key, data });
+  }
+
+  async getSucursalesData(key: string) {
+    return await this.table('Sucursales')
+    .where('key')
+    .equals(key)
+    .toArray();
+  }
+
+//
+  async saveReporte1Data(key: string, data: any) {
+    await this.Reporte1DataTable.put({ key, data });
+  }
+
+  async getReporte1Data(key: string) {
+    return await this.table('Reporte1DataTable')
+    .where('key')
+    .equals(key)
+    .toArray();
+  }
+
+  ////
+  async saveReporte2Data(key: string, data: any) {
+    await this.Reporte2DataTable.put({ key, data });
+  }
+
+  async getReporte2Data(key: string) {
+    return await this.table('Reporte2DataTable')
+    .where('key')
+    .equals(key)
+    .toArray();
+  }
+  //
+  async saveReporte3Data(key: string, data: any) {
+    await this.Reporte3DataTable.put({ key, data });
+  }
+
+  async getReporte3Data(key: string) {
+    return await this.table('Reporte3DataTable')
+    .where('key')
+    .equals(key)
+    .toArray();
+  }
+  //
 
   async saveMembresiaData(key: string, data: any) {
     await this.MembresiaDataTable.put({ key, data });
