@@ -85,19 +85,31 @@ export class ServiciosListaComponent implements OnInit{
 
   listaTabla() {
     this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {     
-      if(res[2].success == 2){
+      /*if (res[2] && res[2].success === 2) { 
         const combinedArray = res[0].concat(res[1]);
-        this.dataSource = new MatTableDataSource(combinedArray);
-        this.loadData(); 
-      } else {
+        if (Array.isArray(combinedArray)) { // Verificar si combinedArray es un array
+          this.dataSource = new MatTableDataSource(combinedArray);
+          this.loadData(); 
+        } else {
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 1000); 
+        }
+      } else {*/
         this.services = res;
-        this.dataSource = new MatTableDataSource(this.services);
-        this.loadData(); 
-       }
+        if (Array.isArray(this.services)) { // Verificar si this.services es un array
+          this.dataSource = new MatTableDataSource(this.services);
+          this.loadData(); 
+        } else {
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 1000); 
+        }
+      
     });
-    
-    
   }
+  
+  
   
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

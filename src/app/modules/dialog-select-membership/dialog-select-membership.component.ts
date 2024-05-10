@@ -149,6 +149,7 @@ export class DialogSelectMembershipComponent implements OnInit {
               this.membresiaService
                 .consultarPlanGym(this.dataToUpdate.id)
                 .subscribe((respuesta) => {
+                  
                   if (respuesta) {
                     this.plan = respuesta;
                     const serviciosPlan = this.plan[0].servicios.map(
@@ -388,11 +389,7 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   getServices() {
     this.GimnasioService.getServicesForId(this.idGym).subscribe((respuesta) => {
-      if(respuesta[2].success == 2){
-        this.servicios = respuesta[0];
-      } else {
         this.servicios = respuesta;
-       }
     });
   }
 }

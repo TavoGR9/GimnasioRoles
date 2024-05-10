@@ -209,8 +209,6 @@ export class RegistroComponent implements OnInit {
         observer.next(this.idMemGlobal);
         observer.complete();
       } else {
-        console.error("La respuesta no es un arreglo.");
-        observer.error("La respuesta no es un arreglo.");
       }
     });
   }

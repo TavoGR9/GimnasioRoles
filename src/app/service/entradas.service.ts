@@ -70,6 +70,7 @@ export class EntradasService {
     return this.clienteHttp.get<any>(this.API+'producto_bod.php?getProBodPre').pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
+        
       }),
       catchError(error => {
         return this.getEntradasDatos();
