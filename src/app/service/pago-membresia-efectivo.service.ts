@@ -47,8 +47,9 @@ export class PagoMembresiaEfectivoService {
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
+        return this.getServiceDatos();
         
-        const resultData = { success: '2' }; // Objeto que indica éxito
+        /*const resultData = { success: '2' }; // Objeto que indica éxito
         return forkJoin([
           this.getServiceDatos().pipe(
             filter(data => data !== null)
@@ -60,7 +61,7 @@ export class PagoMembresiaEfectivoService {
             map((data: any[]) => data.map(item => item.data)) 
           ),
           of(resultData) // Convierte el objeto en un observable
-        ]);
+        ]);*/
       })
     );
   }
