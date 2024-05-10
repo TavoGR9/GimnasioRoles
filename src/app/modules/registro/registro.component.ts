@@ -91,6 +91,7 @@ export class RegistroComponent implements OnInit {
   public errors: WebcamInitError[] = [];
   selectedFile: File | null = null;
   idMemGlobal: any;
+  habilitarBoton: boolean = false;
   imageUrl =
     "https://images.vexels.com/media/users/3/137047/isolated/preview/5831a17a290077c646a48c4db78a81bb-icono-de-perfil-de-usuario-azul.png"; // URL de la imagen por defecto
 
@@ -183,7 +184,9 @@ export class RegistroComponent implements OnInit {
     // this.planService.comprobar();
     // this.auth.comprobar();
     // this.usuario.comprobar();
-
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
     
       this.planService.consultarPlanId(this.auth.idGym.getValue()).subscribe((respuesta) => {
         const valorMembresia$ = this.obtenerValorMembresia(respuesta);

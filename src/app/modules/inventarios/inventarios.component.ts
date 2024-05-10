@@ -23,7 +23,8 @@ export class InventariosComponent implements OnInit {
   dataSource: any; 
   idGym: number = 0;
   currentUser: string = '';
-  isLoading: boolean = false; 
+  isLoading: boolean = true; 
+  habilitarBoton: boolean = false;
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
@@ -36,6 +37,9 @@ export class InventariosComponent implements OnInit {
     // this.productoService.comprobar();
     // this.InventarioService.comprobar();
     // this.auth.comprobar();
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -44,20 +48,20 @@ export class InventariosComponent implements OnInit {
       this.idGym = data;
       this.listaTablas();
     }); 
-    this.loadData();
   }
 
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
-    }, 100); 
+      this.dataSource.paginator = this.paginator;
+    }, 1000); 
   }
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
       this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);
-      this.dataSource.paginator = this.paginator;
+      this.loadData();
     });
   }
 

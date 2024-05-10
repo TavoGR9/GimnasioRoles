@@ -83,7 +83,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   idGym: number = 0;
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
-  isLoading: boolean = false; 
+  isLoading: boolean = true; 
+  habilitarBoton: boolean = false;
 
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorPagoOnline', { static: true }) paginator!: MatPaginator;
@@ -118,6 +119,11 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ngOnInit(): void {
     // this.pagoService.comprobar();
     // this.auth.comprobar();
+
+    this.auth.comprobar().subscribe((respuesta)=>{ 
+      this.habilitarBoton = respuesta.status;
+    });
+
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -196,16 +202,15 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   listaClientesData(): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
-      if (response[2] && response[2].success === '2') {
+      /*if (response[2] && response[2].success === '2') {
         //const combinedArray = response[0].data.concat(response[1]);
         const combinedArray = response[0].data;
         this.dataSourceActivos = new MatTableDataSource(combinedArray);
         this.loadData(); 
-      } else {
+      } else {*/
         this.clienteActivo = response.data;
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        this.loadData();
-      }      
+        this.loadData();     
       },
       (error: any) => {
         console.error('Error al obtener activos:', error);
