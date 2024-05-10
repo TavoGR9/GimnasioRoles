@@ -108,8 +108,9 @@ export class MembresiaService {
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
+        return this.getMembresiaDatos();
         //return this.getMembresiaDatos();
-        const resultData = { success: '2' }; // Objeto que indica éxito
+        /*const resultData = { success: '2' }; // Objeto que indica éxito
         return forkJoin([
           this.getMembresiaDatos().pipe(
             filter(data => data !== null) // Ignora el observable si es null
@@ -119,7 +120,7 @@ export class MembresiaService {
             map((data: any[]) => data.map(item => item.data)) // Obtén solo los datos de cada elemento del array
           ),
           of(resultData) // Convierte el objeto en un observable
-        ]);
+        ]);*/
       })
     );
   }

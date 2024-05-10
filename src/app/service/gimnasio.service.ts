@@ -120,10 +120,13 @@ getDataFromIndexedDB() {
   getServicesForId(id: any): Observable<any> {
     return this.clienteHttp.post(this.API + "serviciosGym.php", { id: id }).pipe(
       tap(dataResponse => {
+        
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
-        const resultData = { success: '2' }; // Objeto que indica éxito
+       
+        return this.getServiceDatos();
+      /*  const resultData = { success: '2' }; // Objeto que indica éxito
         return forkJoin([
           this.getServiceDatos().pipe(
             filter(data => data !== null) // Ignora el observable si es null
@@ -133,7 +136,7 @@ getDataFromIndexedDB() {
             map((data: any[]) => data.map(item => item.data)) // Obtén solo los datos de cada elemento del array
           ),
           of(resultData) // Convierte el objeto en un observable
-        ]);
+        ]);*/
       })
     );
   }
