@@ -9,7 +9,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
 import { MembresiaService } from "../../service/membresia.service";
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: "app-servicios-lista",
   templateUrl: "./servicios-lista.component.html",
@@ -29,7 +29,7 @@ export class ServiciosListaComponent implements OnInit{
   currentUser: string = "";
   confirmButton: boolean = false;
   membresiaActiva: boolean = true; 
-  displayedColumns: string[] = ["title", "details", "price", "actions"];
+  displayedColumns: string[] = ["title", "details", "price", "actions", "eliminar"];
   dialogRef: any;
   isLoading: boolean = true; 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -40,7 +40,8 @@ export class ServiciosListaComponent implements OnInit{
     private auth: AuthService,
     private ServiciosService: serviciosService,
     private gimnasioService: GimnasioService,
-    private membresiaService: MembresiaService
+    private membresiaService: MembresiaService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -199,6 +200,34 @@ export class ServiciosListaComponent implements OnInit{
       
         }
       });
+    });
+  }
+
+
+
+  borrarSucursal(idGimnasio: any) {
+    this.dialog.open(MensajeEliminarComponent,{
+      data: `¿Desea eliminar este servicio?`,
+    })
+    .afterClosed()
+    .subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.ServiciosService.deleteService(idGimnasio).subscribe(
+          (respuesta) => {
+                this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
+                  this.services = res;
+                  this.dataSource = new MatTableDataSource(this.services);
+                  this.dataSource.paginator = this.paginator;
+                });
+                this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
+                  positionClass: 'toast-bottom-left',
+                });
+          },
+          (error) => {
+          }
+        );
+      } else {
+      }
     });
   }
 }

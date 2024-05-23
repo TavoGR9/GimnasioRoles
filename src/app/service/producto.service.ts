@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {  HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { Producto } from '../models/producto';
 import { HttpParams } from '@angular/common/http';
@@ -44,6 +45,12 @@ export class ProductoService {
           return throwError(error);
         })
       );
+    }
+
+    verProductoCodigoBarras(codigo: any) {
+      const data = { codigo: codigo };
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?consultarProductoPorCodigo", data);
+
     }
 
     consultarProductoId(id: any): Observable<any[]> {
@@ -101,8 +108,18 @@ export class ProductoService {
     
     actualizarProducto(datosP: any): Observable<any> {
       const url = `${this.API}producto_bod.php?actualizarP`;
-      return this.clienteHttp.post(url, datosP);
+      return this.clienteHttp.post(url, datosP).pipe(
+        tap(dataResponse => {
+        }),
+        catchError(error => {
+          console.log(error);
+          return error;
+       })
+      );
     }
+
+   
+  
 
     obternerProductos(id:any):Observable<any>{
       const data = { id_bodega_param: id };

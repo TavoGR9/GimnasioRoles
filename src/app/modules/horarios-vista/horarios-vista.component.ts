@@ -191,12 +191,15 @@ export class HorariosVistaComponent implements OnInit {
 
   enviarMensajeWhatsApp() {
     // Número de teléfono al que se enviará el mensaje
-    const numeroTelefonico = this.personaForm.value.numeroTelefonico;
+    const numeroTelefonico = this.personaForm.value.celular;
     const nombre = this.personaForm.value.nombreS;
     // Mensaje que se enviará
     const mensaje = `Hola ${nombre} estos son tus accesos... Correo: ${this.correoEmp}, Contraseña: ${this.pass}`;
     // Crear la URL para abrir WhatsApp con el mensaje predefinido
-    const url = `https://wa.me/${numeroTelefonico}?text=${encodeURIComponent(mensaje)}`;
+    //const url = `https://wa.me/${numeroTelefonico}?text=${encodeURIComponent(mensaje)}`;
+
+    const url = `https://api.whatsapp.com/send?phone=${numeroTelefonico}&text=${encodeURIComponent(mensaje)}`;
+
     // Abrir WhatsApp en una nueva ventana o pestaña
     window.open(url, "_blank");
   }
@@ -435,11 +438,9 @@ export class HorariosVistaComponent implements OnInit {
               }
             },
             (error) => {
-              // Manejo de errores en la solicitud al servidor para agregarSucursal
-              console.error(
-                "Error en la solicitud al servidor para agregarSucursal:",
-                error
-              );
+              this.toastr.error('Error al agregar sucursal, intentelo más tarde....', 'Error', {
+                positionClass: 'toast-bottom-left',
+              });
             }
           );
         }

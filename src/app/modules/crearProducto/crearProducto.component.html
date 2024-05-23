@@ -13,11 +13,28 @@
                <div >
                   <div style="color:red">{{message}}</div>
                   <fieldset>
-                     <div class="row">
+                     <div class="row" *ngIf="isAdmin()">
                         <p>
-                           <mat-form-field appearance="outline"  style="width: 100%;" required>
+                           <mat-form-field appearance="outline"  style="width: 100%;" required >
                               <mat-label>Codigo de barra</mat-label>
-                              <input
+                              <input 
+                                 matInput
+                                 type="text"
+                                 placeholder="Escribelo o escanealo"
+                                 id="codigoBarra"
+                                 formControlName="codigoBarra"
+                                 autocomplete="off"
+                                 (blur)="vercodigoBarras()"
+                                 />
+                           </mat-form-field>
+                        </p>
+                     </div>
+
+                     <div class="row" *ngIf="isRecep()">
+                        <p>
+                           <mat-form-field appearance="outline"  style="width: 100%;" required >
+                              <mat-label>Codigo de barra</mat-label>
+                              <input 
                                  matInput
                                  type="text"
                                  placeholder="Escribelo o escanealo"
@@ -28,6 +45,7 @@
                            </mat-form-field>
                         </p>
                      </div>
+
                      <div class="row">
                         <div class="col-sm-12">
                            <p>
@@ -66,10 +84,10 @@
                            </p>
                         </div>
                         <div class="col-sm-6">
-                           <p>
+                           <p >
                               <mat-form-field appearance="outline" style="width: 100%;">
                                  <mat-label>Subcategoria</mat-label>
-                                 <input
+                                 <input 
                                    matInput
                                    formControlName="nomsubcate"
                                    placeholder="Escribe una subcategoria"
@@ -128,7 +146,8 @@
          </div>
       </div>
       <div style="display: flex; justify-content: center;" mat-dialog-actions>
-         <button mat-raised-button (click)="registrarProd()"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 50px;">Aceptar</button>
+         <button *ngIf="isAdmin()" mat-raised-button (click)="registrarProd()"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 50px;">Aceptar</button>
+         <button *ngIf="isRecep()" mat-raised-button (click)="registrarP()"  style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 50px;">Aceptar</button>
          <button mat-raised-button  (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white;">Cancelar</button>
       </div>
    </div>

@@ -66,6 +66,11 @@ export class serviciosService {
     return this.clienteHttp.post(this.API+"servicesMembresia.php?actualizarServicio", data);
   }
 
+  deleteService(id: any): Observable<any> {
+    const data = { id_servicio: id}
+    return this.clienteHttp.post(this.API+"servicesMembresia.php?eliminarServicio", data);
+  }
+
   getService(id: number): Observable<any> {
     return this.clienteHttp.get(this.API+"servicesMembresia.php?getServicio="+id);
   }
