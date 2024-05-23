@@ -39,7 +39,7 @@ export class AltaColaboradoresComponent {
     private toastr: ToastrService ){
     this.form = this.fb.group({
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      puesto: ['', Validators.compose([ Validators.required])],
+      puesto: ['Recepcionista', Validators.compose([ Validators.required])],
       email:  [''],
       jefe: [1, Validators.compose([ Validators.required])],
       foto: ['Foto', Validators.compose([ Validators.required])],
@@ -83,13 +83,14 @@ export class AltaColaboradoresComponent {
   }
 
   enviarMensajeWhatsApp() {
-    const telefono = this.form.value.telefono;
-    const correo = this.form.value.email;
+    const telefono = this.form.value.celular;
+    const correo = this.form.value.correoEmp;
     const password = this.form.value.pass;
     // Mensaje que se enviará
     const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
     // Crear la URL para abrir WhatsApp con el mensaje predefinido
-    const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+    const url = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
+
     window.open(url, '_blank');
   }
 

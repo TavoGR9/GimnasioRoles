@@ -65,8 +65,8 @@ export class CategoriaService {
     return this.clienteHttp.get(this.API+"categoria.php?consultarCategorias");
   }
 
-  obtenerSubCategoria():Observable<any>{
-    return this.clienteHttp.get(this.API+"categoria.php?consultarSubCategorias");
+  obtenerSubCategoria(id: any):Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?consultarSubCategorias="+id);
   }
 
   obtenerMarcas():Observable<any>{
