@@ -85,6 +85,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   private fechaFinAnterior: Date | null = null;
   isLoading: boolean = true; 
   habilitarBoton: boolean = false;
+  todosClientes: any;
 
   //paginator es una variable de la clase MatPaginator
   @ViewChild('paginatorPagoOnline', { static: true }) paginator!: MatPaginator;
@@ -342,59 +343,83 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   //Descarga el archivo en excel
   descargarExcel(): void {
-    // Verifica si hay datos para exportar
-    if (!this.dataSourceActivos || !this.dataSourceActivos.filteredData || this.dataSourceActivos.filteredData.length === 0) {
-      this.toastr.error('No hay datos para exportar.', 'Error!!!');
-      //console.warn('No hay datos para exportar a Excel.');
+
+    if (!this.fechaInicio || isNaN(this.fechaInicio.getTime()) || !this.fechaFin || isNaN(this.fechaFin.getTime())) {
+      this.toastr.error('Debe seleccionar las fechas de su reporte', 'Error!!!');
       return;
     }
 
-    // Mapea la información de this.productosVendidos a un arreglo bidimensional
-    const datos = [
-      ['ID', 'Nombre', 'Sucursal', 'Membresia', 'Precio', 'Fecha Inicio', 'Fecha Fin', 'Status'],
-      ...this.dataSourceActivos.filteredData.map((activos: ClientesActivos) => [
-        activos.ID,
-        activos.Nombre,
-        activos.Sucursal,
-        activos.Membresia,
-        activos.Precio,
-        activos.Fecha_Inicio,  // La propiedad debe tener el nombre correcto
-        activos.Fecha_Fin,
-        activos.Status
-      ])
-    ];
+    this.fechaInicioAnterior = this.fechaInicio;
+    this.fechaFinAnterior = this.fechaFin; 
 
-    // Crear un objeto de libro de Excel
-    const workbook = XLSX.utils.book_new();
-    const hojaDatos = XLSX.utils.aoa_to_sheet(datos);
-    // Establecer propiedades de formato para las columnas
-    hojaDatos['!cols'] = [
-      // Se le asigna un ancho a cada columna comenzando con la A
-      { wch: 5 },
-      { wch: 25 },
-      { wch: 20 },
-      { wch: 20 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 10 }
-    ];
-    // Añadir la hoja de datos al libro de Excel
-    XLSX.utils.book_append_sheet(workbook, hojaDatos, 'Datos');
+    this.pagoService.obtenerTodosLosClientes(
+      this.formatDate(this.fechaInicio),
+      this.formatDate(this.fechaFin),
+      this.auth.idGym.getValue()
+    ).subscribe(
+      response => {
+       
+        this.todosClientes = response.data;
+  
+        // Verificar si this.todosClientes es un array y tiene datos
+        if (!Array.isArray(this.todosClientes) || this.todosClientes.length === 0) {
+          this.toastr.error('No hay datos para exportar.', 'Error!!!');
+          return;
+        }
+  
+        // Mapea la información de this.todosClientes a un arreglo bidimensional
 
-    // Crear un Blob con el contenido del libro de Excel
-    const blob = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
-
-    // Convertir el Blob a un array de bytes
-    const arrayBuffer = new ArrayBuffer(blob.length);
-    const view = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < blob.length; i++) {
-      view[i] = blob.charCodeAt(i) & 0xFF;
-    }
-
-    // Crear un Blob con el array de bytes y guardarlo como archivo
-    const newBlob = new Blob([arrayBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    saveAs(newBlob, 'Clientes.xlsx');
+        const fechaInicioFormateada = this.datePipe.transform(this.fechaInicio, 'dd/MM/yyyy');
+        const fechaFinFormateada = this.datePipe.transform(this.fechaFin, 'dd/MM/yyyy');
+      
+        const datos = [
+          ['Reporte de socios'], 
+          [`Con fechas: ${fechaInicioFormateada} - ${fechaFinFormateada}`], // Fechas
+          [], // Fila vacía para separar
+          ['Clave', 'Nombre completo', 'Sucursal', 'Membresia', 'Precio', 'Fecha de inicio', 'Fecha fin', 'Estatus'],
+          ...this.todosClientes.map((activos: any) => [
+            activos.clave,
+            activos.nombreCompleto,
+            activos.nombreBodega,
+            activos.titulo,
+            activos.total,
+            activos.fechaInicio,
+            activos.fechaFin,
+            activos.estatus == 1 ? 'Activo' : 'Inactivo'
+          ])
+        ];
+  
+        // Crear un objeto de libro de Excel
+        const workbook = XLSX.utils.book_new();
+        const hojaDatos = XLSX.utils.aoa_to_sheet(datos);
+  
+        // Establecer propiedades de formato para las columnas
+        hojaDatos['!cols'] = [
+          { wch: 5 },
+          { wch: 25 },
+          { wch: 20 },
+          { wch: 20 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 10 },
+          { wch: 10 }
+        ];
+  
+        // Añadir la hoja de datos al libro de Excel
+        XLSX.utils.book_append_sheet(workbook, hojaDatos, 'Datos');
+  
+        // Crear un Blob con el contenido del libro de Excel
+        const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const newBlob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+        // Guardar el archivo
+        saveAs(newBlob, 'Clientes.xlsx');
+      },
+      error => {
+        this.toastr.error('Error al obtener los datos.', 'Error!!!');
+        console.error('Error al obtener los datos', error);
+      }
+    );
   }
 
   private formatDateV2(date: Date): string {

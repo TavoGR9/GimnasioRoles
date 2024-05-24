@@ -1,7 +1,8 @@
 import { GimnasioService } from "./../../service/gimnasio.service";
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { HorarioService } from "./../../service/horario.service";
 import { Router } from "@angular/router";
-import { Component, OnInit, Inject } from "@angular/core";
+import {  OnInit, Inject } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
@@ -56,6 +57,18 @@ export class HorariosVistaComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   idGym: number = 0;
   idGimnasioE: any;
+  /*FOTO*/
+  not_format: boolean = false;
+  not_size: boolean = false;
+  photoSelected: string | ArrayBuffer | null;
+  file: File;
+  actualizar_imagen: string = '';
+  public showWebcam = false;
+  archivo = {
+    id: 0,
+    nombreArchivo: '',
+    base64textString: ''
+  }
 
   constructor(
     public dialogo: MatDialogRef<HorariosVistaComponent>,
@@ -70,6 +83,9 @@ export class HorariosVistaComponent implements OnInit {
     private toastr: ToastrService,
     private postalCodeService: PostalCodeService
   ) {
+    this.photoSelected = null;
+    this.file = new File([], 'defaultFileName');
+
     this.formularioSucursales = this.formulario.group({
       nombre: ["", Validators.compose([Validators.required])],
       codigoPostal: [
@@ -116,6 +132,9 @@ export class HorariosVistaComponent implements OnInit {
       ],
       estatus: [0, Validators.required],
       direccion: [""],
+      nombreArchivo: [''],
+      base64textString: [''],
+      fotoUrl:['', Validators.required],
     });
 
     this.personaForm = this.formulario.group({
@@ -387,6 +406,8 @@ export class HorariosVistaComponent implements OnInit {
             direccion: direccionCompleta,
           });
 
+        
+
           this.gimnasioService
           .agregarSucursal(this.formularioSucursales.value)
           .subscribe(
@@ -465,5 +486,71 @@ export class HorariosVistaComponent implements OnInit {
         }
       }
     });
+  }
+
+  ///****FOOOOOOOOOOOOOOOOOOOOOOOOOOOOOTO */
+  uploadPhoto() {
+    if (  this.archivo.nombreArchivo === '' ) {
+      this.toastr.error('Aún no haz seleccionado una imagen valida...', 'Error');
+      return;
+    }
+    this.formularioSucursales.patchValue({
+      fotoUrl: this.archivo.nombreArchivo,
+      nombreArchivo: this.archivo.nombreArchivo,
+      base64textString: this.archivo.base64textString
+    });
+  }
+
+  show_option(option: string) {
+    this.actualizar_imagen = option;
+    if (option === 'take') {
+      this.showWebcam = true;
+    }
+  }
+
+  onPhotoSelected(event: any): void {
+    if (event.target.files && event.target.files[0]) {
+      var files = event.target.files;
+      var file = files[0];
+      if (file) {
+        // Validar si el archivo seleccionado es una imagen
+        if (!file.type.startsWith('image/')) {
+          this.not_format = true;
+          this.toastr.error('El archivo seleccionado no es una imagen', 'Error');
+          return;
+        }
+        // Validar si el archivo excede el tamaño máximo permitido de 1mb
+        if (file.size > 1024 * 1024) {
+          this.not_size = true;
+          this.toastr.error('El tamaño de la imagen debe ser menor a 1MB', 'Error');
+          return;
+        }
+      }
+      // Almacenar el nombre del archivo/imagen en el json Archivo
+      this.archivo.nombreArchivo = file.name;
+      this.file = <File>event.target.files[0];
+      // image preview
+      const reader = new FileReader();
+      reader.onload = e => this.photoSelected = reader.result;
+      reader.readAsDataURL(this.file);
+     
+      if (files && file) {
+        
+        const newReader = new FileReader();
+        newReader.onload = this._handleReaderLoaded.bind(this);
+        newReader.readAsBinaryString(file);
+      }
+    } else {
+      this.photoSelected = null;
+      this.archivo.base64textString = '';
+      this.archivo.nombreArchivo = '';
+      return;
+    }
+  }
+
+  _handleReaderLoaded(readerEvent: any) {
+    var binaryString = readerEvent.target.result;
+    this.archivo.base64textString = btoa(binaryString);
+    this.uploadPhoto();
   }
 }

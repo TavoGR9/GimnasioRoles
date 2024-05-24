@@ -61,10 +61,10 @@
             Colaborador 
         </button>
         
-        <button *ngIf="isAdmin()" routerLink="./productosVendidos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productosVendidos')"> 
+       <!-- <button *ngIf="isAdmin()" routerLink="./productosVendidos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productosVendidos')"> 
             <mat-icon>local_grocery_store</mat-icon> 
             Productos vendidos 
-        </button>
+        </button>-->
         
         <button *ngIf="isAdmin() || isRecep()" routerLink="./inventarios" class="hover-orange transparent-button" [class.active]="isRouteActive('/inventarios')"> 
             <mat-icon>storage</mat-icon> 

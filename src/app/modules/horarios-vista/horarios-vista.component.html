@@ -132,8 +132,35 @@
                                   </mat-error>
                               </mat-form-field>
                           </div>
+                          
                       </div>
                   </div>
+                  <div class="col-md-12">
+                    <div >
+                       <h2><strong> Sube tu logo aquí.</strong></h2>
+                       <input accept="image/*" type="file" name="image" class="d-none" (change)="onPhotoSelected($event)" #photoInput />
+                       <div>
+                        <img
+                         [src]="photoSelected || '../../../../../assets/img/camara.png'"
+                         class="img-fluid"
+                         alt="No image"
+                         (click)="photoInput.click()"
+                         width="10%"
+                       />
+                        <button mat-menu-item (click)="show_option('up')"  style="border: none;background-color: #fd9727;border-radius: 5px;width: 100px;height: 30px;">
+                           <span (click)="photoInput.click()">Subir imagen</span>
+                        </button>
+                     </div>
+                       <br>
+                       <p *ngIf="photoSelected" (click)="uploadPhoto()"><strong>Imagen seleccionada correctamente.</strong></p>
+                       <p *ngIf="not_size"><strong style="color: red;">La imagen excede el peso permitido (1mb).</strong></p>
+                       <p *ngIf="not_format"><strong style="color: red;">El archivo que intentas subir no tiene un formato válido.</strong></p>
+                      
+                       <br>
+                     </div>
+                     
+                     
+                   </div>
               </div>
           </div>
       </form>

@@ -150,4 +150,8 @@ export class HomeService {
     });
   }
 
+  consultarAsistencias(idGim:any){ 
+    const data ={ idGim: idGim }
+    return this.clienteHttp.post(this.API+"ConsultasHome.php?consultarAsistenciasFechaActual",data);
+  }
 }

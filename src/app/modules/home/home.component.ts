@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild} from '@angular/core';
 import { OnInit } from '@angular/core';
 import { VentasComponent } from '../ventas/ventas.component';
 import { MatDialog } from "@angular/material/dialog";
@@ -13,6 +13,10 @@ import { IndexedDBService } from './../../service/indexed-db.service';
 import { serviciosService } from '../../service/servicios.service';
 import { ColaboradorService } from './../../service/colaborador.service';
 import { MembresiaService } from "../../service/membresia.service";
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -34,6 +38,7 @@ export class HomeComponent implements OnInit{
   tablaHTML: SafeHtml | null = null;
   tablaHTMLVentas: SafeHtml | null = null;
   isLoading: boolean = true; 
+  asistencia: any;
   
   constructor(private homeService: HomeService, private sanitizer: DomSanitizer, private spinner: NgxSpinnerService,
     private auth: AuthService, public dialog: MatDialog, 
@@ -55,14 +60,17 @@ export class HomeComponent implements OnInit{
         if(data) {
           this.idGym = data;
           this.listaTablas();
+          this.consultarAsistencia();
         }
       });
-    this.loadData();
+   
+    
   }
 
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
+      this.dataSource.paginator = this.paginator;
     }, 1000); 
   }
 
@@ -157,6 +165,20 @@ export class HomeComponent implements OnInit{
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTMLVentas}</table>`);
     });
+  }
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  dataSource: any;
+  displayedColumns: string[] = ['title', 'details','price'];
+
+
+  consultarAsistencia(){ 
+    this.homeService.consultarAsistencias(this.idGym).subscribe(respuesta =>{
+      this.asistencia =  respuesta;
+      this.dataSource = new MatTableDataSource(this.asistencia);
+      this.loadData();
+   
+    })
   }
 
   Sincronizar() {
