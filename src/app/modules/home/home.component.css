@@ -165,3 +165,11 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 5px; /* Borde redondeado opcional */
+  padding: 15px; /* Espacio interno */
+}

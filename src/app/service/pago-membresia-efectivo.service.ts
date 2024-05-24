@@ -115,8 +115,16 @@ export class PagoMembresiaEfectivoService {
     };
     return this.clienteHttp.get(this.API + 'Usuario.php', { params });
   }
-  
 
+  obtenerTodosLosClientes(inicioDate: any, finDate: any, idGym: any): Observable<any> {
+    const params = {
+      idGimnasio: idGym,
+      fechaInicio: inicioDate,
+      fechaFin: finDate
+    };
+    return this.clienteHttp.get(this.API + 'Usuario.php', { params });
+  }
+  
   membresiasLista(idSucu: any):Observable<any>{
     const params = {
       id_bodega: idSucu
@@ -183,6 +191,12 @@ export class PagoMembresiaEfectivoService {
   }
 
   actualizaDatosCliente(data: any): Observable<any> {
-    return this.clienteHttp.post<msgResult>(this.API+"Usuario.php?updatePersonalData", data, { headers: this.httpHeaders });
+    const form = { 
+      email:data.correo,
+      idU:data.id_cliente,
+      nombre:data.nombre,
+      cel:data.telefono
+    }
+    return this.clienteHttp.post<msgResult>(this.API+"Usuario.php?updatePersonalData", form);
   }
 }

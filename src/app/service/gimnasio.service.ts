@@ -180,4 +180,10 @@ getDataFromIndexedDB() {
     });
 }
 
+consultarFoto(id:any):Observable<any>{
+  return this.clienteHttp.get(this.API+"bodega.php?consultarFoto="+id);
+}
+
+
+
 }

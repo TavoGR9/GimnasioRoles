@@ -27,6 +27,7 @@ import { HomeComponent } from "../home/home.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { detalleVenta } from "../../models/detalleVenta";
 import { DialogStateService } from "../../service/dialogState.service";
+import { GimnasioService } from "../../service/gimnasio.service";
 interface Cliente {
   ID_Cliente: number;
   nombre: string;
@@ -71,19 +72,21 @@ export class VentasComponent implements OnInit {
 
   columnMapping: { [key: string]: string } = {
     "Código de Barras": "codigoBarras",
-    "Categoría": "nombreCategoria",
+    "Detalle": "detalleCompra",
     "Nombre del Producto": "nombreProducto",
     "Precio de Sucursal": "precioSucursal",
   };
   
   displayedColumns: string[] = [
     "Código de Barras",
-    "Categoría",
     "Nombre del Producto",
+    "Detalle",
     "Precio de Sucursal",
     "cantidad",
     "acciones",
   ];
+
+  private fotoUrl: string | null = null;
   
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -104,7 +107,9 @@ export class VentasComponent implements OnInit {
     private productoService: ProductoService,
     private InventarioService: inventarioService,
     private dialogStateService: DialogStateService,
+    private GimnasioService: GimnasioService
   ) {
+    this.obtenerFoto();
     const userId = this.auth.userId.getValue(); // id del usuario
     /* --------------------------------------------------------------*/
     this.formularioDetalleVenta = this.formulario.group({
@@ -167,6 +172,26 @@ export class VentasComponent implements OnInit {
     this.dineroRecibido = 0;
   }
 
+  obtenerFoto() {
+    this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
+      respuesta => {
+        if (respuesta && respuesta[0] && respuesta[0].foto) {
+          let fotoUrl = respuesta[0].foto;
+          // Añadir el esquema si no está presente
+          if (!/^https?:\/\//i.test(fotoUrl)) {
+            fotoUrl = 'https://' + fotoUrl;
+          }
+          this.fotoUrl = fotoUrl;
+        }
+      },
+      error => {
+        console.error('Error al obtener la foto:', error);
+        this.fotoUrl = null;
+      }
+    );
+  }
+  
+
   imprimirResumen() {
     if (this.totalAPagar <= this.dineroRecibido) {
       /**FECHA */
@@ -188,7 +213,7 @@ export class VentasComponent implements OnInit {
           return {
             Ventas_idVentas: lastInsertedId3,
             Producto_idProducto: producto.idProbob,
-            nombreProducto: producto.nombreProducto,
+            nombreProducto: producto.nombreProducto + " " + producto.marca + ", " + producto.detalleCompra,
             cantidadElegida: producto.cantidad,
             precioUnitario: producto.precioSucursal,
             Gimnasio_idGimnasio: this.auth.idGym.getValue(),
@@ -300,11 +325,19 @@ export class VentasComponent implements OnInit {
                 display: flex;
                 justify-content: space-between;
               }
+              .logo {
+                display: block;
+                margin: 0 auto 20px;
+                max-width: 150px;
+                width: 100%;
+                height: auto;
+              }
             </style>
           </head>
+          
           <body>
             <div class="ticket">
-            <img  src='../../../../../../assets/img/logo.jpeg)' alt="Logo">
+            ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
               <h1>Ticket de Compra</h1>
               <table>
                 <thead>
@@ -354,9 +387,27 @@ export class VentasComponent implements OnInit {
           </body>
         </html>
       `);
-        ventanaImpresion.document.close();
+      ventanaImpresion.document.close();
+
+      // Esperar a que la imagen se cargue antes de imprimir
+      const image: HTMLImageElement | null = ventanaImpresion.document.querySelector('img');
+      if (image) {
+        image.onload = () => {
+          ventanaImpresion.print();
+          ventanaImpresion.close();
+        };
+
+        image.onerror = (error) => {
+          console.error('Error al cargar la imagen:', error);
+          ventanaImpresion.print();
+          ventanaImpresion.close();
+        };
+      } else {
         ventanaImpresion.print();
         ventanaImpresion.close();
+      }
+    
+
       }
     } else {
       this.toastr.error("Ingresa el pago");

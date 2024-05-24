@@ -17,6 +17,7 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
 import { forkJoin } from 'rxjs';
+import { GimnasioService } from "../../service/gimnasio.service";
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -55,6 +56,7 @@ export class EntradasComponent implements OnInit {
   tablaDatos: any[] = [];
   isLoading: boolean = true; 
   habilitarBoton: boolean = false;
+  private fotoUrl: string | null = null;
 
   constructor(
    // public dialogo: MatDialogRef<EntradasComponent>,
@@ -66,7 +68,9 @@ export class EntradasComponent implements OnInit {
     private entrada: EntradasService,
     private dialog: MatDialog,
     private spinner: NgxSpinnerService,
+    private GimnasioService: GimnasioService
   ) {
+    this.obtenerFoto();
     this.ubicacion = this.auth.nombreGym.getValue();
     this.id = this.auth.idGym.getValue();
     this.idUsuario = this.auth.userId.getValue();
@@ -275,6 +279,7 @@ export class EntradasComponent implements OnInit {
         // Procesamos los registros después de recibir todas las respuestas
         if (hayRegistrosNuevos) {
           this.enviarRegistros(registrosParaEnviar);
+
         }
         if (hayRegistrosParaEditar) {
           this.actualizarReg(registrosAc);
@@ -305,6 +310,7 @@ export class EntradasComponent implements OnInit {
                 this.tablaDatos = [];
               }
             });
+            this.imprimirResumen();
         } else {
           this.toastr.error(respuesta.message, 'Error', {
             positionClass: 'toast-bottom-left',
@@ -337,6 +343,7 @@ export class EntradasComponent implements OnInit {
               } else {
               }
             });
+            this.imprimirResumen();
         } else {
           this.toastr.error(update.message, "Error", {
             positionClass: "toast-bottom-left",
@@ -362,4 +369,149 @@ export class EntradasComponent implements OnInit {
   cerrarDialogo(): void { 
   }
  
+  obtenerFoto() {
+    this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
+      respuesta => {
+        if (respuesta && respuesta[0] && respuesta[0].foto) {
+          let fotoUrl = respuesta[0].foto;
+          // Añadir el esquema si no está presente
+          if (!/^https?:\/\//i.test(fotoUrl)) {
+            fotoUrl = 'https://' + fotoUrl;
+          }
+          this.fotoUrl = fotoUrl;
+        }
+      },
+      error => {
+        console.error('Error al obtener la foto:', error);
+        this.fotoUrl = null;
+      }
+    );
+  }
+  
+
+  imprimirResumen() {
+    const fechaActual = new Date().toLocaleDateString();
+    const horaActual = new Date().toLocaleTimeString();
+  
+    // Calcular el total de cantidad y el total de precio
+    let totalCantidad = 0;
+    let totalPrecio = 0;
+
+    const ventanaImpresion = window.open("", "_blank");
+    if (ventanaImpresion) {
+      ventanaImpresion.document.open();
+      ventanaImpresion.document.write(`
+        <html>
+          <head>
+          ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
+            <style>
+            body {
+              font-family: 'Arial', sans-serif;
+              margin: 0;
+              padding: 0;
+              background-color: #f5f5f5;
+            }
+            .resumen {
+              width: 80%;
+              max-width: 600px;
+              margin: 20px auto;
+              background-color: #fff;
+              border-radius: 4px;
+              padding: 20px;
+            }
+            h1 {
+              text-align: center;
+              color: #333;
+              margin-bottom: 20px;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 20px;
+            }
+            th, td {
+              padding: 8px;
+              border-bottom: 1px solid #ddd;
+              text-align: left;
+            }
+            th {
+              background-color: #f2f2f2;
+            }
+            .fecha-hora {
+              display: flex;
+              justify-content: space-between;
+            }
+            .logo {
+              display: block;
+              margin: 0 auto 20px;
+              max-width: 150px;
+              width: 100%;
+              height: auto;
+            }
+          </style>
+          </head>
+          <body>
+            <div class="resumen">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio de compra</th>
+                    <th>Total</th>
+                    <!-- Agrega más columnas según sea necesario -->
+                  </tr>
+                </thead>
+                <tbody>
+                  ${this.tablaDatos
+                    .map(
+                      (fila) => {
+                        // Calcular el total para cada fila
+                        const totalFila = fila.exis * fila.precioCaja;
+                        // Agregar el total de la fila al total general
+                        totalCantidad += fila.exis;
+                        totalPrecio += totalFila;
+                        // Generar la fila de la tabla
+                        return `
+                          <tr>
+                            <td>${fila.descripcion}</td>
+                            <td>${fila.exis}</td>
+                            <td>$${fila.precioCaja.toFixed(2)}</td>
+                            <td>$${totalFila.toFixed(2)}</td>
+                          </tr>
+                        `;
+                      }
+                    )
+                    .join('')}
+                </tbody>
+              </table>
+              <p style="text-align: left;">Precio total de compra: $${totalPrecio.toFixed(2)}</p>
+              <div class="fecha-hora">
+                <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
+                <p>Hora: ${horaActual}</p> <!-- Hora -->
+              </div>
+            </div>
+          </body>
+        </html>
+      `);
+      ventanaImpresion.document.close();
+      // Esperar a que la imagen se cargue antes de imprimir
+      const image: HTMLImageElement | null = ventanaImpresion.document.querySelector('img');
+      if (image) {
+        image.onload = () => {
+          ventanaImpresion.print();
+          ventanaImpresion.close();
+        };
+
+        image.onerror = (error) => {
+          console.error('Error al cargar la imagen:', error);
+          ventanaImpresion.print();
+          ventanaImpresion.close();
+        };
+      } else {
+        ventanaImpresion.print();
+        ventanaImpresion.close();
+      }
+    }
+  }
 }

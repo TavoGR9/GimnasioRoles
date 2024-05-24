@@ -3,6 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
 import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
 import { ToastrService } from 'ngx-toastr';
+import { GimnasioService } from '../../service/gimnasio.service'; 
+import { AuthService } from '../../service/auth.service';
 @Component({
   selector: 'app-form-pago-emergente',
   templateUrl: './form-pago-emergente.component.html',
@@ -24,13 +26,19 @@ export class FormPagoEmergenteComponent implements OnInit{
   
   constructor(
     private toastr: ToastrService, 
+    private auth: AuthService,
     public dialog: MatDialog, 
+    private GimnasioService:GimnasioService,
     @Inject(MAT_DIALOG_DATA)
     public data: any,
     private membresiaService: PagoMembresiaEfectivoService, 
     public dialogo: MatDialogRef<FormPagoEmergenteComponent>,
-  ) { }
+  ) { 
+    this.obtenerFoto();
+  }
      
+  private fotoUrl: string | null = null;
+  
   ngOnInit(): void {
     this.precio = 0;
     this.getMembresiasLista(this.data.idSucursal);
@@ -164,6 +172,25 @@ export class FormPagoEmergenteComponent implements OnInit{
   
       return palabras;
     }
+
+    obtenerFoto() {
+      this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
+        respuesta => {
+          if (respuesta && respuesta[0] && respuesta[0].foto) {
+            let fotoUrl = respuesta[0].foto;
+            // Añadir el esquema si no está presente
+            if (!/^https?:\/\//i.test(fotoUrl)) {
+              fotoUrl = 'https://' + fotoUrl;
+            }
+            this.fotoUrl = fotoUrl;
+          }
+        },
+        error => {
+          console.error('Error al obtener la foto:', error);
+          this.fotoUrl = null;
+        }
+      );
+    }
   
     imprimirResumen() {       
       if (this.precio <= this.moneyRecibido) {
@@ -244,13 +271,18 @@ export class FormPagoEmergenteComponent implements OnInit{
                       display: flex;
                       justify-content: space-between;
                     }
+                    .logo {
+                      display: block;
+                      margin: 0 auto 20px;
+                      max-width: 150px;
+                      width: 100%;
+                      height: auto;
+                    }
                   </style>
                 </head>
                 <body> 
                 <div class="ticket">
-                <div style="display: flex; justify-content: center; align-items: center;">
-                  <img src='../../../../../../assets/img/logo.jpeg)' alt="Logo" style="max-width: 300px; height: auto;">
-                </div>
+                ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
                     <h1>Ticket de Compra</h1>
                     <table>
                       <thead>
@@ -299,11 +331,25 @@ export class FormPagoEmergenteComponent implements OnInit{
                 </body>
               </html>
             `);
-              ventanaImpresion.document.close();
+            ventanaImpresion.document.close();
+
+            // Esperar a que la imagen se cargue antes de imprimir
+            const image: HTMLImageElement | null = ventanaImpresion.document.querySelector('img');
+            if (image) {
+              image.onload = () => {
+                ventanaImpresion.print();
+                ventanaImpresion.close();
+              };
+      
+              image.onerror = (error) => {
+                console.error('Error al cargar la imagen:', error);
+                ventanaImpresion.print();
+                ventanaImpresion.close();
+              };
+            } else {
               ventanaImpresion.print();
               ventanaImpresion.close();
-            } else {
-              console.error('No se pudo abrir la ventana de impresión.');
+            }
             }
           } else {
             console.error('La respuesta del servicio no contiene los datos necesarios para generar el ticket.');
