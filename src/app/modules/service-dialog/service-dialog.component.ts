@@ -34,7 +34,7 @@ export class ServiceDialogComponent implements OnInit {
       id_servicios_individuales: [0],
       nombre_servicio: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
       detalles: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
-      precio_unitario: ["",[Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],],
+      precio_unitario: [""],
       fk_idGimnasio: [0],
     });
   }

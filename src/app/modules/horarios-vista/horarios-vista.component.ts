@@ -64,6 +64,7 @@ export class HorariosVistaComponent implements OnInit {
   file: File;
   actualizar_imagen: string = '';
   public showWebcam = false;
+
   archivo = {
     id: 0,
     nombreArchivo: '',
@@ -275,7 +276,7 @@ export class HorariosVistaComponent implements OnInit {
 
   editarCosa() {
     this.gimnasioService.gimnasioSeleccionado.subscribe((data) => {
-      if (data) {
+      if (data) {   
         this.idGimnasio = data;
         this.gimnasioService
           .consultarPlan(this.idGimnasio)
@@ -291,6 +292,9 @@ export class HorariosVistaComponent implements OnInit {
                 numExt: 0,
                 numInt: 0,
                 estatus: 1,
+                fotoUrl: data[0].foto,
+                nombreArchivo: 0,
+                base64textString: 0,
                 direccion: data[0].direccion,
                 numeroTelefonico: data[0].numeroTelefonico,
               });
@@ -417,7 +421,7 @@ export class HorariosVistaComponent implements OnInit {
   
                 datosFormulario.idGym = respuestaSucursal.id_bodega;
           
-                this.http.agregarEmpleado(datosFormulario).subscribe(
+                this.http.agregarEmpleadoA(datosFormulario).subscribe(
                   (respuestaEmpleado) => {
                      if (respuestaEmpleado.success == "1") {
                       this.enviarMensajeWhatsApp();
@@ -490,7 +494,7 @@ export class HorariosVistaComponent implements OnInit {
 
   ///****FOOOOOOOOOOOOOOOOOOOOOOOOOOOOOTO */
   uploadPhoto() {
-    if (  this.archivo.nombreArchivo === '' ) {
+    if (this.archivo.nombreArchivo === '' ) {
       this.toastr.error('Aún no haz seleccionado una imagen valida...', 'Error');
       return;
     }

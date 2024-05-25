@@ -172,6 +172,7 @@ export class RegistroComponent implements OnInit {
       user:['saad'],
       //no_clave: ['0'],
       nombre:[''],
+      id:['', Validators.required],
       destino:["Cliente"],
       direccion:[''],
       codigoPromotor:[0],

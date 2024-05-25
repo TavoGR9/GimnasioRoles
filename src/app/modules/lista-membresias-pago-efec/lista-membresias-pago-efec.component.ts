@@ -18,6 +18,7 @@ import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm} from '
 import { ErrorStateMatcher } from '@angular/material/core';
 import { EmergenteInfoClienteComponent } from '../emergente-info-cliente/emergente-info-cliente.component';
 import { AuthService } from '../../service/auth.service';
+import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 
 interface ClientesActivos {
   ID: number;
@@ -63,6 +64,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   fechaFin: Date = new Date('0000-00-00');    
   id: any;
   displayedColumnsActivos: string[] = [
+    'ID',
     'Nombre',
     'Membresia',
     'Precio',
@@ -73,7 +75,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     //'Pagar',
     'Pago',
     'Info Cliente',
-    'Huella'
+    'Huella',
+    'Rol'
   ];
   dineroRecibido: number = 0; 
   moneyRecibido: number = 0; 
@@ -358,7 +361,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       this.auth.idGym.getValue()
     ).subscribe(
       response => {
-       
         this.todosClientes = response.data;
   
         // Verificar si this.todosClientes es un array y tiene datos
@@ -470,5 +472,27 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   
     // Descargar el archivo PDF
     pdf.save('Clientes.pdf');
+  }
+
+
+  eliminarUs(prod: any){
+    const prueba = {
+      idUsuario: prod.ID,
+      correo: prod.email
+    }
+    this.dialog.open(MensajeEliminarComponent,{
+      data: `¿Desea eliminar a este usuario?`,
+    })
+    .afterClosed()
+    .subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.pagoService.deleteService(prueba).subscribe(
+          (respuesta) => { 
+          }
+        );
+      } else {
+      }
+    });
+
   }
 }

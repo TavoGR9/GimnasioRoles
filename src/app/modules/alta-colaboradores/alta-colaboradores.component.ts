@@ -39,7 +39,7 @@ export class AltaColaboradoresComponent {
     private toastr: ToastrService ){
     this.form = this.fb.group({
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
-      puesto: ['Recepcionista', Validators.compose([ Validators.required])],
+      puesto: ['', Validators.compose([ Validators.required])],
       email:  [''],
       jefe: [1, Validators.compose([ Validators.required])],
       foto: ['Foto', Validators.compose([ Validators.required])],

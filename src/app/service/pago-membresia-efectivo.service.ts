@@ -179,7 +179,6 @@ export class PagoMembresiaEfectivoService {
 
   actualizacionMemebresia(idCli:any,idMem:any, fecha: any, detMemID: any, precio: any, fechaFormateadaFin: any):Observable<any>{
     const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fecha).set('detMemID',detMemID).set('precio',precio).set('fechaFormateadaFin',fechaFormateadaFin);
-
     return this.clienteHttp.get(this.API+"Usuario.php", { params });
   }
 
@@ -199,4 +198,9 @@ export class PagoMembresiaEfectivoService {
     }
     return this.clienteHttp.post<msgResult>(this.API+"Usuario.php?updatePersonalData", form);
   }
+
+  deleteService(datos: any): Observable<any>{
+    return this.clienteHttp.post(this.API+"Usuario.php?eliminarServicio", datos);
+  }
+
 }
