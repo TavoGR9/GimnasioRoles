@@ -38,6 +38,7 @@
                      <mat-select id="puesto" formControlName="puesto" id="puesto" [errorStateMatcher]="matcher">
                        <!-- <mat-option value="Administrador">Administrador</mat-option>-->
                         <mat-option value="Recepcionista">Recepcionista</mat-option>
+                        <mat-option value="Limpieza">Limpieza</mat-option>
                      </mat-select>
                      <mat-error *ngIf="form.get('area')?.hasError('required')">
                         <strong class="txt_msg">**Campo requerido</strong>

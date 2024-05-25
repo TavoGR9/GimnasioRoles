@@ -50,6 +50,18 @@ export class ColaboradorService {
     }
 
     agregarEmpleado(datosEmpleado: any): Observable<any> {
+        return this.clienteHttp.post(this.API + "empleado.php?insertarRep=1", datosEmpleado).pipe(
+            tap(dataResponse => {
+            }),
+            catchError(error => {
+              this.saveDataToIndexedDB(datosEmpleado);
+              const resultData = { success: '2' };
+              return of(resultData);        
+            })
+          );
+    }
+
+    agregarEmpleadoA(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "empleado.php?insertar=1", datosEmpleado).pipe(
             tap(dataResponse => {
             }),
@@ -59,7 +71,7 @@ export class ColaboradorService {
               return of(resultData);        
             })
           );
-        }
+    }
 
         private saveDataToIndexedDB(data: any) {
             // Guarda los datos en IndexedDB
@@ -143,7 +155,7 @@ export class ColaboradorService {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'idGym=' + idGym;
         return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers }).pipe(
-            tap(dataResponse => {
+             tap(dataResponse => {
                 this.saveDataToIndexedDB1(dataResponse);
             }),
             catchError(error => {

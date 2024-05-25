@@ -35,6 +35,7 @@ export class HomeComponent implements OnInit{
   datosClientesActivos: any;
   clientesActivos: any;
   homeCard: any;
+  homeCard2: any;
   tablaHTML: SafeHtml | null = null;
   tablaHTMLVentas: SafeHtml | null = null;
   isLoading: boolean = true; 
@@ -159,6 +160,11 @@ export class HomeComponent implements OnInit{
       this.homeCard = respuesta
     });
 
+
+    this.homeService.consultarHome2(this.idGym).subscribe(respuesta => {
+      this.homeCard2 = respuesta
+    });
+
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
     this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(`<table class="mi-tabla">${data.tablaHTML}</table>`);
     });
@@ -169,7 +175,7 @@ export class HomeComponent implements OnInit{
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
-  displayedColumns: string[] = ['title', 'details','price'];
+  displayedColumns: string[] = ['title', 'details','price', 'rol'];
 
 
   consultarAsistencia(){ 

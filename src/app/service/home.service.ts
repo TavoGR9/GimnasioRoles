@@ -39,9 +39,20 @@ export class HomeService {
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
-        return this.getServiceDatos();
+       return this.getServiceDatos();
       })
-    );
+    )
+  }
+
+  consultarHome2(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHomeDos="+id);
+      /*tap(dataResponse => {
+        this.saveDataToIndexedDB(dataResponse);
+      }),
+      catchError(error => {
+        console.log(error, "error");
+       // return this.getServiceDatos();
+      })*/
   }
 
   private saveDataToIndexedDB(data: any) {

@@ -212,7 +212,6 @@ export class FormPagoEmergenteComponent implements OnInit{
               ventanaImpresion.document.write(`
               <html>
                 <head>
-                  <title>Ticket de Compra</title>
                   <style>
                     body {
                       font-family: 'Arial', sans-serif;
@@ -283,7 +282,6 @@ export class FormPagoEmergenteComponent implements OnInit{
                 <body> 
                 <div class="ticket">
                 ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
-                    <h1>Ticket de Compra</h1>
                     <table>
                       <thead>
                         <tr>

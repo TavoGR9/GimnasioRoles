@@ -77,6 +77,13 @@
                   <br>
                     <div class="row">
                        <div class="col-sm-6">
+                        <p>
+                           <mat-form-field appearance="outline" class="inputs_properties">
+                              <mat-label>ID</mat-label>
+                              <input type="text" matInput placeholder="Nombre" autocomplete="off" formControlName="id" />
+                              <mat-error *ngIf="form.get('id')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                           </mat-form-field>
+                        </p>
                           <p>
                              <mat-form-field appearance="outline" class="inputs_properties">
                                 <mat-label>Nombre</mat-label>
@@ -119,18 +126,16 @@
                                 <mat-error *ngIf="form.get('fon')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                              </mat-form-field>
                           </p>
-                       </div>
-                       <div class="col-sm-12">
                           <p>
-                             <mat-form-field appearance="outline" class="inputs_properties">
-                                <mat-label>Fecha de nacimiento</mat-label>
-                                <input type="date" matInput autocomplete="off" formControlName="fechaNacimiento" />
-                                <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('pattern') && !form.get('fechaNacimiento')?.hasError('required')">
-                                   <strong class="txt_msg">**Formato de fecha no valido, (DD/MM/YYYY)...</strong>
-                                </mat-error>
-                                <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                             </mat-form-field>
-                          </p>
+                           <mat-form-field appearance="outline" class="inputs_properties">
+                              <mat-label>Fecha de nacimiento</mat-label>
+                              <input type="date" matInput autocomplete="off" formControlName="fechaNacimiento" />
+                              <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('pattern') && !form.get('fechaNacimiento')?.hasError('required')">
+                                 <strong class="txt_msg">**Formato de fecha no valido, (DD/MM/YYYY)...</strong>
+                              </mat-error>
+                              <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                           </mat-form-field>
+                        </p>
                        </div>
                      </div>
                      <div class="row"> 
