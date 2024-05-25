@@ -473,7 +473,7 @@ export class HorariosVistaComponent implements OnInit {
       });
      
     } else {
-      this.message = "Por favor, complete todos los campos requeridos.";
+      this.toastr.error('Completa los campos requeridos.', 'Error!!!');
       this.marcarCamposInvalidos(this.formularioSucursales);
       this.marcarCamposInvalidos(this.personaForm);
     }

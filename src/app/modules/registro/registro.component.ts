@@ -172,7 +172,7 @@ export class RegistroComponent implements OnInit {
       user:['saad'],
       //no_clave: ['0'],
       nombre:[''],
-      id:['', Validators.required],
+      id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       destino:["Cliente"],
       direccion:[''],
       codigoPromotor:[0],
@@ -481,6 +481,7 @@ export class RegistroComponent implements OnInit {
       if(this.form.valid){
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
+            console.log(resultData, "resultData");
             this.spinner.show();
             if (resultData.message === 'MailExists') {
               this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
@@ -511,6 +512,8 @@ export class RegistroComponent implements OnInit {
                 }
               });
     
+            }else if(resultData.success == '0') {
+              this.toastr.error('Error al intentar agregar el empleado, revise sus datos', 'Error!!!');
             }
           },
           error: (error) => {

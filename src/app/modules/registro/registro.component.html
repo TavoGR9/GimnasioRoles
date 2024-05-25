@@ -79,53 +79,66 @@
                        <div class="col-sm-6">
                         <p>
                            <mat-form-field appearance="outline" class="inputs_properties">
-                              <mat-label>ID</mat-label>
-                              <input type="text" matInput placeholder="Nombre" autocomplete="off" formControlName="id" />
-                              <mat-error *ngIf="form.get('id')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                             <mat-label>ID</mat-label>
+                             <input type="number" matInput placeholder="Nombre" autocomplete="off" formControlName="id" step="1" />
+                             <mat-error *ngIf="form.get('id')?.hasError('required')">
+                               <strong class="txt_msg">**Campo requerido</strong>
+                             </mat-error>
+                             <mat-error *ngIf="form.get('id')?.hasError('pattern')">
+                               <strong class="txt_msg">**Debe ser un número entero</strong>
+                             </mat-error>
+                           </mat-form-field>
+                         </p>
+                         
+                        <p>
+                           
+                           <mat-form-field appearance="outline" class="inputs_properties">
+                              <mat-label>Apellido paterno</mat-label>
+                              <input type="text" matInput placeholder="Apellido paterno" autocomplete="off" formControlName="apPaterno" />
+                              <mat-error *ngIf="form.get('apPaterno')?.hasError('pattern') && !form.get('apPaterno')?.hasError('required')">
+                                 <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+                              </mat-error>
+                              <mat-error *ngIf="form.get('apPaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                            </mat-form-field>
                         </p>
-                          <p>
-                             <mat-form-field appearance="outline" class="inputs_properties">
-                                <mat-label>Nombre</mat-label>
-                                <input type="text" matInput placeholder="Nombre" autocomplete="off" formControlName="nombreU" />
-                                <mat-error *ngIf="form.get('nombreU')?.hasError('pattern') && !form.get('nombreU')?.hasError('required')">
-                                   <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
-                                </mat-error>
-                                <mat-error *ngIf="form.get('nombreU')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                             </mat-form-field>
-                          </p>
-                          <p>
-                             <mat-form-field appearance="outline" class="inputs_properties">
-                                <mat-label>Apellido materno</mat-label>
-                                <input type="text" matInput placeholder="Apellido materno" autocomplete="off" formControlName="apMaterno" />
-                                <mat-error *ngIf="form.get('apMaterno')?.hasError('pattern') && !form.get('apMaterno')?.hasError('required')">
-                                   <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
-                                </mat-error>
-                                <mat-error *ngIf="form.get('apMaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                             </mat-form-field>
-                          </p>
+
+                        <p>
+                           <mat-form-field appearance="outline" class="inputs_properties">
+                              <mat-label>Telefono</mat-label>
+                              <input type="text" matInput placeholder="Telefono" autocomplete="off" minlength="7" maxlength="10" formControlName="fon" />
+                              <mat-error *ngIf="form.get('fon')?.hasError('pattern') && !form.get('fon')?.hasError('required')">
+                                 <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
+                              </mat-error>
+                              <mat-error *ngIf="form.get('fon')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                           </mat-form-field>
+                        </p>
+                        
+                         
                        </div>
                        <div class="col-sm-6">
-                          <p>
-                             <mat-form-field appearance="outline" class="inputs_properties">
-                                <mat-label>Apellido paterno</mat-label>
-                                <input type="text" matInput placeholder="Apellido paterno" autocomplete="off" formControlName="apPaterno" />
-                                <mat-error *ngIf="form.get('apPaterno')?.hasError('pattern') && !form.get('apPaterno')?.hasError('required')">
-                                   <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
-                                </mat-error>
-                                <mat-error *ngIf="form.get('apPaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                             </mat-form-field>
-                          </p>
-                          <p>
-                             <mat-form-field appearance="outline" class="inputs_properties">
-                                <mat-label>Telefono</mat-label>
-                                <input type="text" matInput placeholder="Telefono" autocomplete="off" minlength="7" maxlength="10" formControlName="fon" />
-                                <mat-error *ngIf="form.get('fon')?.hasError('pattern') && !form.get('fon')?.hasError('required')">
-                                   <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
-                                </mat-error>
-                                <mat-error *ngIf="form.get('fon')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
-                             </mat-form-field>
-                          </p>
+                        <p>
+                           <mat-form-field appearance="outline" class="inputs_properties">
+                              <mat-label>Nombre</mat-label>
+                              <input type="text" matInput placeholder="Nombre" autocomplete="off" formControlName="nombreU" />
+                              <mat-error *ngIf="form.get('nombreU')?.hasError('pattern') && !form.get('nombreU')?.hasError('required')">
+                                 <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+                              </mat-error>
+                              <mat-error *ngIf="form.get('nombreU')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                           </mat-form-field>
+                        </p>
+
+                        <p>
+                           <mat-form-field appearance="outline" class="inputs_properties">
+                              <mat-label>Apellido materno</mat-label>
+                              <input type="text" matInput placeholder="Apellido materno" autocomplete="off" formControlName="apMaterno" />
+                              <mat-error *ngIf="form.get('apMaterno')?.hasError('pattern') && !form.get('apMaterno')?.hasError('required')">
+                                 <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
+                              </mat-error>
+                              <mat-error *ngIf="form.get('apMaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                           </mat-form-field>
+                        </p>
+                         
+                          
                           <p>
                            <mat-form-field appearance="outline" class="inputs_properties">
                               <mat-label>Fecha de nacimiento</mat-label>
