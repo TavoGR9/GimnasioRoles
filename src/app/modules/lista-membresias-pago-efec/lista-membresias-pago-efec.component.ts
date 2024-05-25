@@ -488,6 +488,21 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       if (confirmado) {
         this.pagoService.deleteService(prueba).subscribe(
           (respuesta) => { 
+            this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
+              /*if (response[2] && response[2].success === '2') {
+                //const combinedArray = response[0].data.concat(response[1]);
+                const combinedArray = response[0].data;
+                this.dataSourceActivos = new MatTableDataSource(combinedArray);
+                this.loadData(); 
+              } else {*/
+                this.clienteActivo = response.data;
+                this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+                this.loadData();     
+              },
+              (error: any) => {
+                console.error('Error al obtener activos:', error);
+              }
+            );    
           }
         );
       } else {
