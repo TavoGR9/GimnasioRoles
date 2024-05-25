@@ -48,7 +48,10 @@ export class ConfiguracionComponent  implements OnInit{
   ) {
     {
       this.idGimnasio = this.auth.idGym.getValue(); // Accede a idGimnasio desde los datos
-      this.formularioHorarios = this.formularioHorario.group({ horarios: this.formularioHorario.array([])});
+      this.formularioHorarios = this.formulario.group({
+        horarios: this.formulario.array([]),
+      });
+     // this.formularioHorarios = this.formularioHorario.group({ horarios: this.formularioHorario.array([])});
     }
     this.elID = this.activeRoute.snapshot.paramMap.get('id');
     this.formularioSucursales = this.formulario.group({
@@ -58,11 +61,26 @@ export class ConfiguracionComponent  implements OnInit{
     });
   }
 
-  agregarHorarioExistente(diaSemana: string, respuesta: any): void {
+  /*agregarHorarioExistente(diaSemana: string, respuesta: any): void {
     const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
     const horaEntrada = horarioExistente ? horarioExistente.horaEntrada : '';
     const horaSalida = horarioExistente ? horarioExistente.horaSalida : '';
     const horarioFormGroup = this.formularioHorario.group({
+      diaSemana: [diaSemana, Validators.required],
+      horaEntrada: [horaEntrada, Validators.required],
+      horaSalida: [horaSalida, Validators.required],
+    });
+    const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
+    if (horariosArray) {
+      horariosArray.push(horarioFormGroup);
+    }
+  }*/
+
+  agregarHorarioExistente(diaSemana: string, respuesta: any): void {
+    const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
+    const horaEntrada = horarioExistente ? horarioExistente.horaEntrada : '';
+    const horaSalida = horarioExistente ? horarioExistente.horaSalida : '';
+    const horarioFormGroup = this.formulario.group({
       diaSemana: [diaSemana, Validators.required],
       horaEntrada: [horaEntrada, Validators.required],
       horaSalida: [horaSalida, Validators.required],
@@ -85,9 +103,24 @@ export class ConfiguracionComponent  implements OnInit{
     }); 
   }
 
-  verHorario(){
+/*  verHorario(){
     this.HorarioService.consultarHorario(this.idGym).subscribe(
       respuesta => {
+        const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
+        horariosArray.clear();
+        this.diasSemana.forEach(dia => {
+          this.agregarHorarioExistente(dia, respuesta);
+        });
+      }
+    );
+  }*/
+
+  verHorario() {
+    this.HorarioService.consultarHorario(this.idGym).subscribe(
+      respuesta => {
+        const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
+        horariosArray.clear(); // Limpiar el FormArray antes de añadir nuevos elementos
+
         this.diasSemana.forEach(dia => {
           this.agregarHorarioExistente(dia, respuesta);
         });
@@ -130,7 +163,20 @@ export class ConfiguracionComponent  implements OnInit{
       numero: this.formularioSucursales.value.numeroTelefonico,
       id_bod: idGym
     };  
+    
+
+   // const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
+   // const horariosActualizados = horariosArray.controls.map(horarioControl => horarioControl.value);
+
+   //const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
+//const horariosActualizados = horariosArray.controls.map(horarioControl => horarioControl.value);
+
+// Convertir horariosActualizados en un array
+
+
+
     const horariosData = this.formularioHorarios.value;
+   // console.log(horariosData, "horariosData");
     const actualizarPlan = this.gimnasioService.actualizarSucursal(planData).pipe(
       tap(respuesta => {
         if (respuesta.success === 1) {

@@ -39,6 +39,7 @@ export class HorarioService {
   }
   
   actualizarHorario(id: any, datosPlan: any): Observable<any> {
+    console.log(datosPlan, "datosPlan");
     return this.clienteHttp.post(`${this.API}horario.php?actualizar=${id}`, datosPlan, { headers: { 'Content-Type': 'application/json' }, responseType: 'text' });
   }
 
