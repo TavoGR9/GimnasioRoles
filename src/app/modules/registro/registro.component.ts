@@ -169,14 +169,14 @@ export class RegistroComponent implements OnInit {
       base64textString: [''],
       email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
       pass: [''],
-      user:['saad'],
+      user:['name'],
       //no_clave: ['0'],
       nombre:[''],
       id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       destino:["Cliente"],
       direccion:[''],
       codigoPromotor:[0],
-      Genero:['Mjer'],
+      Genero:['sin genero'],
     })
 
   }
@@ -481,7 +481,6 @@ export class RegistroComponent implements OnInit {
       if(this.form.valid){
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
-            console.log(resultData, "resultData");
             this.spinner.show();
             if (resultData.message === 'MailExists') {
               this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
