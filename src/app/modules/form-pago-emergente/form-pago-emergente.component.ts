@@ -21,6 +21,8 @@ export class FormPagoEmergenteComponent implements OnInit{
   precio: any;
   duracion: number = 0;
   moneyRecibido: number = 0; 
+  fechaDeInicio: Date | null = null;
+  fechaDeFin: Date | null = null;
   ticketInfo: any;
   @Output() actualizarTablas = new EventEmitter<boolean>();
   
@@ -363,10 +365,31 @@ export class FormPagoEmergenteComponent implements OnInit{
       if (this.membresiaSeleccionada != undefined){
         if(this.moneyRecibido >= this.precio){
           const PrecioCalcular = this.moneyRecibido - this.precio;
+
+          if(this.fechaDeInicio && this.fechaDeFin){
+            const fechaFormateada1: string = this.fechaDeInicio.toISOString().split('T')[0];
+            const fechaFormateada2: string = this.fechaDeFin.toISOString().split('T')[0];
+            this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada1, this.data.detMemID, this.precio, fechaFormateada2).subscribe((dataResponse: any)=> {
+              this.actualizarTablas.emit(true);
+              this.dialogo.close(true);
+              this.dialog.open(MensajeEmergenteComponent, {
+                data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
+                disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
+              })
+              .afterClosed()
+              .subscribe((cerrarDialogo: Boolean) => {
+                if (cerrarDialogo) {
+                  this.imprimirResumen();
+                } else {
+      
+                }
+              });
+            });
+          }else {
           // Obtener la fecha actual
           const fechaActual: Date = new Date();
           // Formatear la fecha en el formato deseado (yyyy-mm-dd)
-          const fechaFormateada: string = fechaActual.toISOString().split('T')[0];
+          const fechaFormateada = fechaActual.toISOString().split('T')[0];
           let fechaFin: Date = new Date(fechaActual); // Crear una copia de la fecha actual
          if (this.duracion == 1) {
           } else if (this.duracion == 30) {
@@ -399,8 +422,7 @@ export class FormPagoEmergenteComponent implements OnInit{
   
             }
           });
-        });
-      
+        });}
         }else{
           this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
         }

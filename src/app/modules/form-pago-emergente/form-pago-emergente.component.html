@@ -40,7 +40,29 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6" >
+            <div class="col-sm-6">
+                <mat-form-field appearance="outline" style="width: 100%;" required>
+                  <mat-label>Fecha inicio:</mat-label>
+                  <input matInput [(ngModel)]="fechaDeInicio" name="fechaDeInicio" placeholder="Selecciona una fecha inicio" [matDatepicker]="picker1">
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+              </div>              
+            <div class="col-sm-6">
+                <mat-form-field appearance="outline" style="width: 100%;" required>
+                    <mat-label>Fecha fin:</mat-label>
+                    <input matInput [(ngModel)]="fechaDeFin" name="fechaDeFin" placeholder="Selecciona una fecha fin" [matDatepicker]="picker2">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+       <br>
+        <div class="row">
+            <div class="col-sm-3">
+                <label>Pago de la membresia:</label>
+            </div>
+            <div class="col-sm-9" >
                 <mat-form-field appearance="outline" style="width: 100%;">
                     <mat-label>Dinero recibido</mat-label>
                     <input matInput [(ngModel)]="this.moneyRecibido" [ngModelOptions]="{standalone: true}" type="number" min="0" placeholder="0">

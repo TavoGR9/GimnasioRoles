@@ -64,7 +64,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   fechaFin: Date = new Date('0000-00-00');    
   id: any;
   displayedColumnsActivos: string[] = [
-    'ID',
+    'Clave',
     'Nombre',
     'Membresia',
     'Precio',
@@ -206,6 +206,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   listaClientesData(): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
+      console.log(response, "response");
       /*if (response[2] && response[2].success === '2') {
         //const combinedArray = response[0].data.concat(response[1]);
         const combinedArray = response[0].data;
@@ -332,6 +333,18 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         } else {
         }
       });
+  }
+
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+  
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
+  }
+
+  isRecep(): boolean {
+    return this.auth.isRecepcion();
   }
 
   obtenerCliente(idCliente: number) {
