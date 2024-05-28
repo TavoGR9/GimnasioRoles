@@ -146,7 +146,8 @@ export class RegistroComponent implements OnInit {
       nombreU: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       apPaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       apMaterno: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
-      fon: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      //fon: ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
+      fon: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       codigoPostal: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(5)])],
       ciudad: ['', Validators.compose([Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
       colonia: ['', Validators.compose([Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
@@ -155,22 +156,18 @@ export class RegistroComponent implements OnInit {
       numExterno: ['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
       estado: [''],
       idGym:[this.auth.idGym.getValue()],
-      //direccion: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú0-9 ./#]*[A-Za-z][A-Za-zñÑáéíóú0-9 ./#]*$/)])],
-      fechaNacimiento: ['', Validators.required],
-      //curp: ['', Validatfors.compose([ Validators.minLength(18), Validators.pattern(/^[A-ZÑ0-9]*[A-Z][A-ZÑ0-9]*$/)])],
-      //pass: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
-      //tiene_huella:[''],
-      fotoUrl:['', Validators.required],
-      //peso:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(300)])],
-      //estatura:['', Validators.compose([Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.max(250)])],
+      //fechaNacimiento: ['', Validators.required],
+      fechaNacimiento: [''],
+
+      //fotoUrl:['', Validators.required],
+      fotoUrl:[''],
       Gimnasio_idGimnasio:[this.auth.idGym.getValue()],
-      //Membresia_idMem:['', Validators.required],
       nombreArchivo: [''],
       base64textString: [''],
-      email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
+      //email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
+      email: ['', Validators.compose([Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
       pass: [''],
       user:['name'],
-      //no_clave: ['0'],
       nombre:[''],
       id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       destino:["Cliente"],
@@ -486,8 +483,10 @@ export class RegistroComponent implements OnInit {
               this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
               this.spinner.hide();
             } else if (resultData.success == '1') {
+              if(resultData.email !== null){
               this.add.enviarMail(resultData.email).subscribe(
               );
+            }
               this.cerrarDialogo();
               this.spinner.hide();
               this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {

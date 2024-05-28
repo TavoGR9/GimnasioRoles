@@ -109,7 +109,7 @@
                               <mat-error *ngIf="form.get('fon')?.hasError('pattern') && !form.get('fon')?.hasError('required')">
                                  <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
                               </mat-error>
-                              <mat-error *ngIf="form.get('fon')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                              <!--<mat-error *ngIf="form.get('fon')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>-->
                            </mat-form-field>
                         </p>
                         
@@ -146,7 +146,7 @@
                               <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('pattern') && !form.get('fechaNacimiento')?.hasError('required')">
                                  <strong class="txt_msg">**Formato de fecha no valido, (DD/MM/YYYY)...</strong>
                               </mat-error>
-                              <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                            <!-- <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>--> 
                            </mat-form-field>
                         </p>
                        </div>
@@ -250,7 +250,7 @@
                         <mat-error *ngIf="form.get('email')?.hasError('pattern') && !form.get('email')?.hasError('required')">
                            <strong class="txt_msg">**Formato de correo no valido...</strong>
                         </mat-error>
-                        <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                       <!-- <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>-->
                      </mat-form-field>
                   </p>
                </div>
