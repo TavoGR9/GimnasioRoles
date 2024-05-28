@@ -5,9 +5,17 @@
         <form [formGroup]="form">
            <div >
               <div class="row">
-                 <div class="col-sm-12">
+               <div class="col-sm-4">
+                  <mat-label>Clave: </mat-label>
+                  <mat-form-field appearance="outline" style="width: 95%;">
+                     <mat-label>Clave</mat-label>
+                     <input type="text" matInput placeholder="000021" autocomplete="off" formControlName="clave" id="clave" [errorStateMatcher]="matcher">
+                     <mat-error *ngIf="form.get('clave')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                  </mat-form-field>
+               </div>
+                 <div class="col-sm-8">
                     <mat-label >Nombre completo: </mat-label>
-                    <mat-form-field appearance="outline" style="width: 95%;">
+                    <mat-form-field appearance="outline" style="width: 100%;">
                        <mat-label>Nombre</mat-label>
                        <input type="text" matInput placeholder="Juan" autocomplete="off" formControlName="nombre" id="nombre" [errorStateMatcher]="matcher">
                        <mat-error *ngIf="form.get('nombre')?.hasError('pattern') && !form.get('nombre')?.hasError('required')">
@@ -32,18 +40,33 @@
                     </mat-form-field>
                  </div>
                  <div class="col-sm-6">
-                  <mat-label>Puesto: </mat-label>
+              <!---x  <mat-label>Puesto: </mat-label>
                   <mat-form-field appearance="outline" style="width: 95%;">
                      <mat-label>Puesto</mat-label>
                      <mat-select id="puesto" formControlName="puesto" id="puesto" [errorStateMatcher]="matcher">
-                       <!-- <mat-option value="Administrador">Administrador</mat-option>-->
                         <mat-option value="Recepcionista">Recepcionista</mat-option>
                         <mat-option value="Limpieza">Limpieza</mat-option>
                      </mat-select>
                      <mat-error *ngIf="form.get('area')?.hasError('required')">
                         <strong class="txt_msg">**Campo requerido</strong>
                      </mat-error>
-                  </mat-form-field>
+                  </mat-form-field>--->
+                  <mat-label>Puesto: </mat-label>
+                     <mat-form-field appearance="outline" style="width: 100%;">
+                        <mat-label>Puesto</mat-label>
+                        <input
+                          matInput
+                          formControlName="puesto"
+                          placeholder="Recepcionista"
+                          [matAutocomplete]="autoMarca"
+                          (input)="buscarPersonal()"
+                        />
+                        <mat-autocomplete #autoMarca="matAutocomplete" (optionSelected)="buscarPersonal()">
+                          <mat-option *ngFor="let marcas of filteredPersonal" [value]="personal">
+                            {{ marcas }}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
                </div>
               </div>
               <div class="row">
@@ -59,7 +82,7 @@
                  </div>
                  <div class="col-sm-6">
                     <mat-label>Contraseña: </mat-label>
-                    <mat-form-field appearance="outline" style="width: 95%;">
+                    <mat-form-field appearance="outline" style="width: 100%;">
                        <mat-label>Asignar contraseña</mat-label>
                        <input matInput  matInput [type]="hide ? 'password' : 'text'" placeholder="Asignar contraseña" formControlName="pass" id="pass" [errorStateMatcher]="matcher">
                        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">

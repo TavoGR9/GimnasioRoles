@@ -28,7 +28,7 @@ export class planAgregarComponent {
   gimnasio: any;
   selectedMembresia: any;
   idGym: number = 0;
-  plan: plan[] = [];
+  plan: any[] = [];
   noServicios: boolean = false;
 
   constructor(

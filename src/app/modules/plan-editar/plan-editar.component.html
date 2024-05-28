@@ -77,7 +77,7 @@
                                     <mat-select multiple formControlName="membresias"> 
 
                                         <mat-option *ngFor="let membresia of servicios" [value]="membresia">
-                                        {{ membresia.titulo }} - {{ membresia.duracion }} días
+                                        {{ membresia.titulo }} - {{ membresia.duracion }} días - {{ membresia.nombre_servicio }}
                                       </mat-option>
 
                                     </mat-select>

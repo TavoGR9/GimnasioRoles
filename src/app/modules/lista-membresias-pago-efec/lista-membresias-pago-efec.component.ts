@@ -162,7 +162,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ngDoCheck(): void {
     if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
       this.updateDateLogs();
-      this.listaClientesData();
+     // this.listaClientesData();
     }
   }
 
@@ -190,7 +190,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         } else if(response.data){
           this.clienteActivo = response.data;
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-          this.dataSourceActivos.paginator = this.paginatorActivos;
+          this.loadData();  
+         // this.dataSourceActivos.paginator = this.paginatorActivos;
         }
       },
       error => {
@@ -206,7 +207,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   listaClientesData(): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
-      console.log(response, "response");
       /*if (response[2] && response[2].success === '2') {
         //const combinedArray = response[0].data.concat(response[1]);
         const combinedArray = response[0].data;
@@ -486,7 +486,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     // Descargar el archivo PDF
     pdf.save('Clientes.pdf');
   }
-
 
   eliminarUs(prod: any){
     const prueba = {

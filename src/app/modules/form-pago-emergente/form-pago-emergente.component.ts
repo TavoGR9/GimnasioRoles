@@ -367,8 +367,16 @@ export class FormPagoEmergenteComponent implements OnInit{
           const PrecioCalcular = this.moneyRecibido - this.precio;
 
           if(this.fechaDeInicio && this.fechaDeFin){
-            const fechaFormateada1: string = this.fechaDeInicio.toISOString().split('T')[0];
-            const fechaFormateada2: string = this.fechaDeFin.toISOString().split('T')[0];
+            const añoInicio = this.fechaDeInicio.getFullYear();
+            const mesInicio = String(this.fechaDeInicio.getMonth() + 1).padStart(2, '0'); // Los meses son indexados desde 0
+            const díaInicio = String(this.fechaDeInicio.getDate()).padStart(2, '0');
+            const fechaFormateada1 = `${añoInicio}-${mesInicio}-${díaInicio}`;
+
+// Formatear fechaDeFin
+            const añoFin = this.fechaDeInicio.getFullYear();
+            const mesFin = String(this.fechaDeInicio.getMonth() + 1).padStart(2, '0');
+            const díaFin = String(this.fechaDeInicio.getDate()).padStart(2, '0');
+            const fechaFormateada2 = `${añoFin}-${mesFin}-${díaFin}`;
             this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada1, this.data.detMemID, this.precio, fechaFormateada2).subscribe((dataResponse: any)=> {
               this.actualizarTablas.emit(true);
               this.dialogo.close(true);
@@ -389,7 +397,15 @@ export class FormPagoEmergenteComponent implements OnInit{
           // Obtener la fecha actual
           const fechaActual: Date = new Date();
           // Formatear la fecha en el formato deseado (yyyy-mm-dd)
-          const fechaFormateada = fechaActual.toISOString().split('T')[0];
+          //const fechaFormateada = fechaActual.toISOString().split('T')[0];
+          const year = fechaActual.getFullYear();
+          const month = String(fechaActual.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
+          const day = String(fechaActual.getDate()).padStart(2, '0');
+
+// Formatear la fecha en el formato deseado (yyyy-mm-dd)
+          const fechaFormateada = `${year}-${month}-${day}`;
+
+
           let fechaFin: Date = new Date(fechaActual); // Crear una copia de la fecha actual
          if (this.duracion == 1) {
           } else if (this.duracion == 30) {

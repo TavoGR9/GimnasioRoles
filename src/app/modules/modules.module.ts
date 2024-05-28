@@ -91,6 +91,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgChartsModule } from 'ng2-charts';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AgregarPersonalComponent } from './agregar-personal/agregar-personal.component';
 
 
 @NgModule({
@@ -148,6 +149,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     planEditarComponent,
     ArchivosComponent,
     SidebarComponent,
+    AgregarPersonalComponent,
     //InventarioComponent
   ],
   imports: [
