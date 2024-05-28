@@ -62,8 +62,8 @@
                           (input)="buscarPersonal()"
                         />
                         <mat-autocomplete #autoMarca="matAutocomplete" (optionSelected)="buscarPersonal()">
-                          <mat-option *ngFor="let marcas of filteredPersonal" [value]="personal">
-                            {{ marcas }}
+                          <mat-option *ngFor="let personal of filteredPersonal" [value]="personal">
+                            {{ personal }}
                           </mat-option>
                         </mat-autocomplete>
                       </mat-form-field>
