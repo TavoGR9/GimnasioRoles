@@ -85,7 +85,8 @@ export class ServiciosListaComponent implements OnInit{
   }
 
   listaTabla() {
-    this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {     
+    this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => { 
+        
       /*if (res[2] && res[2].success === 2) { 
         const combinedArray = res[0].concat(res[1]);
         if (Array.isArray(combinedArray)) { // Verificar si combinedArray es un array

@@ -100,8 +100,6 @@ export class MembresiaService {
     );
   }
 
-
-
   consultarPlanIdMem(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"membresias.php?consultarGYMMem="+id).pipe(
       tap(dataResponse => {

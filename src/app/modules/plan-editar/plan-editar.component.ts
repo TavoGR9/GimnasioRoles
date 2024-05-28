@@ -95,8 +95,7 @@ export class planEditarComponent {
                 precio: this.serviceToUpdate[0].precio,
                 status: this.serviceToUpdate[0].status,
                 tipo_membresia: this.serviceToUpdate[0].tipo_membresia,
-                Gimnasio_idGimnasio:
-                  this.serviceToUpdate[0].Gimnasio_idGimnasio,
+                Gimnasio_idGimnasio:this.serviceToUpdate[0].Gimnasio_idGimnasio,
                 fechaInicio: this.serviceToUpdate[0].fechaInicio,
                 fechaFin: this.serviceToUpdate[0].fechaFin,
                 membresias: serviciosCoincidentes,

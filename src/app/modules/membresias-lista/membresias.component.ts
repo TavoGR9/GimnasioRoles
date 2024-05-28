@@ -36,6 +36,7 @@ export class MembresiasComponent implements OnInit {
   displayedColumns: string[] = [
     "title",
     "details",
+    "servicio",
     "price",
     "duration",
     "actions",

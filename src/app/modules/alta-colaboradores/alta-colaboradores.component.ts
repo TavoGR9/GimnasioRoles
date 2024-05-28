@@ -8,6 +8,7 @@ import { AuthService } from '../../service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { NgxSpinnerService } from "ngx-spinner";
+import { AgregarPersonalComponent } from '../agregar-personal/agregar-personal.component';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
@@ -40,6 +41,7 @@ export class AltaColaboradoresComponent {
     this.form = this.fb.group({
       nombre: ['', Validators.compose([ Validators.required, Validators.pattern(/^[^\d]*$/)])],
       puesto: ['', Validators.compose([ Validators.required])],
+      clave: ['', Validators.compose([ Validators.required])],
       email:  [''],
       jefe: [1, Validators.compose([ Validators.required])],
       foto: ['Foto', Validators.compose([ Validators.required])],
@@ -65,7 +67,8 @@ export class AltaColaboradoresComponent {
       if (this.form.get('idGym') !== null) {
         this.form.get('idGym')!.setValue(this.idGym);
       }      
-    }); 
+    });
+    this.buscarPersonal();
   }
 
   getSSdata(data: any){
@@ -107,49 +110,96 @@ export class AltaColaboradoresComponent {
   }
 
   registrar(): any {
-    if (this.form.valid) {
-      this.spinner.show();
-      this.http.agregarEmpleado(this.form.value).subscribe({
-        next: (resultData) => {
-          if (resultData.message === 'MailExists') {
-            this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
-          } else if (resultData.success == '1') {
-            this.cerrarDialogo();
-            this.enviarMensajeWhatsApp();
-            this.spinner.hide();
-            this.dialog.open(MensajeEmergentesComponent, {
-              data: 'Registro agregado correctamente.'
-            })
-            .afterClosed()
-            .subscribe((cerrarDialogo: boolean) => {
-              if (cerrarDialogo) {
-              } else {
+   if (this.form.valid) {
+    this.spinner.show();
+    this.http.obtenerPersonalPorNombre(this.form.value.puesto).subscribe(respuesta=>{
+      if(respuesta.success == 0){
+        this.http.agregarPersonal(this.form.value.puesto).subscribe(respuesta =>{
+          this.http.agregarEmpleado(this.form.value).subscribe({
+            next: (resultData) => {
+              if (resultData.message === 'MailExists') {
+                this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+              } else if (resultData.success == '1') {
+                this.cerrarDialogo();
+                this.enviarMensajeWhatsApp();
+                this.spinner.hide();
+                this.dialog.open(MensajeEmergentesComponent, {
+                  data: 'Registro agregado correctamente.'
+                })
+                .afterClosed()
+                .subscribe((cerrarDialogo: boolean) => {
+                  if (cerrarDialogo) {
+                  } else {
+                  }
+                });
+                this.form.markAsPristine(); 
+                this.form.markAsUntouched();
+              } else if (resultData.success == '2') {
+                this.cerrarDialogo();
+                //this.enviarMensajeWhatsApp();
+                this.spinner.hide();
+                this.dialog.open(MensajeEmergentesComponent, {
+                  data: 'Registro agregado a base de datos local. '
+                })
+                .afterClosed()
+                .subscribe((cerrarDialogo: boolean) => {
+                  if (cerrarDialogo) {
+                  } else {
+                  }
+                });
+                this.form.markAsPristine(); 
+                this.form.markAsUntouched();
               }
-            });
-            this.form.markAsPristine(); 
-            this.form.markAsUntouched();
-          } else if (resultData.success == '2') {
-            this.cerrarDialogo();
-            //this.enviarMensajeWhatsApp();
-            this.spinner.hide();
-            this.dialog.open(MensajeEmergentesComponent, {
-              data: 'Registro agregado a base de datos local. '
-            })
-            .afterClosed()
-            .subscribe((cerrarDialogo: boolean) => {
-              if (cerrarDialogo) {
-              } else {
-              }
-            });
-            this.form.markAsPristine(); 
-            this.form.markAsUntouched();
+            },
+            error: (error) => {
+              this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
+            }
+          });
+        });
+      } else {
+        this.http.agregarEmpleado(this.form.value).subscribe({
+          next: (resultData) => {
+            if (resultData.message === 'MailExists') {
+              this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+            } else if (resultData.success == '1') {
+              this.cerrarDialogo();
+              this.enviarMensajeWhatsApp();
+              this.spinner.hide();
+              this.dialog.open(MensajeEmergentesComponent, {
+                data: 'Registro agregado correctamente.'
+              })
+              .afterClosed()
+              .subscribe((cerrarDialogo: boolean) => {
+                if (cerrarDialogo) {
+                } else {
+                }
+              });
+              this.form.markAsPristine(); 
+              this.form.markAsUntouched();
+            } else if (resultData.success == '2') {
+              this.cerrarDialogo();
+              //this.enviarMensajeWhatsApp();
+              this.spinner.hide();
+              this.dialog.open(MensajeEmergentesComponent, {
+                data: 'Registro agregado a base de datos local. '
+              })
+              .afterClosed()
+              .subscribe((cerrarDialogo: boolean) => {
+                if (cerrarDialogo) {
+                } else {
+                }
+              });
+              this.form.markAsPristine(); 
+              this.form.markAsUntouched();
+            }
+          },
+          error: (error) => {
+            this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
           }
-        },
-        error: (error) => {
-          this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
-        }
-      });
-    } else {
+        });
+      }
+    });
+   } else {
       this.message = 'Por favor, complete todos los campos requeridos.';
       this.marcarCamposInvalidos(this.form);
     }
@@ -179,6 +229,41 @@ export class AltaColaboradoresComponent {
           control.markAsTouched();
         };
       }
+    });
+  }
+
+  agregarPersonal(){
+    const dialogRef = this.dialog.open(AgregarPersonalComponent, {
+      width: '45%',
+      height: '50%', 
+      disableClose: true,  
+    });
+    dialogRef.afterClosed().subscribe(() => {
+    });
+  }
+
+  verPersonal(){
+    this.http.getPersonal().subscribe(respuesta =>{
+    });
+  };
+
+  filteredPersonal: string[] = [];
+  personal: string[] = [];
+
+  buscarPersonal() {
+    const personalIngresado = this.form.get("puesto")?.value;
+    this.http.getPersonal().subscribe({
+      next: (respuesta) => {
+        const puesto = new Set(
+          respuesta.personal.map((persona: any) => persona.nombre)
+        );
+        this.personal = Array.from(puesto) as string[];
+        this.filteredPersonal = this.personal.filter(
+          (persona) =>
+            !personalIngresado ||
+          persona.toLowerCase().includes(personalIngresado.toLowerCase())
+        );
+      },
     });
   }
 }

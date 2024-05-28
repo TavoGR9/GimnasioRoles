@@ -49,6 +49,20 @@ export class ColaboradorService {
         return this.clienteHttp.get(this.API+"empleado.php?nameGym="+gimName);
     }
 
+    agregarPersonal(datos: any): Observable<any> {
+      const data ={nombre: datos}
+      return this.clienteHttp.post(this.API + "empleado.php?insertarPersonal=1", data);
+    }
+
+    obtenerPersonalPorNombre(nombre:any):Observable<any>{
+
+      return this.clienteHttp.get(this.API+"empleado.php?personalName="+nombre);
+    }  
+
+    getPersonal(): Observable<any> {
+      return this.clienteHttp.get(this.API + "empleado.php?consultarPersonal");
+    }
+
     agregarEmpleado(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "empleado.php?insertarRep=1", datosEmpleado).pipe(
             tap(dataResponse => {

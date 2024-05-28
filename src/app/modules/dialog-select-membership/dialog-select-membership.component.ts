@@ -149,7 +149,6 @@ export class DialogSelectMembershipComponent implements OnInit {
               this.membresiaService
                 .consultarPlanGym(this.dataToUpdate.id)
                 .subscribe((respuesta) => {
-                  
                   if (respuesta) {
                     this.plan = respuesta;
                     const serviciosPlan = this.plan[0].servicios.map(
