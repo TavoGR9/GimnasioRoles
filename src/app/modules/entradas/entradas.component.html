@@ -28,7 +28,7 @@
                      <mat-option
                      *ngFor="let item of listaProductos"
                      [value]="item.idProbob"
-                     >{{ item.descripcion }}-{{ item.codigoBarras }}</mat-option
+                     >{{ item.descripcion }} {{ item.marca }}_{{ item.detalleCompra }} codigo_{{ item.codigoBarras }} </mat-option
                         >
                      </mat-select>
                      <mat-error *ngIf="form.get('idProbob')?.hasError('required')"
