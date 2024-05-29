@@ -450,6 +450,7 @@ export class RegistroComponent implements OnInit {
   }
 
   registrarUsuario(){
+    this.spinner.show();
     const codigoPostal = this.form.get("codigoPostal")?.value;
     const estado = this.form.get("estado")?.value;
     const ciudad = this.form.get("ciudad")?.value;
@@ -478,7 +479,7 @@ export class RegistroComponent implements OnInit {
       if(this.form.valid){
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
-            this.spinner.show();
+            
             if (resultData.message === 'MailExists') {
               this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
               this.spinner.hide();
@@ -519,6 +520,7 @@ export class RegistroComponent implements OnInit {
           }
         });
       } else{
+        this.spinner.hide();
         this.toastr.error('Complete los campos requeridos', 'Error', {
           positionClass: 'toast-bottom-left',
         });
