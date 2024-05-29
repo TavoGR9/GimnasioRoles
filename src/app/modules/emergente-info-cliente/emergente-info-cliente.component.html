@@ -17,78 +17,39 @@
   </div>
   <div class="col-sm-7">
     <form [formGroup]="form">
-    <div class="row">
-    
-
-   <!--  <div *ngIf="huella !== null && huella !== 'null' && huella !== '0'; else noHuella">
-        <img src="https://olympus.arvispace.com/gimnasioRoles/assets/img/huella.png" style="width: 8%;"/>
-        <label style="background-color: rgb(0, 155, 0); color: white; padding: 5px;">
-          Huella registrada
-        </label>
-        <hr>
-      </div>
-
-      <ng-template #noHuella>
-        <div style="width: 100%;">
-          <label style="background-color: rgb(177, 0, 0); color: white; padding: 5px;">Huella no registrada</label>
-          <hr>
+      <div class="row">
+        <div class="col-sm-4">
+          <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
+            <mat-label>Clave:</mat-label>
+            <input id="estafeta" formControlName="estafeta" type="text" matInput autocomplete="off" placeholder="Clave" />
+          </mat-form-field>
         </div>
-      </ng-template>--> 
-      
-    
+        <div class="col-sm-8">
+          <mat-form-field appearance="outline" class="formInputs" style="width: 92%;">
+            <mat-label>Telefono:</mat-label>
+            <input id="telefono" formControlName="telefono" type="text" matInput autocomplete="off" placeholder="Telefono" />
+          </mat-form-field>
+        </div>
+      </div>
+    <div class="row">
       <div class="col-sm-12">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
+        <mat-form-field appearance="outline" class="formInputs" style="width: 95%;">
           <mat-label>Nombre:</mat-label>
           <input id="nombre" formControlName="nombre" type="text" matInput autocomplete="off" placeholder="nombre" />
         </mat-form-field>
-
-      </div>
-      <!--<div class="col-sm-6">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
-          <mat-label>Apellido paterno:</mat-label>
-          <input id="apPaterno" formControlName="apPaterno" type="text" matInput autocomplete="off" placeholder="Apellido paterno" />
-        </mat-form-field>
-
-      </div>-->
-    </div>
-
-    <div class="row">
-     <!--<div class="col-sm-6">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
-          <mat-label>Apellido materno:</mat-label>
-          <input id="apMaterno" formControlName="apMaterno" type="text" matInput autocomplete="off" placeholder="Apellido materno" />
-        </mat-form-field>
-      </div>--> 
-      <div class="col-sm-12">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
-          <mat-label>Telefono:</mat-label>
-          <input id="telefono" formControlName="telefono" type="text" matInput autocomplete="off" placeholder="Telefono" />
-        </mat-form-field>
       </div>
     </div>
-
+    
     <div class="row">
       <div class="col-sm-12">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
+        <mat-form-field appearance="outline" class="formInputs" style="width: 95%;">
           <mat-label>Correo electronico.</mat-label>
           <input id="email" formControlName="correo" type="text" matInput autocomplete="off" placeholder="Correo electronico" />
         </mat-form-field>
       </div>
-      <!--<div class="col-sm-6">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
-          <mat-label>Estatura</mat-label>
-          <input id="estatura" formControlName="estatura" type="text" matInput autocomplete="off" placeholder="Estatura" />
-        </mat-form-field>
-      </div>-->
     </div>
 
     <div class="row">
-      <!--<div class="col-sm-6">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
-          <mat-label>Peso</mat-label>
-          <input id="peso" formControlName="peso" type="text" matInput autocomplete="off" placeholder="Peso" />
-        </mat-form-field>
-      </div>-->
       <div class="col-sm-12">
         <div style="display: flex; justify-content: center;">
           <button mat-raised-button (click)="actualizar()" style="background-color: #fd9727; font-size: 15px;  height: 40px;">Actualizar información</button>
@@ -96,35 +57,22 @@
       </div>
     </div>
     </form>
-
   </div>
+
+
+
 </div>
 <br><br>
   <div class="grid">
-    <!--<div class="column">
-      <h3 style="font-weight: bold;">Nombre:</h3> {{ data.nombre }}
-    </div>-->
-
-    <!--<div class="column">
-      <h3 style="font-weight: bold;">Sucursal:</h3> {{ data.sucursal }}
-    </div>-->
 
     <div class="column">
       <ng-container >
         <h3 style="font-weight: bold;">Membresia:</h3> {{ data.membresia }}
       </ng-container>
-      <!--<ng-template #notActive>
-        <h3 style="font-weight: bold;">Membresia:</h3> N/A
-      </ng-template>-->
+
     </div>
 
     <div class="column">
-      <!--<ng-container *ngIf="data.action === 'Activo'; else notActive">
-      <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
-    </ng-container>
-    <ng-template #notActive>
-      <h3 style="font-weight: bold;">Duración:</h3> N/A
-    </ng-template>-->
       <ng-container >
         <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
       </ng-container>
@@ -205,7 +153,5 @@
       Capturar huella
     </button>
   </a>
-  
-  <!--<a href="#">{{url}}</a>
-  <button mat-button (click)="cerrarDialogo()">Cerrar</button>-->
+
 </div>

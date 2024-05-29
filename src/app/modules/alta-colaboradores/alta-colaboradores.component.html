@@ -9,7 +9,7 @@
                   <mat-label>Clave: </mat-label>
                   <mat-form-field appearance="outline" style="width: 95%;">
                      <mat-label>Clave</mat-label>
-                     <input type="text" matInput placeholder="000021" autocomplete="off" formControlName="clave" id="clave" [errorStateMatcher]="matcher">
+                     <input type="number" matInput placeholder="000021" autocomplete="off" formControlName="clave" id="clave" [errorStateMatcher]="matcher">
                      <mat-error *ngIf="form.get('clave')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
                   </mat-form-field>
                </div>
