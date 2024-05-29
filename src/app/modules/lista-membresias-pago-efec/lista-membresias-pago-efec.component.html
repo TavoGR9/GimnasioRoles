@@ -41,73 +41,71 @@
           </mat-menu>
         </div>   
       </div>
+      <br> <br>
       <mat-form-field class="full-width">
         <mat-label>Buscar</mat-label>
         <input matInput (keyup)="applyFilterActivos($event)"placeholder="Buscar" #input/>
       </mat-form-field>
+      <br>
       <div  class="table-container">
         <table mat-table [dataSource]="dataSourceActivos" class="mat-elevation-z8">
-          <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsActivos">
-            <th mat-header-cell *matHeaderCellDef >{{ column }}</th>
+          <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsActivos; let i = index">
+            <th mat-header-cell *matHeaderCellDef (click)="i < 6 ? sortData(column) : null" style="cursor: pointer;">
+              <div style="display: flex; align-items: center;">
+                {{ column }}
+                <mat-icon class="custom-icon" *ngIf="i < 6 && sortField !== column">unfold_more</mat-icon>
+                <mat-icon class="custom-icon" *ngIf="i < 6 && sortField === column">
+                  {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </mat-icon>
+              </div>
+            </th>
             <td mat-cell *matCellDef="let prod">
-
               <ng-container *ngIf="column === 'Clave'">
                 {{ prod.estafeta }}
               </ng-container>
-  
               <ng-container *ngIf="column === 'Nombre'">
                 {{ prod.Nombre ? prod.Nombre : prod.nombre }}
               </ng-container>
-                                    
               <ng-container *ngIf="column === 'Membresia'">
-              {{ prod.Membresia }}-{{ prod.servicio }}
+                {{ prod.Membresia }}-{{ prod.servicio }}
               </ng-container>
-                        
               <ng-container *ngIf="column === 'Precio'">
-              {{ prod.Precio }}
+                {{ prod.Precio }}
               </ng-container>
-
               <ng-container *ngIf="column === 'Fecha Inicio'">
-              {{ prod.Fecha_Inicio }}
+                {{ prod.Fecha_Inicio }}
               </ng-container>
-
               <ng-container *ngIf="column === 'Fecha Fin'">
-              {{ prod.Fecha_Fin }}
+                {{ prod.Fecha_Fin }}
               </ng-container>
-                      
               <ng-container *ngIf="column === 'Estatus'">
                 <div [ngClass]="{'estatus-activo': prod.Status_Num === '1', 'estatus-inactivo': prod.Status_Num !== '1'}">
-                {{ prod.Status }}
+                  {{ prod.Status }}
                 </div>
               </ng-container>
-
               <ng-container *ngIf="column === 'Pago'">
-                <button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirEmergente(prod)" color="primary">  <!--(click)="abrirEmergente(updMem)"-->
+                <button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirEmergente(prod)" color="primary">
                   <mat-icon class="icon-size">edit</mat-icon>
                 </button>
               </ng-container>
-
               <ng-container *ngIf="column === 'Info Cliente'">
-                <button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirInfoCliente(prod)" color="{{ prod.foto ? 'primary' : 'warn' }}">  <!--(click)="abrirEmergente(updMem)"-->
+                <button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirInfoCliente(prod)" color="{{ prod.foto ? 'primary' : 'warn' }}">
                   <mat-icon class="icon-size">info</mat-icon>
                 </button>
               </ng-container>
-  
               <ng-container *ngIf="column === 'Huella'">
                 <div *ngIf="prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0'; else noHuella">
-                  <!-- Contenido para cuando huella no es nula ni 'null' y tampoco es cero 
-                  <img src="https://olympus.arvispace.com/gimnasioRoles/assets/img/huella.png" style="width: 20%;"/>-->
-                  <label class="estatus-activo"><mat-icon>fingerprint</mat-icon>          
+                  <label class="estatus-activo">
+                    <mat-icon>fingerprint</mat-icon>
                     Registrada
                   </label>
                 </div>
                 <ng-template #noHuella>
-                  <!-- Contenido para cuando huella es nula, 'null' o cero -->
                   <div style="width: 100%;">
                     <label class="estatus-inactivo">Huella no registrada</label>
                   </div>
                 </ng-template>
-              </ng-container>  
+              </ng-container>
               <ng-container *ngIf="column === 'Rol'">
                 <span *ngIf="prod.rol === 'Cliente'; else notCliente">
                   <mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
@@ -116,12 +114,11 @@
                   <mat-icon *ngIf="isAdmin()" (click)="eliminarUs(prod)">delete</mat-icon>
                 </ng-template>
               </ng-container>
-              
-           </td>
+            </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumnsActivos"></tr>
           <tr mat-row *matRowDef="let productofila; columns: displayedColumnsActivos"></tr>
-        </table>
+        </table>               
       </div>
       <mat-paginator #paginatorActivos [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
     </div> 

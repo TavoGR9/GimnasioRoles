@@ -141,3 +141,10 @@ table {
 
 
 
+.custom-icon {
+  font-size: 16px;
+  color: #999999; /* Cambia el color según lo desees */
+  /* Agrega otros estilos CSS según sea necesario */
+  margin-left: 10px;
+  margin-top: 5px;
+}
