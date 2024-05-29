@@ -479,9 +479,8 @@ export class RegistroComponent implements OnInit {
       if(this.form.valid){
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
-            
             if (resultData.message === 'MailExists') {
-              this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+              this.toastr.error('Correo o clave ya existente', 'Error!!!');
               this.spinner.hide();
             } else if (resultData.success == '1') {
               if(resultData.email !== null){

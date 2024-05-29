@@ -25,9 +25,6 @@ import { AddPasswordComponent } from './components/add-password/reset-password.c
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 
-
-
-
 @NgModule({
   declarations: [
     AppComponent,

@@ -58,7 +58,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   cliente: any;
   clienteActivo: ClientesActivos[] = [];  
   dataSource: any; 
-  dataSourceActivos: any;
+ // dataSourceActivos: any;
+ dataSourceActivos: MatTableDataSource<any>;
   dataSourceReenovacion: any;
   fechaInicio: Date = new Date('0000-00-00'); 
   fechaFin: Date = new Date('0000-00-00');    
@@ -106,6 +107,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private datePipe: DatePipe,
     private auth: AuthService,
   ) {
+    this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+
     this.form = this.fb.group({
       idUsuario: [''],
       action: ['add'],
@@ -223,6 +226,45 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     );
   }
 
+  sortField: string = '';
+  sortDirection: string = 'asc';
+
+  sortData(column: string): void {
+    const data = this.dataSourceActivos.data;
+    if (this.sortField === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = column;
+      this.sortDirection = 'asc';
+    }
+    data.sort((a, b) => {
+      const isAsc = this.sortDirection === 'asc';
+      switch (column) {
+        case 'Clave': return this.compare(a.estafeta, b.estafeta, isAsc);
+        case 'Nombre': return this.compare(a.Nombre ? a.Nombre : a.nombre, b.Nombre ? b.Nombre : b.nombre, isAsc);
+        case 'Precio': return this.compare(a.Precio, b.Precio, isAsc);
+        case 'Membresia': return this.compare(a.Membresia, b.Membresia, isAsc);
+        case 'Fecha Inicio': return this.compare(new Date(a.Fecha_Inicio), new Date(b.Fecha_Inicio), isAsc);
+        case 'Fecha Fin': return this.compare(new Date(a.Fecha_Fin), new Date(b.Fecha_Fin), isAsc);
+        // Añade más casos según las columnas que tengas
+        default: return 0;
+      }
+    });
+
+    this.dataSourceActivos.data = data;
+  }
+
+  compare(a: string | number | Date, b: string | number | Date, isAsc: boolean): number {
+    if (typeof a === 'string' && typeof b === 'string') {
+      // Utiliza localeCompare para comparar cadenas de texto
+      return a.localeCompare(b, undefined, { sensitivity: 'base' }) * (isAsc ? 1 : -1);
+    }
+    // Para otros tipos, utiliza comparación estándar
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+  
+
+
   applyFilterActivos(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceActivos.filter = filterValue.trim().toLowerCase();
@@ -261,7 +303,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                   // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
                   this.dataSourceActivos.data = this.clienteActivo.slice();
                   // Notificar a la tabla sobre el cambio
-                  this.dataSourceActivos.data.paginator = this.paginator; // Actualizar el paginador si es necesario
+                //  this.dataSourceActivos.data.paginator = this.paginator; // Actualizar el paginador si es necesario
                   // Notificar a la tabla sobre el cambio
                   this.dataSourceActivos._updateChangeSubscription();
                 });
@@ -302,7 +344,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
           this.dataSourceActivos.data = this.clienteActivo.slice();
           // Notificar a la tabla sobre el cambio
-          this.dataSourceActivos.data.paginator = this.paginator; // Actualizar el paginador si es necesario
+        //  this.dataSourceActivos.data.paginator = this.paginator; // Actualizar el paginador si es necesario
           // Notificar a la tabla sobre el cambio
           this.dataSourceActivos._updateChangeSubscription();
         });
