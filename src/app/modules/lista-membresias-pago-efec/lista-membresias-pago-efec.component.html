@@ -110,7 +110,7 @@
               </ng-container>  
               <ng-container *ngIf="column === 'Rol'">
                 <span *ngIf="prod.rol === 'Cliente'; else notCliente">
-                  <mat-icon>block</mat-icon>
+                  <mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
                 </span>
                 <ng-template #notCliente>
                   <mat-icon *ngIf="isAdmin()" (click)="eliminarUs(prod)">delete</mat-icon>

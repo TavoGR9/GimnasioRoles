@@ -41,9 +41,10 @@ export class EmergenteInfoClienteComponent implements OnInit{
     private spinner: NgxSpinnerService,
     private pagoService: PagoMembresiaEfectivoService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
-    @Inject(MAT_DIALOG_DATA)  public data: any) { 
+    @Inject(MAT_DIALOG_DATA) public data: any) { 
       this.form = this.fb.group({
         id_cliente: [this.data.idCliente, Validators.required],
+        estafeta: [this.data.estafeta, Validators.required],
         nombre: [this.data.nombre, Validators.required],
         telefono: [this.data.telefono, Validators.required],
         correo: [this.data.email, Validators.required]

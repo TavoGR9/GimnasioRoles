@@ -238,6 +238,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
                 email: `${prod.email}`,
                 peso: `${prod.peso}`,
                 estatura: `${prod.estatura}`,
+                estafeta:`${prod.estafeta}`,
                 //sucursal: `${prod.Sucursal}`,
                 membresia: `${prod.Membresia}`,
                 precio: `${prod.Precio}`,
@@ -521,5 +522,33 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       }
     });
 
+  }
+
+  eliminarCliente(prod: any){
+    const prueba = {
+      idUsuario: prod.ID,                     
+    }
+    this.dialog.open(MensajeEliminarComponent,{
+      data: `¿Desea eliminar a este usuario?`,
+    })
+    .afterClosed()
+    .subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.pagoService.deleteServiceUsuario(prueba).subscribe(
+          (respuesta) => { 
+            this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
+                this.clienteActivo = response.data;
+                this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+                this.loadData();     
+              },
+              (error: any) => {
+                console.error('Error al obtener activos:', error);
+              }
+            );    
+          }
+        );
+      } else {
+      }
+    });
   }
 }

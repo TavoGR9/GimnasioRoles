@@ -194,13 +194,18 @@ export class PagoMembresiaEfectivoService {
       email:data.correo,
       idU:data.id_cliente,
       nombre:data.nombre,
-      cel:data.telefono
+      cel:data.telefono,
+      estafeta: data.estafeta
     }
     return this.clienteHttp.post<msgResult>(this.API+"Usuario.php?updatePersonalData", form);
   }
 
   deleteService(datos: any): Observable<any>{
     return this.clienteHttp.post(this.API+"Usuario.php?eliminarServicio", datos);
+  }
+
+  deleteServiceUsuario(datos: any): Observable<any>{
+    return this.clienteHttp.post(this.API+"Usuario.php?eliminarUsuario", datos);
   }
 
 }
