@@ -50,11 +50,11 @@
       <div  class="table-container">
         <table mat-table [dataSource]="dataSourceActivos" class="mat-elevation-z8">
           <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsActivos; let i = index">
-            <th mat-header-cell *matHeaderCellDef (click)="i < 6 ? sortData(column) : null" style="cursor: pointer;">
+            <th mat-header-cell *matHeaderCellDef (click)="i < 7 ? sortData(column) : null" style="cursor: pointer;">
               <div style="display: flex; align-items: center;">
                 {{ column }}
-                <mat-icon class="custom-icon" *ngIf="i < 6 && sortField !== column">unfold_more</mat-icon>
-                <mat-icon class="custom-icon" *ngIf="i < 6 && sortField === column">
+                <mat-icon class="custom-icon" *ngIf="i < 7 && sortField !== column">unfold_more</mat-icon>
+                <mat-icon class="custom-icon" *ngIf="i < 7 && sortField === column">
                   {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
                 </mat-icon>
               </div>

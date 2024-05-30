@@ -66,25 +66,6 @@ table {
     width: 100%;
   }
   
-  /* Estilos para el botón */
-  .resumen button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  /* Estilos para el botón al pasar el mouse por encima */
-  .resumen button:hover {
-    background-color: #0056b3;
-  }
-  
-
   .open-cash-register {
     display: inline-flex;
     align-items: center;

@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common'; //para obtener fecha del sistema
 import { Component, OnInit} from '@angular/core';
-import { Producto } from '../../models/producto';
+//import { Producto } from '../../models/producto';
 import {
   FormBuilder,
   FormControl,
@@ -18,6 +18,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
 import { forkJoin } from 'rxjs';
 import { GimnasioService } from "../../service/gimnasio.service";
+
+interface Producto {
+  idProbob: number;
+  descripcion: string;
+  marca: string;
+  detalleCompra: string;
+}
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -104,13 +111,11 @@ export class EntradasComponent implements OnInit {
   }
 
   handleEnterKey(event: KeyboardEvent): void {
-    if (this.form.valid) {
-    if (event.target && (event.target as HTMLElement).closest('form')) {
-      this.agregarATabla();
-      event.preventDefault(); // Evita la acción predeterminada del Enter
-    }}
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Evitar que el navegador envíe el formulario
+    }
   }
-
+  
   ngOnInit(): void {
     // this.entrada.comprobar();
     this.auth.comprobar().subscribe((respuesta)=>{ 
@@ -128,6 +133,7 @@ export class EntradasComponent implements OnInit {
       }
     });
     this.loadData();
+    this.buscarProducto();
   }
 
   loadData() {
@@ -161,6 +167,40 @@ export class EntradasComponent implements OnInit {
     });
   }
 
+  filteredProducto: any[] = [];
+  productoss: any[] = [];
+
+  buscarProducto() {
+    const marcaIngresado = this.form.get('idProbob')?.value;
+    this.entrada.listaProductos().subscribe({
+      next: (respuesta) => {
+        const marcasU = new Set(
+          respuesta.productos.map((product: any) => ({
+            idProd: product.idProbob,
+            nombre: `${product.descripcion} ${product.marca} ${product.detalleCompra}`
+          }))
+        );
+        this.productoss = Array.from(marcasU);
+        this.filteredProducto = this.productoss.filter(
+          (product) =>
+            !marcaIngresado ||
+            product.nombre.toLowerCase().includes(marcaIngresado.toLowerCase())
+        );
+      }
+    });
+  }
+
+
+  displayFn(product: any): string {
+   
+    return product && product.nombre ? product.nombre : '';
+  }
+
+  onProductSelected(product: any) {
+    this.infoProducto(product.idProd);
+    
+  }
+
   infoProducto(event: number) {
     this.idProducto = event;
   }
@@ -176,6 +216,7 @@ export class EntradasComponent implements OnInit {
 
   agregarATabla() {
     if (this.form.valid) { 
+      this.form.get('idProbob')?.setValue(this.form.value.idProbob.idProd);
     if (this.form && this.form.get('idProbob') && this.form.get('exis')) {
       const idProductoSeleccionado = this.form.get('idProbob')!.value;
       const idPrecioVenta = this.form.get('precciosucu')!.value;
@@ -193,10 +234,13 @@ export class EntradasComponent implements OnInit {
         if (indiceProducto !== -1) {
           // Si el producto ya está en la tabla, actualiza la cantidad
           this.tablaDatos[indiceProducto].exis += this.form.get('exis')!.value;
+         
         } else {
           const nuevoDato = {
             id_Probob: idProductoSeleccionado,  
             descripcion: productoSeleccionado.descripcion,
+            marca:productoSeleccionado.marca,
+            detalle:productoSeleccionado.detalleCompra,
             exis: this.form.get('exis')!.value,
             fechaEntrada: fechaFormateada,
             valor: this.auth.idGym.getValue(),
@@ -474,7 +518,7 @@ export class EntradasComponent implements OnInit {
                         // Generar la fila de la tabla
                         return `
                           <tr>
-                            <td>${fila.descripcion}</td>
+                            <td>${fila.descripcion}${fila.detalleCompra}</td>
                             <td>${fila.exis}</td>
                             <td>$${fila.precioCaja.toFixed(2)}</td>
                             <td>$${totalFila.toFixed(2)}</td>
@@ -513,5 +557,9 @@ export class EntradasComponent implements OnInit {
         ventanaImpresion.close();
       }
     }
+  }
+
+  quitarArchivo(index: number): void {
+    this.tablaDatos.splice(index, 1);
   }
 }

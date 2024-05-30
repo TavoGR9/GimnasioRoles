@@ -77,6 +77,39 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  sortField: string = '';
+  sortDirection: string = 'asc';
+
+  sortData(column: string): void {
+    const data = this.dataSource.data;
+    if (this.sortField === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = column;
+      this.sortDirection = 'asc';
+    }
+    data.sort((a: any, b:any) => {
+      console.log(a, "a");
+      const isAsc = this.sortDirection === 'asc';
+      switch (column) {
+        case 'nombre': return this.compare(a.nombreProducto, b.nombreProducto, isAsc);
+        // Añade más casos según las columnas que tengas
+        default: return 0;
+      }
+    });
+
+    this.dataSource.data = data;
+  }
+
+  compare(a: string | number | Date, b: string | number | Date, isAsc: boolean): number {
+    if (typeof a === 'string' && typeof b === 'string') {
+      // Utiliza localeCompare para comparar cadenas de texto
+      return a.localeCompare(b, undefined, { sensitivity: 'base' }) * (isAsc ? 1 : -1);
+    }
+    // Para otros tipos, utiliza comparación estándar
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
   loadData() {
     setTimeout(() => {
       this.isLoading = false;

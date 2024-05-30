@@ -246,6 +246,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         case 'Membresia': return this.compare(a.Membresia, b.Membresia, isAsc);
         case 'Fecha Inicio': return this.compare(new Date(a.Fecha_Inicio), new Date(b.Fecha_Inicio), isAsc);
         case 'Fecha Fin': return this.compare(new Date(a.Fecha_Fin), new Date(b.Fecha_Fin), isAsc);
+        case 'Estatus': return this.compare(a.STATUS, b.STATUS, isAsc);
         // Añade más casos según las columnas que tengas
         default: return 0;
       }
