@@ -7,6 +7,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from '../../service/auth.service';
 import { CrearProductoComponent } from '../crearProducto/crearProducto.component';
 import { EditarProductoComponent } from '../editar-producto/editar-producto.component';
+import { serviciosService } from "../../service/servicios.service";
+import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
@@ -89,7 +91,6 @@ export class ProductosComponent implements OnInit {
       this.sortDirection = 'asc';
     }
     data.sort((a: any, b:any) => {
-      console.log(a, "a");
       const isAsc = this.sortDirection === 'asc';
       switch (column) {
         case 'nombre': return this.compare(a.nombreProducto, b.nombreProducto, isAsc);
@@ -182,4 +183,28 @@ export class ProductosComponent implements OnInit {
   isRecep(): boolean {
     return this.auth.isRecepcion();
   }
+
+  deleteProducto(id: any) {
+    this.dialog.open(MensajeEliminarComponent,{
+      data: `¿Desea eliminar este servicio?`,
+    })
+    .afterClosed()
+    .subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.productoService.deleteProd(id).subscribe(
+          (respuesta) => {
+            this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+              this.productos = resultData
+              this.dataSource = new MatTableDataSource(this.productos);
+              this.loadData(); 
+            });
+          },
+          (error) => {
+          }
+        );
+      } else {
+      }
+    });
+  }
+
 }
