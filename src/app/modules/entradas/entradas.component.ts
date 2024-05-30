@@ -518,7 +518,7 @@ export class EntradasComponent implements OnInit {
                         // Generar la fila de la tabla
                         return `
                           <tr>
-                            <td>${fila.descripcion}${fila.detalleCompra}</td>
+                            <td>${fila.descripcion} ${fila.marca}_${fila.detalle}</td>
                             <td>${fila.exis}</td>
                             <td>$${fila.precioCaja.toFixed(2)}</td>
                             <td>$${totalFila.toFixed(2)}</td>

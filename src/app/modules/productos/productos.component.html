@@ -76,6 +76,13 @@
                        <mat-icon>edit</mat-icon>
                      </button>
                    </ng-container>
+
+                   <ng-container *ngIf="isAdmin() && producto.existencia === null">
+                    <button mat-icon-button color="primary" (click)="deleteProducto(producto.idProbob)" [disabled]="!habilitarBoton">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </ng-container>
+
                    <ng-template #iconoNoIdBodega>
                      <mat-icon color="warn">block</mat-icon>
                    </ng-template>

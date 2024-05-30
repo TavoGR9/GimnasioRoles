@@ -221,5 +221,12 @@ export class ProductoService {
         });
       });
     }
+
+
+
+    deleteProd(idP: any): Observable<any> {
+      const data ={id: idP}
+      return this.clienteHttp.post(this.API+"producto_bod.php?eliminarProBodPre", data);
+    }
     
 }
