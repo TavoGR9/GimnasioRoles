@@ -1641,614 +1641,627 @@ export class CrearProductoComponent implements OnInit {
   }
 
   registrarP() {
+    
     if (this.form.valid) {
       this.spinner.show();
-      ///********** Verifica si la categoria ya existe */
-      const codigo = this.form.get("codigoBarra")?.value;
-      this.categoriaService
-        .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
-        .subscribe((categoriaExistente) => {
-          if (categoriaExistente.success == 1) {
-            ///********** Verifica si la subcategoria ya existe */
-            this.categoriaService
-              .obtenerSubCategoriaPorNombre(
-                this.form.value.nomsubcate,
-                categoriaExistente.categoria.id_categoria
-              )
-              .subscribe((subCategoriaExistente) => {
-                if (subCategoriaExistente.success == 1) {
-                  ///********** Verifica si la marca ya existe */
-                  this.categoriaService
-                    .obtenerMarcaPorNombre(this.form.value.marcaP)
-                    .subscribe((marcaExistente) => {
-                      if (marcaExistente.success == 1) {
-                        const formularioP = {
-                          idProducto:
-                            subCategoriaExistente.producto.id_producto,
-                          detalleUnidadMedida: "pza",
-                          precioCompra: this.form.value.precioCompra,
-                          detalleCompra: this.form.value.detalleCompra,
-                          id_marcaV: marcaExistente.marcasproducto.id_marcas,
-                          descripcion: this.form.value.descripcion,
-                          codigoBarra: this.form.value.codigoBarra,
-                          ItemNumber: this.form.value.ItemNumber,
-                          activo: this.form.value.activo,
-                          sat: this.form.value.sat,
-                          ieps: this.form.value.ieps,
-                          iva: this.form.value.iva,
-                          factura: this.form.value.factura,
-                          STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                          precioCaja: this.form.value.precioCaja,
-                          cantidadMayoreo: this.form.value.cantidadMayoreo,
-                        };
 
-                        this.productoService
-                          .creaProducto(formularioP)
-                          .subscribe({
-                            next: (respuesta) => {
-                              if (respuesta.success) {
-                                this.spinner.hide();
-                                this.dialog
-                                  .open(MensajeEmergentesComponent, {
-                                    data: `Producto agregado exitosamente`,
-                                  })
-                                  .afterClosed()
-                                  .subscribe((cerrarDialogo: Boolean) => {
-                                    if (cerrarDialogo) {
-                                      this.productoSubject.next();
-                                      this.dialogo.close(true);
-                                    } else {
-                                      // Puedes agregar lógica adicional aquí si es necesario
-                                    }
+    const codigo = this.form.get("codigoBarra")?.value;
+    this.productoService
+      .verProductoCodigoBarras(codigo)
+      .subscribe((respuesta: any) => {
+        if (respuesta.success == 0) {
+          this.categoriaService
+          .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
+          .subscribe((categoriaExistente) => {
+            if (categoriaExistente.success == 1) {
+              ///********** Verifica si la subcategoria ya existe */
+              this.categoriaService
+                .obtenerSubCategoriaPorNombre(
+                  this.form.value.nomsubcate,
+                  categoriaExistente.categoria.id_categoria
+                )
+                .subscribe((subCategoriaExistente) => {
+                  if (subCategoriaExistente.success == 1) {
+                    ///********** Verifica si la marca ya existe */
+                    this.categoriaService
+                      .obtenerMarcaPorNombre(this.form.value.marcaP)
+                      .subscribe((marcaExistente) => {
+                        if (marcaExistente.success == 1) {
+                          const formularioP = {
+                            idProducto:
+                              subCategoriaExistente.producto.id_producto,
+                            detalleUnidadMedida: "pza",
+                            precioCompra: this.form.value.precioCompra,
+                            detalleCompra: this.form.value.detalleCompra,
+                            id_marcaV: marcaExistente.marcasproducto.id_marcas,
+                            descripcion: this.form.value.descripcion,
+                            codigoBarra: this.form.value.codigoBarra,
+                            ItemNumber: this.form.value.ItemNumber,
+                            activo: this.form.value.activo,
+                            sat: this.form.value.sat,
+                            ieps: this.form.value.ieps,
+                            iva: this.form.value.iva,
+                            factura: this.form.value.factura,
+                            STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+                            precioCaja: this.form.value.precioCaja,
+                            cantidadMayoreo: this.form.value.cantidadMayoreo,
+                          };
+  
+                          this.productoService
+                            .creaProducto(formularioP)
+                            .subscribe({
+                              next: (respuesta) => {
+                                if (respuesta.success) {
+                                  this.spinner.hide();
+                                  this.dialog
+                                    .open(MensajeEmergentesComponent, {
+                                      data: `Producto agregado exitosamente`,
+                                    })
+                                    .afterClosed()
+                                    .subscribe((cerrarDialogo: Boolean) => {
+                                      if (cerrarDialogo) {
+                                        this.productoSubject.next();
+                                        this.dialogo.close(true);
+                                      } else {
+                                        // Puedes agregar lógica adicional aquí si es necesario
+                                      }
+                                    });
+                                } else {
+                                  this.toastr.error(respuesta.message, "Error", {
+                                    positionClass: "toast-bottom-left",
                                   });
-                              } else {
-                                this.toastr.error(respuesta.message, "Error", {
-                                  positionClass: "toast-bottom-left",
-                                });
-                              }
-                            },
-                            error: (paramError) => {
-                              this.toastr.error(
-                                paramError.error.message,
-                                "Error",
-                                {
-                                  positionClass: "toast-bottom-left",
                                 }
-                              );
-                            },
+                              },
+                              error: (paramError) => {
+                                this.toastr.error(
+                                  paramError.error.message,
+                                  "Error",
+                                  {
+                                    positionClass: "toast-bottom-left",
+                                  }
+                                );
+                              },
+                            });
+                        } else {
+                          const formMarca = {
+                            marcaP: this.form.value.marcaP,
+                          };
+                          this.categoriaService
+                            .agregarMarca(formMarca)
+                            .subscribe((respuestaMarca) => {
+                              const formularioP = {
+                                idProducto:
+                                  subCategoriaExistente.producto.id_producto,
+                                detalleUnidadMedida: "pza",
+                                precioCompra: this.form.value.precioCompra,
+                                detalleCompra: this.form.value.detalleCompra,
+                                id_marcaV: respuestaMarca.id_marcas,
+                                descripcion: this.form.value.descripcion,
+                                codigoBarra: this.form.value.codigoBarra,
+                                ItemNumber: this.form.value.ItemNumber,
+                                activo: this.form.value.activo,
+                                sat: this.form.value.sat,
+                                ieps: this.form.value.ieps,
+                                iva: this.form.value.iva,
+                                factura: this.form.value.factura,
+                                STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+                                precioCaja: this.form.value.precioCaja,
+                                cantidadMayoreo: this.form.value.cantidadMayoreo,
+                              };
+  
+                              this.productoService
+                                .creaProducto(formularioP)
+                                .subscribe({
+                                  next: (respuesta) => {
+                                    if (respuesta.success) {
+                                      this.spinner.hide();
+                                      this.dialog
+                                        .open(MensajeEmergentesComponent, {
+                                          data: `Producto agregado exitosamente`,
+                                        })
+                                        .afterClosed()
+                                        .subscribe((cerrarDialogo: Boolean) => {
+                                          if (cerrarDialogo) {
+                                            this.productoSubject.next();
+                                            this.dialogo.close(true);
+                                          } else {
+                                            // Puedes agregar lógica adicional aquí si es necesario
+                                          }
+                                        });
+                                    } else {
+                                      this.toastr.error(
+                                        respuesta.message,
+                                        "Error",
+                                        {
+                                          positionClass: "toast-bottom-left",
+                                        }
+                                      );
+                                    }
+                                  },
+                                  error: (paramError) => {
+                                    this.toastr.error(
+                                      paramError.error.message,
+                                      "Error",
+                                      {
+                                        positionClass: "toast-bottom-left",
+                                      }
+                                    );
+                                  },
+                                });
+                            });
+                        }
+                      });
+                  } else {
+                    ///********** Si la sub no existe */
+                    const formSub = {
+                      idcatte: categoriaExistente.categoria.id_categoria,
+                      nomsubcate: this.form.value.nomsubcate,
+                    };
+  
+                    this.categoriaService
+                      .agregarSubCategoria(formSub)
+                      .subscribe((respuestaSub) => {
+                        ///********** Verifica si la marca ya existe */
+                        this.categoriaService
+                          .obtenerMarcaPorNombre(this.form.value.marcaP)
+                          .subscribe((marcaExistente) => {
+                            if (marcaExistente.success == 1) {
+                              this.spinner.hide();
+                              //agregar producto
+  
+                              const formularioP = {
+                                idProducto: respuestaSub.id_producto,
+                                detalleUnidadMedida: "pza",
+                                precioCompra: this.form.value.precioCompra,
+                                detalleCompra: this.form.value.detalleCompra,
+                                id_marcaV:
+                                  marcaExistente.marcasproducto.id_marcas,
+                                descripcion: this.form.value.descripcion,
+                                codigoBarra: this.form.value.codigoBarra,
+                                ItemNumber: this.form.value.ItemNumber,
+                                activo: this.form.value.activo,
+                                sat: this.form.value.sat,
+                                ieps: this.form.value.ieps,
+                                iva: this.form.value.iva,
+                                factura: this.form.value.factura,
+                                STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+                                precioCaja: this.form.value.precioCaja,
+                                cantidadMayoreo: this.form.value.cantidadMayoreo,
+                              };
+  
+                              this.productoService
+                                .creaProducto(formularioP)
+                                .subscribe({
+                                  next: (respuesta) => {
+                                    if (respuesta.success) {
+                                      this.spinner.hide();
+                                      this.dialog
+                                        .open(MensajeEmergentesComponent, {
+                                          data: `Producto agregado exitosamente`,
+                                        })
+                                        .afterClosed()
+                                        .subscribe((cerrarDialogo: Boolean) => {
+                                          if (cerrarDialogo) {
+                                            this.productoSubject.next();
+                                            this.dialogo.close(true);
+                                          } else {
+                                            // Puedes agregar lógica adicional aquí si es necesario
+                                          }
+                                        });
+                                    } else {
+                                      this.toastr.error(
+                                        respuesta.message,
+                                        "Error",
+                                        {
+                                          positionClass: "toast-bottom-left",
+                                        }
+                                      );
+                                    }
+                                  },
+                                  error: (paramError) => {
+                                    this.toastr.error(
+                                      paramError.error.message,
+                                      "Error",
+                                      {
+                                        positionClass: "toast-bottom-left",
+                                      }
+                                    );
+                                  },
+                                });
+                            } else {
+                              const formMarca = {
+                                marcaP: this.form.value.marcaP,
+                              };
+                              this.categoriaService
+                                .agregarMarca(formMarca)
+                                .subscribe((respuestaMarca) => {
+                                  const formularioP = {
+                                    idProducto: respuestaSub.id_producto,
+                                    detalleUnidadMedida: "pza",
+                                    precioCompra: this.form.value.precioCompra,
+                                    detalleCompra: this.form.value.detalleCompra,
+                                    id_marcaV: respuestaMarca.id_marcas,
+                                    descripcion: this.form.value.descripcion,
+                                    codigoBarra: this.form.value.codigoBarra,
+                                    ItemNumber: this.form.value.ItemNumber,
+                                    activo: this.form.value.activo,
+                                    sat: this.form.value.sat,
+                                    ieps: this.form.value.ieps,
+                                    iva: this.form.value.iva,
+                                    factura: this.form.value.factura,
+                                    STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+                                    precioCaja: this.form.value.precioCaja,
+                                    cantidadMayoreo:
+                                      this.form.value.cantidadMayoreo,
+                                  };
+  
+                                  this.productoService
+                                    .creaProducto(formularioP)
+                                    .subscribe({
+                                      next: (respuesta) => {
+                                        if (respuesta.success) {
+                                          this.spinner.hide();
+                                          this.dialog
+                                            .open(MensajeEmergentesComponent, {
+                                              data: `Producto agregado exitosamente`,
+                                            })
+                                            .afterClosed()
+                                            .subscribe(
+                                              (cerrarDialogo: Boolean) => {
+                                                if (cerrarDialogo) {
+                                                  this.productoSubject.next();
+                                                  this.dialogo.close(true);
+                                                } else {
+                                                  // Puedes agregar lógica adicional aquí si es necesario
+                                                }
+                                              }
+                                            );
+                                        } else {
+                                          this.toastr.error(
+                                            respuesta.message,
+                                            "Error",
+                                            {
+                                              positionClass: "toast-bottom-left",
+                                            }
+                                          );
+                                        }
+                                      },
+                                      error: (paramError) => {
+                                        this.toastr.error(
+                                          paramError.error.message,
+                                          "Error",
+                                          {
+                                            positionClass: "toast-bottom-left",
+                                          }
+                                        );
+                                      },
+                                    });
+                                  this.spinner.hide();
+                                });
+                            }
+                          });
+                      });
+                  }
+                });
+            } else {
+              // Si la categoría no existe, se agrega
+              this.categoriaService
+                .agregarCategoria(this.form.value)
+                .subscribe((respuesta) => {
+                  ///********** Verifica si la subcategoria ya existe */
+                  this.categoriaService
+                    .obtenerSubCategoriaPorNombre(
+                      this.form.value.nomsubcate,
+                      respuesta.id_categoria
+                    )
+                    .subscribe((subCategoriaExistente) => {
+                      if (subCategoriaExistente.success == 1) {
+                        this.categoriaService
+                          .obtenerMarcaPorNombre(this.form.value.marcaP)
+                          .subscribe((marcaExistente) => {
+                            if (marcaExistente.success == 1) {
+                              //agregar producto
+  
+                              const formularioP = {
+                                idProducto:
+                                  subCategoriaExistente.producto.id_producto,
+                                detalleUnidadMedida: "pza",
+                                precioCompra: this.form.value.precioCompra,
+                                detalleCompra: this.form.value.detalleCompra,
+                                id_marcaV:
+                                  marcaExistente.marcasproducto.id_marcas,
+                                descripcion: this.form.value.descripcion,
+                                codigoBarra: this.form.value.codigoBarra,
+                                ItemNumber: this.form.value.ItemNumber,
+                                activo: this.form.value.activo,
+                                sat: this.form.value.sat,
+                                ieps: this.form.value.ieps,
+                                iva: this.form.value.iva,
+                                factura: this.form.value.factura,
+                                STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+                                precioCaja: this.form.value.precioCaja,
+                                cantidadMayoreo: this.form.value.cantidadMayoreo,
+                              };
+  
+                              this.productoService
+                                .creaProducto(formularioP)
+                                .subscribe({
+                                  next: (respuesta) => {
+                                    if (respuesta.success) {
+                                      this.spinner.hide();
+                                      this.dialog
+                                        .open(MensajeEmergentesComponent, {
+                                          data: `Producto agregado exitosamente`,
+                                        })
+                                        .afterClosed()
+                                        .subscribe((cerrarDialogo: Boolean) => {
+                                          if (cerrarDialogo) {
+                                            this.productoSubject.next();
+                                            this.dialogo.close(true);
+                                          } else {
+                                            // Puedes agregar lógica adicional aquí si es necesario
+                                          }
+                                        });
+                                    } else {
+                                      this.toastr.error(
+                                        respuesta.message,
+                                        "Error",
+                                        {
+                                          positionClass: "toast-bottom-left",
+                                        }
+                                      );
+                                    }
+                                  },
+                                  error: (paramError) => {
+                                    this.toastr.error(
+                                      paramError.error.message,
+                                      "Error",
+                                      {
+                                        positionClass: "toast-bottom-left",
+                                      }
+                                    );
+                                  },
+                                });
+                            } else {
+                              const formMarca = {
+                                marcaP: this.form.value.marcaP,
+                              };
+                              this.categoriaService
+                                .agregarMarca(formMarca)
+                                .subscribe((respuestaMarca) => {
+                                  const formularioP = {
+                                    idProducto:
+                                      subCategoriaExistente.producto.id_producto,
+                                    detalleUnidadMedida: "pza",
+                                    precioCompra: this.form.value.precioCompra,
+                                    detalleCompra: this.form.value.detalleCompra,
+                                    id_marcaV: respuestaMarca.id_marcas,
+                                    descripcion: this.form.value.descripcion,
+                                    codigoBarra: this.form.value.codigoBarra,
+                                    ItemNumber: this.form.value.ItemNumber,
+                                    activo: this.form.value.activo,
+                                    sat: this.form.value.sat,
+                                    ieps: this.form.value.ieps,
+                                    iva: this.form.value.iva,
+                                    factura: this.form.value.factura,
+                                    STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+                                    precioCaja: this.form.value.precioCaja,
+                                    cantidadMayoreo:
+                                      this.form.value.cantidadMayoreo,
+                                  };
+  
+                                  this.productoService
+                                    .creaProducto(formularioP)
+                                    .subscribe({
+                                      next: (respuesta) => {
+                                        if (respuesta.success) {
+                                          this.spinner.hide();
+                                          this.dialog
+                                            .open(MensajeEmergentesComponent, {
+                                              data: `Producto agregado exitosamente`,
+                                            })
+                                            .afterClosed()
+                                            .subscribe(
+                                              (cerrarDialogo: Boolean) => {
+                                                if (cerrarDialogo) {
+                                                  this.productoSubject.next();
+                                                  this.dialogo.close(true);
+                                                } else {
+                                                }
+                                              }
+                                            );
+                                        } else {
+                                          this.toastr.error(
+                                            respuesta.message,
+                                            "Error",
+                                            {
+                                              positionClass: "toast-bottom-left",
+                                            }
+                                          );
+                                        }
+                                      },
+                                      error: (paramError) => {
+                                        this.toastr.error(
+                                          paramError.error.message,
+                                          "Error",
+                                          {
+                                            positionClass: "toast-bottom-left",
+                                          }
+                                        );
+                                      },
+                                    });
+                                  this.spinner.hide();
+                                });
+                            }
                           });
                       } else {
-                        const formMarca = {
-                          marcaP: this.form.value.marcaP,
+                        // Si la subcategoría no existe, agregarla
+                        const formSub = {
+                          idcatte: respuesta.id_categoria,
+                          nomsubcate: this.form.value.nomsubcate,
                         };
+  
                         this.categoriaService
-                          .agregarMarca(formMarca)
-                          .subscribe((respuestaMarca) => {
-                            const formularioP = {
-                              idProducto:
-                                subCategoriaExistente.producto.id_producto,
-                              detalleUnidadMedida: "pza",
-                              precioCompra: this.form.value.precioCompra,
-                              detalleCompra: this.form.value.detalleCompra,
-                              id_marcaV: respuestaMarca.id_marcas,
-                              descripcion: this.form.value.descripcion,
-                              codigoBarra: this.form.value.codigoBarra,
-                              ItemNumber: this.form.value.ItemNumber,
-                              activo: this.form.value.activo,
-                              sat: this.form.value.sat,
-                              ieps: this.form.value.ieps,
-                              iva: this.form.value.iva,
-                              factura: this.form.value.factura,
-                              STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                              precioCaja: this.form.value.precioCaja,
-                              cantidadMayoreo: this.form.value.cantidadMayoreo,
-                            };
-
-                            this.productoService
-                              .creaProducto(formularioP)
-                              .subscribe({
-                                next: (respuesta) => {
-                                  if (respuesta.success) {
-                                    this.spinner.hide();
-                                    this.dialog
-                                      .open(MensajeEmergentesComponent, {
-                                        data: `Producto agregado exitosamente`,
-                                      })
-                                      .afterClosed()
-                                      .subscribe((cerrarDialogo: Boolean) => {
-                                        if (cerrarDialogo) {
-                                          this.productoSubject.next();
-                                          this.dialogo.close(true);
-                                        } else {
-                                          // Puedes agregar lógica adicional aquí si es necesario
-                                        }
-                                      });
-                                  } else {
-                                    this.toastr.error(
-                                      respuesta.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  }
-                                },
-                                error: (paramError) => {
-                                  this.toastr.error(
-                                    paramError.error.message,
-                                    "Error",
-                                    {
-                                      positionClass: "toast-bottom-left",
-                                    }
-                                  );
-                                },
-                              });
-                          });
-                      }
-                    });
-                } else {
-                  ///********** Si la sub no existe */
-                  const formSub = {
-                    idcatte: categoriaExistente.categoria.id_categoria,
-                    nomsubcate: this.form.value.nomsubcate,
-                  };
-
-                  this.categoriaService
-                    .agregarSubCategoria(formSub)
-                    .subscribe((respuestaSub) => {
-                      ///********** Verifica si la marca ya existe */
-                      this.categoriaService
-                        .obtenerMarcaPorNombre(this.form.value.marcaP)
-                        .subscribe((marcaExistente) => {
-                          if (marcaExistente.success == 1) {
-                            this.spinner.hide();
-                            //agregar producto
-
-                            const formularioP = {
-                              idProducto: respuestaSub.id_producto,
-                              detalleUnidadMedida: "pza",
-                              precioCompra: this.form.value.precioCompra,
-                              detalleCompra: this.form.value.detalleCompra,
-                              id_marcaV:
-                                marcaExistente.marcasproducto.id_marcas,
-                              descripcion: this.form.value.descripcion,
-                              codigoBarra: this.form.value.codigoBarra,
-                              ItemNumber: this.form.value.ItemNumber,
-                              activo: this.form.value.activo,
-                              sat: this.form.value.sat,
-                              ieps: this.form.value.ieps,
-                              iva: this.form.value.iva,
-                              factura: this.form.value.factura,
-                              STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                              precioCaja: this.form.value.precioCaja,
-                              cantidadMayoreo: this.form.value.cantidadMayoreo,
-                            };
-
-                            this.productoService
-                              .creaProducto(formularioP)
-                              .subscribe({
-                                next: (respuesta) => {
-                                  if (respuesta.success) {
-                                    this.spinner.hide();
-                                    this.dialog
-                                      .open(MensajeEmergentesComponent, {
-                                        data: `Producto agregado exitosamente`,
-                                      })
-                                      .afterClosed()
-                                      .subscribe((cerrarDialogo: Boolean) => {
-                                        if (cerrarDialogo) {
-                                          this.productoSubject.next();
-                                          this.dialogo.close(true);
-                                        } else {
-                                          // Puedes agregar lógica adicional aquí si es necesario
-                                        }
-                                      });
-                                  } else {
-                                    this.toastr.error(
-                                      respuesta.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  }
-                                },
-                                error: (paramError) => {
-                                  this.toastr.error(
-                                    paramError.error.message,
-                                    "Error",
-                                    {
-                                      positionClass: "toast-bottom-left",
-                                    }
-                                  );
-                                },
-                              });
-                          } else {
-                            const formMarca = {
-                              marcaP: this.form.value.marcaP,
-                            };
+                          .agregarSubCategoria(formSub)
+                          .subscribe((respuestaSub) => {
+                            ///********** Verifica si la marca ya existe */
                             this.categoriaService
-                              .agregarMarca(formMarca)
-                              .subscribe((respuestaMarca) => {
-                                const formularioP = {
-                                  idProducto: respuestaSub.id_producto,
-                                  detalleUnidadMedida: "pza",
-                                  precioCompra: this.form.value.precioCompra,
-                                  detalleCompra: this.form.value.detalleCompra,
-                                  id_marcaV: respuestaMarca.id_marcas,
-                                  descripcion: this.form.value.descripcion,
-                                  codigoBarra: this.form.value.codigoBarra,
-                                  ItemNumber: this.form.value.ItemNumber,
-                                  activo: this.form.value.activo,
-                                  sat: this.form.value.sat,
-                                  ieps: this.form.value.ieps,
-                                  iva: this.form.value.iva,
-                                  factura: this.form.value.factura,
-                                  STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                  precioCaja: this.form.value.precioCaja,
-                                  cantidadMayoreo:
-                                    this.form.value.cantidadMayoreo,
-                                };
-
-                                this.productoService
-                                  .creaProducto(formularioP)
-                                  .subscribe({
-                                    next: (respuesta) => {
-                                      if (respuesta.success) {
-                                        this.spinner.hide();
-                                        this.dialog
-                                          .open(MensajeEmergentesComponent, {
-                                            data: `Producto agregado exitosamente`,
-                                          })
-                                          .afterClosed()
-                                          .subscribe(
-                                            (cerrarDialogo: Boolean) => {
-                                              if (cerrarDialogo) {
-                                                this.productoSubject.next();
-                                                this.dialogo.close(true);
-                                              } else {
-                                                // Puedes agregar lógica adicional aquí si es necesario
-                                              }
-                                            }
-                                          );
-                                      } else {
-                                        this.toastr.error(
-                                          respuesta.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      }
-                                    },
-                                    error: (paramError) => {
-                                      this.toastr.error(
-                                        paramError.error.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    },
-                                  });
-                                this.spinner.hide();
-                              });
-                          }
-                        });
-                    });
-                }
-              });
-          } else {
-            // Si la categoría no existe, se agrega
-            this.categoriaService
-              .agregarCategoria(this.form.value)
-              .subscribe((respuesta) => {
-                ///********** Verifica si la subcategoria ya existe */
-                this.categoriaService
-                  .obtenerSubCategoriaPorNombre(
-                    this.form.value.nomsubcate,
-                    respuesta.id_categoria
-                  )
-                  .subscribe((subCategoriaExistente) => {
-                    if (subCategoriaExistente.success == 1) {
-                      this.categoriaService
-                        .obtenerMarcaPorNombre(this.form.value.marcaP)
-                        .subscribe((marcaExistente) => {
-                          if (marcaExistente.success == 1) {
-                            //agregar producto
-
-                            const formularioP = {
-                              idProducto:
-                                subCategoriaExistente.producto.id_producto,
-                              detalleUnidadMedida: "pza",
-                              precioCompra: this.form.value.precioCompra,
-                              detalleCompra: this.form.value.detalleCompra,
-                              id_marcaV:
-                                marcaExistente.marcasproducto.id_marcas,
-                              descripcion: this.form.value.descripcion,
-                              codigoBarra: this.form.value.codigoBarra,
-                              ItemNumber: this.form.value.ItemNumber,
-                              activo: this.form.value.activo,
-                              sat: this.form.value.sat,
-                              ieps: this.form.value.ieps,
-                              iva: this.form.value.iva,
-                              factura: this.form.value.factura,
-                              STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                              precioCaja: this.form.value.precioCaja,
-                              cantidadMayoreo: this.form.value.cantidadMayoreo,
-                            };
-
-                            this.productoService
-                              .creaProducto(formularioP)
-                              .subscribe({
-                                next: (respuesta) => {
-                                  if (respuesta.success) {
-                                    this.spinner.hide();
-                                    this.dialog
-                                      .open(MensajeEmergentesComponent, {
-                                        data: `Producto agregado exitosamente`,
-                                      })
-                                      .afterClosed()
-                                      .subscribe((cerrarDialogo: Boolean) => {
-                                        if (cerrarDialogo) {
-                                          this.productoSubject.next();
-                                          this.dialogo.close(true);
-                                        } else {
-                                          // Puedes agregar lógica adicional aquí si es necesario
-                                        }
-                                      });
-                                  } else {
-                                    this.toastr.error(
-                                      respuesta.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  }
-                                },
-                                error: (paramError) => {
-                                  this.toastr.error(
-                                    paramError.error.message,
-                                    "Error",
-                                    {
-                                      positionClass: "toast-bottom-left",
-                                    }
-                                  );
-                                },
-                              });
-                          } else {
-                            const formMarca = {
-                              marcaP: this.form.value.marcaP,
-                            };
-                            this.categoriaService
-                              .agregarMarca(formMarca)
-                              .subscribe((respuestaMarca) => {
-                                const formularioP = {
-                                  idProducto:
-                                    subCategoriaExistente.producto.id_producto,
-                                  detalleUnidadMedida: "pza",
-                                  precioCompra: this.form.value.precioCompra,
-                                  detalleCompra: this.form.value.detalleCompra,
-                                  id_marcaV: respuestaMarca.id_marcas,
-                                  descripcion: this.form.value.descripcion,
-                                  codigoBarra: this.form.value.codigoBarra,
-                                  ItemNumber: this.form.value.ItemNumber,
-                                  activo: this.form.value.activo,
-                                  sat: this.form.value.sat,
-                                  ieps: this.form.value.ieps,
-                                  iva: this.form.value.iva,
-                                  factura: this.form.value.factura,
-                                  STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                  precioCaja: this.form.value.precioCaja,
-                                  cantidadMayoreo:
-                                    this.form.value.cantidadMayoreo,
-                                };
-
-                                this.productoService
-                                  .creaProducto(formularioP)
-                                  .subscribe({
-                                    next: (respuesta) => {
-                                      if (respuesta.success) {
-                                        this.spinner.hide();
-                                        this.dialog
-                                          .open(MensajeEmergentesComponent, {
-                                            data: `Producto agregado exitosamente`,
-                                          })
-                                          .afterClosed()
-                                          .subscribe(
-                                            (cerrarDialogo: Boolean) => {
-                                              if (cerrarDialogo) {
-                                                this.productoSubject.next();
-                                                this.dialogo.close(true);
-                                              } else {
-                                              }
-                                            }
-                                          );
-                                      } else {
-                                        this.toastr.error(
-                                          respuesta.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      }
-                                    },
-                                    error: (paramError) => {
-                                      this.toastr.error(
-                                        paramError.error.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    },
-                                  });
-                                this.spinner.hide();
-                              });
-                          }
-                        });
-                    } else {
-                      // Si la subcategoría no existe, agregarla
-                      const formSub = {
-                        idcatte: respuesta.id_categoria,
-                        nomsubcate: this.form.value.nomsubcate,
-                      };
-
-                      this.categoriaService
-                        .agregarSubCategoria(formSub)
-                        .subscribe((respuestaSub) => {
-                          ///********** Verifica si la marca ya existe */
-                          this.categoriaService
-                            .obtenerMarcaPorNombre(this.form.value.marcaP)
-                            .subscribe((marcaExistente) => {
-                              if (marcaExistente.success == 1) {
-                                const formularioP = {
-                                  idProducto: respuestaSub.id_producto,
-                                  detalleUnidadMedida: "pza",
-                                  precioCompra: this.form.value.precioCompra,
-                                  detalleCompra: this.form.value.detalleCompra,
-                                  id_marcaV:
-                                    marcaExistente.marcasproducto.id_marcas,
-                                  descripcion: this.form.value.descripcion,
-                                  codigoBarra: this.form.value.codigoBarra,
-                                  ItemNumber: this.form.value.ItemNumber,
-                                  activo: this.form.value.activo,
-                                  sat: this.form.value.sat,
-                                  ieps: this.form.value.ieps,
-                                  iva: this.form.value.iva,
-                                  factura: this.form.value.factura,
-                                  STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                  precioCaja: this.form.value.precioCaja,
-                                  cantidadMayoreo:
-                                    this.form.value.cantidadMayoreo,
-                                };
-                                this.productoService
-                                  .creaProducto(formularioP)
-                                  .subscribe({
-                                    next: (respuesta) => {
-                                      if (respuesta.success) {
-                                        this.spinner.hide();
-                                        this.dialog
-                                          .open(MensajeEmergentesComponent, {
-                                            data: `Producto agregado exitosamente`,
-                                          })
-                                          .afterClosed()
-                                          .subscribe(
-                                            (cerrarDialogo: Boolean) => {
-                                              if (cerrarDialogo) {
-                                                this.productoSubject.next();
-                                                this.dialogo.close(true);
-                                              } else {
-                                              }
-                                            }
-                                          );
-                                      } else {
-                                        this.toastr.error(
-                                          respuesta.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      }
-                                    },
-                                    error: (paramError) => {
-                                      this.toastr.error(
-                                        paramError.error.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    },
-                                  });
-                              } else {
-                                const formMarca = {
-                                  marcaP: this.form.value.marcaP,
-                                };
-                                this.categoriaService
-                                  .agregarMarca(formMarca)
-                                  .subscribe((respuestaMarca) => {
-                                    const formularioP = {
-                                      idProducto: respuestaSub.id_producto,
-                                      detalleUnidadMedida: "pza",
-                                      precioCompra:
-                                        this.form.value.precioCompra,
-                                      detalleCompra:
-                                        this.form.value.detalleCompra,
-                                      id_marcaV: respuestaMarca.id_marcas,
-                                      descripcion: this.form.value.descripcion,
-                                      codigoBarra: this.form.value.codigoBarra,
-                                      ItemNumber: this.form.value.ItemNumber,
-                                      activo: this.form.value.activo,
-                                      sat: this.form.value.sat,
-                                      ieps: this.form.value.ieps,
-                                      iva: this.form.value.iva,
-                                      factura: this.form.value.factura,
-                                      STYLE_ITEM_ID:
-                                        this.form.value.STYLE_ITEM_ID,
-                                      precioCaja: this.form.value.precioCaja,
-                                      cantidadMayoreo:
-                                        this.form.value.cantidadMayoreo,
-                                    };
-
-                                    this.productoService
-                                      .creaProducto(formularioP)
-                                      .subscribe({
-                                        next: (respuesta) => {
-                                          if (respuesta.success) {
-                                            this.spinner.hide();
-                                            this.dialog
-                                              .open(
-                                                MensajeEmergentesComponent,
-                                                {
-                                                  data: `Producto agregado exitosamente`,
+                              .obtenerMarcaPorNombre(this.form.value.marcaP)
+                              .subscribe((marcaExistente) => {
+                                if (marcaExistente.success == 1) {
+                                  const formularioP = {
+                                    idProducto: respuestaSub.id_producto,
+                                    detalleUnidadMedida: "pza",
+                                    precioCompra: this.form.value.precioCompra,
+                                    detalleCompra: this.form.value.detalleCompra,
+                                    id_marcaV:
+                                      marcaExistente.marcasproducto.id_marcas,
+                                    descripcion: this.form.value.descripcion,
+                                    codigoBarra: this.form.value.codigoBarra,
+                                    ItemNumber: this.form.value.ItemNumber,
+                                    activo: this.form.value.activo,
+                                    sat: this.form.value.sat,
+                                    ieps: this.form.value.ieps,
+                                    iva: this.form.value.iva,
+                                    factura: this.form.value.factura,
+                                    STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+                                    precioCaja: this.form.value.precioCaja,
+                                    cantidadMayoreo:
+                                      this.form.value.cantidadMayoreo,
+                                  };
+                                  this.productoService
+                                    .creaProducto(formularioP)
+                                    .subscribe({
+                                      next: (respuesta) => {
+                                        if (respuesta.success) {
+                                          this.spinner.hide();
+                                          this.dialog
+                                            .open(MensajeEmergentesComponent, {
+                                              data: `Producto agregado exitosamente`,
+                                            })
+                                            .afterClosed()
+                                            .subscribe(
+                                              (cerrarDialogo: Boolean) => {
+                                                if (cerrarDialogo) {
+                                                  this.productoSubject.next();
+                                                  this.dialogo.close(true);
+                                                } else {
                                                 }
-                                              )
-                                              .afterClosed()
-                                              .subscribe(
-                                                (cerrarDialogo: Boolean) => {
-                                                  if (cerrarDialogo) {
-                                                    this.productoSubject.next();
-                                                    this.dialogo.close(true);
-                                                  } else {
+                                              }
+                                            );
+                                        } else {
+                                          this.toastr.error(
+                                            respuesta.message,
+                                            "Error",
+                                            {
+                                              positionClass: "toast-bottom-left",
+                                            }
+                                          );
+                                        }
+                                      },
+                                      error: (paramError) => {
+                                        this.toastr.error(
+                                          paramError.error.message,
+                                          "Error",
+                                          {
+                                            positionClass: "toast-bottom-left",
+                                          }
+                                        );
+                                      },
+                                    });
+                                } else {
+                                  const formMarca = {
+                                    marcaP: this.form.value.marcaP,
+                                  };
+                                  this.categoriaService
+                                    .agregarMarca(formMarca)
+                                    .subscribe((respuestaMarca) => {
+                                      const formularioP = {
+                                        idProducto: respuestaSub.id_producto,
+                                        detalleUnidadMedida: "pza",
+                                        precioCompra:
+                                          this.form.value.precioCompra,
+                                        detalleCompra:
+                                          this.form.value.detalleCompra,
+                                        id_marcaV: respuestaMarca.id_marcas,
+                                        descripcion: this.form.value.descripcion,
+                                        codigoBarra: this.form.value.codigoBarra,
+                                        ItemNumber: this.form.value.ItemNumber,
+                                        activo: this.form.value.activo,
+                                        sat: this.form.value.sat,
+                                        ieps: this.form.value.ieps,
+                                        iva: this.form.value.iva,
+                                        factura: this.form.value.factura,
+                                        STYLE_ITEM_ID:
+                                          this.form.value.STYLE_ITEM_ID,
+                                        precioCaja: this.form.value.precioCaja,
+                                        cantidadMayoreo:
+                                          this.form.value.cantidadMayoreo,
+                                      };
+  
+                                      this.productoService
+                                        .creaProducto(formularioP)
+                                        .subscribe({
+                                          next: (respuesta) => {
+                                            if (respuesta.success) {
+                                              this.spinner.hide();
+                                              this.dialog
+                                                .open(
+                                                  MensajeEmergentesComponent,
+                                                  {
+                                                    data: `Producto agregado exitosamente`,
                                                   }
+                                                )
+                                                .afterClosed()
+                                                .subscribe(
+                                                  (cerrarDialogo: Boolean) => {
+                                                    if (cerrarDialogo) {
+                                                      this.productoSubject.next();
+                                                      this.dialogo.close(true);
+                                                    } else {
+                                                    }
+                                                  }
+                                                );
+                                            } else {
+                                              this.toastr.error(
+                                                respuesta.message,
+                                                "Error",
+                                                {
+                                                  positionClass:
+                                                    "toast-bottom-left",
                                                 }
                                               );
-                                          } else {
+                                            }
+                                          },
+                                          error: (paramError) => {
                                             this.toastr.error(
-                                              respuesta.message,
+                                              paramError.error.message,
                                               "Error",
                                               {
                                                 positionClass:
                                                   "toast-bottom-left",
                                               }
                                             );
-                                          }
-                                        },
-                                        error: (paramError) => {
-                                          this.toastr.error(
-                                            paramError.error.message,
-                                            "Error",
-                                            {
-                                              positionClass:
-                                                "toast-bottom-left",
-                                            }
-                                          );
-                                        },
-                                      });
-                                    this.spinner.hide();
-                                  });
-                              }
-                            });
-                        });
-                    }
-                  });
-              });
-          }
+                                          },
+                                        });
+                                      this.spinner.hide();
+                                    });
+                                }
+                              });
+                          });
+                      }
+                    });
+                });
+            }
+          });
+      }else{
+        this.toastr.error('El codigo de barras ya existe.', 'Error', {
+          positionClass: 'toast-bottom-left',
         });
+        this.spinner.hide();
+      }
+      });
+      
     } else {
       this.message = "Por favor, complete todos los campos requeridos.";
       this.marcarCamposInvalidos(this.form);

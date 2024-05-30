@@ -3,6 +3,21 @@
       <div class="title"  mat-dialog-title>
          <label>PRODUCTOS</label>
       </div>
+
+      <table class="table-container">
+         <thead>
+             <tr>
+                 <th>Nombre del producto</th>
+                 <th>Codigo de barras</th>
+             </tr>
+         </thead>
+         <tbody>
+             <tr *ngFor="let archivo of editarProd; let i = index">
+                 <td>{{ archivo.nombreProducto }}-{{ archivo.detalleCompra }}-{{ archivo.marca }}</td>
+                 <td>{{ archivo.codigoBarras }}</td>
+         </tbody>
+     </table>
+
       <div mat-dialog-content>
          <br>
          <div >

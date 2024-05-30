@@ -46,6 +46,7 @@ export class EditarProductoComponent implements OnInit{
   filteredMarcas: string[] = [];
   private productoSubject = new Subject<void>();
   matcher = new MyErrorStateMatcher();
+  editarProd: any;
 
   constructor( public dialogo: MatDialogRef<EditarProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -59,8 +60,9 @@ export class EditarProductoComponent implements OnInit{
     public dialog: MatDialog){
 
     this.idProducto = data.idProducto;
-    this.productoService.consultarProductosJ(this.idProducto).subscribe(
+    this.productoService.consultarProductosJ(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
+        this.editarProd = respuesta;
         this.form.setValue({
           codigoBarra:respuesta [0]['codigoBarras'],       
           nomsubcate:respuesta [0]['subCategoria'],

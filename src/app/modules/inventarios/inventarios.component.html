@@ -36,11 +36,11 @@
                   <ng-container *ngIf="column === 'Código De Barras'">
                       {{ prod.codigo_de_barra }}
                     </ng-container>
-                    <ng-container *ngIf="column === 'Categoría'">
-                      {{ prod.categoria }}
+                    <ng-container *ngIf="column === 'Marca'">
+                      {{ prod.marca }}
                     </ng-container>
                     <ng-container *ngIf="column === 'Nombre'">
-                      {{ prod.nombre }}
+                      {{ prod.nombre }}-{{ prod.detalleCompra }}
                     </ng-container>
                   <ng-container *ngIf="column === 'Cantidad Disponible'">
                       {{ prod.cantidad_disponible }}

@@ -174,12 +174,11 @@ export class ProductoService {
       return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
     }
 
-    consultarProductosJ(idProducto: number | null): Observable<any[]> {
+    consultarProductosJ(idProducto: number | null, idBodega: number | null): Observable<any[]> {
       const url = `${this.API}producto_bod.php?consultarProductoId`;
-      return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto });
+      return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto, id_bodega: idBodega });
     }
-
-
+    
 
 
     obtenerListaProduct(dateInicio: any, dateFin: any, idGym: any): Observable<any> {

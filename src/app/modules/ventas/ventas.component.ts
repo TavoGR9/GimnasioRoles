@@ -60,6 +60,7 @@ export class VentasComponent implements OnInit {
   mostrarLasVentas: boolean = false;
   detallesCaja: any[] = [];
   productData: Producto[] = []; 
+  showTable: boolean = false;
   
   selectedProducts: any[] = [];
   datosParaGuardarDetalleVenta: detalleVenta[] = [];
@@ -75,6 +76,7 @@ export class VentasComponent implements OnInit {
     "Detalle": "detalleCompra",
     "Nombre del Producto": "nombreProducto",
     "Precio de Sucursal": "precioSucursal",
+    "Existencias": "existencia"
   };
   
   displayedColumns: string[] = [
@@ -82,6 +84,7 @@ export class VentasComponent implements OnInit {
     "Nombre del Producto",
     "Detalle",
     "Precio de Sucursal",
+    "Existencias",
     "cantidad",
     "acciones",
   ];
@@ -119,6 +122,15 @@ export class VentasComponent implements OnInit {
     this.productosArray = this.formularioDetalleVenta.get(
       "productos"
     ) as FormArray;
+  }
+
+  handleFilterInput(event: any) {
+    const value = event.target.value;
+    // Verificar si value no es null antes de continuar
+    if (value !== null) {
+      // Si el valor del filtro está vacío, ocultar la tabla
+      this.showTable = value.trim() !== '';
+    }
   }
 
   ngAfterViewInit(): void {
@@ -554,6 +566,7 @@ export class VentasComponent implements OnInit {
           0
         );
         
+        
         producto.cantidad = 0;
         this.obtenerProducto(producto.idProbob,this.auth.idGym.getValue(),cantidadSolicitada);
       },
@@ -565,6 +578,14 @@ export class VentasComponent implements OnInit {
 
   cerrarDialogo(): void {
     this.dialogo.close(true);
+  }
+
+  quitarArchivo(index: number): void {
+    this.selectedProducts.splice(index, 1);
+    this.totalAPagar = this.selectedProducts.reduce(
+      (total, p) => total + (p.precioSucursal * p.cantidad),
+      0
+    );
   }
   
 }

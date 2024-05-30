@@ -14,7 +14,7 @@ import { AuthService } from '../../service/auth.service';
 export class InventariosComponent implements OnInit {
   displayedColumns: string[] = [
     'Código De Barras',
-    'Categoría',
+    'Marca',
     'Nombre',
     'Cantidad Disponible'
   ];

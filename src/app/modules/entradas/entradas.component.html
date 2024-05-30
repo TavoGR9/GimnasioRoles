@@ -13,7 +13,7 @@
          <form [formGroup]="form">
             <div style="color:red">{{message}}</div>
          <div class="row">
-            <div class="col-sm-12">
+          <!----  <div class="col-sm-12">
                <p>
                   <label>Productos:</label>
                   <mat-form-field appearance="outline" style="width: 100%;" >
@@ -36,7 +36,30 @@
                         >
                   </mat-form-field>
                </p>
-            </div>
+            </div>-->
+            <div class="col-sm-12">
+               <p>
+                 <mat-form-field appearance="outline" style="width: 100%;">
+                   <mat-label>Productos</mat-label>
+                   <input
+                   (keydown)="handleEnterKey($event)"
+                     matInput
+                     formControlName="idProbob"
+                     placeholder="Escribe una categoria"
+                     [matAutocomplete]="auto"
+                     (input)="buscarProducto()"
+                     (ngModelChange)="infoProducto($event)"
+                     #showProduct
+                   />
+                   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onProductSelected($event.option.value)">
+                     <mat-option *ngFor="let item of filteredProducto" [value]="item">
+                       {{ item.nombre }}
+                     </mat-option>
+                   </mat-autocomplete>
+                 </mat-form-field>
+               </p>
+             </div>
+                
          </div>
          <div class="row">
             <div class="col-sm-4">
@@ -45,6 +68,7 @@
                   <mat-form-field appearance="outline" style=" width: 100%;">
                      <mat-label>Cantidad de producto</mat-label>
                      <input
+                     (keydown)="handleEnterKey($event)"
                         type="number"
                         min="0"
                         matInput
@@ -74,6 +98,7 @@
                   <mat-form-field appearance="outline"  style=" width: 100%;" required>
                      <mat-label>Precio de compra</mat-label>
                      <input
+                     (keydown)="handleEnterKey($event)"
                         matInput
                         placeholder="$"
                         type="number"
@@ -104,6 +129,7 @@
                   <mat-form-field appearance="outline"  style=" width: 100%;" required>
                      <mat-label >Precio de venta</mat-label>
                      <input
+                     (keydown)="handleEnterKey($event)"
                         matInput
                         placeholder="$"
                         type="number"
@@ -138,24 +164,30 @@
          <div *ngIf="tablaDatos && tablaDatos.length > 0">
             <table class="table">
                <thead>
-               <tr>
-                  <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Precio compra</th>
-                  <th>Precio venta</th>
-                  <th>Fecha</th>
-               </tr>
+                  <tr>
+                     <th>Producto</th>
+                     <th>Cantidad</th>
+                     <th>Precio compra</th>
+                     <th>Precio venta</th>
+                     <th>Fecha</th>
+                     <th>Acciones</th>
+                  </tr>
                </thead>
                <tbody>
-               <tr *ngFor="let dato of tablaDatos">
-                  <td>{{ dato.descripcion }}</td>
-                  <td>{{ dato.exis }}</td>
-                  <td>{{ dato.precioCaja }}</td>
-                  <td>{{ dato.precciosucu }}</td>
-                  <td>{{ dato.fechaEntrada }}</td>
-               </tr>
+                  <tr *ngFor="let dato of tablaDatos; let i = index">
+                     <td>{{ dato.descripcion }} {{ dato.marca}}_{{ dato.detalle}}</td>
+                     <td>{{ dato.exis }}</td>
+                     <td>{{ dato.precioCaja }}</td>
+                     <td>{{ dato.precciosucu }}</td>
+                     <td>{{ dato.fechaEntrada }}</td>
+                     <td>
+                        <button mat-icon-button (click)="quitarArchivo(i)">
+                           <mat-icon>delete</mat-icon>
+                        </button>
+                     </td>
+                  </tr>
                </tbody>
-            </table>
+            </table>            
          </div>
          </form>
       </div>

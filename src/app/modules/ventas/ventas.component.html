@@ -15,13 +15,14 @@
             <mat-label>Filtro</mat-label>
             <input
             matInput
+            (input)="handleFilterInput($event)"
             (keyup)="applyFilter($event)"
             placeholder="Busca por columnas"
             #input
             />
          </mat-form-field>
          <div class="table-container">
-            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <table *ngIf="showTable" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
                <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
                  <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th>
                  <td mat-cell *matCellDef="let prod">
@@ -61,11 +62,16 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr *ngFor="let selectedProduct of selectedProducts">
+                  <tr *ngFor="let selectedProduct of selectedProducts; let i = index">
                      <td>{{ selectedProduct.nombreProducto }}</td>
                      <td >{{ selectedProduct.cantidad }}</td>
                      <td>${{ selectedProduct.precioSucursal }}</td>
                      <td>${{ selectedProduct.precioSucursal * selectedProduct.cantidad }}</td>
+                     <td>
+                        <button mat-icon-button (click)="quitarArchivo(i)">
+                           <mat-icon>delete</mat-icon>
+                        </button>
+                     </td>
                   </tr>
                </tbody>
             </table>
