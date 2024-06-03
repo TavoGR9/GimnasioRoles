@@ -122,6 +122,7 @@ export class VentasComponent implements OnInit {
     this.productosArray = this.formularioDetalleVenta.get(
       "productos"
     ) as FormArray;
+
   }
 
   handleFilterInput(event: any) {
@@ -153,6 +154,7 @@ export class VentasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  
     // this.productoService.comprobar();
     // this.DetalleVenta.comprobar();
     // this.InventarioService.comprobar();
@@ -218,7 +220,9 @@ export class VentasComponent implements OnInit {
         Caja_idCaja: 1,
         fechaVenta: fechaVenta,
         total: totalAPagar,
+        idUsuario:this.auth.idUser.getValue(),
       };
+
       this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
         const lastInsertedId3 = response.lastInsertedId3;
         const detallesVenta = this.selectedProducts.map((producto) => {

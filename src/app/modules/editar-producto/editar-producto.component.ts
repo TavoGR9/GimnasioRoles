@@ -160,7 +160,7 @@ export class EditarProductoComponent implements OnInit{
     const fechaFormateada: string = `${año}-${mes}-${dia}`;
     const data = {
       ultimo_id:this.form.value.idBodPro,
-      existencia:this.form.value.existencia,
+      existencias:this.form.value.existencia,
       precioSucursal:this.form.value.precioSucursal,
       precioCaja:this.form.value.precioCaja,
       accion: "Edición de nuevo producto",
@@ -169,13 +169,16 @@ export class EditarProductoComponent implements OnInit{
       p_id_bodega: this.form.value.id_bodega
     }
 
-    this.entrada.actualizarProducto(data).subscribe({next: (update) =>{
+    const dataArray = [data];
+    this.entrada.actualizarProducto(dataArray).subscribe({next: (update) =>{
       if (update.success == 1) {
         this.spinner.hide();
         this.dialog.open(MensajeEmergentesComponent, {data: `Entrada agregada exitosamente`})
           .afterClosed()
           .subscribe((cerrarDialogo: Boolean) => {
           if (cerrarDialogo) {
+            this.dialogo.close();
+            
           } else {
           }
           }); 

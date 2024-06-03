@@ -6,7 +6,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { MatDrawerMode } from '@angular/material/sidenav';
 import { RegistroComponent } from '../registro/registro.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-
+import { combineLatest } from 'rxjs';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -18,6 +18,7 @@ export class SidebarComponent {
   mobileQuery: MediaQueryList;
   currentUser: string = '';
   idGym: number = 0;
+  idUser: number = 0;
 
   private _mobileQueryListener: () => void;
 
@@ -53,9 +54,18 @@ export class SidebarComponent {
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-    this.auth.idGym.subscribe((data) => {
+
+
+    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(([idGym, idUser]) => {
+      if (idGym && idUser) {
+        this.idGym = idGym;
+        this.idUser = idUser;
+      }
+    });
+
+   /* this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-    }); 
+    }); */
   }
 
   getSSdata(data: any){
@@ -63,7 +73,7 @@ export class SidebarComponent {
       next: (resultData) => {
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
-          this.auth.idUser.next(resultData.id);
+          this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
           this.auth.nombreGym.next(resultData.nombreGym);
           this.auth.email.next(resultData.email);

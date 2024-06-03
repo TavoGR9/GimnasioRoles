@@ -15,7 +15,7 @@ import { ColaboradorService } from './../../service/colaborador.service';
 import { MembresiaService } from "../../service/membresia.service";
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +26,8 @@ export class HomeComponent implements OnInit{
   currentUser: string = '';
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
-  idGym: number = 0;
+  idGym: number = 0; 
+  idUser: number = 0;
   fechaActual: Date = new Date();
   totalVentas: number = 0;
   totalProductosVendidos: number = 0;
@@ -57,15 +58,16 @@ export class HomeComponent implements OnInit{
       if(this.currentUser){
         this.getSSdata(JSON.stringify(this.currentUser));
       }
-      this.auth.idGym.subscribe((data) => {
-        if(data) {
-          this.idGym = data;
+     
+      combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(([idGym, idUser]) => {
+        if (idGym && idUser) {
+          this.idGym = idGym;
+          this.idUser = idUser;
           this.listaTablas();
           this.consultarAsistencia();
         }
       });
-   
-    
+
   }
 
   loadData() {
@@ -119,7 +121,7 @@ export class HomeComponent implements OnInit{
       next: (resultData) => {
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
-          this.auth.idUser.next(resultData.id);
+          this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
           this.auth.nombreGym.next(resultData.nombreGym);
           this.auth.email.next(resultData.email);
@@ -159,7 +161,6 @@ export class HomeComponent implements OnInit{
     this.homeService.consultarHome(this.idGym).subscribe(respuesta => {
       this.homeCard = respuesta
     });
-
 
     this.homeService.consultarHome2(this.idGym).subscribe(respuesta => {
       this.homeCard2 = respuesta
