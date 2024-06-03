@@ -16,6 +16,8 @@ export class SidebarComponent {
   url: string = `HuellaTorniquete://`;     //    ValidacionHuella
   mostrarBarraLateral = false;
   mobileQuery: MediaQueryList;
+  currentUser: string = '';
+  idGym: number = 0;
 
   private _mobileQueryListener: () => void;
 
@@ -45,6 +47,28 @@ export class SidebarComponent {
   ngOnInit() {
     this.sidebarService.mostrarBarraLateral$.subscribe((mostrar) => {
       this.mostrarBarraLateral = mostrar;
+    });
+
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+    }); 
+  }
+
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.idUser.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
     });
   }
 

@@ -113,7 +113,7 @@ export class VentasComponent implements OnInit {
     private GimnasioService: GimnasioService
   ) {
     this.obtenerFoto();
-    const userId = this.auth.userId.getValue(); // id del usuario
+    const userId = this.auth.idUser.getValue(); // id del usuario
     /* --------------------------------------------------------------*/
     this.formularioDetalleVenta = this.formulario.group({
       productos: this.formulario.array([]),

@@ -31,7 +31,7 @@ export class RoleGuard implements CanActivate {
       next: (resultData) => {
         this.authService.loggedIn.next(true);
         this.authService.role.next(resultData.rolUser);
-        this.authService.userId.next(resultData.id);
+        this.authService.idUser.next(resultData.id);
         this.authService.idGym.next(resultData.idGym);
         this.authService.nombreGym.next(resultData.nombreGym);
         this.authService.email.next(resultData.email);
