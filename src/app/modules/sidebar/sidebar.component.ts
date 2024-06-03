@@ -13,7 +13,7 @@ import { combineLatest } from 'rxjs';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
-  url: string = `HuellaTorniquete://`;     //    ValidacionHuella
+  url: string = ``;     //    ValidacionHuella
   mostrarBarraLateral = false;
   mobileQuery: MediaQueryList;
   currentUser: string = '';
@@ -60,6 +60,8 @@ export class SidebarComponent {
       if (idGym && idUser) {
         this.idGym = idGym;
         this.idUser = idUser;
+        console.log('id Gimnasio:',this.idGym);
+        this.url = `HuellaTorniquete://?id=${this.idGym}`;
       }
     });
 
