@@ -170,7 +170,7 @@ export class EditarProductoComponent implements OnInit{
     }
 
     const dataArray = [data];
-    this.entrada.actualizarProducto(dataArray).subscribe({next: (update) =>{
+    this.entrada.actualizarProductoVDos(dataArray).subscribe({next: (update) =>{
       if (update.success == 1) {
         this.spinner.hide();
         this.dialog.open(MensajeEmergentesComponent, {data: `Entrada agregada exitosamente`})
