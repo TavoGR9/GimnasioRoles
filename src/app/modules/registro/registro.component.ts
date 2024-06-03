@@ -138,9 +138,9 @@ export class RegistroComponent implements OnInit {
     this.precioId = this.activeRoute.snapshot.paramMap.get("idPrecio");
 
     this.photoSelected = null;
-      this.file = new File([], 'defaultFileName');
-      this.deviceId = '';
-      this.webcamImage = null;
+    this.file = new File([], 'defaultFileName');
+    this.deviceId = '';
+    this.webcamImage = null;    
 
     this.form = this.fb.group({
       nombreU: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
@@ -167,13 +167,14 @@ export class RegistroComponent implements OnInit {
       //email: ['', Validators.compose([Validators.required, Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
       email: ['', Validators.compose([Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
       pass: [''],
-      user:['name'],
+      user:[''],
       nombre:[''],
       id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       destino:["Cliente"],
       direccion:[''],
       codigoPromotor:[0],
       Genero:['sin genero'],
+      idUser:[this.auth.idUser.getValue()],
     })
 
   }
@@ -474,9 +475,12 @@ export class RegistroComponent implements OnInit {
 
       this.form.patchValue({
         direccion: direccionCompleta,
-        nombre: nombreCompleto
+        nombre: nombreCompleto,
+        user:nombreCompleto,
       });
+
       if(this.form.valid){
+      
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
             if (resultData.message === 'MailExists') {

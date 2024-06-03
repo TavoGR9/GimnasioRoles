@@ -104,6 +104,7 @@ export class ColaboradorService {
     }
 
     agregarUsuario(datosEmpleado: any): Observable<any> {
+      
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuario", datosEmpleado).pipe(
             tap(dataResponse => {
             }),

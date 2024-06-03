@@ -12,6 +12,7 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { VentasComponent } from "../ventas/ventas.component";
 import { DialogStateService } from "../../service/dialogState.service";
+import { combineLatest } from 'rxjs';
 @Component({
   selector: 'app-ver-corte',
   templateUrl: './ver-corte.component.html',
@@ -53,6 +54,7 @@ export class VerCorteComponent implements OnInit  {
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   DetallesCaja: any;
+  idUser: number = 0;
 
   ngOnInit(): void {
     // this.productoService.comprobar();
@@ -76,10 +78,15 @@ export class VerCorteComponent implements OnInit  {
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaTablas();
-    }); 
+
+
+    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(([idGym, idUser]) => {
+      if (idGym && idUser) {
+        this.idGym = idGym;
+        this.idUser = idUser;
+        this.listaTablas();
+      }
+    });
   }  
 
   loadData() {
@@ -94,7 +101,7 @@ export class VerCorteComponent implements OnInit  {
       next: (resultData) => {
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
-          this.auth.idUser.next(resultData.id);
+          this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
           this.auth.nombreGym.next(resultData.nombreGym);
           this.auth.email.next(resultData.email);
