@@ -50,8 +50,8 @@ export class LoginComponent implements OnInit {
         next: (resultData) => {
           if (resultData && resultData.rol !== 'No_acceso') {
             this.auth.loggedIn.next(true);
+            this.auth.idUser.next(resultData.clave);
             this.auth.role.next(resultData.rol);
-            this.auth.userId.next(resultData.id);
             this.auth.idGym.next(resultData.idGym);
             this.auth.nombreGym.next(resultData.nombreGym);
             this.auth.email.next(resultData.email);

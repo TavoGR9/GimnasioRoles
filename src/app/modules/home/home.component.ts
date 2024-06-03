@@ -119,7 +119,7 @@ export class HomeComponent implements OnInit{
       next: (resultData) => {
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
-          this.auth.userId.next(resultData.id);
+          this.auth.idUser.next(resultData.id);
           this.auth.idGym.next(resultData.idGym);
           this.auth.nombreGym.next(resultData.nombreGym);
           this.auth.email.next(resultData.email);
