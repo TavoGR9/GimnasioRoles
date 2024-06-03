@@ -61,7 +61,12 @@ export class EntradasService {
   actualizarProducto(data:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1Histo",data);
   }
+  
+  actualizarProductoVDos(data:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1HistoDialog",data);
+  }
 
+  
  /* actualizarProducto(data:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1",data);
   }*/
