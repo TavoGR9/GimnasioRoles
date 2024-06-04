@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { plan } from '../models/plan';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
 import { tap } from 'rxjs/operators';
@@ -12,15 +11,12 @@ import { catchError, of } from 'rxjs';
 export class serviciosService {
  
   API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-
   isConnected: boolean = true;
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
- 
- 
   public idService: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public confirmButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -29,7 +25,6 @@ export class serviciosService {
   data: any = {};
   
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private indexedDBService:IndexedDBService) {
-    // this.comprobar();
   }
 
   // comprobar(){
@@ -58,7 +53,6 @@ export class serviciosService {
   }
 
   private saveDataToIndexedDB(data: any) {
-    // Guarda los datos en IndexedDB
     this.indexedDBService.saveAgregarServicioData('AgregarServicio', data);
   }
 

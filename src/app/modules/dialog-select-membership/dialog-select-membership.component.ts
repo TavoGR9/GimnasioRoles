@@ -2,22 +2,11 @@ import { Component, OnInit, Inject } from "@angular/core";
 import { AuthService } from "../../service/auth.service";
 import { GimnasioService } from "../../service/gimnasio.service";
 import { ToastrService } from 'ngx-toastr';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  NgForm,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import { serviciosService } from "../../service/servicios.service";
 import { MatTableDataSource } from "@angular/material/table";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from "@angular/material/dialog";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
@@ -88,21 +77,13 @@ export class DialogSelectMembershipComponent implements OnInit {
       status: ["1", [Validators.pattern(/^\d+$/)]],
       tipo_membresia: ["1", [Validators.required, Validators.pattern(/^\d+$/)]],
       Gimnasio_idGimnasio: [this.AuthService.idGym.value, Validators.required],
+      created_by: [""],
     });
 
     this.formService = this.formulario.group({
-      nombre: [
-        "",
-        [
-          Validators.required,
-          Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),
-        ],
-      ],
-      precio: [
-        "",
-        [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
-      ],
-      gimnasio: [this.AuthService.idGym.value, Validators.required],
+      nombre: ["", [Validators.required, Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),]],
+      precio: ["", [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
+      gimnasio: [this.AuthService.idGym.value],
     });
   }
 
@@ -173,6 +154,7 @@ export class DialogSelectMembershipComponent implements OnInit {
                       status: this.plan[0].status,
                       tipo_membresia: 1,
                       Gimnasio_idGimnasio: this.plan[0].Gimnasio_idGimnasio,
+                      created_by: this.plan[0].created_by
                     });
                   }
                 });
@@ -198,9 +180,7 @@ export class DialogSelectMembershipComponent implements OnInit {
     this.tipo_membresia = 1;
     this.selection = 1;
     this.formTittle = "Plan";
-
     this.formPlan.patchValue({ tipo_membresia: this.tipo_membresia });
-
     if (this.idGym != null) {
       this.getServices();
     }
@@ -265,6 +245,7 @@ export class DialogSelectMembershipComponent implements OnInit {
         status: this.formPlan.value.status,
         tipo_membresia: this.tipo_membresia,
         Gimnasio_idGimnasio: this.idGym,
+        created_by: this.AuthService.idUser.getValue()
       });
       if (this.optionToShow == 1 || this.optionToShow == 2) {
         let formValue = this.formPlan.value;
@@ -317,9 +298,9 @@ export class DialogSelectMembershipComponent implements OnInit {
           status: this.formPlan.value.status,
           tipo_membresia: this.dataToUpdate.tipo_membresia,
           Gimnasio_idGimnasio: this.idGym,
+          created_by: this.AuthService.idUser.getValue()
         });
         if (this.formPlan.valid) {
-          //llamada al servicio para actualizar la membresia
           this.membresiaService
             .updateMembresia(this.formPlan.value)
             .subscribe((respuesta) => {

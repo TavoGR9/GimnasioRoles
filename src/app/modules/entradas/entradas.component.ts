@@ -295,7 +295,8 @@ export class EntradasComponent implements OnInit {
               fechaE: dataToSend[index].fechaE,
               fechaEntrada: dataToSend[index].fechaEntrada,
               accion: "Registro de nuevo producto",
-              fecha_actu: fechaFormateada
+              fecha_actu: fechaFormateada,
+              created_by: this.auth.idUser.getValue()
             });
             hayRegistrosNuevos = true;
           } else if (data.success === 1) {

@@ -11,7 +11,6 @@ import { Router } from "@angular/router";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { plan } from "../../models/plan";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from "ngx-toastr";
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
@@ -54,6 +53,7 @@ export class planAgregarComponent {
         fechaInicio: ["", Validators.required],
         fechaFin: ["", Validators.required],
         membresias: [[], Validators.required],
+        created_by: [this.auth.idUser.getValue()],
       },
       { validators: this.dateLessThan("fechaInicio", "fechaFin") }
     );
@@ -143,7 +143,6 @@ export class planAgregarComponent {
                       this.dialogo.close(true);
                     }
                   });
-
               }
             });
           }
