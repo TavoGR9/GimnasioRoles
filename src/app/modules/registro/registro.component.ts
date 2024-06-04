@@ -490,7 +490,7 @@ export class RegistroComponent implements OnInit {
               if(resultData.email !== null){
               this.add.enviarMail(resultData.email).subscribe(
               );
-            }
+             }
               this.cerrarDialogo();
               this.spinner.hide();
               this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {

@@ -8,6 +8,8 @@ import { EmergenteAperturaPuertoSerialComponent } from '../emergente-apertura-pu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
 import { NgxSpinnerService } from "ngx-spinner";
+import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-emergente-info-cliente',
   templateUrl: './emergente-info-cliente.component.html',
@@ -31,6 +33,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     'Fecha Inicio',
     'Fecha Fin',
     'Status',
+    'Eliminar',
   ];
   membresiaHisto: any;
   item: any;
@@ -40,6 +43,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
   constructor(public dialog: MatDialog, private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private pagoService: PagoMembresiaEfectivoService,
+    private toastr: ToastrService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
       this.form = this.fb.group({
@@ -146,5 +150,31 @@ export class EmergenteInfoClienteComponent implements OnInit{
     setTimeout(() => {
       this.spinner.hide();
     }, 550);
+  }
+
+  borrarSucursal(id:any){
+    this.dialog.open(MensajeEliminarComponent,{
+      data: `¿Desea eliminar este servicio?`,
+    })
+    .afterClosed()
+    .subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.pagoService.deleteMem(id).subscribe(
+          (respuesta) => {
+            this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
+              this.membresiaHisto = respuesta;
+              this.dataSource = new MatTableDataSource(this.membresiaHisto);
+              this.dataSource.paginator = this.paginator;
+            });
+                this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
+                  positionClass: 'toast-bottom-left',
+                });
+          },
+          (error) => {
+          }
+        );
+      } else {
+      }
+    });
   }
 }

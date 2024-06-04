@@ -377,7 +377,7 @@ export class FormPagoEmergenteComponent implements OnInit{
             const mesFin = String(this.fechaDeInicio.getMonth() + 1).padStart(2, '0');
             const díaFin = String(this.fechaDeInicio.getDate()).padStart(2, '0');
             const fechaFormateada2 = `${añoFin}-${mesFin}-${díaFin}`;
-            this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada1, this.data.detMemID, this.precio, fechaFormateada2).subscribe((dataResponse: any)=> {
+            this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada1, this.data.detMemID, this.precio, fechaFormateada2,this.auth.idUser.getValue()).subscribe((dataResponse: any)=> {
               this.actualizarTablas.emit(true);
               this.dialogo.close(true);
               this.dialog.open(MensajeEmergenteComponent, {
@@ -421,7 +421,7 @@ export class FormPagoEmergenteComponent implements OnInit{
 
           const fechaFormateadaFin: string = fechaFin.toISOString().split('T')[0];                    
 
-          this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada, this.data.detMemID, this.precio, fechaFormateadaFin).subscribe((dataResponse: any)=> {
+          this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada, this.data.detMemID, this.precio, fechaFormateadaFin,this.auth.idUser.getValue()).subscribe((dataResponse: any)=> {
           this.actualizarTablas.emit(true);
           
           this.dialogo.close(true);
