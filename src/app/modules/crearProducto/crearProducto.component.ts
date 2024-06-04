@@ -280,7 +280,6 @@ export class CrearProductoComponent implements OnInit {
     if (this.form.valid) {
       this.spinner.show();
       ///********** Verifica si la categoria ya existe */
-
       const codigo = this.form.get("codigoBarra")?.value;
       this.productoService
         .verProductoCodigoBarras(codigo)
@@ -321,8 +320,8 @@ export class CrearProductoComponent implements OnInit {
                                 factura: this.form.value.factura,
                                 STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                                 precioCaja: this.form.value.precioCaja,
-                                cantidadMayoreo:
-                                  this.form.value.cantidadMayoreo,
+                                cantidadMayoreo:this.form.value.cantidadMayoreo,
+                                idUsuario: this.auth.idUser.getValue(),
                               };
 
                               this.productoService
@@ -393,6 +392,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
@@ -479,6 +479,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
@@ -553,6 +554,7 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
+                                          idUsuario: this.auth.idUser.getValue(),
                                       };
 
                                       this.productoService
@@ -650,6 +652,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
@@ -726,6 +729,7 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
+                                          idUsuario: this.auth.idUser.getValue(),
                                       };
 
                                       this.productoService
@@ -817,6 +821,7 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
+                                          idUsuario: this.auth.idUser.getValue(),
                                       };
                                       this.productoService
                                         .creaProducto(formularioP)
@@ -896,6 +901,7 @@ export class CrearProductoComponent implements OnInit {
                                               this.form.value.precioCaja,
                                             cantidadMayoreo:
                                               this.form.value.cantidadMayoreo,
+                                              idUsuario: this.auth.idUser.getValue(),
                                           };
 
                                           this.productoService
@@ -996,6 +1002,7 @@ export class CrearProductoComponent implements OnInit {
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo:
                                   this.form.value.cantidadMayoreo,
+                                  idUsuario: this.auth.idUser.getValue(),
                               };
                               this.productoService
                                 .actualizarProducto(formularioP)
@@ -1065,6 +1072,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
@@ -1151,6 +1159,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
@@ -1226,6 +1235,7 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
+                                          idUsuario: this.auth.idUser.getValue(),
                                       };
 
                                       this.productoService
@@ -1323,6 +1333,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
@@ -1400,6 +1411,7 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
+                                          idUsuario: this.auth.idUser.getValue(),
                                       };
 
                                       this.productoService
@@ -1491,6 +1503,7 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
+                                          idUsuario: this.auth.idUser.getValue(),
                                       };
                                       this.productoService
                                         .actualizarProducto(formularioP)
@@ -1571,6 +1584,7 @@ export class CrearProductoComponent implements OnInit {
                                               this.form.value.precioCaja,
                                             cantidadMayoreo:
                                               this.form.value.cantidadMayoreo,
+                                              idUsuario: this.auth.idUser.getValue(),
                                           };
 
                                           this.productoService
@@ -1641,10 +1655,8 @@ export class CrearProductoComponent implements OnInit {
   }
 
   registrarP() {
-    
     if (this.form.valid) {
       this.spinner.show();
-
     const codigo = this.form.get("codigoBarra")?.value;
     this.productoService
       .verProductoCodigoBarras(codigo)
@@ -1685,6 +1697,7 @@ export class CrearProductoComponent implements OnInit {
                             STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                             precioCaja: this.form.value.precioCaja,
                             cantidadMayoreo: this.form.value.cantidadMayoreo,
+                            idUsuario: this.auth.idUser.getValue(),
                           };
   
                           this.productoService
@@ -1747,6 +1760,7 @@ export class CrearProductoComponent implements OnInit {
                                 STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
+                                idUsuario: this.auth.idUser.getValue(),
                               };
   
                               this.productoService
@@ -1827,6 +1841,7 @@ export class CrearProductoComponent implements OnInit {
                                 STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
+                                idUsuario: this.auth.idUser.getValue(),
                               };
   
                               this.productoService
@@ -1893,6 +1908,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
   
                                   this.productoService
@@ -1981,6 +1997,7 @@ export class CrearProductoComponent implements OnInit {
                                 STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
+                                idUsuario: this.auth.idUser.getValue(),
                               };
   
                               this.productoService
@@ -2048,6 +2065,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
   
                                   this.productoService
@@ -2128,6 +2146,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
+                                      idUsuario: this.auth.idUser.getValue(),
                                   };
                                   this.productoService
                                     .creaProducto(formularioP)
@@ -2197,6 +2216,7 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
+                                          idUsuario: this.auth.idUser.getValue(),
                                       };
   
                                       this.productoService

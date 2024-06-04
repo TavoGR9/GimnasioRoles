@@ -60,7 +60,6 @@ export class SidebarComponent {
       if (idGym && idUser) {
         this.idGym = idGym;
         this.idUser = idUser;
-        console.log('id Gimnasio:',this.idGym);
         this.url = `HuellaTorniquete://?id=${this.idGym}`;
       }
     });

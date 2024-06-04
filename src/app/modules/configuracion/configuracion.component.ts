@@ -168,15 +168,14 @@ export class ConfiguracionComponent  implements OnInit{
    // const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
    // const horariosActualizados = horariosArray.controls.map(horarioControl => horarioControl.value);
 
-   //const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
-//const horariosActualizados = horariosArray.controls.map(horarioControl => horarioControl.value);
+    //const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
+    //const horariosActualizados = horariosArray.controls.map(horarioControl => horarioControl.value);
 
-// Convertir horariosActualizados en un array
+    // Convertir horariosActualizados en un array
 
 
 
     const horariosData = this.formularioHorarios.value;
-   // console.log(horariosData, "horariosData");
     const actualizarPlan = this.gimnasioService.actualizarSucursal(planData).pipe(
       tap(respuesta => {
         if (respuesta.success === 1) {
