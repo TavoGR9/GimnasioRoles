@@ -141,6 +141,7 @@ export class HomeComponent implements OnInit{
   isRecep(): boolean {
     return this.auth.isRecepcion();
   }
+  
 
   ventas(): void {
     const dialogRef = this.dialog.open(VentasComponent, {

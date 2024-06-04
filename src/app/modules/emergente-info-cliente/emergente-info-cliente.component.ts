@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
 import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
+import { AuthService } from '../../service/auth.service';
 import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-emergente-info-cliente',
@@ -44,6 +45,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     private spinner: NgxSpinnerService,
     private pagoService: PagoMembresiaEfectivoService,
     private toastr: ToastrService,
+    private auth: AuthService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
       this.form = this.fb.group({
@@ -154,7 +156,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
   borrarSucursal(id:any){
     this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar este servicio?`,
+      data: `¿Desea eliminar la membresia de tu socio?`,
     })
     .afterClosed()
     .subscribe((confirmado: boolean) => {
@@ -176,5 +178,18 @@ export class EmergenteInfoClienteComponent implements OnInit{
       } else {
       }
     });
+  }
+
+
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+  
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
+  }
+
+  isRecep(): boolean {
+    return this.auth.isRecepcion();
   }
 }
