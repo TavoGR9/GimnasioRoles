@@ -161,7 +161,7 @@ export class ProductosComponent implements OnInit {
           this.dataSource.paginator = this.paginator;
           }
         } else {
-          console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
+          console.error('El resultado de consultar Categoria Gym no es un array o tiene success !== 0:', resultData);
         }
         },
         error: (error) => {

@@ -189,7 +189,7 @@ export class ColaboradoresComponent {
           this.listaTabla();
           //observer.next(lastData); // Emitir el último dato encontrado
         } else {
-          console.log("No hay datos"); // Emitir null si no hay datos en IndexedDB
+          console.log("No hay datos"); 
         }
       });
    }
