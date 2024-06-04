@@ -118,6 +118,9 @@
           <ng-container *ngIf="column === 'Fecha Fin'">
             {{ memCli.Fecha_Fin }}
           </ng-container>
+
+          
+
           <!--<ng-container *ngIf="column === 'Status'">
                 {{ memCli.Status }}
               </ng-container>-->
@@ -136,6 +139,11 @@
               <mat-icon style="color:red">timer_off</mat-icon>
             </ng-container>
           </ng-container>
+          <ng-container *ngIf="column === 'Eliminar'">
+            <button mat-icon-button color="warn"  (click)="borrarSucursal(memCli.idDetMem)">
+              <mat-icon>delete</mat-icon>
+            </button>
+         </ng-container>
         </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
