@@ -1,20 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError} from 'rxjs';
 import { membresia } from '../models/membresia';
 import { tap } from 'rxjs/operators';
-import { catchError } from 'rxjs';
+import { catchError, of, BehaviorSubject, Observable} from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
-import { forkJoin,of  } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-
 @Injectable({
   providedIn: 'root'
 })
 export class MembresiaService {
 
   isConnected: boolean = true;
+  private datosPlan: any;
+  data: any = {};
 
   API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
@@ -38,13 +36,9 @@ export class MembresiaService {
   //   });
   // }
 
-  private datosPlan: any;
-  data: any = {};
-
   /////////////////////************************Membresia */
 
   private saveDataToIndexedDBM(data: any) {
-    // Guarda los datos en IndexedDB
     this.indexedDBService.saveAgregarMembresiaData('AgregarMembresia', data);
   }
 
@@ -57,13 +51,8 @@ export class MembresiaService {
         const resultData = { success: '2' };
         return of(resultData);        
       })
-    );  }
-
-
-
-
-
-
+    );  
+  }
 
   updateMembresia(formData: any): Observable<any>{ 
     return this.clienteHttp.put(this.API+"membresias.php", formData);
@@ -76,7 +65,6 @@ export class MembresiaService {
   consultarPlanGym(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"membresias.php?consultarMembresia="+id);
   }
-
 
   //////////******************PLAN */
   public optionShow: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -124,7 +112,6 @@ export class MembresiaService {
   }
   
   private saveDataToIndexedDB(data: any) {
-    // Guarda los datos en IndexedDB
     this.indexedDBService.saveMembresiaData('membresia', data);
   }
   
@@ -200,22 +187,18 @@ export class MembresiaService {
       });
     });
   }
-  
-
-
-
 
   setDataToupdate(id:number, tipo_membresia: number){
     this.data = {
      id: id,
      tipo_membresia: tipo_membresia
-   }
-   if(this.data){
-     this.dataToUpdate.next(this.data);
-   }
+    }
+    if(this.data){
+      this.dataToUpdate.next(this.data);
+    }
    }
 
-   getDataToUpdate(): Observable<any> {
+  getDataToUpdate(): Observable<any> {
     return this.dataToUpdate.asObservable();
   }
 

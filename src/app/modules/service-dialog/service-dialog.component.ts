@@ -28,7 +28,6 @@ export class ServiceDialogComponent implements OnInit {
     private dialogStateService: DialogStateService,
     private spinner: NgxSpinnerService,
     private dialogRef: MatDialogRef<ServiceDialogComponent>,
-    private dialogRefConfirm: MatDialogRef<MensajeEmergentesComponent>,
   ) {
     this.serviceForm = this.fb.group({
       id_servicios_individuales: [0],
@@ -36,6 +35,7 @@ export class ServiceDialogComponent implements OnInit {
       detalles: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
       precio_unitario: [""],
       fk_idGimnasio: [0],
+      created_by: [""],
     });
   }
 
@@ -50,7 +50,6 @@ export class ServiceDialogComponent implements OnInit {
         this.idGym = id;
       }
     });
-
     this.ServiciosService.seleccionado.subscribe((id) => {
       if (id) {
         this.seleccionado = id;
@@ -69,6 +68,7 @@ export class ServiceDialogComponent implements OnInit {
                       detalles: this.service.detalles,
                       precio_unitario: this.service.precio_unitario,
                       fk_idGimnasio: this.idGym,
+                      created_by: this.service.created_by,
                     });
                   }
                 } else {
@@ -100,6 +100,7 @@ export class ServiceDialogComponent implements OnInit {
         detalles: this.serviceForm.value.detalles,
         precio_unitario: this.serviceForm.value.precio_unitario,
         fk_idGimnasio: this.idGym,
+        created_by: this.auth.idUser.getValue()
       });
       this.ServiciosService
         .newService(this.serviceForm.value)
@@ -172,4 +173,5 @@ interface Service {
   detalles: string;
   precio_unitario: number;
   fk_idGimnasio: number;
+  created_by: number;
 }
