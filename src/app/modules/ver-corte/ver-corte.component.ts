@@ -200,6 +200,7 @@ export class VerCorteComponent implements OnInit  {
       detalle.fechaVenta
     ]);
   
+    
     // Agregar estilos al PDF
     const styles = {
       theme: 'striped',
@@ -251,9 +252,41 @@ export class VerCorteComponent implements OnInit  {
     datosFiltrados.push({
       'Total Ventas': this.totalVentas  // Ajusta la clave según tu estructura de datos
     });
+
+    const titulos = {
+      nombreProducto: 'Nombre del producto',
+      cantidadElegida: 'Cantidad',
+      precioUnitario: 'Precio unitario',
+      fechaVenta: 'Fecha de venta',
+      VendidoPor: 'Vendido por',
+      'Total Ventas': 'Total de ventas'
+    };
+  
+    // Crear un nuevo array con los datos filtrados incluyendo los nuevos títulos
+    const datosConTitulos = datosFiltrados.map(elemento => {
+      return {
+        'Nombre del producto': elemento.nombreProducto,
+        'Cantidad': elemento.cantidadElegida,
+        'Precio unitario': elemento.precioUnitario,
+        'Fecha de venta': elemento.fechaVenta,
+        'Vendido por': elemento.VendidoPor, // Asegúrate de que esto coincida con la estructura de tus datos
+        'Total de ventas': elemento['Total Ventas']
+      };
+    });
+
   
     // Crear un objeto de trabajo de Excel
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosFiltrados);
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosConTitulos);
+
+    worksheet['!cols'] = [
+      { wpx: 200 }, 
+      { wpx: 100 }, 
+      { wpx: 100 }, 
+      { wpx: 100 }, 
+      { wpx: 200 }, 
+      { wpx: 100 }, 
+    ];
+
     const workbook: XLSX.WorkBook = { Sheets: { 'Datos': worksheet }, SheetNames: ['Datos'] };
   
     // Convertir el libro de trabajo a un archivo de Excel binario
