@@ -365,27 +365,192 @@ export class VentasComponent implements OnInit {
           });
           this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
             (response) => {
-              const existencias = this.selectedProducts.map((producto) => {
-                return {
-                codigo: producto.codigoBarras,
-                cantidad: producto.cantidad,
-                idBodega: this.auth.idGym.getValue()
-              }
-              });
-              this.DetalleVenta.updateExistencias(existencias).subscribe((data) =>{
-              })
-  
-              this.dialog.open(MensajeEmergentesComponent, {
-                data: `Productos registrados correctamente`,
-              })
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-                if (cerrarDialogo) {
-                  this.dialogo.close(true);
-                  this.resetearValores();
-                } else {
+              if(response.success == 1){
+                const existencias = this.selectedProducts.map((producto) => {
+                  return {
+                  codigo: producto.codigoBarras,
+                  cantidad: producto.cantidad,
+                  idBodega: this.auth.idGym.getValue()
                 }
-              });
+                });
+                this.DetalleVenta.updateExistencias(existencias).subscribe((data) =>{
+                })
+    
+                this.dialog.open(MensajeEmergentesComponent, {
+                  data: `Productos registrados correctamente`,
+                })
+                .afterClosed()
+                .subscribe((cerrarDialogo: Boolean) => {
+                  if (cerrarDialogo) {
+                    this.dialogo.close(true);
+                    this.resetearValores();
+                  } else {
+                  }
+                });
+
+
+                if (this.totalAPagar <= this.dineroRecibido) {
+                  const totalCantidad = this.selectedProducts.reduce(
+                    (total, producto) => producto.cantidad,
+                    0
+                  );
+                  const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.totalAPagar);
+                  const ventanaImpresion = window.open("", "_blank");
+                  const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
+                  const horaActual = new Date().toLocaleTimeString("es-MX", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }); // Obtener solo la hora en formato local de México
+                  if (ventanaImpresion) {
+                    ventanaImpresion.document.open();
+                    ventanaImpresion.document.write(`
+                    <html>
+                      <head>
+                        <style>
+                          body {
+                            font-family: 'Arial', sans-serif;
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f5f5f5;
+                          }
+                          .ticket {
+                            width: 80%;
+                            max-width: 600px;
+                            margin: 20px auto;
+                            background-color: #fff;
+                            border-radius: 4px;
+                            padding: 20px;
+                            
+                          }
+                          h1 {
+                            text-align: center;
+                            color: #333;
+                            margin-bottom: 20px;
+                          }
+                          table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 20px;
+                          }
+                          th, td {
+                            padding: 8px;
+                            border-bottom: 1px solid #ddd;
+                            text-align: left;
+                          }
+                          th {
+                            background-color: #f2f2f2;
+                          }
+                          .total {
+                            text-align: right;
+                            margin-top: 20px;
+                            font-weight: bold;
+                          }
+                          .total p {
+                            margin: 5px 0;
+                            font-size: 1.1em;
+                          }
+                          hr {
+                            border: none;
+                            border-top: 1px dashed #ccc;
+                            margin: 20px 0;
+                          }
+                          .brand {
+                            text-align: center;
+                            color: #888;
+                            font-size: 20px;
+                            margin-top: 20px;
+                          }
+                          .fecha-hora {
+                            display: flex;
+                            justify-content: space-between;
+                          }
+                          .logo {
+                            display: block;
+                            margin: 0 auto 20px;
+                            max-width: 150px;
+                            width: 100%;
+                            height: auto;
+                          }
+                        </style>
+                      </head>
+                      
+                      <body>
+                        <div class="ticket">
+                        ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              ${this.selectedProducts
+                                .map(
+                                  (producto) => `
+                                  <tr>
+                                    <td>${producto.nombreProducto}</td>
+                                    <td>${producto.cantidad}</td>
+                                    <td>$${producto.precioSucursal}</td>
+                                    <td>$${producto.precioSucursal * producto.cantidad}</td>
+                                  </tr>
+                                `
+                                )
+                                .join("")}
+                            </tbody>
+                          </table>
+                          <hr>
+                          <p>Cantidad total de productos: ${totalCantidad}</p>
+                          <div class="total">
+                          
+                            <p>Total a Pagar: $${this.totalAPagar}</p>
+                            </div>
+                            <p>(${totalEnPesos} PESOS)</p>
+                            <div class="total">
+                            <p>Dinero recibido: $${this.dineroRecibido}</p>
+                            <p>Cambio: $${this.dineroRecibido - this.totalAPagar}</p>
+                            
+                            </div>
+                            <div class="fecha-hora">
+                            <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
+                            <p>Hora: ${horaActual}</p> <!-- Hora -->
+                          </div>
+                          <div class="brand">
+                            <p>Gracias por su compra</p>
+                            <p>¡Vuelva pronto!</p>
+                          </div>
+                        </div>
+                      </body>
+                    </html>
+                  `);
+                  ventanaImpresion.document.close();
+            
+                  // Esperar a que la imagen se cargue antes de imprimir
+                  const image: HTMLImageElement | null = ventanaImpresion.document.querySelector('img');
+                  if (image) {
+                    image.onload = () => {
+                      ventanaImpresion.print();
+                      ventanaImpresion.close();
+                    };
+            
+                    image.onerror = (error) => {
+                      console.error('Error al cargar la imagen:', error);
+                      ventanaImpresion.print();
+                      ventanaImpresion.close();
+                    };
+                  } else {
+                    ventanaImpresion.print();
+                    ventanaImpresion.close();
+                  }
+                  }
+                } else {
+                  this.toastr.error("Ingresa el pago");
+                }
+              }else {
+              this.toastr.error("Error al vender producto");
+            }
             }
           );
         });
@@ -393,165 +558,7 @@ export class VentasComponent implements OnInit {
         this.toastr.error("Pago incorrecto, verifica");
       }
       ///////////////////////
-      if (this.totalAPagar <= this.dineroRecibido) {
-        const totalCantidad = this.selectedProducts.reduce(
-          (total, producto) => producto.cantidad,
-          0
-        );
-        const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.totalAPagar);
-        const ventanaImpresion = window.open("", "_blank");
-        const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
-        const horaActual = new Date().toLocaleTimeString("es-MX", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }); // Obtener solo la hora en formato local de México
-        if (ventanaImpresion) {
-          ventanaImpresion.document.open();
-          ventanaImpresion.document.write(`
-          <html>
-            <head>
-              <style>
-                body {
-                  font-family: 'Arial', sans-serif;
-                  margin: 0;
-                  padding: 0;
-                  background-color: #f5f5f5;
-                }
-                .ticket {
-                  width: 80%;
-                  max-width: 600px;
-                  margin: 20px auto;
-                  background-color: #fff;
-                  border-radius: 4px;
-                  padding: 20px;
-                  
-                }
-                h1 {
-                  text-align: center;
-                  color: #333;
-                  margin-bottom: 20px;
-                }
-                table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-bottom: 20px;
-                }
-                th, td {
-                  padding: 8px;
-                  border-bottom: 1px solid #ddd;
-                  text-align: left;
-                }
-                th {
-                  background-color: #f2f2f2;
-                }
-                .total {
-                  text-align: right;
-                  margin-top: 20px;
-                  font-weight: bold;
-                }
-                .total p {
-                  margin: 5px 0;
-                  font-size: 1.1em;
-                }
-                hr {
-                  border: none;
-                  border-top: 1px dashed #ccc;
-                  margin: 20px 0;
-                }
-                .brand {
-                  text-align: center;
-                  color: #888;
-                  font-size: 20px;
-                  margin-top: 20px;
-                }
-                .fecha-hora {
-                  display: flex;
-                  justify-content: space-between;
-                }
-                .logo {
-                  display: block;
-                  margin: 0 auto 20px;
-                  max-width: 150px;
-                  width: 100%;
-                  height: auto;
-                }
-              </style>
-            </head>
-            
-            <body>
-              <div class="ticket">
-              ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Nombre</th>
-                      <th>Cantidad</th>
-                      <th>Precio Unitario</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${this.selectedProducts
-                      .map(
-                        (producto) => `
-                        <tr>
-                          <td>${producto.nombreProducto}</td>
-                          <td>${producto.cantidad}</td>
-                          <td>$${producto.precioSucursal}</td>
-                          <td>$${producto.precioSucursal * producto.cantidad}</td>
-                        </tr>
-                      `
-                      )
-                      .join("")}
-                  </tbody>
-                </table>
-                <hr>
-                <p>Cantidad total de productos: ${totalCantidad}</p>
-                <div class="total">
-                
-                  <p>Total a Pagar: $${this.totalAPagar}</p>
-                  </div>
-                  <p>(${totalEnPesos} PESOS)</p>
-                  <div class="total">
-                  <p>Dinero recibido: $${this.dineroRecibido}</p>
-                  <p>Cambio: $${this.dineroRecibido - this.totalAPagar}</p>
-                  
-                  </div>
-                  <div class="fecha-hora">
-                  <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
-                  <p>Hora: ${horaActual}</p> <!-- Hora -->
-                </div>
-                <div class="brand">
-                  <p>Gracias por su compra</p>
-                  <p>¡Vuelva pronto!</p>
-                </div>
-              </div>
-            </body>
-          </html>
-        `);
-        ventanaImpresion.document.close();
-  
-        // Esperar a que la imagen se cargue antes de imprimir
-        const image: HTMLImageElement | null = ventanaImpresion.document.querySelector('img');
-        if (image) {
-          image.onload = () => {
-            ventanaImpresion.print();
-            ventanaImpresion.close();
-          };
-  
-          image.onerror = (error) => {
-            console.error('Error al cargar la imagen:', error);
-            ventanaImpresion.print();
-            ventanaImpresion.close();
-          };
-        } else {
-          ventanaImpresion.print();
-          ventanaImpresion.close();
-        }
-        }
-      } else {
-        this.toastr.error("Ingresa el pago");
-      }
+     
     }
   }
 
