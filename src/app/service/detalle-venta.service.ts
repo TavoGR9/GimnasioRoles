@@ -37,12 +37,16 @@ export class DetalleVentaService {
     return this.clienteHttp.get(this.API+"venta_detalleVenta.php")
   }
 
-  agregarVentaDetalle(datosVentaDetalle: detalleVenta[]): Observable<any> {
+  /*agregarVentaDetalle(datosVentaDetalle: detalleVenta[]): Observable<any> {
     return forkJoin(
       datosVentaDetalle.map((detalle: detalleVenta) =>
         this.clienteHttp.post(this.API + 'venta_detalleVenta.php?insertar=1', detalle)
       )
     );
+  }*/
+
+  agregarVentaDetalle(datosVentaDetalle: any[]): Observable<any> {
+    return this.clienteHttp.post(this.API + 'venta_detalleVenta.php?insertar=1', datosVentaDetalle);
   }
   
   consultarVentaDetalle(id:any):Observable<any>{
