@@ -435,7 +435,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           ['Reporte de socios'], 
           [`Con fechas: ${fechaInicioFormateada} - ${fechaFinFormateada}`], // Fechas
           [], // Fila vacía para separar
-          ['Clave', 'Nombre completo', 'Sucursal', 'Membresia', 'Precio', 'Fecha de inicio', 'Fecha fin', 'Estatus'],
+          ['Clave', 'Nombre completo', 'Sucursal', 'Membresia', 'Precio', 'Fecha de inicio', 'Fecha fin', 'Estatus', 'Creado por'],
           ...this.todosClientes.map((activos: any) => [
             activos.clave,
             activos.nombreCompleto,
@@ -444,7 +444,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
             activos.total,
             activos.fechaInicio,
             activos.fechaFin,
-            activos.estatus == 1 ? 'Activo' : 'Inactivo'
+            activos.estatus == 1 ? 'Activo' : 'Inactivo',
+            activos.creadoPor
           ])
         ];
   
@@ -459,9 +460,10 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           { wch: 20 },
           { wch: 20 },
           { wch: 10 },
+          { wch: 15 },
+          { wch: 15 },
           { wch: 10 },
-          { wch: 10 },
-          { wch: 10 }
+          { wch: 25 }
         ];
   
         // Añadir la hoja de datos al libro de Excel

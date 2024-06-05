@@ -52,8 +52,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
         id_cliente: [this.data.idCliente, Validators.required],
         estafeta: [this.data.estafeta, Validators.required],
         nombre: [this.data.nombre, Validators.required],
-        telefono: [this.data.telefono, Validators.required],
-        correo: [this.data.email, Validators.required]
+        telefono: [this.data.telefono],
+        correo: [this.data.email]
       }); 
   }  
 
