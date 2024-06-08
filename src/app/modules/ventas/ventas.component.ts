@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild , Inject} from "@angular/core";
+import { Component, OnInit, ViewChild , Inject, HostListener } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table"; //para controlar los datos del api y ponerlos en una tabla
 import { Producto } from "../../models/producto";
 import { ProductoService } from "../../service/producto.service";
@@ -55,6 +55,7 @@ export class VentasComponent implements OnInit {
   lastInsertedId3: number = 0;
   totalAPagar: number = 0;
   dineroRecibido: number = 0;
+  valorBusqueda: number = 0;
   totalAPagarCorte: number = 0;
   cantidadSolicitada: number = 0;
   mostrarLasVentas: boolean = false;
@@ -134,13 +135,6 @@ export class VentasComponent implements OnInit {
     }
   }
 
-  ngAfterViewInit(): void {
-      this.productoService.obternerProductosV(this.auth.idGym.getValue()).subscribe((respuesta) => {
-          this.productData = respuesta;
-          this.dataSource = new MatTableDataSource(this.productData);
-          this.dataSource.paginator = this.paginator; 
-        });
-  }
 
   ejecutarServicio(): void {
     /*this.DetalleVenta.obternerEstatus().subscribe((result) => {
@@ -169,16 +163,132 @@ export class VentasComponent implements OnInit {
     //datos de detalle venta
     this.DetalleVenta.obternerVentaDetalle().subscribe({
       next: (resultData) => {
+
         this.detalle = resultData;
+        
       },
+    });
+
+    this.productoService.obternerProductosV(this.auth.idGym.getValue()).subscribe((respuesta) => {
+      this.productData = respuesta;
+      this.dataSource = new MatTableDataSource(this.productData);
+      this.dataSource.paginator = this.paginator; 
     });
   }
 
   /*FILTRO*/
-  applyFilter(event: Event) {
+  /*applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
+  }*/
+
+    filteredDataSource = new MatTableDataSource<any>([]);
+    filterTimer: any;
+
+    async applyFilter(event: Event) {
+      const filterValue = (event.target as HTMLInputElement).value;
+      const result = this.dataSource.data.find((prod)=>prod.codigoBarras.toLowerCase() == filterValue.toLowerCase());
+      result.cantidad = 1;
+      await this.validarYAgregarProducto(result);
+      this.filteredDataSource = this.dataSource;
+      (event.target as HTMLInputElement).value = '';
+
+
+
+    
+       /* if (filterValue === '') {
+          // Si el filtro está vacío, restaura los datos originales
+         // this.filteredDataSource = this.dataSource;
+         console.log();
+        } else {
+         const filteredData = this.dataSource.data.filter((row: any) => {
+            return Object.values(row).some((value: any) =>
+              value.toString().toLowerCase().includes(filterValue)
+            );
+          });
+
+          //console.log(filteredData, "filteredData");
+    
+          // Verificar si hay alguna coincidencia con el filtro
+          if (filteredData.length > 0) {
+           // console.log(filteredData);
+            //console.log(filterValue, "filterValue");
+            
+            // Verificar si el filtro coincide completamente con el código de barras
+            const matchingProduct = filteredData.find((product: any) => product.codigoBarras.toLowerCase() === filterValue.toLowerCase());
+            if (matchingProduct) {
+              // Si el filtro coincide completamente con el código de barras, proceder con agregar el producto
+              matchingProduct.cantidad = 1;
+              //console.log(matchingProduct, "matchingProduct");
+    
+              // Luego llamamos a validarYAgregarProducto con el producto modificado
+              this.validarYAgregarProducto(matchingProduct);
+    
+              // Restablecer los datos filtrados a los datos originales y limpiar el valor del filtro
+              this.filteredDataSource = this.dataSource;
+              (event.target as HTMLInputElement).value = '';
+            } else {
+              // Si el filtro no coincide completamente con el código de barras, pero hay otras coincidencias, actualizar la fuente de datos filtrada
+              this.filteredDataSource.data = filteredData;
+            }
+          } else {
+            // Si no hay coincidencias, establecemos la fuente de datos filtrada como vacía
+           // this.filteredDataSource.data = [];
+          }
+        }*/
+    
+      
+      //    this.filteredDataSource.paginator = this.paginator;
+      
+    }
+    
+    
+
+    validarYAgregarProducto(producto: any) {
+      this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
+         (data) => {
+
+           const productoObtenido = data[0];
+           if (!productoObtenido) {
+             this.toastr.error("Producto no encontrado");
+             return;
+           }
+           const cantidadDisponible = productoObtenido.existencia;
+           const cantidadSolicitada = producto.cantidad;
+        
+        /*   if (cantidadDisponible < cantidadSolicitada) {
+             this.toastr.error("No hay suficiente stock disponible para esta cantidad");
+             return;
+           }
+           if (cantidadDisponible < 5) {
+             this.toastr.warning(`Quedan solo ${cantidadDisponible} productos disponibles`);
+           }*/
+           const productoExistente = this.selectedProducts.find(p => p.codigoBarras === producto.codigoBarras);
+
+           
+           if (productoExistente ) {
+           
+             productoExistente.cantidad += cantidadSolicitada;
+           } else {
+             this.selectedProducts.push({ ...producto });
+           }
+
+           this.totalAPagar = this.selectedProducts.reduce((total, p) => total + (p.precioSucursal * p.cantidad),
+             0);
+
+            
+           
+            
+         //  producto.cantidad = 0;
+           
+          // this.obtenerProducto(producto.idProbob,this.auth.idGym.getValue(),cantidadSolicitada);
+         },
+         (error) => {
+           this.toastr.error("Error al obtener el producto");
+         }
+       );
+     }
+
 
   resetearValores() {
     this.selectedProducts = [];
@@ -317,6 +427,8 @@ export class VentasComponent implements OnInit {
         console.error("Error al obtener el producto:", error);
       },
     });
+
+    
   }
 
   imprimirResumen() {
@@ -562,43 +674,7 @@ export class VentasComponent implements OnInit {
     }
   }
 
-  validarYAgregarProducto(producto: any) {
-   this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
-      (data) => {
-        const productoObtenido = data[0];
-        if (!productoObtenido) {
-          this.toastr.error("Producto no encontrado");
-          return;
-        }
-        const cantidadDisponible = productoObtenido.existencia;
-        const cantidadSolicitada = producto.cantidad;
-        if (cantidadDisponible < cantidadSolicitada) {
-          this.toastr.error("No hay suficiente stock disponible para esta cantidad");
-          return;
-        }
-        if (cantidadDisponible < 5) {
-          this.toastr.warning(`Quedan solo ${cantidadDisponible} productos disponibles`);
-        }
-        const productoExistente = this.selectedProducts.find(p => p.codigoBarras === producto.codigoBarras);
-        if (productoExistente) {
-          productoExistente.cantidad += cantidadSolicitada;
-        } else {
-          this.selectedProducts.push({ ...producto });
-        }
-        this.totalAPagar = this.selectedProducts.reduce(
-          (total, p) => total + (p.precioSucursal * p.cantidad),
-          0
-        );
-        
-        
-        producto.cantidad = 0;
-        this.obtenerProducto(producto.idProbob,this.auth.idGym.getValue(),cantidadSolicitada);
-      },
-      (error) => {
-        this.toastr.error("Error al obtener el producto");
-      }
-    );
-  }
+  
 
   cerrarDialogo(): void {
     this.dialogo.close(true);
@@ -611,5 +687,6 @@ export class VentasComponent implements OnInit {
       0
     );
   }
+
   
 }
