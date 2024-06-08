@@ -1,12 +1,9 @@
 <div >
    <div class="title header-container"  mat-dialog-title>
       <label class="ventas-label">VENTAS</label>
-      <div class="button-container">
-         <button mat-icon-button (click)="toggleMaximize()">
-           <mat-icon>{{ isMaximized ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
-         </button>
-       </div>
    </div>
+
+
    <div  mat-dialog-content [ngClass]="{'maximized': isMaximized}">
       <div>
          <br>
@@ -14,15 +11,17 @@
          <mat-form-field class="full-width">
             <mat-label>Filtro</mat-label>
             <input
-            matInput
-            (input)="handleFilterInput($event)"
+            matInput 
             (keyup)="applyFilter($event)"
             placeholder="Busca por columnas"
             #input
+            autofocus
             />
          </mat-form-field>
-         <div class="table-container">
-            <table *ngIf="showTable" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+         
+       <!--  <div class="table-container">
+            <table *ngIf="showTable" mat-table [dataSource]="filteredDataSource" class="mat-elevation-z8">
+
                <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
                  <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th>
                  <td mat-cell *matCellDef="let prod">
@@ -46,10 +45,8 @@
                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                <tr mat-row *matRowDef="let productofila; columns: displayedColumns"></tr>
              </table>
-             
-
             <mat-paginator #paginator [pageSizeOptions]="[3, 10, 20, 30,40,50,100,200,300,4000]" showFirstLastButtons></mat-paginator>
-         </div>
+         </div>-->
          <div class="resumen">
             <h1>Resumen de Compra</h1>
             <table>

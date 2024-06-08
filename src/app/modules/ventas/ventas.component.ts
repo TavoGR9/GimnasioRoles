@@ -1,40 +1,21 @@
-import { Component, OnInit, ViewChild , Inject} from "@angular/core";
-import { MatTableDataSource } from "@angular/material/table"; //para controlar los datos del api y ponerlos en una tabla
+import { Component, OnInit, ViewChild, Inject, ElementRef } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table"; 
 import { Producto } from "../../models/producto";
 import { ProductoService } from "../../service/producto.service";
 import { AuthService } from "../../service/auth.service";
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormArray,
-  FormControl,
-  FormGroupDirective,
-  NgForm,
-} from "@angular/forms";
+import { FormGroup, FormBuilder, FormArray} from "@angular/forms";
 import { DetalleVentaService } from "../../service/detalle-venta.service";
 import { MatDialog } from "@angular/material/dialog";
-import { ClienteService } from "../../service/cliente.service";
 import { Ventas } from "../../models/ventas";
 import { VentasService } from "../../service/ventas.service";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { inventarioService } from "../../service/inventario.service";
 import { ToastrService } from "ngx-toastr";
-import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { interval, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { MatPaginator } from "@angular/material/paginator";
+import { Subject } from 'rxjs';
 import { HomeComponent } from "../home/home.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { detalleVenta } from "../../models/detalleVenta";
-import { DialogStateService } from "../../service/dialogState.service";
-import { GimnasioService } from "../../service/gimnasio.service";
-interface Cliente {
-  ID_Cliente: number;
-  nombre: string;
-  apPaterno: string;
-  apMaterno: string;
-}
-
 @Component({
   selector: "app-home",
   templateUrl: "./ventas.component.html",
@@ -46,6 +27,7 @@ export class VentasComponent implements OnInit {
   formularioDetalleVenta: FormGroup;
   datosParaGuardarVenta: Ventas[] = [];
   detalle: any;
+  filterTimer: any;
   cliente: any;
   detalles: any;
   producto: any;
@@ -55,15 +37,22 @@ export class VentasComponent implements OnInit {
   lastInsertedId3: number = 0;
   totalAPagar: number = 0;
   dineroRecibido: number = 0;
+  valorBusqueda: number = 0;
   totalAPagarCorte: number = 0;
   cantidadSolicitada: number = 0;
   mostrarLasVentas: boolean = false;
   detallesCaja: any[] = [];
   productData: Producto[] = []; 
   showTable: boolean = false;
-  
   selectedProducts: any[] = [];
   datosParaGuardarDetalleVenta: detalleVenta[] = [];
+  private fotoUrl: string | null = null;
+  private destroy$: Subject<void> = new Subject<void>();
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+  @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
+  @ViewChild('input', { static: true }) inputElement!: ElementRef;
+  filteredDataSource = new MatTableDataSource<any>([]);
+
   columnas: string[] = [
     "nombreProducto",
     "cantidadElegida",
@@ -89,14 +78,6 @@ export class VentasComponent implements OnInit {
     "acciones",
   ];
 
-  private fotoUrl: string | null = null;
-  
-
-  private destroy$: Subject<void> = new Subject<void>();
-  
-  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
-  @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
-
   constructor(
     public dialogo: MatDialogRef<HomeComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
@@ -106,15 +87,9 @@ export class VentasComponent implements OnInit {
     public formulario: FormBuilder,
     private DetalleVenta: DetalleVentaService,
     private ventasService: VentasService,
-    private clienteService: ClienteService,
     private productoService: ProductoService,
     private InventarioService: inventarioService,
-    private dialogStateService: DialogStateService,
-    private GimnasioService: GimnasioService
   ) {
-    this.obtenerFoto();
-    const userId = this.auth.idUser.getValue(); // id del usuario
-    /* --------------------------------------------------------------*/
     this.formularioDetalleVenta = this.formulario.group({
       productos: this.formulario.array([]),
     });
@@ -122,87 +97,72 @@ export class VentasComponent implements OnInit {
     this.productosArray = this.formularioDetalleVenta.get(
       "productos"
     ) as FormArray;
-
-  }
-
-  handleFilterInput(event: any) {
-    const value = event.target.value;
-    // Verificar si value no es null antes de continuar
-    if (value !== null) {
-      // Si el valor del filtro está vacío, ocultar la tabla
-      this.showTable = value.trim() !== '';
-    }
-  }
-
-  ngAfterViewInit(): void {
-      this.productoService.obternerProductosV(this.auth.idGym.getValue()).subscribe((respuesta) => {
-          this.productData = respuesta;
-          this.dataSource = new MatTableDataSource(this.productData);
-          this.dataSource.paginator = this.paginator; 
-        });
-  }
-
-  ejecutarServicio(): void {
-    /*this.DetalleVenta.obternerEstatus().subscribe((result) => {
-    });*/
-  }
-
-  /* MAXIMIZAR PANTALLA*/
-  toggleMaximize() {
-    this.isMaximized = !this.isMaximized;
-    this.dialogStateService.updateMaximizeState(this.isMaximized);
   }
 
   ngOnInit(): void {
-  
     // this.productoService.comprobar();
     // this.DetalleVenta.comprobar();
     // this.InventarioService.comprobar();
     // this.ventasService.comprobar();
-    interval(10000)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(() => {
-      this.ejecutarServicio();
-    });
-
     this.ubicacion = this.auth.nombreGym.getValue();
-    //datos de detalle venta
     this.DetalleVenta.obternerVentaDetalle().subscribe({
       next: (resultData) => {
         this.detalle = resultData;
       },
     });
+
+    this.productoService.obternerProductosV(this.auth.idGym.getValue()).subscribe((respuesta) => {
+      this.productData = respuesta;
+      this.dataSource = new MatTableDataSource(this.productData);
+      this.dataSource.paginator = this.paginator; 
+    });
   }
 
-  /*FILTRO*/
-  applyFilter(event: Event) {
+  async applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    const result = this.dataSource.data.find((prod) => prod.codigoBarras.toLowerCase() === filterValue.toLowerCase());
+    
+    if (result) {
+      result.cantidad = 1;
+      await this.validarYAgregarProducto(result);
+      this.filteredDataSource = this.dataSource;
+      (event.target as HTMLInputElement).value = '';  
+    } else {
+    }  
+  }
+    
+  validarYAgregarProducto(producto: any) {
+    this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
+      (data) => {
+        const productoObtenido = data[0];
+        if (!productoObtenido) {
+          this.toastr.error("Producto no encontrado");
+          return;
+        }
+        const cantidadDisponible = productoObtenido.existencia;
+        const cantidadSolicitada = producto.cantidad;
+       
+        const productoExistente = this.selectedProducts.find(p => p.codigoBarras === producto.codigoBarras);
+
+        if (productoExistente ) {
+          productoExistente.cantidad += cantidadSolicitada;
+          } else {
+            this.selectedProducts.push({ ...producto });
+          }
+          this.totalAPagar = this.selectedProducts.reduce((total, p) => total + (p.precioSucursal * p.cantidad),0);  
+          //  producto.cantidad = 0;
+          // this.obtenerProducto(producto.idProbob,this.auth.idGym.getValue(),cantidadSolicitada);
+         },
+         (error) => {
+           this.toastr.error("Error al obtener el producto");
+        }
+    );
   }
 
   resetearValores() {
     this.selectedProducts = [];
     this.totalAPagar = 0;
     this.dineroRecibido = 0;
-  }
-
-  obtenerFoto() {
-    this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
-      respuesta => {
-        if (respuesta && respuesta[0] && respuesta[0].foto) {
-          let fotoUrl = respuesta[0].foto;
-          // Añadir el esquema si no está presente
-          if (!/^https?:\/\//i.test(fotoUrl)) {
-            fotoUrl = 'https://' + fotoUrl;
-          }
-          this.fotoUrl = fotoUrl;
-        }
-      },
-      error => {
-        console.error('Error al obtener la foto:', error);
-        this.fotoUrl = null;
-      }
-    );
   }
   
   convertirNumeroAPalabrasPesos(numero: number): string {
@@ -301,34 +261,13 @@ export class VentasComponent implements OnInit {
     return palabras;
   }
 
-  obtenerProducto(id: any, idGimnasio: any, cantidadSolicitada: number): void {
-    this.InventarioService.obtenerProductoPorId(id, idGimnasio).subscribe({
-      next: (data) => {
-        this.producto = data; 
-        if (data[0].existencia < cantidadSolicitada) {     
-          this.toastr.error("No hay suficiente stock disponible para esta cantidad");
-        } else {
-        }
-        if (data[0].existencia < 5) {
-          this.toastr.warning(`Quedan solo ${data[0].existencia} productos disponibles`);
-        }
-      },
-      error: (error) => {
-        console.error("Error al obtener el producto:", error);
-      },
-    });
-  }
-
   imprimirResumen() {
     let allProductsValid = true;
-
     for (let i = 0; i < this.selectedProducts.length; i++) {
       if (this.selectedProducts[i].cantidad > this.selectedProducts[i].existencia) {
-      
         this.toastr.error(`La cantidad es mayor que la existencia para el producto: ${this.selectedProducts[i].nombreProducto}`, 'Error', {
           positionClass: 'toast-bottom-left',
         });
-        
         allProductsValid = false;
       }
     }
@@ -560,44 +499,6 @@ export class VentasComponent implements OnInit {
       ///////////////////////
      
     }
-  }
-
-  validarYAgregarProducto(producto: any) {
-   this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
-      (data) => {
-        const productoObtenido = data[0];
-        if (!productoObtenido) {
-          this.toastr.error("Producto no encontrado");
-          return;
-        }
-        const cantidadDisponible = productoObtenido.existencia;
-        const cantidadSolicitada = producto.cantidad;
-        if (cantidadDisponible < cantidadSolicitada) {
-          this.toastr.error("No hay suficiente stock disponible para esta cantidad");
-          return;
-        }
-        if (cantidadDisponible < 5) {
-          this.toastr.warning(`Quedan solo ${cantidadDisponible} productos disponibles`);
-        }
-        const productoExistente = this.selectedProducts.find(p => p.codigoBarras === producto.codigoBarras);
-        if (productoExistente) {
-          productoExistente.cantidad += cantidadSolicitada;
-        } else {
-          this.selectedProducts.push({ ...producto });
-        }
-        this.totalAPagar = this.selectedProducts.reduce(
-          (total, p) => total + (p.precioSucursal * p.cantidad),
-          0
-        );
-        
-        
-        producto.cantidad = 0;
-        this.obtenerProducto(producto.idProbob,this.auth.idGym.getValue(),cantidadSolicitada);
-      },
-      (error) => {
-        this.toastr.error("Error al obtener el producto");
-      }
-    );
   }
 
   cerrarDialogo(): void {
