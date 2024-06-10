@@ -5,6 +5,7 @@ import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergent
 import { ToastrService } from 'ngx-toastr';
 import { GimnasioService } from '../../service/gimnasio.service'; 
 import { AuthService } from '../../service/auth.service';
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: 'app-form-pago-emergente',
   templateUrl: './form-pago-emergente.component.html',
@@ -30,6 +31,7 @@ export class FormPagoEmergenteComponent implements OnInit{
     private toastr: ToastrService, 
     private auth: AuthService,
     public dialog: MatDialog, 
+    private spinner: NgxSpinnerService,
     private GimnasioService:GimnasioService,
     @Inject(MAT_DIALOG_DATA)
     public data: any,
@@ -44,13 +46,9 @@ export class FormPagoEmergenteComponent implements OnInit{
   ngOnInit(): void {
     this.precio = 0;
     this.getMembresiasLista(this.data.idSucursal);
-     // Verificar si hay datos proporcionados
      if (this.data ) {
-      // Establecer la membresía seleccionada con el valor proporcionado en this.data
       this.membresiaSeleccionada = this.data.idMem;
-      //this.precio = this.data.precio
       this.precio = this.data.precio !== 'null' ? this.data.precio : 'N/A';
-      //this.duracion = this.data.duracion;
       this.duracion = this.data.duracion !== 'null' ? this.data.duracion : 'N/A';
     }
   }
@@ -361,7 +359,9 @@ export class FormPagoEmergenteComponent implements OnInit{
       }
     }
   
-    successDialog() {    
+    successDialog() {  
+      this.spinner.show();
+       
       if (this.membresiaSeleccionada != undefined){
         if(this.moneyRecibido >= this.precio){
           const PrecioCalcular = this.moneyRecibido - this.precio;
@@ -372,12 +372,12 @@ export class FormPagoEmergenteComponent implements OnInit{
             const díaInicio = String(this.fechaDeInicio.getDate()).padStart(2, '0');
             const fechaFormateada1 = `${añoInicio}-${mesInicio}-${díaInicio}`;
 
-// Formatear fechaDeFin
             const añoFin = this.fechaDeInicio.getFullYear();
             const mesFin = String(this.fechaDeInicio.getMonth() + 1).padStart(2, '0');
             const díaFin = String(this.fechaDeInicio.getDate()).padStart(2, '0');
             const fechaFormateada2 = `${añoFin}-${mesFin}-${díaFin}`;
             this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada1, this.data.detMemID, this.precio, fechaFormateada2,this.auth.idUser.getValue()).subscribe((dataResponse: any)=> {
+              this.spinner.hide(); 
               this.actualizarTablas.emit(true);
               this.dialogo.close(true);
               this.dialog.open(MensajeEmergenteComponent, {
@@ -394,20 +394,13 @@ export class FormPagoEmergenteComponent implements OnInit{
               });
             });
           }else {
-          // Obtener la fecha actual
           const fechaActual: Date = new Date();
-          // Formatear la fecha en el formato deseado (yyyy-mm-dd)
-          //const fechaFormateada = fechaActual.toISOString().split('T')[0];
           const year = fechaActual.getFullYear();
-          const month = String(fechaActual.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
+          const month = String(fechaActual.getMonth() + 1).padStart(2, '0'); 
           const day = String(fechaActual.getDate()).padStart(2, '0');
-
-// Formatear la fecha en el formato deseado (yyyy-mm-dd)
           const fechaFormateada = `${year}-${month}-${day}`;
-
-
-          let fechaFin: Date = new Date(fechaActual); // Crear una copia de la fecha actual
-         if (this.duracion == 1) {
+          let fechaFin: Date = new Date(fechaActual); 
+          if (this.duracion == 1) {
           } else if (this.duracion == 30) {
               fechaFin.setMonth(fechaFin.getMonth() + 1);
               if (fechaFin.getMonth() == 0) {
@@ -422,6 +415,7 @@ export class FormPagoEmergenteComponent implements OnInit{
           const fechaFormateadaFin: string = fechaFin.toISOString().split('T')[0];                    
 
           this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada, this.data.detMemID, this.precio, fechaFormateadaFin,this.auth.idUser.getValue()).subscribe((dataResponse: any)=> {
+          this.spinner.hide(); 
           this.actualizarTablas.emit(true);
           
           this.dialogo.close(true);
@@ -440,10 +434,12 @@ export class FormPagoEmergenteComponent implements OnInit{
           });
         });}
         }else{
+          this.spinner.hide(); 
           this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
         }
       }
       else {
+        this.spinner.hide(); 
         this.toastr.warning('Selecciona una membresía', 'Alerta!!!');
       }
     }
