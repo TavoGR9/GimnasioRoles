@@ -192,7 +192,6 @@ export class EntradasComponent implements OnInit {
 
 
   displayFn(product: any): string {
-   
     return product && product.nombre ? product.nombre : '';
   }
 
