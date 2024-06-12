@@ -1,87 +1,66 @@
-<div >
-   <div >
-      <div class="title"  mat-dialog-title>
-         <label>PRODUCTOS</label>
-      </div>
+<div>
+   <div>
+       <div class="title" mat-dialog-title>
+           <label>PRODUCTOS</label>
+       </div>
 
-      <table class="table-container">
-         <thead>
-             <tr>
-                 <th>Nombre del producto</th>
-                 <th>Codigo de barras</th>
-             </tr>
-         </thead>
-         <tbody>
-             <tr *ngFor="let archivo of editarProd; let i = index">
-                 <td>{{ archivo.nombreProducto }}-{{ archivo.detalleCompra }}-{{ archivo.marca }}</td>
-                 <td>{{ archivo.codigoBarras }}</td>
-         </tbody>
-     </table>
-
-      <div mat-dialog-content>
-         <br>
-         <div >
-            <form [formGroup]="form"  enctype="multipart/form-data">
-               <div >
-                  <div style="color:red">{{message}}</div>
-                  <fieldset>
-                     <div class="row">
-                        <div class="col-sm-6">
-                        <p>
-                           <mat-form-field appearance="outline"  style="width: 100%;" required>
-                              <mat-label>Precio compra</mat-label>
-                              <input
-                                 matInput
-                                 type="text"
-                                 placeholder="Precio compra"
-                                 id="precioC"
-                                 formControlName="precioCaja"
-                                 autocomplete="off"
-                                 />
+       <div mat-dialog-content>
+           <br>
+           <div>
+               <form [formGroup]="form" enctype="multipart/form-data">
+                   <div class="row">
+                       <div class="col-sm-6">
+                           <label><strong>Nombre del producto:</strong></label>
+                           <br>
+                           <br>
+                           <label *ngFor="let archivo of editarProd">
+                               {{ archivo.nombreProducto }}-{{ archivo.detalleCompra }}-{{ archivo.marca }}
+                           </label>
+                       </div>
+                       <div class="col-sm-6">
+                           <label><strong>Codigo de barras:</strong></label>
+                           <mat-form-field appearance="outline" style="width: 100%;" required>
+                               <mat-label>Codigo de barras</mat-label>
+                               <input matInput type="text" placeholder="codigoBarra" id="codigoBarra" formControlName="codigoBarra" autocomplete="off" />
                            </mat-form-field>
-                        </p>
-                     </div>
-                        <div class="col-sm-6">
+
+                       </div>
+                   </div>
+                   <br>
+                   <div class="row">
+                       <div class="col-sm-6">
                            <p>
-                              <mat-form-field style="width: 100%;" required appearance="outline">
-                                 <mat-label>Precio venta</mat-label>
-                                 <input 
-                                    matInput
-                                    placeholder="Precio venta"
-                                    type="text"
-                                    id="precioV"
-                                    autocomplete="off"
-                                    formControlName="precioSucursal"
-                                    />
-                              </mat-form-field>
+                               <mat-form-field appearance="outline" style="width: 100%;" required>
+                                   <mat-label>Precio compra</mat-label>
+                                   <input matInput type="text" placeholder="Precio compra" id="precioC" formControlName="precioCaja" autocomplete="off" />
+                               </mat-form-field>
                            </p>
-                        </div>
-                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
+                       </div>
+                       <div class="col-sm-6">
                            <p>
-                              <mat-form-field style="width: 100%;" required appearance="outline">
-                                 <mat-label>Existencia</mat-label>
-                                 <input 
-                                    matInput
-                                    placeholder="Existencia del producto"
-                                    type="text"
-                                    id="descripcion"
-                                    autocomplete="off"
-                                    formControlName="existencia"
-                                    />
-                              </mat-form-field>
+                               <mat-form-field style="width: 100%;" required appearance="outline">
+                                   <mat-label>Precio venta</mat-label>
+                                   <input matInput placeholder="Precio venta" type="text" id="precioV" autocomplete="off" formControlName="precioSucursal" />
+                               </mat-form-field>
                            </p>
-                        </div>
-                     </div>
-                  </fieldset>
-               </div>
-            </form>
-         </div>
-      </div>
-      <div style="display: flex; justify-content: center;" mat-dialog-actions>
-         <button mat-raised-button (click)="actualizar()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;">Aceptar</button>
-         <button mat-raised-button  (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white;">Cancelar</button>
-      </div>
+                       </div>
+                   </div>
+                   <div class="row">
+                       <div class="col-sm-12">
+                           <p>
+                               <mat-form-field style="width: 100%;" required appearance="outline">
+                                   <mat-label>Existencia</mat-label>
+                                   <input matInput placeholder="Existencia del producto" type="text" id="descripcion" autocomplete="off" formControlName="existencia" />
+                               </mat-form-field>
+                           </p>
+                       </div>
+                   </div>
+               </form>
+           </div>
+       </div>
+       <div style="display: flex; justify-content: center;" mat-dialog-actions>
+           <button mat-raised-button (click)="actualizar()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px; margin-right: 90px;">Aceptar</button>
+           <button mat-raised-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; margin-top: 17px; height: 40px;color: white;">Cancelar</button>
+       </div>
    </div>
 </div>

@@ -12,12 +12,6 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { Subject } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 import { EntradasService } from '../../service/entradas.service';
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = formulario && formulario.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
 @Component({
   selector: 'app-editar-producto',
   templateUrl: './editar-producto.component.html',
@@ -44,8 +38,6 @@ export class EditarProductoComponent implements OnInit{
   filteredCategorias: string[] = [];
   filteredSubCategorias: string[] = [];
   filteredMarcas: string[] = [];
-  private productoSubject = new Subject<void>();
-  matcher = new MyErrorStateMatcher();
   editarProd: any;
 
   constructor( public dialogo: MatDialogRef<EditarProductoComponent>,
@@ -79,7 +71,6 @@ export class EditarProductoComponent implements OnInit{
           id_bodega:respuesta [0]['id_bodega']
         });
       }
-      
     );
 
     this.fechaCreacion = this.obtenerFechaActual();
@@ -123,6 +114,7 @@ export class EditarProductoComponent implements OnInit{
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
+        
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.id);
@@ -166,6 +158,7 @@ export class EditarProductoComponent implements OnInit{
       accion: "Edición de nuevo producto",
       fecha_actu: fechaFormateada,
       p_id_producto: this.form.value.idProbob,
+      codigoB: this.form.value.codigoBarra,
       p_id_bodega: this.form.value.id_bodega
     }
 
@@ -173,7 +166,7 @@ export class EditarProductoComponent implements OnInit{
     this.entrada.actualizarProductoVDos(dataArray).subscribe({next: (update) =>{
       if (update.success == 1) {
         this.spinner.hide();
-        this.dialog.open(MensajeEmergentesComponent, {data: `Entrada agregada exitosamente`})
+        this.dialog.open(MensajeEmergentesComponent, {data: `Entradaaaaa agregada exitosamente`})
           .afterClosed()
           .subscribe((cerrarDialogo: Boolean) => {
           if (cerrarDialogo) {

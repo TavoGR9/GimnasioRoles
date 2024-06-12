@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { SidebarService } from '../../service/sidebar.service';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { MatDrawerMode } from '@angular/material/sidenav';
@@ -19,9 +19,9 @@ export class SidebarComponent {
   currentUser: string = '';
   idGym: number = 0;
   idUser: number = 0;
+  nombreGym: string = '';
 
   private _mobileQueryListener: () => void;
-
 
   constructor(private auth: AuthService, public dialog: MatDialog, private router: Router, private sidebarService: SidebarService,private mediaMatcher: MediaMatcher) {
 
@@ -32,7 +32,6 @@ export class SidebarComponent {
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
 
-  
   isRouteActive(route: string): boolean {
     return this.router.isActive(route, true);
   }
@@ -55,18 +54,14 @@ export class SidebarComponent {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
 
-
-    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(([idGym, idUser]) => {
+    combineLatest([this.auth.idGym, this.auth.idUser, this.auth.nombreGym]).subscribe(([idGym, idUser, nombreGym]) => {
       if (idGym && idUser) {
         this.idGym = idGym;
-        this.idUser = idUser;
+        this.idUser = idUser; 
+        this.nombreGym = nombreGym;
         this.url = `HuellaTorniquete://?id=${this.idGym}`;
       }
     });
-
-   /* this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-    }); */
   }
 
   getSSdata(data: any){
@@ -76,7 +71,7 @@ export class SidebarComponent {
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
-          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
       }, error: (error) => { console.log(error); }
@@ -99,28 +94,17 @@ export class SidebarComponent {
     this.auth.logoutBS();
   }
 
-  navigateToServicios() {
-    this.router.navigate(['/misServicios']);
-  }
-  navigateToMembresias(){
-    this.router.navigate(['/misMembresias']);
-
-  }
-
   AbrirRegistro() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = `Empleado agregado correctamente.`;
     dialogConfig.disableClose = true; // Bloquea el cierre del diálogo haciendo clic fuera de él
     dialogConfig.width = '75%';
     dialogConfig.height = '95%';
-   
     this.dialog.open(RegistroComponent, dialogConfig)
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          // Aquí puedes realizar acciones si se desea cerrar el diálogo
         } else {
-          // Aquí puedes realizar acciones si se cancela el cierre del diálogo
         }
       });
   }
