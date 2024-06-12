@@ -2,13 +2,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 import { tap,map } from 'rxjs/operators';
-import { of, from  } from 'rxjs'; 
+import { of  } from 'rxjs'; 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
-import { msgResult } from '../models/empleado';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -28,7 +26,6 @@ export class AuthService {
   userRole: string = '';
 
   isConnected: boolean = true;
-
 
   //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
   //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';

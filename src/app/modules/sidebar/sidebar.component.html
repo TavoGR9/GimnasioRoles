@@ -6,6 +6,12 @@
               <img src="../../../../../assets/img/logo3.png" alt="Logo de la aplicación" width="100%">
             </div>
         <mat-nav-list >
+            <p *ngIf="isAdmin() || isRecep()" style="margin-top: 4%;text-align: left;padding-left: 30px;color: #CCCCCC; font-size: 12px; display: flex; align-items: center;">
+                <mat-icon style="margin-top: 4%;color: #CCCCCC; margin-right: 25px; font-size: 16px;">place</mat-icon>
+                {{ nombreGym }} 
+            </p> 
+        <hr>
+
         <button *ngIf="isAdmin() || isRecep()" routerLink="./home" class="hover-orange transparent-button" [class.active]="isRouteActive('/home')">
             <mat-icon>home</mat-icon> 
             Inicio 
@@ -82,7 +88,6 @@
         </button>
 
         <a href="{{url}}">
-
         <button *ngIf="isAdmin() || isRecep()"  class="hover-orange transparent-button"> 
 
             <mat-icon>person</mat-icon> 
@@ -95,6 +100,8 @@
             <mat-icon>power_settings_new</mat-icon> 
             Cerrar sesión 
         </button>
+
+       
 
         <!--<button (click)="openSerialPage()">
             PruebaSerial

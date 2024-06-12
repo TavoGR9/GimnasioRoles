@@ -277,11 +277,16 @@ export class FormPagoEmergenteComponent implements OnInit{
                       width: 100%;
                       height: auto;
                     }
+                    .direccion{
+                     font-size: 0.8em;
+                    text-align: center;
+                    }
                   </style>
                 </head>
                 <body> 
                 <div class="ticket">
                 ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
+                <p class="direccion">${this.auth.nombreGym.getValue()}</p>
                     <table>
                       <thead>
                         <tr>
