@@ -12,8 +12,8 @@
       <div class="grid-input-date" >
         <div style="display: flex; justify-content: flex-end;">
             <mat-form-field appearance="outline">
-              <mat-label>Fecha Inicio</mat-label>
-              <input matInput [matDatepicker]="pickerInicio" (ngModelChange)="onFechaInicioChange($event)" [(ngModel)]="fechaInicio" readonly>  
+              <mat-label>Fecha Registro</mat-label>
+              <input matInput [matDatepicker]="pickerInicio"  [(ngModel)]="fechaInicio" readonly>  
               <mat-hint>MM/DD/YYYY</mat-hint>
               <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
               <mat-datepicker #pickerInicio></mat-datepicker>
@@ -22,8 +22,8 @@
         <div></div>
         <div style="display: flex; justify-content: flex-start;">
           <mat-form-field appearance="outline">
-            <mat-label>Fecha Fin</mat-label>
-            <input matInput [matDatepicker]="pickerFin" (ngModelChange)="onFechaFinChange($event)" [(ngModel)]="fechaFin" readonly>
+            <mat-label>Fecha Registro</mat-label>
+            <input matInput [matDatepicker]="pickerFin" [(ngModel)]="fechaFin" readonly>
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle matIconSuffix [for]="pickerFin"></mat-datepicker-toggle>
             <mat-datepicker #pickerFin></mat-datepicker>
@@ -47,6 +47,12 @@
         <input matInput (keyup)="applyFilterActivos($event)"placeholder="Buscar" #input/>
       </mat-form-field>
       <br>
+
+      <div class="total-ventas">
+        <p class="total-label">Total: <strong style="margin-left: 20px;">{{ totalVentas | currency:'USD':'symbol':'1.2-2' }}</strong></p>
+     </div>
+     <br>
+
       <div  class="table-container">
         <table mat-table [dataSource]="dataSourceActivos" class="mat-elevation-z8">
           <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsActivos; let i = index">
@@ -77,6 +83,9 @@
               </ng-container>
               <ng-container *ngIf="column === 'Fecha Fin'">
                 {{ prod.Fecha_Fin }}
+              </ng-container>
+              <ng-container *ngIf="column === 'Fecha Registro'">
+                {{ prod.fechaRegistro }}
               </ng-container>
               <ng-container *ngIf="column === 'Estatus'">
                 <div [ngClass]="{'estatus-activo': prod.Status_Num === '1', 'estatus-inactivo': prod.Status_Num !== '1'}">
