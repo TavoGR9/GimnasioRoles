@@ -1,24 +1,23 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
-import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
-import { MatPaginator } from '@angular/material/paginator'; 
-import { MatTableDataSource } from '@angular/material/table'; 
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
-import { FormPagoEmergenteComponent } from '../form-pago-emergente/form-pago-emergente.component';
-import { MensajeListaComponent } from '../ListaClientes/mensaje-cargando.component';
-import { listarClientesService } from '../../service/listarClientes.service';
-import { ClienteService } from '../../service/cliente.service';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
-import { DatePipe } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm} from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { EmergenteInfoClienteComponent } from '../emergente-info-cliente/emergente-info-cliente.component';
-import { AuthService } from '../../service/auth.service';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatDialog } from "@angular/material/dialog";
+import { Router } from "@angular/router";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import { DatePipe } from "@angular/common";
+import { FormBuilder, FormGroup} from "@angular/forms";
+import { ToastrService } from "ngx-toastr";
+import { AuthService } from "../../service/auth.service";
+import { ClienteService } from "../../service/cliente.service";
+import { listarClientesService } from "../../service/listarClientes.service";
+import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
+import { FormPagoEmergenteComponent } from "../form-pago-emergente/form-pago-emergente.component";
+import { MensajeListaComponent } from "../ListaClientes/mensaje-cargando.component";
+import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergente-info-cliente.component";
 
 interface ClientesActivos {
   ID: number;
@@ -30,71 +29,52 @@ interface ClientesActivos {
   Fecha_Fin: string;
   Status: string;
 }
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    formulario: FormGroupDirective | NgForm | null
-  ): boolean {
-    const isSubmitted = formulario && formulario.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
-  }
-}
 @Component({
-  selector: 'app-lista-membresias-pago-efec',
-  templateUrl: './lista-membresias-pago-efec.component.html',
-  styleUrls: ['./lista-membresias-pago-efec.component.css'],
+  selector: "app-lista-membresias-pago-efec",
+  templateUrl: "./lista-membresias-pago-efec.component.html",
+  styleUrls: ["./lista-membresias-pago-efec.component.css"],
   providers: [DatePipe],
 })
-
 export class ListaMembresiasPagoEfecComponent implements OnInit {
   form: FormGroup;
-  matcher = new MyErrorStateMatcher();
-  clientePago: any;
-  clienteReenovacion: any;
   cliente: any;
-  clienteActivo: ClientesActivos[] = [];  
-  dataSource: any; 
- // dataSourceActivos: any;
- dataSourceActivos: MatTableDataSource<any>;
+  clienteActivo: ClientesActivos[] = [];
+  dataSourceActivos: MatTableDataSource<any>;
   dataSourceReenovacion: any;
-  fechaInicio: Date = new Date('0000-00-00'); 
-  fechaFin: Date = new Date('0000-00-00');    
+  fechaInicio: Date = new Date("0000-00-00");
+  fechaFin: Date = new Date("0000-00-00");
   id: any;
-  displayedColumnsActivos: string[] = [
-    'Clave',
-    'Nombre',
-    'Membresia',
-    'Precio',
-    'Fecha Inicio',
-    'Fecha Fin',
-    'Estatus',
-    //'Dinero Recibido',
-    //'Pagar',
-    'Pago',
-    'Info Cliente',
-    'Huella',
-    'Rol'
-  ];
-  dineroRecibido: number = 0; 
-  moneyRecibido: number = 0; 
-  cash: number = 0; 
-  IDvalid: number = 0;
-  currentUser: string = '';
+  dineroRecibido: number = 0;
+  moneyRecibido: number = 0;
+  cash: number = 0;
+  currentUser: string = "";
   idGym: number = 0;
+  totalVentas: number = 0;
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   habilitarBoton: boolean = false;
   todosClientes: any;
-
-  //paginator es una variable de la clase MatPaginator
-  @ViewChild('paginatorPagoOnline', { static: true }) paginator!: MatPaginator;
-  @ViewChild('paginatorActivos') paginatorActivos!: MatPaginator;
-  @ViewChild('paginatorReenovacionMem', { static: true }) paginatorReenovacion!: MatPaginator;
+  sortField: string = "";
+  sortDirection: string = "asc";
+  @ViewChild("paginatorPagoOnline", { static: true }) paginator!: MatPaginator;
+  @ViewChild("paginatorActivos") paginatorActivos!: MatPaginator;
+  @ViewChild("paginatorReenovacionMem", { static: true })
+  paginatorReenovacion!: MatPaginator;
+  displayedColumnsActivos: string[] = [
+    "Clave",
+    "Nombre",
+    "Membresia",
+    "Precio",
+    "Fecha Inicio",
+    "Fecha Fin",
+    "Fecha Registro",
+    "Estatus",
+    "Pago",
+    "Info Cliente",
+    "Huella",
+    "Rol",
+  ];
 
   constructor(
     private pagoService: PagoMembresiaEfectivoService,
@@ -105,275 +85,292 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private ListarClientesService: listarClientesService,
     private clienteService: ClienteService,
     private datePipe: DatePipe,
-    private auth: AuthService,
+    private auth: AuthService
   ) {
+
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
 
     this.form = this.fb.group({
-      idUsuario: [''],
-      action: ['add'],
-    });
-
-    this.clienteService.data$.subscribe((data: any) => {
-      if (data && data.idCliente) {
-        this.obtenerCliente(data.idCliente);
-        this.id = data.idCliente;
-        this.form.get('idUsuario')?.setValue(this.id);
-      }
+      idUsuario: [""],
+      action: ["add"],
     });
   }
 
   ngOnInit(): void {
     // this.pagoService.comprobar();
     // this.auth.comprobar();
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.listaClientesData();
+    });
 
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta) => {
       this.habilitarBoton = respuesta.status;
     });
 
     this.currentUser = this.auth.getCurrentUser();
-    if(this.currentUser){
+    if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaClientesData();   
-    }); 
+  }
+
+  getSSdata(data: any) {
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
+        this.auth.loggedIn.next(true);
+        this.auth.role.next(resultData.rolUser);
+        this.auth.idUser.next(resultData.clave);
+        this.auth.idGym.next(resultData.idGym);
+        this.auth.nombreGym.next(resultData.direccion);
+        this.auth.email.next(resultData.email);
+        this.auth.encryptedMail.next(resultData.encryptedMail);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+
+  listaClientesData(): void {
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+      (response: any) => {
+        this.clienteActivo = response.data;
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        //this.actualizarTotalVentas();
+        this.loadData();
+      },
+      (error: any) => {
+        console.error("Error al obtener activos:", error);
+      }
+    );
   }
 
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSourceActivos.paginator = this.paginatorActivos;
-    }, 1000); 
+    }, 1000);
   }
 
-  getSSdata(data: any){
-    this.auth.dataUser(data).subscribe({
-      next: (resultData) => {
-        this.auth.loggedIn.next(true);
-          this.auth.role.next(resultData.rolUser);
-          this.auth.idUser.next(resultData.clave);
-          this.auth.idGym.next(resultData.idGym);
-          this.auth.nombreGym.next(resultData.direccion);
-          this.auth.email.next(resultData.email);
-          this.auth.encryptedMail.next(resultData.encryptedMail);
-      }, error: (error) => { console.log(error); }
-    });
+  actualizarTotalVentas(): void {
+    this.totalVentas = this.calcularTotalVentas();
+  }
+
+  calcularTotalVentas(): number {
+    // Obtén los datos visibles después de aplicar filtros
+    const datosVisibles =
+      this.dataSourceActivos.filteredData || this.dataSourceActivos.data;
+    // Realiza el cálculo del total
+    return datosVisibles.reduce((total: any, detalle: any) => {
+      const precioUnitario = parseFloat(detalle.Precio);
+      if (!isNaN(precioUnitario)) {
+        return total + precioUnitario;
+      } else {
+        return total;
+      }
+    }, 0);
   }
 
   ngDoCheck(): void {
-    if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
+    if (
+      this.fechaInicio !== this.fechaInicioAnterior ||
+      this.fechaFin !== this.fechaFinAnterior
+    ) {
       this.updateDateLogs();
-     // this.listaClientesData();
     }
   }
 
-  onFechaInicioChange(event: any): void {
-  }
-
-  onFechaFinChange(event: any): void {
-  }
-
   formatDate(date: Date): string {
-    return this.datePipe.transform(date, 'yyyy-MM-dd') || '';
+    return this.datePipe.transform(date, "yyyy-MM-dd") || "";
   }
 
   updateDateLogs(): void {
     this.fechaInicioAnterior = this.fechaInicio;
-    this.fechaFinAnterior = this.fechaFin; 
-    this.pagoService.obtenerClientes(this.formatDate(this.fechaInicio),
-                                    this.formatDate(this.fechaFin),
-                                    this.auth.idGym.getValue()).subscribe(
-      response => {
-          if (response.msg == 'No hay resultados') {
+    this.fechaFinAnterior = this.fechaFin;
+    this.pagoService
+      .obtenerClientes(
+        this.formatDate(this.fechaInicio),
+        this.formatDate(this.fechaFin),
+        this.auth.idGym.getValue()
+      )
+      .subscribe(
+        (response) => {
+          if (response.msg == "No hay resultados") {
+            this.clienteActivo = [];
+            this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+            this.dataSourceActivos.paginator = this.paginatorActivos;
+          } else if (response.data) {
+            this.clienteActivo = response.data;
+            this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+            this.actualizarTotalVentas();
+            this.loadData();
+            // this.dataSourceActivos.paginator = this.paginatorActivos;
+          }
+        },
+        (error) => {
+          console.error("Error en la solicitud:", error);
           this.clienteActivo = [];
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
           this.dataSourceActivos.paginator = this.paginatorActivos;
-        } else if(response.data){
-          this.clienteActivo = response.data;
-          this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-          this.loadData();  
-         // this.dataSourceActivos.paginator = this.paginatorActivos;
+          this.toastr.error("Ocurrió un error.", "¡Error!");
         }
-      },
-      error => {
-        console.error('Error en la solicitud:', error);
-        // Manejo de errores adicional si es necesario
-        this.clienteActivo = [];
-        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        this.dataSourceActivos.paginator = this.paginatorActivos;
-        this.toastr.error('Ocurrió un error.', '¡Error!');
-      }
-    );
+      );
   }
-
-  listaClientesData(): void {
-    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
-      /*if (response[2] && response[2].success === '2') {
-        //const combinedArray = response[0].data.concat(response[1]);
-        const combinedArray = response[0].data;
-        this.dataSourceActivos = new MatTableDataSource(combinedArray);
-        this.loadData(); 
-      } else {*/
-        this.clienteActivo = response.data;
-        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        this.loadData();     
-      },
-      (error: any) => {
-        console.error('Error al obtener activos:', error);
-      }
-    );
-  }
-
-  sortField: string = '';
-  sortDirection: string = 'asc';
 
   sortData(column: string): void {
     const data = this.dataSourceActivos.data;
     if (this.sortField === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
     } else {
       this.sortField = column;
-      this.sortDirection = 'asc';
+      this.sortDirection = "asc";
     }
     data.sort((a, b) => {
-      const isAsc = this.sortDirection === 'asc';
+      const isAsc = this.sortDirection === "asc";
       switch (column) {
-        case 'Clave': return this.compare(a.estafeta, b.estafeta, isAsc);
-        case 'Nombre': return this.compare(a.Nombre ? a.Nombre : a.nombre, b.Nombre ? b.Nombre : b.nombre, isAsc);
-        case 'Precio': return this.compare(a.Precio, b.Precio, isAsc);
-        case 'Membresia': return this.compare(a.Membresia, b.Membresia, isAsc);
-        case 'Fecha Inicio': return this.compare(new Date(a.Fecha_Inicio), new Date(b.Fecha_Inicio), isAsc);
-        case 'Fecha Fin': return this.compare(new Date(a.Fecha_Fin), new Date(b.Fecha_Fin), isAsc);
-        case 'Estatus': return this.compare(a.STATUS, b.STATUS, isAsc);
-        // Añade más casos según las columnas que tengas
-        default: return 0;
+        case "Clave":
+          return this.compare(a.estafeta, b.estafeta, isAsc);
+        case "Nombre":
+          return this.compare(
+            a.Nombre ? a.Nombre : a.nombre,
+            b.Nombre ? b.Nombre : b.nombre,
+            isAsc
+          );
+        case "Precio":
+          return this.compare(a.Precio, b.Precio, isAsc);
+        case "Membresia":
+          return this.compare(a.Membresia, b.Membresia, isAsc);
+        case "Fecha Inicio":
+          return this.compare(
+            new Date(a.Fecha_Inicio),
+            new Date(b.Fecha_Inicio),
+            isAsc
+          );
+        case "Fecha Fin":
+          return this.compare(
+            new Date(a.Fecha_Fin),
+            new Date(b.Fecha_Fin),
+            isAsc
+          );
+        case "Estatus":
+          return this.compare(a.STATUS, b.STATUS, isAsc);
+        default:
+          return 0;
       }
     });
-
     this.dataSourceActivos.data = data;
   }
 
-  compare(a: string | number | Date, b: string | number | Date, isAsc: boolean): number {
-    if (typeof a === 'string' && typeof b === 'string') {
+  compare(
+    a: string | number | Date,
+    b: string | number | Date,
+    isAsc: boolean
+  ): number {
+    if (typeof a === "string" && typeof b === "string") {
       // Utiliza localeCompare para comparar cadenas de texto
-      return a.localeCompare(b, undefined, { sensitivity: 'base' }) * (isAsc ? 1 : -1);
+      return (
+        a.localeCompare(b, undefined, { sensitivity: "base" }) *
+        (isAsc ? 1 : -1)
+      );
     }
     // Para otros tipos, utiliza comparación estándar
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
-  
-
 
   applyFilterActivos(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceActivos.filter = filterValue.trim().toLowerCase();
   }
 
-  abrirInfoCliente(prod: any): void{ 
+  abrirInfoCliente(prod: any): void {
     this.dialog
-            .open(EmergenteInfoClienteComponent, {
-              data: {
-                idCliente: `${prod.ID}`,
-                nombre: `${prod.Nombre}`,
-                telefono: `${prod.telefono}`,
-                email: `${prod.email}`,
-                peso: `${prod.peso}`,
-                estatura: `${prod.estatura}`,
-                estafeta:`${prod.estafeta}`,
-                //sucursal: `${prod.Sucursal}`,
-                membresia: `${prod.Membresia}`,
-                precio: `${prod.Precio}`,
-                huella: `${prod.huella}`,
-                duracion: `${prod.Duracion}`,
-                idSucursal: `${prod.Gimnasio_idGimnasio}`,
-                infoMembresia: `${prod.Info_Membresia}`,
-                foto: `${prod.foto}`,
-                action:`${prod.accion}`
-              },
-              width: '80%',
-              height: '90%',
-              disableClose: true,
-            })
-            .afterClosed()
-            .subscribe((cerrarDialogo: Boolean) => {
-              if (cerrarDialogo) {
-                this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((respuesta) => {
-                  this.clienteActivo = respuesta.data;
-                  // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
-                  this.dataSourceActivos.data = this.clienteActivo.slice();
-                  // Notificar a la tabla sobre el cambio
-                //  this.dataSourceActivos.data.paginator = this.paginator; // Actualizar el paginador si es necesario
-                  // Notificar a la tabla sobre el cambio
-                  this.dataSourceActivos._updateChangeSubscription();
-                });
-              } else {
-              }
+      .open(EmergenteInfoClienteComponent, {
+        data: {
+          idCliente: `${prod.ID}`,
+          nombre: `${prod.Nombre}`,
+          telefono: `${prod.telefono}`,
+          email: `${prod.email}`,
+          peso: `${prod.peso}`,
+          estatura: `${prod.estatura}`,
+          estafeta: `${prod.estafeta}`,
+          membresia: `${prod.Membresia}`,
+          precio: `${prod.Precio}`,
+          huella: `${prod.huella}`,
+          duracion: `${prod.Duracion}`,
+          idSucursal: `${prod.Gimnasio_idGimnasio}`,
+          infoMembresia: `${prod.Info_Membresia}`,
+          foto: `${prod.foto}`,
+          action: `${prod.accion}`,
+        },
+        width: "80%",
+        height: "90%",
+        disableClose: true,
+      })
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+          this.pagoService
+            .obtenerActivos(this.auth.idGym.getValue())
+            .subscribe((respuesta) => {
+              this.clienteActivo = respuesta.data;
+              this.dataSourceActivos.data = this.clienteActivo.slice();
+              this.dataSourceActivos._updateChangeSubscription();
             });
+        } else {
+        }
+      });
   }
 
   abrirEmergente(prod: any) {
-    // Abre el diálogo y almacena la referencia
     const dialogRef = this.dialog.open(FormPagoEmergenteComponent, {
       data: {
         idCliente: `${prod.ID}`,
         nombre: `${prod.Nombre ?? prod.nombre}`,
-        //sucursal: `${prod.Sucursal}`,
         membresia: `${prod.Membresia}`,
         dateStart: `${prod.Fecha_Inicio}`,
         dateEnd: `${prod.Fecha_Fin}`,
         precio: `${prod.Precio}`,
         duracion: `${prod.Duracion}`,
         idSucursal: `${prod.Gimnasio_idGimnasio}`,
-        //action: `${prod.accion}`,
         idMem: `${prod.Membresia_idMem}`,
-        detMemID: `${prod.idDetMem}`
+        detMemID: `${prod.idDetMem}`,
       },
-      width: '50%',
-      height: '80%',
+      width: "50%",
+      height: "80%",
       disableClose: true,
     });
-
-  // Suscríbete al evento actualizarTablas del diálogo
-  dialogRef.componentInstance.actualizarTablas.subscribe(
-    (actualizar: boolean) => {
-      if (actualizar) {
-        // Agregar y Actualizar la fila a la tabla dos (dataSourceActivos)
-        this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((respuesta) => {
-          this.clienteActivo = respuesta.data;
-          // Actualizar la fuente de datos de la segunda tabla (dataSourceActivos)
-          this.dataSourceActivos.data = this.clienteActivo.slice();
-          // Notificar a la tabla sobre el cambio
-        //  this.dataSourceActivos.data.paginator = this.paginator; // Actualizar el paginador si es necesario
-          // Notificar a la tabla sobre el cambio
-          this.dataSourceActivos._updateChangeSubscription();
-        });
+    dialogRef.componentInstance.actualizarTablas.subscribe(
+      (actualizar: boolean) => {
+        if (actualizar) {
+          this.pagoService
+            .obtenerActivos(this.auth.idGym.getValue())
+            .subscribe((respuesta) => {
+              this.clienteActivo = respuesta.data;
+              this.dataSourceActivos.data = this.clienteActivo.slice();
+              this.dataSourceActivos._updateChangeSubscription();
+            });
+        }
       }
-    }
-  );
+    );
 
-  // Suscríbete al evento afterClosed() para manejar el caso en que se cierra el diálogo
-  dialogRef.afterClosed().subscribe((cancelDialog: boolean) => {
-    if (cancelDialog) {
-      // Manejar el caso en que se cancela el diálogo
-    } else {
-      // Manejar el caso en que se cierra el diálogo sin cancelar
-    }
-  });
+    dialogRef.afterClosed().subscribe((cancelDialog: boolean) => {
+      if (cancelDialog) {
+      } else {
+      }
+    });
   }
 
   abrirDialogo() {
     this.dialog
       .open(MensajeListaComponent, {
         //data: `Membresía agregada exitosamente`,
-        width: '500px',
-        height: '500px',
+        width: "500px",
+        height: "500px",
       })
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          this.router.navigateByUrl('/admin/listaMembresias');
+          this.router.navigateByUrl("/admin/listaMembresias");
         } else {
         }
       });
@@ -382,7 +379,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
-  
+
   isSupadmin(): boolean {
     return this.auth.isSupadmin();
   }
@@ -391,113 +388,140 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     return this.auth.isRecepcion();
   }
 
-  obtenerCliente(idCliente: number) {
-    this.ListarClientesService.consultarCliente(idCliente).subscribe(
-      (data: any[]) => {
-        if (data && data.length > 0) {
-          this.cliente = data[0]; 
-        }
-      }
-    );
-  }
-
   //Descarga el archivo en excel
   descargarExcel(): void {
-
-    if (!this.fechaInicio || isNaN(this.fechaInicio.getTime()) || !this.fechaFin || isNaN(this.fechaFin.getTime())) {
-      this.toastr.error('Debe seleccionar las fechas de su reporte', 'Error!!!');
+    if (
+      !this.fechaInicio ||
+      isNaN(this.fechaInicio.getTime()) ||
+      !this.fechaFin ||
+      isNaN(this.fechaFin.getTime())
+    ) {
+      this.toastr.error(
+        "Debe seleccionar las fechas de su reporte",
+        "Error!!!"
+      );
       return;
     }
 
     this.fechaInicioAnterior = this.fechaInicio;
-    this.fechaFinAnterior = this.fechaFin; 
+    this.fechaFinAnterior = this.fechaFin;
 
-    this.pagoService.obtenerTodosLosClientes(
-      this.formatDate(this.fechaInicio),
-      this.formatDate(this.fechaFin),
-      this.auth.idGym.getValue()
-    ).subscribe(
-      response => {
-        this.todosClientes = response.data;
-  
-        // Verificar si this.todosClientes es un array y tiene datos
-        if (!Array.isArray(this.todosClientes) || this.todosClientes.length === 0) {
-          this.toastr.error('No hay datos para exportar.', 'Error!!!');
-          return;
+    this.pagoService
+      .obtenerTodosLosClientes(
+        this.formatDate(this.fechaInicio),
+        this.formatDate(this.fechaFin),
+        this.auth.idGym.getValue()
+      )
+      .subscribe(
+        (response) => {
+          this.todosClientes = response.data;
+
+          // Verificar si this.todosClientes es un array y tiene datos
+          if (
+            !Array.isArray(this.todosClientes) ||
+            this.todosClientes.length === 0
+          ) {
+            this.toastr.error("No hay datos para exportar.", "Error!!!");
+            return;
+          }
+
+          const fechaInicioFormateada = this.datePipe.transform(
+            this.fechaInicio,
+            "dd/MM/yyyy"
+          );
+          const fechaFinFormateada = this.datePipe.transform(
+            this.fechaFin,
+            "dd/MM/yyyy"
+          );
+
+          const datos = [
+            ["Reporte de socios"],
+            [`Con fechas: ${fechaInicioFormateada} - ${fechaFinFormateada}`], // Fechas
+            [], // Fila vacía para separar
+            [
+              "Clave",
+              "Nombre completo",
+              "Sucursal",
+              "Membresia",
+              "Precio",
+              "Fecha de inicio",
+              "Fecha fin",
+              "Fecha de registro",
+              "Estatus",
+              "Creado por",
+            ],
+            ...this.todosClientes.map((activos: any) => [
+              activos.clave,
+              activos.nombreCompleto,
+              activos.nombreBodega,
+              activos.titulo,
+              activos.total,
+              activos.fechaInicio,
+              activos.fechaFin,
+              activos.creation_date,
+              activos.estatus == 1 ? "Activo" : "Inactivo",
+              activos.creadoPor,
+            ]),
+          ];
+
+          // Crear un objeto de libro de Excel
+          const workbook = XLSX.utils.book_new();
+          const hojaDatos = XLSX.utils.aoa_to_sheet(datos);
+
+          // Establecer propiedades de formato para las columnas
+          hojaDatos["!cols"] = [
+            { wch: 5 },
+            { wch: 25 },
+            { wch: 20 },
+            { wch: 20 },
+            { wch: 10 },
+            { wch: 15 },
+            { wch: 15 },
+            { wch: 20 },
+            { wch: 10 },
+            { wch: 25 },
+          ];
+
+          // Añadir la hoja de datos al libro de Excel
+          XLSX.utils.book_append_sheet(workbook, hojaDatos, "Datos");
+
+          // Crear un Blob con el contenido del libro de Excel
+          const wbout = XLSX.write(workbook, {
+            bookType: "xlsx",
+            type: "array",
+          });
+          const newBlob = new Blob([wbout], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+
+          // Guardar el archivo
+          saveAs(newBlob, "Clientes.xlsx");
+        },
+        (error) => {
+          this.toastr.error("Error al obtener los datos.", "Error!!!");
+          console.error("Error al obtener los datos", error);
         }
-  
-        // Mapea la información de this.todosClientes a un arreglo bidimensional
-
-        const fechaInicioFormateada = this.datePipe.transform(this.fechaInicio, 'dd/MM/yyyy');
-        const fechaFinFormateada = this.datePipe.transform(this.fechaFin, 'dd/MM/yyyy');
-      
-        const datos = [
-          ['Reporte de socios'], 
-          [`Con fechas: ${fechaInicioFormateada} - ${fechaFinFormateada}`], // Fechas
-          [], // Fila vacía para separar
-          ['Clave', 'Nombre completo', 'Sucursal', 'Membresia', 'Precio', 'Fecha de inicio', 'Fecha fin', 'Estatus', 'Creado por'],
-          ...this.todosClientes.map((activos: any) => [
-            activos.clave,
-            activos.nombreCompleto,
-            activos.nombreBodega,
-            activos.titulo,
-            activos.total,
-            activos.fechaInicio,
-            activos.fechaFin,
-            activos.estatus == 1 ? 'Activo' : 'Inactivo',
-            activos.creadoPor
-          ])
-        ];
-  
-        // Crear un objeto de libro de Excel
-        const workbook = XLSX.utils.book_new();
-        const hojaDatos = XLSX.utils.aoa_to_sheet(datos);
-  
-        // Establecer propiedades de formato para las columnas
-        hojaDatos['!cols'] = [
-          { wch: 5 },
-          { wch: 25 },
-          { wch: 20 },
-          { wch: 20 },
-          { wch: 10 },
-          { wch: 15 },
-          { wch: 15 },
-          { wch: 10 },
-          { wch: 25 }
-        ];
-  
-        // Añadir la hoja de datos al libro de Excel
-        XLSX.utils.book_append_sheet(workbook, hojaDatos, 'Datos');
-  
-        // Crear un Blob con el contenido del libro de Excel
-        const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const newBlob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  
-        // Guardar el archivo
-        saveAs(newBlob, 'Clientes.xlsx');
-      },
-      error => {
-        this.toastr.error('Error al obtener los datos.', 'Error!!!');
-        console.error('Error al obtener los datos', error);
-      }
-    );
+      );
   }
 
   private formatDateV2(date: Date): string {
-    return this.datePipe.transform(date, 'dd/MM/yyyy') || '';
+    return this.datePipe.transform(date, "dd/MM/yyyy") || "";
   }
-  
+
   //Descarga el archivo en PDF
   descargarPDF(): void {
-    // Verifica si hay datos para exportar
-    if (!this.dataSourceActivos || !this.dataSourceActivos.filteredData || this.dataSourceActivos.filteredData.length === 0) {
-      this.toastr.error('No hay datos para exportar.', 'Error!!!');
-      console.warn('No hay datos filtrados para exportar a PDF.');
+    if (
+      !this.dataSourceActivos ||
+      !this.dataSourceActivos.filteredData ||
+      this.dataSourceActivos.filteredData.length === 0
+    ) {
+      this.toastr.error("No hay datos para exportar.", "Error!!!");
+      console.warn("No hay datos filtrados para exportar a PDF.");
       return;
     }
-  
+
     // Crear un objeto jsPDF
-    const pdf = new (jsPDF as any)();  // Utilizar 'as any' para evitar problemas de tipo
+    const pdf = new (jsPDF as any)(); // Utilizar 'as any' para evitar problemas de tipo
 
     // Obtener las fechas seleccionadas
     const fechaInicio = this.formatDateV2(this.fechaInicio);
@@ -505,95 +529,117 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
     // Encabezado del PDF con las fechas
     pdf.text(`Reporte de clientes (${fechaInicio} - ${fechaFin})`, 10, 10);
-    
+
     // Contenido del PDF
-    const datos = this.dataSourceActivos.filteredData.map((activos: ClientesActivos) => [
-      activos.ID,
-      activos.Nombre,
-      activos.Sucursal,
-      activos.Membresia,
-      activos.Precio,
-      activos.Fecha_Inicio,
-      activos.Fecha_Fin,
-      activos.Status
-    ]);
-  
+    const datos = this.dataSourceActivos.filteredData.map(
+      (activos: ClientesActivos) => [
+        activos.ID,
+        activos.Nombre,
+        activos.Sucursal,
+        activos.Membresia,
+        activos.Precio,
+        activos.Fecha_Inicio,
+        activos.Fecha_Fin,
+        activos.Status,
+      ]
+    );
+
     // Añadir filas al PDF con encabezado naranja
     pdf.autoTable({
-      head: [['ID', 'Nombre', 'Sucursal', 'Membresia', 'Precio', 'Fecha Inicio', 'Fecha Fin', 'Status']],
+      head: [
+        [
+          "ID",
+          "Nombre",
+          "Sucursal",
+          "Membresia",
+          "Precio",
+          "Fecha Inicio",
+          "Fecha Fin",
+          "Status",
+        ],
+      ],
       body: datos,
-      startY: 20,  // Ajusta la posición inicial del contenido
+      startY: 20, // Ajusta la posición inicial del contenido
       headStyles: {
-        fillColor: [249, 166, 64],  // Color naranja RGB
-        textColor: [255, 255, 255]  // Color blanco para el texto
-      }
+        fillColor: [249, 166, 64], // Color naranja RGB
+        textColor: [255, 255, 255], // Color blanco para el texto
+      },
     });
-  
+
     // Descargar el archivo PDF
-    pdf.save('Clientes.pdf');
+    pdf.save("Clientes.pdf");
   }
 
-  eliminarUs(prod: any){
+  eliminarUs(prod: any) {
     const prueba = {
       idUsuario: prod.ID,
-      correo: prod.email
-    }
-    this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar a este usuario?`,
-    })
-    .afterClosed()
-    .subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        this.pagoService.deleteService(prueba).subscribe(
-          (respuesta) => { 
-            this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
-              /*if (response[2] && response[2].success === '2') {
+      correo: prod.email,
+    };
+    this.dialog
+      .open(MensajeEliminarComponent, {
+        data: `¿Desea eliminar a este usuario?`,
+      })
+      .afterClosed()
+      .subscribe((confirmado: boolean) => {
+        if (confirmado) {
+          this.pagoService.deleteService(prueba).subscribe((respuesta) => {
+            this.pagoService
+              .obtenerActivos(this.auth.idGym.getValue())
+              .subscribe(
+                (response: any) => {
+                  /*if (response[2] && response[2].success === '2') {
                 //const combinedArray = response[0].data.concat(response[1]);
                 const combinedArray = response[0].data;
                 this.dataSourceActivos = new MatTableDataSource(combinedArray);
                 this.loadData(); 
               } else {*/
-                this.clienteActivo = response.data;
-                this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-                this.loadData();     
-              },
-              (error: any) => {
-                console.error('Error al obtener activos:', error);
-              }
-            );    
-          }
-        );
-      } else {
-      }
-    });
-
+                  this.clienteActivo = response.data;
+                  this.dataSourceActivos = new MatTableDataSource(
+                    this.clienteActivo
+                  );
+                  this.loadData();
+                },
+                (error: any) => {
+                  console.error("Error al obtener activos:", error);
+                }
+              );
+          });
+        } else {
+        }
+      });
   }
 
-  eliminarCliente(prod: any){
+  eliminarCliente(prod: any) {
     const prueba = {
-      idUsuario: prod.ID,                     
-    }
-    this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar a este usuario?`,
-    })
-    .afterClosed()
-    .subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        this.pagoService.deleteServiceUsuario(prueba).subscribe(
-          (respuesta) => { 
-            this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe((response: any) => {
-                this.clienteActivo = response.data;
-                this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-                this.loadData();     
-              },
-              (error: any) => {
-                console.error('Error al obtener activos:', error);
-              }
-            );    
-          }
-        );
-      } else {
-      }
-    });
+      idUsuario: prod.ID,
+    };
+    this.dialog
+      .open(MensajeEliminarComponent, {
+        data: `¿Desea eliminar a este usuario?`,
+      })
+      .afterClosed()
+      .subscribe((confirmado: boolean) => {
+        if (confirmado) {
+          this.pagoService
+            .deleteServiceUsuario(prueba)
+            .subscribe((respuesta) => {
+              this.pagoService
+                .obtenerActivos(this.auth.idGym.getValue())
+                .subscribe(
+                  (response: any) => {
+                    this.clienteActivo = response.data;
+                    this.dataSourceActivos = new MatTableDataSource(
+                      this.clienteActivo
+                    );
+                    this.loadData();
+                  },
+                  (error: any) => {
+                    console.error("Error al obtener activos:", error);
+                  }
+                );
+            });
+        } else {
+        }
+      });
   }
 }

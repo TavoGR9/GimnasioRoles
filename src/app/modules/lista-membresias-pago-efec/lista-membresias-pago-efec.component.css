@@ -12,6 +12,17 @@ table {
     width: 100%;
 }
 
+.total-ventas {
+  text-align: right; /* Alinea el contenido a la izquierda */
+  margin-top: 20px;
+}
+
+.total-label {
+  font-size: 18px;
+  color: #333; /* Color del texto */
+  margin-bottom: 5px;
+}
+
 .button-pay{
     width: 100px;
     height: 40px;
