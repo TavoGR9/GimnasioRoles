@@ -17,9 +17,6 @@ import { VentasComponent } from './ventas/ventas.component';
 import { VerCorteComponent } from './ver-corte/ver-corte.component';
 import { ProductosVendidosComponent } from './productos-vendidos/productos-vendidos.component';
 import { SucursalListaComponent } from './sucursal-lista/sucursal-lista.component';
-import { SucursalEditarComponent } from './sucursal-editar/sucursal-editar.component';
-import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
-import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 import { RoleGuard } from '../guards/role.guard';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
 import { ServiciosListaComponent } from './servicios-lista/servicios-lista.component';
@@ -30,6 +27,7 @@ import { planComponent } from './plan-lista/plan.component';
 import { planEditarComponent } from './plan-editar/plan-editar.component';
 import { ArchivosComponent } from './archivos/archivos.component';
 import { EmergenteAperturaPuertoSerialComponent } from './emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component';
+import { PagoMemComponent } from './pago-mem/pago-mem.component';
 
 const routes: Routes = [
   {
@@ -44,8 +42,6 @@ const routes: Routes = [
         data: { userRole: 'SuperAdmin'},
         children: [
           { path: 'listaSucursales', component:SucursalListaComponent},
-          { path: 'alta-sucursal', component:SucursalAltaComponent},
-          { path: 'editar-sucursal', component:SucursalEditarComponent},
           { path: 'estadisticas', component: ReportsComponent},
           { path: 'archivos', component: ArchivosComponent},
         ]
@@ -79,6 +75,7 @@ const routes: Routes = [
           { path: 'Ventas', component: VentasComponent},
           { path: 'verCorte', component: VerCorteComponent},
           { path: 'AperturaManual', component: EmergenteAperturaPuertoSerialComponent},
+          { path: 'pagoMem', component: PagoMemComponent},
         ]
       },
       {
@@ -93,6 +90,7 @@ const routes: Routes = [
           { path: 'Ventas', component: VentasComponent},
           { path: 'verCorte', component: VerCorteComponent},
           { path: 'AperturaManual', component: EmergenteAperturaPuertoSerialComponent},
+          { path: 'pagoMem', component: PagoMemComponent}
         ]
       },
     ],

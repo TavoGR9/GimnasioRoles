@@ -39,17 +39,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditarColaboradorComponent } from './editar-colaborador/editar-colaborador.component';
 import { AltaColaboradoresComponent } from './alta-colaboradores/alta-colaboradores.component';
 import { SucursalListaComponent } from './sucursal-lista/sucursal-lista.component';
-import { SucursalAltaComponent } from './sucursal-alta/sucursal-alta.component';
-import { SucursalEditarComponent } from './sucursal-editar/sucursal-editar.component';
 import { EditarProductoComponent } from './editar-producto/editar-producto.component';
 import { ColaboradoresComponent } from './colaboradores/colaboradores.component';
 import { HorariosVistaComponent } from './horarios-vista/horarios-vista.component';
 import { MensajeEliminarComponent } from './mensaje-eliminar/mensaje-eliminar.component';
-import { ListarCategoriaPipe } from '../pipes/listar-categoria.pipe';
-import { ListarEmpleadosPipe } from '../pipes/listar-empleados.pipe';
-import { ListarSucursalesPipe } from '../pipes/listar-sucursales.pipe';
-import { ListarProductoPipe } from '../pipes/listar-producto.pipe';
-import { ListaProveedorPipe } from '../pipes/listar-proveedor.pipe';
 import { NotificacionesComponent } from './notificaciones/notificaciones.component';
 import {ToastModule} from 'primeng/toast';
 import {FileUploadModule} from 'primeng/fileupload';
@@ -63,7 +56,6 @@ import { EmergenteInfoClienteComponent } from './emergente-info-cliente/emergent
 import { FormPagoEmergenteComponent } from './form-pago-emergente/form-pago-emergente.component';
 import { InventariosComponent } from './inventarios/inventarios.component';
 import { ListaMembresiasPagoEfecComponent } from './lista-membresias-pago-efec/lista-membresias-pago-efec.component';
-import { MensajeListaComponent } from './ListaClientes/mensaje-cargando.component';
 import { MensajeEmergenteComponent } from './mensaje-emergente/mensaje-emergente.component';
 import { RegistroComponent } from './registro/registro.component';
 import { VentasComponent } from './ventas/ventas.component';
@@ -91,7 +83,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgChartsModule } from 'ng2-charts';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AgregarPersonalComponent } from './agregar-personal/agregar-personal.component';
+import { PagoMemComponent } from './pago-mem/pago-mem.component';
 
 
 @NgModule({
@@ -102,18 +94,11 @@ import { AgregarPersonalComponent } from './agregar-personal/agregar-personal.co
     EditarColaboradorComponent,
     AltaColaboradoresComponent,
     SucursalListaComponent,
-    SucursalAltaComponent,
-    SucursalEditarComponent,
     EditarProductoComponent,
     CrearProductoComponent,
     HorariosVistaComponent,
     MensajeEliminarComponent,
     NotificacionesComponent,
-    ListarCategoriaPipe,
-    ListarEmpleadosPipe,
-    ListarSucursalesPipe,
-    ListarProductoPipe,
-    ListaProveedorPipe,
     MembresiasComponent,
     MensajeEmergentesComponent,
     ConfiguracionComponent,
@@ -129,7 +114,6 @@ import { AgregarPersonalComponent } from './agregar-personal/agregar-personal.co
     FormPagoEmergenteComponent,
     InventariosComponent,
     ListaMembresiasPagoEfecComponent,
-    MensajeListaComponent,
     MensajeEmergenteComponent,
     RegistroComponent,
     VentasComponent,
@@ -149,7 +133,7 @@ import { AgregarPersonalComponent } from './agregar-personal/agregar-personal.co
     planEditarComponent,
     ArchivosComponent,
     SidebarComponent,
-    AgregarPersonalComponent,
+    PagoMemComponent,
     //InventarioComponent
   ],
   imports: [

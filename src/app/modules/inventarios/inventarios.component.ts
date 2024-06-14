@@ -97,11 +97,4 @@ export class InventariosComponent implements OnInit {
     });
   }
 
-  getClaseCantidadDisponible(prod: any): string[] {
-    const clases: string[] = [];
-    if (prod && prod.cantidad_disponible !== undefined) {
-       clases.push(prod.cantidad_disponible < 5 ? 'cantidad-disponible-bajo' : 'cantidad-disponible-suficiente');
-    }
-    return clases;
- }
 }

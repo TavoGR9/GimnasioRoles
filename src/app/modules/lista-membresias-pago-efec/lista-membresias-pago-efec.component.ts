@@ -3,20 +3,14 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
 import { DatePipe } from "@angular/common";
 import { FormBuilder, FormGroup} from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { AuthService } from "../../service/auth.service";
-import { ClienteService } from "../../service/cliente.service";
-import { listarClientesService } from "../../service/listarClientes.service";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { FormPagoEmergenteComponent } from "../form-pago-emergente/form-pago-emergente.component";
-import { MensajeListaComponent } from "../ListaClientes/mensaje-cargando.component";
+
 import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergente-info-cliente.component";
 
 interface ClientesActivos {
@@ -82,8 +76,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private toastr: ToastrService,
-    private ListarClientesService: listarClientesService,
-    private clienteService: ClienteService,
     private datePipe: DatePipe,
     private auth: AuthService
   ) {
@@ -136,7 +128,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       (response: any) => {
         this.clienteActivo = response.data;
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        //this.actualizarTotalVentas();
         this.loadData();
       },
       (error: any) => {
@@ -150,25 +141,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       this.isLoading = false;
       this.dataSourceActivos.paginator = this.paginatorActivos;
     }, 1000);
-  }
-
-  actualizarTotalVentas(): void {
-    this.totalVentas = this.calcularTotalVentas();
-  }
-
-  calcularTotalVentas(): number {
-    // Obtén los datos visibles después de aplicar filtros
-    const datosVisibles =
-      this.dataSourceActivos.filteredData || this.dataSourceActivos.data;
-    // Realiza el cálculo del total
-    return datosVisibles.reduce((total: any, detalle: any) => {
-      const precioUnitario = parseFloat(detalle.Precio);
-      if (!isNaN(precioUnitario)) {
-        return total + precioUnitario;
-      } else {
-        return total;
-      }
-    }, 0);
   }
 
   ngDoCheck(): void {
@@ -202,9 +174,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           } else if (response.data) {
             this.clienteActivo = response.data;
             this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-            this.actualizarTotalVentas();
             this.loadData();
-            // this.dataSourceActivos.paginator = this.paginatorActivos;
           }
         },
         (error) => {
@@ -360,22 +330,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     });
   }
 
-  abrirDialogo() {
-    this.dialog
-      .open(MensajeListaComponent, {
-        //data: `Membresía agregada exitosamente`,
-        width: "500px",
-        height: "500px",
-      })
-      .afterClosed()
-      .subscribe((cerrarDialogo: Boolean) => {
-        if (cerrarDialogo) {
-          this.router.navigateByUrl("/admin/listaMembresias");
-        } else {
-        }
-      });
-  }
-
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
@@ -387,189 +341,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   isRecep(): boolean {
     return this.auth.isRecepcion();
   }
-
-  //Descarga el archivo en excel
-  descargarExcel(): void {
-    if (
-      !this.fechaInicio ||
-      isNaN(this.fechaInicio.getTime()) ||
-      !this.fechaFin ||
-      isNaN(this.fechaFin.getTime())
-    ) {
-      this.toastr.error(
-        "Debe seleccionar las fechas de su reporte",
-        "Error!!!"
-      );
-      return;
-    }
-
-    this.fechaInicioAnterior = this.fechaInicio;
-    this.fechaFinAnterior = this.fechaFin;
-
-    this.pagoService
-      .obtenerTodosLosClientes(
-        this.formatDate(this.fechaInicio),
-        this.formatDate(this.fechaFin),
-        this.auth.idGym.getValue()
-      )
-      .subscribe(
-        (response) => {
-          this.todosClientes = response.data;
-
-          // Verificar si this.todosClientes es un array y tiene datos
-          if (
-            !Array.isArray(this.todosClientes) ||
-            this.todosClientes.length === 0
-          ) {
-            this.toastr.error("No hay datos para exportar.", "Error!!!");
-            return;
-          }
-
-          const fechaInicioFormateada = this.datePipe.transform(
-            this.fechaInicio,
-            "dd/MM/yyyy"
-          );
-          const fechaFinFormateada = this.datePipe.transform(
-            this.fechaFin,
-            "dd/MM/yyyy"
-          );
-
-          const datos = [
-            ["Reporte de socios"],
-            [`Con fechas: ${fechaInicioFormateada} - ${fechaFinFormateada}`], // Fechas
-            [], // Fila vacía para separar
-            [
-              "Clave",
-              "Nombre completo",
-              "Sucursal",
-              "Membresia",
-              "Precio",
-              "Fecha de inicio",
-              "Fecha fin",
-              "Fecha de registro",
-              "Estatus",
-              "Creado por",
-            ],
-            ...this.todosClientes.map((activos: any) => [
-              activos.clave,
-              activos.nombreCompleto,
-              activos.nombreBodega,
-              activos.titulo,
-              activos.total,
-              activos.fechaInicio,
-              activos.fechaFin,
-              activos.creation_date,
-              activos.estatus == 1 ? "Activo" : "Inactivo",
-              activos.creadoPor,
-            ]),
-          ];
-
-          // Crear un objeto de libro de Excel
-          const workbook = XLSX.utils.book_new();
-          const hojaDatos = XLSX.utils.aoa_to_sheet(datos);
-
-          // Establecer propiedades de formato para las columnas
-          hojaDatos["!cols"] = [
-            { wch: 5 },
-            { wch: 25 },
-            { wch: 20 },
-            { wch: 20 },
-            { wch: 10 },
-            { wch: 15 },
-            { wch: 15 },
-            { wch: 20 },
-            { wch: 10 },
-            { wch: 25 },
-          ];
-
-          // Añadir la hoja de datos al libro de Excel
-          XLSX.utils.book_append_sheet(workbook, hojaDatos, "Datos");
-
-          // Crear un Blob con el contenido del libro de Excel
-          const wbout = XLSX.write(workbook, {
-            bookType: "xlsx",
-            type: "array",
-          });
-          const newBlob = new Blob([wbout], {
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          });
-
-          // Guardar el archivo
-          saveAs(newBlob, "Clientes.xlsx");
-        },
-        (error) => {
-          this.toastr.error("Error al obtener los datos.", "Error!!!");
-          console.error("Error al obtener los datos", error);
-        }
-      );
-  }
-
-  private formatDateV2(date: Date): string {
-    return this.datePipe.transform(date, "dd/MM/yyyy") || "";
-  }
-
-  //Descarga el archivo en PDF
-  descargarPDF(): void {
-    if (
-      !this.dataSourceActivos ||
-      !this.dataSourceActivos.filteredData ||
-      this.dataSourceActivos.filteredData.length === 0
-    ) {
-      this.toastr.error("No hay datos para exportar.", "Error!!!");
-      console.warn("No hay datos filtrados para exportar a PDF.");
-      return;
-    }
-
-    // Crear un objeto jsPDF
-    const pdf = new (jsPDF as any)(); // Utilizar 'as any' para evitar problemas de tipo
-
-    // Obtener las fechas seleccionadas
-    const fechaInicio = this.formatDateV2(this.fechaInicio);
-    const fechaFin = this.formatDateV2(this.fechaFin);
-
-    // Encabezado del PDF con las fechas
-    pdf.text(`Reporte de clientes (${fechaInicio} - ${fechaFin})`, 10, 10);
-
-    // Contenido del PDF
-    const datos = this.dataSourceActivos.filteredData.map(
-      (activos: ClientesActivos) => [
-        activos.ID,
-        activos.Nombre,
-        activos.Sucursal,
-        activos.Membresia,
-        activos.Precio,
-        activos.Fecha_Inicio,
-        activos.Fecha_Fin,
-        activos.Status,
-      ]
-    );
-
-    // Añadir filas al PDF con encabezado naranja
-    pdf.autoTable({
-      head: [
-        [
-          "ID",
-          "Nombre",
-          "Sucursal",
-          "Membresia",
-          "Precio",
-          "Fecha Inicio",
-          "Fecha Fin",
-          "Status",
-        ],
-      ],
-      body: datos,
-      startY: 20, // Ajusta la posición inicial del contenido
-      headStyles: {
-        fillColor: [249, 166, 64], // Color naranja RGB
-        textColor: [255, 255, 255], // Color blanco para el texto
-      },
-    });
-
-    // Descargar el archivo PDF
-    pdf.save("Clientes.pdf");
-  }
-
+  
   eliminarUs(prod: any) {
     const prueba = {
       idUsuario: prod.ID,
