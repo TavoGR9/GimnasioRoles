@@ -3,15 +3,13 @@ import { GimnasioService } from '../../service/gimnasio.service';
 import { HorarioService } from '../../service/horario.service';
 import { AuthService } from '../../service/auth.service';
 import { HorariosComponent } from '../horarios/horarios.component';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-ver-configuracion',
   templateUrl: './ver-configuracion.component.html',
   styleUrls: ['./ver-configuracion.component.css'] 
 })
 export class VerConfiguracionComponent implements OnInit {
-
   id:any;
   item: any; 
   gimnasio: any;
@@ -32,7 +30,6 @@ export class VerConfiguracionComponent implements OnInit {
     // this.gimnasioService.comprobar();
     // this.auth.comprobar();
     // this.HorarioService.comprobar();
-   
       this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -77,7 +74,6 @@ export class VerConfiguracionComponent implements OnInit {
   }
 
   agregarHorario(idGimnasio: number): void {
-  
     const dialogRef = this.dialog.open(HorariosComponent, {
       width: '60%',
       height: '90%',

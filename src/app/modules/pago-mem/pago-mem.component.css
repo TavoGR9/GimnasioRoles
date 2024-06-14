@@ -1,0 +1,41 @@
+select {
+    background-color: #f4f4f4;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.input-date {
+    padding: 8px 12px; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    font-size: 16px; 
+    margin-bottom: 10px; 
+}
+
+.mat-button {
+    background-color: #F9A640;
+    color: #000000;
+}
+
+.container {
+    margin: 20px 0;
+}
+
+.mat-form-field {
+    width: 100%;
+}
+  
+.total-ventas {
+    text-align: right; /* Alinea el contenido a la izquierda */
+    margin-top: 20px;
+}
+  
+.total-label {
+    font-size: 18px;
+    color: #333; /* Color del texto */
+    margin-bottom: 5px;
+}

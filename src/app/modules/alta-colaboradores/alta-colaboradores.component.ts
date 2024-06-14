@@ -8,7 +8,6 @@ import { AuthService } from '../../service/auth.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { NgxSpinnerService } from "ngx-spinner";
-import { AgregarPersonalComponent } from '../agregar-personal/agregar-personal.component';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
@@ -28,6 +27,8 @@ export class AltaColaboradoresComponent {
   message: string = '';
   currentUser: string = '';
   idGym!: number;
+  filteredPersonal: string[] = [];
+  personal: string[] = [];
   matcher = new MyErrorStateMatcher();
 
   constructor (private fb: FormBuilder, 
@@ -232,23 +233,10 @@ export class AltaColaboradoresComponent {
     });
   }
 
-  agregarPersonal(){
-    const dialogRef = this.dialog.open(AgregarPersonalComponent, {
-      width: '45%',
-      height: '50%', 
-      disableClose: true,  
-    });
-    dialogRef.afterClosed().subscribe(() => {
-    });
-  }
-
   verPersonal(){
     this.http.getPersonal().subscribe(respuesta =>{
     });
   };
-
-  filteredPersonal: string[] = [];
-  personal: string[] = [];
 
   buscarPersonal() {
     const personalIngresado = this.form.get("puesto")?.value;

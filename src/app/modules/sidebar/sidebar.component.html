@@ -59,7 +59,7 @@
         
         <button *ngIf="isAdmin() || isRecep()" routerLink="./verCorte" class="hover-orange transparent-button" [class.active]="isRouteActive('/verCorte')"> 
             <mat-icon>attach_money</mat-icon> 
-            Ventas 
+            Ventas producto
         </button>
         
         <button *ngIf="isAdmin()" routerLink="./colaboradores" class="hover-orange transparent-button" [class.active]="isRouteActive('/colaboradores')"> 
@@ -75,6 +75,11 @@
         <button *ngIf="isAdmin() || isRecep()" routerLink="./inventarios" class="hover-orange transparent-button" [class.active]="isRouteActive('/inventarios')"> 
             <mat-icon>storage</mat-icon> 
             Inventario 
+        </button>
+
+        <button *ngIf="isAdmin() || isRecep()" routerLink="./pagoMem" class="hover-orange transparent-button" [class.active]="isRouteActive('/pagoMem')"> 
+            <mat-icon>person</mat-icon>
+            Pagos membresia
         </button>
         
         <button *ngIf="isAdmin() || isRecep()" routerLink="./listaMembresias" class="hover-orange transparent-button" [class.active]="isRouteActive('/listaMembresias')"> 
