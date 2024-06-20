@@ -203,4 +203,55 @@
       
       </div>
    </div> 
+<br><br>
+<div class="container mt-4">
+   <h2 >REPORTE DE COMPRAS</h2>
+   <br>
+   <input type="date" [(ngModel)]="fechaInicio" (ngModelChange)="verCompras()" class="input-date">
+   <input type="date" [(ngModel)]="fechaFin" (ngModelChange)="verCompras()" class="input-date">
+
+   <div style="display: flex; justify-content: flex-end;">
+      <button class="mat-button" mat-button [matMenuTriggerFor]="menu">
+          <mat-icon style="font-size: 22px;">download</mat-icon>
+          Descargar Reporte
+      </button>
+      <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="descargarExcel()">.xlsx <mat-icon>grid_on</mat-icon></button>
+      </mat-menu>
+  </div>  
+
+   <table mat-table [dataSource]="dataSource"  >
+      <ng-container matColumnDef="nombreProducto">
+         <th mat-header-cell *matHeaderCellDef> Nombre del producto </th>
+         <td mat-cell *matCellDef="let detalle"> {{ detalle.descripcion }} -{{ detalle.marca }} </td>
+      </ng-container>
+      <ng-container matColumnDef="detalleCompra">
+         <th mat-header-cell *matHeaderCellDef> Detalles </th>
+         <td mat-cell *matCellDef="let detalle"> {{ detalle.detalleCompra }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="precioC">
+         <th mat-header-cell *matHeaderCellDef> Precio de compra </th>
+         <td mat-cell *matCellDef="let detalle"> {{ detalle.precioCaja }} </td>
+      </ng-container>
+      <ng-container matColumnDef="precioSucursal">
+         <th mat-header-cell *matHeaderCellDef> Precio de venta </th>
+         <td mat-cell *matCellDef="let detalle"> {{ detalle.precioSucursal }} </td>
+      </ng-container>
+      <ng-container matColumnDef="fecha_actu">
+         <th mat-header-cell *matHeaderCellDef> Fecha </th>
+         <td mat-cell *matCellDef="let detalle"> {{ detalle.fecha_actu }} </td>
+      </ng-container>
+      <ng-container matColumnDef="existencias">
+         <th mat-header-cell *matHeaderCellDef> Entradas </th>
+         <td mat-cell *matCellDef="let detalle"> {{ detalle.existencias }} </td>
+      </ng-container>
+      
+      <tr mat-header-row *matHeaderRowDef="columnas; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+   </table>
+   <mat-paginator #paginatorHistorial [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+
+</div>
+   
 </div>
