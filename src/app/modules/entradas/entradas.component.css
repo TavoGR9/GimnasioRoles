@@ -151,4 +151,16 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  
+
+  .input-date {
+    padding: 8px 12px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Borde */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño del texto */
+    margin-bottom: 10px; /* Margen inferior */
+  }
+
+  .mat-button {
+    background-color: #F9A640;
+    color: #000000;
+}

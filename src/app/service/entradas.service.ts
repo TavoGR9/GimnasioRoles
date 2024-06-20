@@ -38,6 +38,15 @@ export class EntradasService {
     return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaProHisto",entradaProductos);
   }
 
+  obtenerCompras(inicioDate: any, finDate: any, idGym: any): Observable<any> {
+    const params = {
+      GYMid: idGym,
+      fechaInicio: inicioDate,
+      fechaFin: finDate
+    };
+    return this.clienteHttp.get(this.API + 'producto_bod.php?', { params });
+  }
+
  /* agregarEntradaProducto(entradaProductos:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaPro",entradaProductos);
   }*/
