@@ -73,7 +73,8 @@ export class ProductosComponent implements OnInit {
 
   listaTabla(){
     this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-      this.productos = resultData
+      //this.productos = resultData
+      this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData(); 
     });
@@ -125,21 +126,11 @@ export class ProductosComponent implements OnInit {
       disableClose: true,   
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProducto(this.idGym).subscribe({
-        next: (resultData: any) => {
-          if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
-          this.productos = Array.isArray(resultData) ? resultData : [];
-          this.dataSource = new MatTableDataSource(this.productos);
-          if (this.paginator) {
-          this.dataSource.paginator = this.paginator;
-          }
-        } else {
-          console.error('El resultado de consultarCategoriaGym no es un array o tiene success !== 0:', resultData);
-        }
-        },
-        error: (error) => {
-          console.error('Error al consultar categorías:', error);
-        }
+      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+        //this.productos = resultData
+        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
+        this.dataSource = new MatTableDataSource(this.productos);
+        this.loadData(); 
       });
     })
   }
@@ -152,21 +143,11 @@ export class ProductosComponent implements OnInit {
       disableClose: true,  
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProducto(this.idGym).subscribe({
-        next: (resultData: any) => {
-          if (Array.isArray(resultData) || (resultData && resultData.success === 0)) {
-          this.productos = Array.isArray(resultData) ? resultData : [];
-          this.dataSource = new MatTableDataSource(this.productos);
-          if (this.paginator) {
-          this.dataSource.paginator = this.paginator;
-          }
-        } else {
-          console.error('El resultado de consultar Categoria Gym no es un array o tiene success !== 0:', resultData);
-        }
-        },
-        error: (error) => {
-          console.error('Error al consultar categorías:', error);
-        }
+      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+        //this.productos = resultData
+        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
+        this.dataSource = new MatTableDataSource(this.productos);
+        this.loadData(); 
       });
     });
   }
@@ -194,7 +175,8 @@ export class ProductosComponent implements OnInit {
         this.productoService.deleteProd(id).subscribe(
           (respuesta) => {
             this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-              this.productos = resultData
+              //this.productos = resultData
+              this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
               this.dataSource = new MatTableDataSource(this.productos);
               this.loadData(); 
             });

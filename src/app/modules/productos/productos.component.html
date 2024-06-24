@@ -13,7 +13,6 @@
                   (click)="crearProducto()"
                   style="background-color: #fd9727; font-size: 16px"
                   [disabled]="!habilitarBoton">
-           
             AGREGAR/EDITAR
             </button>
 
@@ -28,8 +27,8 @@
             #input
             />
          </mat-form-field>
-         <div  class="table-container">
-            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+         <div class="table-container">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
                <!-- Definición de columnas -->
                <ng-container matColumnDef="nombre">
                   <th mat-header-cell *matHeaderCellDef (click)="sortData('nombre')">

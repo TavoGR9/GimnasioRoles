@@ -52,6 +52,7 @@ export class VentasComponent implements OnInit {
   @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
   @ViewChild('input', { static: true }) inputElement!: ElementRef;
   filteredDataSource = new MatTableDataSource<any>([]);
+  form: FormGroup;
 
   columnas: string[] = [
     "nombreProducto",
@@ -88,8 +89,14 @@ export class VentasComponent implements OnInit {
     private DetalleVenta: DetalleVentaService,
     private ventasService: VentasService,
     private productoService: ProductoService,
+    private fb: FormBuilder,
     private InventarioService: inventarioService,
   ) {
+
+    this.form = this.fb.group({
+      producto: [""],
+    });
+
     this.formularioDetalleVenta = this.formulario.group({
       productos: this.formulario.array([]),
     });
@@ -98,6 +105,8 @@ export class VentasComponent implements OnInit {
       "productos"
     ) as FormArray;
   }
+
+
 
   ngOnInit(): void {
     // this.productoService.comprobar();
@@ -118,7 +127,7 @@ export class VentasComponent implements OnInit {
     });
   }
 
-  async applyFilter(event: Event) {
+ /* async applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     const result = this.dataSource.data.find((prod) => prod.codigoBarras.toLowerCase() === filterValue.toLowerCase());
     
@@ -129,7 +138,9 @@ export class VentasComponent implements OnInit {
       (event.target as HTMLInputElement).value = '';  
     } else {
     }  
-  }
+  }*/
+
+    
     
   validarYAgregarProducto(producto: any) {
     this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
@@ -262,6 +273,7 @@ export class VentasComponent implements OnInit {
   }
 
   imprimirResumen() {
+
     let allProductsValid = true;
     for (let i = 0; i < this.selectedProducts.length; i++) {
       if (this.selectedProducts[i].cantidad > this.selectedProducts[i].existencia) {
@@ -272,7 +284,7 @@ export class VentasComponent implements OnInit {
       }
     }
 
-    if(allProductsValid){
+    if(allProductsValid && this.selectedProducts.length > 0 ){
       if (this.totalAPagar <= this.dineroRecibido) {
         /**FECHA */
         const fechaActual = new Date();
@@ -512,5 +524,65 @@ export class VentasComponent implements OnInit {
       0
     );
   }
+
+  async applyFilter(event: Event | null) {
+    const filterValue = this.form.get("producto")?.value;
+  
+    // Búsqueda por nombreProducto, detalleCompra y marca
+    const result = this.dataSource.data.find(
+      (prod) => (prod.nombreProducto.toLowerCase() + '_' + prod.detalleCompra.toLowerCase() + '_' + prod.marca.toLowerCase()) === filterValue.toLowerCase()
+    );
+  
+    // Búsqueda por codigoBarras
+    const result2 = this.dataSource.data.find(
+      (prod) => prod.codigoBarras.toLowerCase() === filterValue.toLowerCase()
+    );
+  
+    // Verificar y agregar producto encontrado
+    if (result) {
+      result.cantidad = 1;
+      await this.validarYAgregarProducto(result);
+      this.form.get("producto")?.setValue('');
+      this.filteredDataSource = this.dataSource;
+    } else if (result2) {
+      result2.cantidad = 1;
+      await this.validarYAgregarProducto(result2);
+      this.form.get("producto")?.setValue('');
+      this.filteredDataSource = this.dataSource;
+    } else {
+
+    }
+  }
+  
+
+  filteredProd: string[] = [];
+  productosC: any[] = [];
+
+  buscarPorPro(){
+    const productoIngresado = this.form.get("producto")?.value;
+      this.InventarioService.buscarProductoPorNombre(this.auth.idGym.getValue()).subscribe({
+        next: (respuesta) => {
+          const prod = new Set(
+            respuesta.nombreproducto.map(
+              (productosN: any) => productosN.descripcion+'_'+productosN.detalleCompra+'_'+productosN.marca
+            )
+          );
+          this.productosC = Array.from(prod) as string[];
+          this.filteredProd = this.productosC.filter(
+      
+            (prooduc) =>
+              !productoIngresado ||
+            prooduc.toLowerCase().includes(productoIngresado.toLowerCase())
+            
+          );
+          
+        },
+      });
+    }
+  
+    seleccionar(marca: string): void {
+      this.form.get('producto')?.setValue(marca);
+      this.applyFilter(null); // Aplicar filtro al seleccionar una opción del autocompletado
+    }
   
 }

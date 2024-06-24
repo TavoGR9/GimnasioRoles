@@ -8,7 +8,7 @@
       <div>
          <br>
          <h3>Ingresa el valor de una columna</h3>
-         <mat-form-field class="full-width">
+        <!-- <mat-form-field class="full-width">
             <mat-label>Filtro</mat-label>
             <input
             matInput 
@@ -17,7 +17,32 @@
             #input
             autofocus
             />
-         </mat-form-field>
+         </mat-form-field>-->
+
+         <div class="row">
+            <form [formGroup]="form" enctype="multipart/form-data">
+               <div class="col-sm-12">
+                  <p>
+                     <mat-form-field  style="width: 100%;">
+                        <mat-label>Producto</mat-label>
+                        <input
+                        matInput
+                        (keyup)="applyFilter($event)"
+                        formControlName="producto"
+                        placeholder="Ingresa tu producto"
+                        [matAutocomplete]="autoMarca"
+                        (input)="buscarPorPro()"
+                        />
+                        <mat-autocomplete #autoMarca="matAutocomplete">
+                           <mat-option *ngFor="let marca of filteredProd" [value]="marca" (click)="seleccionar(marca)">
+                             {{ marca }}
+                           </mat-option>
+                         </mat-autocomplete>
+                     </mat-form-field>
+                  </p>
+               </div>
+            </form>
+         </div>
          
        <!--  <div class="table-container">
             <table *ngIf="showTable" mat-table [dataSource]="filteredDataSource" class="mat-elevation-z8">
@@ -60,7 +85,7 @@
                </thead>
                <tbody>
                   <tr *ngFor="let selectedProduct of selectedProducts; let i = index">
-                     <td>{{ selectedProduct.nombreProducto }}</td>
+                     <td>{{ selectedProduct.nombreProducto }}_{{ selectedProduct.marca }} {{ selectedProduct.detalleCompra }}</td>
                      <td >{{ selectedProduct.cantidad }}</td>
                      <td>${{ selectedProduct.precioSucursal }}</td>
                      <td>${{ selectedProduct.precioSucursal * selectedProduct.cantidad }}</td>
@@ -85,7 +110,7 @@
       </div>
    </div>
    <div style="display: flex; justify-content: center;" mat-dialog-actions>
-      <button  mat-raised-button style="font-size: 20px; margin-top: 17px;height: 40px;background-color: black; color: #ffffff;" (click)="imprimirResumen()">Imprimir</button>
+      <button  mat-raised-button style="font-size: 20px; margin-top: 17px;height: 40px;background-color: black; color: #ffffff;" (click)="imprimirResumen()">Pagar</button>
       <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #fd9727; font-size: 20px; margin-top: 17px; height: 40px;color: rgb(0, 0, 0);">Cancelar</button>
    </div>
 </div>

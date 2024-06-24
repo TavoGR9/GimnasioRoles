@@ -1,4 +1,4 @@
-import { Component, ViewChild} from '@angular/core';
+import { Component, ViewChild, HostListener} from '@angular/core';
 import { OnInit } from '@angular/core';
 import { VentasComponent } from '../ventas/ventas.component';
 import { MatDialog } from "@angular/material/dialog";
@@ -16,6 +16,7 @@ import { MembresiaService } from "../../service/membresia.service";
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { combineLatest } from 'rxjs';
+import { InactivityService } from '../../service/inactivo.service';
 
 @Component({
   selector: 'app-home',
@@ -48,7 +49,8 @@ export class HomeComponent implements OnInit{
     private syncService: SyncService, private indexedDBService: IndexedDBService,
     private http: ColaboradorService,
     public membresiaService: MembresiaService,
-    private servicio: serviciosService ) {
+    private servicio: serviciosService,
+  private inactivityService:InactivityService ) {
   }
 
   ngOnInit(): void {
@@ -255,4 +257,8 @@ export class HomeComponent implements OnInit{
       }
     });
  }
+
+
+
+ 
 }
