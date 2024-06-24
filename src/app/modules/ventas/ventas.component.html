@@ -22,26 +22,26 @@
          <div class="row">
             <form [formGroup]="form" enctype="multipart/form-data">
                <div class="col-sm-12">
-                  <p>
-                     <mat-form-field  style="width: 100%;">
-                        <mat-label>Producto</mat-label>
-                        <input
-                        matInput
-                        (keyup)="applyFilter($event)"
-                        formControlName="producto"
-                        placeholder="Ingresa tu producto"
-                        [matAutocomplete]="autoMarca"
-                        (input)="buscarPorPro()"
-                        />
-                        <mat-autocomplete #autoMarca="matAutocomplete">
-                           <mat-option *ngFor="let marca of filteredProd" [value]="marca" (click)="seleccionar(marca)">
-                             {{ marca }}
-                           </mat-option>
-                         </mat-autocomplete>
-                     </mat-form-field>
-                  </p>
+                 <p>
+                   <mat-form-field style="width: 100%;">
+                     <mat-label>Producto</mat-label>
+                     <input
+                       matInput
+                       (keyup)="applyFilter($event)"
+                       formControlName="producto"
+                       placeholder="Ingresa tu producto"
+                       [matAutocomplete]="autoMarca"
+                       (input)="buscarPorPro()"
+                     />
+                     <mat-autocomplete #autoMarca="matAutocomplete">
+                       <mat-option *ngFor="let marca of filteredProd" [value]="marca" (click)="seleccionar(marca)">
+                         {{ marca }}
+                       </mat-option>
+                     </mat-autocomplete>
+                   </mat-form-field>
+                 </p>
                </div>
-            </form>
+             </form>             
          </div>
          
        <!--  <div class="table-container">
