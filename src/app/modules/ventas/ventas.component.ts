@@ -45,6 +45,8 @@ export class VentasComponent implements OnInit {
   productData: Producto[] = []; 
   showTable: boolean = false;
   selectedProducts: any[] = [];
+  filteredProd: string[] = [];
+  productosC: any[] = [];
   datosParaGuardarDetalleVenta: detalleVenta[] = [];
   private fotoUrl: string | null = null;
   private destroy$: Subject<void> = new Subject<void>();
@@ -550,13 +552,16 @@ export class VentasComponent implements OnInit {
       this.form.get("producto")?.setValue('');
       this.filteredDataSource = this.dataSource;
     } else {
-
+      const prueba = this.form.get("producto")?.value;
+      const contieneSoloNumeros = /^[0-9]+$/.test(prueba);
+      if (prueba !== '' && contieneSoloNumeros) {
+        const length = prueba.length;
+        if (length >= 8) {
+          this.toastr.warning('Producto no disponible', 'Producto no disponible');
+        }
+      }
     }
   }
-  
-
-  filteredProd: string[] = [];
-  productosC: any[] = [];
 
   buscarPorPro(){
     const productoIngresado = this.form.get("producto")?.value;
