@@ -1,23 +1,9 @@
-/* dashboard.component.css */
+
   .dashboard-cards {
       display: flex;
       flex-direction: row;
-    
-    }
-
-  .dashboard-cardss {
-  display: flex;
-  flex-wrap: wrap;
   }
 
-
-  .dashboard-cards2 {
-  display: flex;
-  flex-wrap: row;
-  height: 200px;
-  }
-  
-  
   .orange-card {
     background-color: #ffffff; 
     border: 1px solid #bbbcbd; 

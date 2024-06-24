@@ -37,6 +37,15 @@ export class inventarioService {
     return this.clienteHttp.get(this.API+"producto_bod.php", { params: params });
   }
 
+
+  buscarProductoPorNombre( idGym: number): Observable<any> {
+    // Crear los parámetros de la solicitud
+    const params = new HttpParams()
+      .set('idGym', idGym);
+
+    return this.clienteHttp.get<any>(this.API+"producto_bod.php", { params });
+  }
+
   HistorialInventario(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
     const url = `${this.API}producto_bod.php?obtenerHistorialInventario`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
