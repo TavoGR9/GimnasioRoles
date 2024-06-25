@@ -166,7 +166,7 @@ export class EditarProductoComponent implements OnInit{
     this.entrada.actualizarProductoVDos(dataArray).subscribe({next: (update) =>{
       if (update.success == 1) {
         this.spinner.hide();
-        this.dialog.open(MensajeEmergentesComponent, {data: `Entradaaaaa agregada exitosamente`})
+        this.dialog.open(MensajeEmergentesComponent, {data: `Entrada agregada exitosamente`})
           .afterClosed()
           .subscribe((cerrarDialogo: Boolean) => {
           if (cerrarDialogo) {
