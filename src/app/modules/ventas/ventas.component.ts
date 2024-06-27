@@ -16,6 +16,7 @@ import { Subject } from 'rxjs';
 import { HomeComponent } from "../home/home.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { detalleVenta } from "../../models/detalleVenta";
+import { NgxSpinnerService } from "ngx-spinner";
 @Component({
   selector: "app-home",
   templateUrl: "./ventas.component.html",
@@ -93,6 +94,7 @@ export class VentasComponent implements OnInit {
     private productoService: ProductoService,
     private fb: FormBuilder,
     private InventarioService: inventarioService,
+    private spinner: NgxSpinnerService
   ) {
 
     this.form = this.fb.group({
@@ -275,13 +277,14 @@ export class VentasComponent implements OnInit {
   }
 
   imprimirResumen() {
-
+    this.spinner.show();
     let allProductsValid = true;
     for (let i = 0; i < this.selectedProducts.length; i++) {
       if (this.selectedProducts[i].cantidad > this.selectedProducts[i].existencia) {
         this.toastr.error(`La cantidad es mayor que la existencia para el producto: ${this.selectedProducts[i].nombreProducto}`, 'Error', {
           positionClass: 'toast-bottom-left',
         });
+        this.spinner.hide();
         allProductsValid = false;
       }
     }
@@ -289,18 +292,11 @@ export class VentasComponent implements OnInit {
     if(allProductsValid && this.selectedProducts.length > 0 ){
       if (this.totalAPagar <= this.dineroRecibido) {
         /**FECHA */
-        const fechaActual = new Date();
-        const offset = fechaActual.getTimezoneOffset(); // Obtiene el offset en minutos
-        fechaActual.setMinutes(fechaActual.getMinutes() - offset);
-        const fechaVenta = fechaActual.toISOString().replace("T", " ").split(".")[0];
         const totalAPagar = this.selectedProducts.reduce((total, producto) => total + producto.precioSucursal * producto.cantidad,0);
         // Enviar datos de ventas
         const datosVentas = {
-          Cliente_ID_Cliente: 0,
-          Caja_idCaja: 1,
-          fechaVenta: fechaVenta,
           total: totalAPagar,
-          idUsuario:this.auth.idUser.getValue(),
+          idUsuario:this.auth.idUser.getValue()
         };
   
         this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
@@ -316,6 +312,7 @@ export class VentasComponent implements OnInit {
               importe: producto.cantidad * producto.precioSucursal,
             };
           });
+          
           this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
             (response) => {
               if(response.success == 1){
@@ -328,6 +325,7 @@ export class VentasComponent implements OnInit {
                 });
                 this.DetalleVenta.updateExistencias(existencias).subscribe((data) =>{
                 })
+                this.spinner.hide();
     
                 this.dialog.open(MensajeEmergentesComponent, {
                   data: `Productos registrados correctamente`,

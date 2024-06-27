@@ -1,15 +1,6 @@
-import { DatePipe } from "@angular/common"; //para obtener fecha del sistema
+import { DatePipe } from "@angular/common"; 
 import { Component, OnInit, ViewChild } from "@angular/core";
-//import { Producto } from '../../models/producto';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormGroupDirective,
-  NgForm,
-  Validators,
-} from "@angular/forms";
-import { ErrorStateMatcher } from "@angular/material/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { AuthService } from "../../service/auth.service";
 import { EntradasService } from "../../service/entradas.service";
@@ -22,25 +13,12 @@ import { MatTableDataSource } from "@angular/material/table";
 import { MatPaginator } from "@angular/material/paginator";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-
+import { ProductoService } from "../../service/producto.service";
 interface Producto {
   idProbob: number;
   descripcion: string;
   marca: string;
   detalleCompra: string;
-}
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    formulario: FormGroupDirective | NgForm | null
-  ): boolean {
-    const isSubmitted = formulario && formulario.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
-  }
 }
 @Component({
   selector: "app-entradas",
@@ -51,8 +29,6 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class EntradasComponent implements OnInit {
   hide = true;
   form: FormGroup;
-  matcher = new MyErrorStateMatcher();
-  ubicacion: string;
   id: number;
   idUsuario: number;
   fechaRegistro: string;
@@ -68,6 +44,9 @@ export class EntradasComponent implements OnInit {
   isLoading: boolean = true;
   habilitarBoton: boolean = false;
   private fotoUrl: string | null = null;
+  resultadoData: any;
+  filteredProducto: any[] = [];
+  productoss: any[] = [];
   dataSource: any;
   compras: any;
   fechaInicio: string = "";
@@ -80,14 +59,10 @@ export class EntradasComponent implements OnInit {
     "fecha_actu",
     "existencias"
   ];
-  //fechaInicio: Date = new Date();
-  //fechaInicio: Date = new Date("0000-00-00");
-  //fechaFin: Date = new Date();
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
-    // public dialogo: MatDialogRef<EntradasComponent>,
-    //@Inject(MAT_DIALOG_DATA) public mensaje: string,
     private fb: FormBuilder,
     private auth: AuthService,
     private toastr: ToastrService,
@@ -95,10 +70,10 @@ export class EntradasComponent implements OnInit {
     private entrada: EntradasService,
     private dialog: MatDialog,
     private spinner: NgxSpinnerService,
-    private GimnasioService: GimnasioService
+    private GimnasioService: GimnasioService,
+    private productoService: ProductoService
   ) {
     this.obtenerFoto();
-    this.ubicacion = this.auth.nombreGym.getValue();
     this.id = this.auth.idGym.getValue();
     this.idUsuario = this.auth.idUser.getValue();
     this.fechaRegistro = this.obtenerFechaActual();
@@ -108,27 +83,9 @@ export class EntradasComponent implements OnInit {
       idProveedor: [1],
       idUsuario: [this.idUsuario],
       fechaEntrada: [this.fechaRegistro],
-      exis: [
-        "",
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^[0-9]+$/), //solo numeros enteros
-        ]),
-      ],
-      precciosucu: [
-        "",
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
-        ]),
-      ],
-      precioCaja: [
-        "",
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^\d+(\.\d{0,2})?$/), //solo acepta dos decimales
-        ]),
-      ],
+      exis: ["", Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])],
+      precciosucu: ["", Validators.compose([Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/)])],
+      precioCaja: ["", Validators.compose([Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/)])],
     });
   }
 
@@ -143,7 +100,6 @@ export class EntradasComponent implements OnInit {
     this.fechaInicio = fechaActual;
     this.fechaFin = fechaActual;
 
-    // this.entrada.comprobar();
     this.auth.comprobar().subscribe((respuesta) => {
       this.habilitarBoton = respuesta.status;
     });
@@ -191,16 +147,12 @@ export class EntradasComponent implements OnInit {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
         this.listaProductos = resultData.productos;
-       
       },
       error: (error) => {
         console.error(error);
       },
     });
   }
-
-  filteredProducto: any[] = [];
-  productoss: any[] = [];
 
   buscarProducto() {
     const marcaIngresado = this.form.get("idProbob")?.value;
@@ -226,10 +178,29 @@ export class EntradasComponent implements OnInit {
     return product && product.nombre ? product.nombre : "";
   }
 
+  //setValue requiere que se proporcionen valores para todos los controles en el formulario. Si falta algún valor, lanzará un error.
   onProductSelected(product: any) {
-    this.infoProducto(product.idProd);
-  }
+    this.form.patchValue({
+      idProbob: product,
+    });
 
+    this.productoService.consultarProductosJ(product.idProd, this.auth.idGym.getValue()).subscribe(respuesta => {
+      this.resultadoData = respuesta;
+      if (respuesta.length > 0) {
+        // patchValue: Actualiza solo los campos necesarios 
+        this.form.patchValue({
+          precioCaja: this.resultadoData[0].precioCaja,
+          precciosucu: this.resultadoData[0].precioSucursal
+        });
+      } else {
+        this.form.patchValue({
+          precioCaja: '',
+          precciosucu: ''
+        });
+      }
+    });
+  }
+  
   infoProducto(event: number) {
     this.idProducto = event;
   }
@@ -297,6 +268,7 @@ export class EntradasComponent implements OnInit {
 
   registrar(): any {
     if (this.tablaDatos.length > 0) {
+      this.habilitarBoton = false;
       this.spinner.show();
       const dataToSend: any[] = this.tablaDatos;
       const registrosParaEnviar: any[] = [];
@@ -335,7 +307,6 @@ export class EntradasComponent implements OnInit {
               fechaE: dataToSend[index].fechaE,
               fechaEntrada: dataToSend[index].fechaEntrada,
               accion: "Registro de nuevo producto",
-              fecha_actu: fechaFormateada,
               created_by: this.auth.idUser.getValue(),
             });
             hayRegistrosNuevos = true;
@@ -354,7 +325,6 @@ export class EntradasComponent implements OnInit {
 
             registrosAc.push({
               accion: "Edición de nuevo producto",
-              fecha_actu: fechaFormateada,
               existencias: dataToSend[index].exis,
               p_id_producto: id_Probob,
               precioSucursal: dataToSend[index].precciosucu,
@@ -393,6 +363,7 @@ export class EntradasComponent implements OnInit {
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
+                this.habilitarBoton = true;
                 this.form.reset();
                 this.tablaDatos = [];
                 this.entrada
@@ -436,6 +407,7 @@ export class EntradasComponent implements OnInit {
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
               if (cerrarDialogo) {
+                this.habilitarBoton = true;
                 this.form.reset();
                 this.tablaDatos = [];
                 this.entrada
@@ -581,6 +553,7 @@ export class EntradasComponent implements OnInit {
                       // Agregar el total de la fila al total general
                       totalCantidad += fila.exis;
                       totalPrecio += totalFila;
+                      const precioFormateado = Number(fila.precioCaja).toFixed(2);
                       // Generar la fila de la tabla
                       return `
                           <tr>
@@ -588,7 +561,7 @@ export class EntradasComponent implements OnInit {
                         fila.detalle
                       }</td>
                             <td>${fila.exis}</td>
-                            <td>$${fila.precioCaja.toFixed(2)}</td>
+                            <td>$${precioFormateado}</td>
                             <td>$${totalFila.toFixed(2)}</td>
                           </tr>
                         `;
