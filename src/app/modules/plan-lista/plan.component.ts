@@ -220,4 +220,44 @@ export class planComponent implements OnInit {
       }
     });
   }
+
+  borrarPlan(id: any){
+    this.dialog.open(MensajeEliminarComponent,{
+      data: `¿Desea eliminar este servicio?`,
+    })
+    .afterClosed()
+    .subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.membresiaService.deletePlan(id).subscribe(
+          (respuesta) => {
+            this.membresiaService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
+              if (respuesta && respuesta.success === 1) {
+                if (respuesta.data && Array.isArray(respuesta.data)) {
+                  this.plan = respuesta.data; 
+                  this.dataSource = new MatTableDataSource(this.plan);
+                  this.loadData();
+                } else {
+                  console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
+                  setTimeout(() => {
+                    this.isLoading = false;
+                  }, 1000); 
+                }
+              } else if (respuesta.success === 0) {
+                this.plan = respuesta.data; 
+                this.dataSource = new MatTableDataSource(this.plan);
+                this.dataSource.paginator = this.paginator;
+                setTimeout(() => {
+                  this.isLoading = false;
+                }, 1000); 
+              }
+            });
+          },
+          (error) => {
+          }
+        );
+      } else {
+      }
+    });
+
+  }
 }

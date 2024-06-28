@@ -5,15 +5,14 @@ import {
   FormGroup,
   FormBuilder,
   Validators,
-  AbstractControl,
-  FormArray,
 } from "@angular/forms";
 import { MembresiaService } from "./../../service/membresia.service";
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { NgxSpinnerService } from "ngx-spinner";
-
+import * as moment from 'moment';
+import 'moment-timezone';
 @Component({
   selector: "app-membresias-editar",
   templateUrl: "./plan-editar.component.html",
@@ -37,9 +36,7 @@ export class planEditarComponent {
     public dialogo: MatDialogRef<planEditarComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public formulario: FormBuilder,
-    private activeRoute: ActivatedRoute,
     private membresiaService: MembresiaService,
-    private router: Router,
     private auth: AuthService,
     private spinner: NgxSpinnerService,
     public dialog: MatDialog
@@ -57,8 +54,7 @@ export class planEditarComponent {
         fechaInicio: ["", Validators.required],
         fechaFin: ["", Validators.required],
         membresias: [[], Validators.required],
-      },
-      { validators: this.dateLessThan("fechaInicio", "fechaFin") }
+      }
     );
   }
 
@@ -73,7 +69,6 @@ export class planEditarComponent {
       .consultarPlanIdMem(this.auth.idGym.getValue())
       .subscribe((respuesta) => {
         this.servicios = respuesta;
-
         this.membresiaService
           .consultarPlan(this.dataToUpdate.id)
           .subscribe((respuesta) => {
@@ -87,8 +82,10 @@ export class planEditarComponent {
               const serviciosCoincidentes = this.servicios.filter((servicio) =>
                 serviciosPlan.includes(servicio.titulo)
               );
+              
               serviciosCoincidentes.forEach((servicio) => {});
-              this.formulariodePlan.setValue({
+              this.formulariodePlan.patchValue({
+             
                 titulo: this.serviceToUpdate[0].titulo,
                 detalles: this.serviceToUpdate[0].detalles,
                 duracion: this.serviceToUpdate[0].duracion,
@@ -96,10 +93,15 @@ export class planEditarComponent {
                 status: this.serviceToUpdate[0].status,
                 tipo_membresia: this.serviceToUpdate[0].tipo_membresia,
                 Gimnasio_idGimnasio:this.serviceToUpdate[0].Gimnasio_idGimnasio,
-                fechaInicio: this.serviceToUpdate[0].fechaInicio,
-                fechaFin: this.serviceToUpdate[0].fechaFin,
+                //fechaInicio: this.serviceToUpdate[0].fechaInicio.toString(),
+               // fechaFin: this.serviceToUpdate[0].fechaFin.toString(),
                 membresias: serviciosCoincidentes,
               });
+              let fechaDate = new Date(this.serviceToUpdate[0].fechaInicio + ' 0:00:00');
+              this.formulariodePlan.controls['fechaInicio'].setValue(fechaDate);
+              let fechaDate2 = new Date(this.serviceToUpdate[0].fechaFin + ' 0:00:00');
+              this.formulariodePlan.controls['fechaFin'].setValue(fechaDate2);
+
             }
           });
       });
@@ -108,7 +110,7 @@ export class planEditarComponent {
   actualizar() {
     if (this.formulariodePlan.valid) {
       const membresiasSeleccionadas =
-        this.formulariodePlan.get("membresias")?.value;
+      this.formulariodePlan.get("membresias")?.value;
 
       // Inicializar la duración más alta con un valor inicial bajo, por ejemplo, 0
       let duracionMasAlta = 0;
@@ -127,6 +129,20 @@ export class planEditarComponent {
       this.formulariodePlan.get("duracion")?.setValue(duracionMasAlta);
 
       this.spinner.show();
+      const formatFecha = (fecha: string, timezone: string = 'America/Mexico_City') => {
+        return moment(fecha).tz(timezone).format('YYYY-MM-DD');
+      };
+      const fechaOriginalInicio = this.formulariodePlan.value.fechaInicio;
+      const fechaOriginalFin = this.formulariodePlan.value.fechaFin;
+      
+      const fechaFormateadaInicio = formatFecha(fechaOriginalInicio);
+      const fechaFormateadaFin = formatFecha(fechaOriginalFin);
+
+      this.formulariodePlan.patchValue({
+      fechaInicio: fechaFormateadaInicio,
+        fechaFin: fechaFormateadaFin
+      });
+
       this.membresiaService
         .actualizarPlan(this.idMem, this.formulariodePlan.value)
         .subscribe(
@@ -141,15 +157,12 @@ export class planEditarComponent {
                 if (cerrarDialogo) {
                   this.dialogo.close(true);
                 } else {
-                  // Hacer algo si es necesario
                 }
               });
           },
           (error) => {
             console.error("Error al actualizar membresía:", error);
             this.spinner.hide();
-            // Puedes mostrar un mensaje al usuario o manejar el error de alguna manera
-            // Por ejemplo, puedes usar Toastr para mostrar un mensaje de error.
           }
         );
     }
@@ -164,23 +177,4 @@ export class planEditarComponent {
     return control?.errors?.[error] && (control?.touched ?? false);
   }
 
-  requireMinItems(min: number) {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const length = control.value ? control.value.length : 0;
-      return length >= min ? null : { minItems: { value: control.value } };
-    };
-  }
-
-  dateLessThan(from: string, to: string) {
-    return (group: FormGroup): { [key: string]: any } => {
-      let f = group.controls[from];
-      let t = group.controls[to];
-      if (f.value > t.value) {
-        return {
-          dates: "La fecha de inicio debe ser anterior a la fecha de fin",
-        };
-      }
-      return {};
-    };
-  }
 }

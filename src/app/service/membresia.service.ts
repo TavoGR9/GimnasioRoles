@@ -215,7 +215,11 @@ export class MembresiaService {
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
+    
     return this.clienteHttp.post(this.API+"membresias.php?actualizarPlan="+id,datosPlan);
   }  
 
+  deletePlan(id: any):Observable<any>{
+    return this.clienteHttp.get(this.API+"membresias.php?borrar="+id);
+  }  
 }
