@@ -72,9 +72,9 @@
                        <input type="checkbox" id="toggle{{item.idMem}}" class="toggle-checkbox" [checked]="item.status == 1" (change)="toggleCheckbox(item.idMem,item.status)">
                        <label for="toggle{{item.idMem}}" class="toggle-label"></label>
                        </div>-->
-                    <!--<button mat-icon-button color="warn" (click)="borrarPlan(item.idMem)">
+                    <button mat-icon-button color="warn" (click)="borrarPlan(item.idMem)">
                        <mat-icon>delete</mat-icon>
-                       </button>-->
+                       </button>
                  </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
