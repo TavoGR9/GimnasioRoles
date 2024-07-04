@@ -165,4 +165,56 @@ export class HomeService {
     const data ={ idGim: idGim }
     return this.clienteHttp.post(this.API+"ConsultasHome.php?consultarAsistenciasFechaActual",data);
   }
+
+  graficas(idGim:any){ 
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1="+idGim);
+  }
+
+  graficas2(idGim:any){ 
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2="+idGim);
+  }
+
+  graficas1Visita(idGim:any){ 
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1Visita="+idGim);
+  }
+
+  graficas2Visita(idGim:any){ 
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2Visita="+idGim);
+  }
+
+  graficas1Quincena(idGim:any){ 
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1Quincena="+idGim);
+  }
+
+  graficas2Quincena(idGim:any){ 
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2Quincena="+idGim);
+  }
+
+  consultasFechaMensualidad(idGim: any, fecha: any) {
+    return this.clienteHttp.get(this.API + "ConsultasHome.php", {
+        params: {
+            idGim: idGim,
+            fecha: fecha
+        }
+    });
+}
+
+consultasFechaVisita(idGim: any, fecha: any) {
+  return this.clienteHttp.get(this.API + "ConsultasHome.php", {
+      params: {
+        idGimVisita: idGim,
+        fechaVisita: fecha
+      }
+  });
+}
+
+consultasFechaQuincena(idGim: any, fecha: any) {
+  return this.clienteHttp.get(this.API + "ConsultasHome.php", {
+      params: {
+          idGimQuincena: idGim,
+          fechaQuincena: fecha
+      }
+  });
+}
+
 }
