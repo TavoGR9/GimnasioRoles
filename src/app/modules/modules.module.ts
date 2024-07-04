@@ -84,6 +84,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgChartsModule } from 'ng2-charts';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PagoMemComponent } from './pago-mem/pago-mem.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 
 @NgModule({
@@ -172,6 +173,7 @@ import { PagoMemComponent } from './pago-mem/pago-mem.component';
     MatAutocompleteModule,
     MatSidenavModule,
     NgxSpinnerModule.forRoot({ type:'ball-pulse-sync'}),
+    NgxChartsModule,
     NgChartsModule,
     MatProgressSpinnerModule
   ]

@@ -167,3 +167,10 @@
   border-radius: 5px; /* Borde redondeado opcional */
   padding: 15px; /* Espacio interno */
 }
+/* En tu archivo CSS o SCSS */
+.center-header {
+  display: flex;
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente si es necesario */
+  text-align: center;
+}

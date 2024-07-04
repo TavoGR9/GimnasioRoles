@@ -1,124 +1,323 @@
 <div class="custom-spinner-container" *ngIf="isLoading">
-    <div class="custom-spinner">
-       <div class="spinner-circle"></div>
-       <div class="spinner-text">Cargando...</div>
-    </div>
- </div>
- <div *ngIf="!isLoading">
-    <div style="margin-top: 60px;">
-       <mat-card *ngIf="isAdmin() || isRecep()">
-          <mat-card-content>
-             <div class="row">
-                <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard">
-                   <mat-card class="orange-card">
-                      <mat-card-header>
-                         <mat-card-title>{{card.titulo}}</mat-card-title>
-                      </mat-card-header>
-                      <mat-card-content>
+   <div class="custom-spinner">
+      <div class="spinner-circle"></div>
+      <div class="spinner-text">Cargando...</div>
+   </div>
+</div>
+<div *ngIf="!isLoading">
+   <div style="margin-top: 60px;">
+      <mat-card *ngIf="isAdmin() || isRecep()">
+         <mat-card-content>
+            <div class="row" >
+               <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard">
+                  <mat-card class="orange-card">
+                     <mat-card-header>
+                        <mat-card-title>{{card.titulo}}</mat-card-title>
+                     </mat-card-header>
+                     <mat-card-content>
                         <!--col-8: Esta clase hace que la columna ocupe 8 de las 12 columnas disponibles en todos los tamaños de pantalla, desde el tamaño más pequeño hasta el más grande.-->
-                         <br>
-                         <div class="row">
-                            <div class="col-4 d-flex align-items-center justify-content-center">
-                               <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icnono" class="img-fluid card-image">
-                            </div>
-                            <div class="col-8">
-                               <br>
-                               <p style="color: rgb(0, 0, 0); font-size: 25px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
-                            </div>
-                         </div>
-                      </mat-card-content>
-                   </mat-card>
-                </div>
+                        <br>
+                        <div class="row">
+                           <div class="col-4 d-flex align-items-center justify-content-center">
+                              <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icnono" class="img-fluid card-image">
+                           </div>
+                           <div class="col-8">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 25px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
+                           </div>
+                        </div>
+                     </mat-card-content>
+                  </mat-card>
+               </div>
+            </div>
+         </mat-card-content>
+      </mat-card>
+      <!---- <mat-card *ngIf="isAdmin() || isRecep()">
+         <mat-card-content>
+            <div class="row">
+               <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard2">
+                  <mat-card class="orange-card">
+                     <mat-card-header>
+                        <mat-card-title>{{card.titulo}}</mat-card-title>
+                     </mat-card-header>
+                     <mat-card-content>
+                        <br>
+                        <div class="row">
+                           <div class="col-4 d-flex align-items-center justify-content-center">
+                              <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icono" class="img-fluid card-image">
+                           </div>
+                           <div class="col-8">
+                              <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">{{ card.cantidad }}</p>
+                              <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">{{ card.cantidadM }}</p>
+                           </div>
+                        </div>
+                     </mat-card-content>
+                  </mat-card>
+               </div>
+            </div>
+         </mat-card-content>
+         </mat-card>-->
+      <!--<mat-card *ngIf="isAdmin() || isRecep()">
+         <mat-card-content>
+           <div class="row">
+             <div class="col-lg-6 col-md-6 mb-6" *ngFor="let card of homeCard21">
+               <mat-card class="orange-card">
+                 <mat-card-content>
+                   <br>
+                   <div class="row">
+                     <div class="col-8 d-flex align-items-center justify-content-center">
+                        <ngx-charts-line-chart
+                        class="hide-mini-chart"
+                        [view]="view"
+                        [scheme]="colorScheme"
+                        [results]="mensualidades"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel"
+                        [timeline]="true"
+                        [legend]="false"
+                        (select)="onSelect($event)">
+                      </ngx-charts-line-chart>
+                      
+                     </div>
+                     <div class="col-4">
+                       <br>
+                       <p style="color: rgb(0, 0, 0); font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Mensualidades: {{ card.totalUsuariosM }}</p>
+                       <p style="color: rgb(0, 0, 0); font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Total: {{ card.cantidadM }}</p>
+                     </div>
+                   </div>
+                 </mat-card-content>
+               </mat-card>
              </div>
-          </mat-card-content>
-       </mat-card>
-       <mat-card *ngIf="isAdmin() || isRecep()">
-          <mat-card-content>
-             <div class="row">
-                <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard2">
-                   <mat-card class="orange-card">
-                      <mat-card-header>
-                         <mat-card-title>{{card.titulo}}</mat-card-title>
-                      </mat-card-header>
-                      <mat-card-content>
-                         <br>
-                         <div class="row">
-                            <div class="col-4 d-flex align-items-center justify-content-center">
-                               <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icono" class="img-fluid card-image">
-                            </div>
-                            <div class="col-8">
-                               <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">{{ card.cantidad }}</p>
-                               <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">{{ card.cantidadM }}</p>
-                            </div>
-                         </div>
-                      </mat-card-content>
-                   </mat-card>
-                </div>
+           </div>
+         </mat-card-content>
+         </mat-card>-->
+      <mat-card *ngIf="isAdmin() || isRecep()">
+         <mat-card-content>
+            <div class="row">
+               <div class="col-lg-4 col-md-6 mb-6" *ngFor="let card of homeCardVisita">
+                  <mat-card class="orange-card">
+                     <mat-card-content>
+                        <br>
+                        <div class="row">
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <p> {{fechaVisita}}</p>
+                           </div>
+                           <div class="col-11 d-flex align-items-center justify-content-center">
+                              <ngx-charts-line-chart
+                              class="hide-mini-chart"
+                              [view]="view"
+                              [scheme]="colorScheme"
+                              [results]="visitas"
+                              [gradient]="gradient"
+                              [xAxis]="showXAxis"
+                              [yAxis]="showYAxis"
+                              [showXAxisLabel]="showXAxisLabel"
+                              [showYAxisLabel]="showYAxisLabel"
+                              [xAxisLabel]="xAxisLabel"
+                              [timeline]="timeline"
+                              [legend]="true"
+                              [legendTitle]="'Mes'"
+                              (select)="onSelectVisita($event)">
+                              </ngx-charts-line-chart>
+                           </div>
+                           <br>
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Visita: {{ card.totalUsuarios }}</p>
+                           </div>
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Total: {{ card.cantidadM }}</p>
+                           </div>
+                        </div>
+                     </mat-card-content>
+                  </mat-card>
+               </div>
+               <div class="col-lg-4 col-md-6 mb-6" *ngFor="let card of homeCardQuincena">
+                  <mat-card class="orange-card">
+                     <mat-card-content>
+                        <br>
+                        <div class="row">
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <p>{{fechaQuincena}}</p>
+                           </div>
+                           <div class="col-11 d-flex align-items-center justify-content-center">
+                              <ngx-charts-line-chart
+                              class="hide-mini-chart"
+                              [view]="view"
+                              [scheme]="colorScheme"
+                              [results]="quincenas"
+                              [gradient]="gradient"
+                              [xAxis]="showXAxis"
+                              [yAxis]="showYAxis"
+                              [showXAxisLabel]="showXAxisLabel"
+                              [showYAxisLabel]="showYAxisLabel"
+                              [xAxisLabel]="xAxisLabel"
+                              [timeline]="timeline"
+                              [legend]="true"
+                              [legendTitle]="'Mes'"
+                              (select)="onSelectQuincena($event)">
+                              </ngx-charts-line-chart>
+                           </div>
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Quincena: {{ card.totalUsuariosQu }}</p>
+                           </div>
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Total: {{ card.cantidadM }}</p>
+                           </div>
+                        </div>
+                     </mat-card-content>
+                  </mat-card>
+               </div>
+               <div class="col-lg-4 col-md-6 mb-6" *ngFor="let card of homeCard21">
+                  <mat-card class="orange-card">
+                     <mat-card-content>
+                        <br>
+                        <div class="row">
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <p>{{fechaMensualidad}}</p>
+                           </div>
+                           <div class="col-11 d-flex align-items-center justify-content-center">
+                              <ngx-charts-line-chart
+                              class="hide-mini-chart"
+                              [view]="view"
+                              [scheme]="colorScheme"
+                              [results]="mensualidades"
+                              [gradient]="gradient"
+                              [xAxis]="showXAxis"
+                              [yAxis]="showYAxis"
+                              [showXAxisLabel]="showXAxisLabel"
+                              [showYAxisLabel]="showYAxisLabel"
+                              [xAxisLabel]="xAxisLabel"
+                              [timeline]="timeline"
+                              [legend]="true"
+                              [legendTitle]="'Mes'"
+                              (select)="onSelect($event)">
+                              </ngx-charts-line-chart>
+                           </div>
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Mensualidades: {{ card.totalUsuariosM }}</p>
+                           </div>
+                           <div class="col-12 d-flex justify-content-center align-items-center">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 18px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Total: {{ card.cantidadM }}</p>
+                           </div>
+                        </div>
+                     </mat-card-content>
+                  </mat-card>
+               </div>
+            </div>
+         </mat-card-content>
+      </mat-card>
+      <!--<mat-card *ngIf="isAdmin() || isRecep()">
+         <mat-card-content>
+           <div class="row">
+             <div class="col-lg-6 col-md-6 mb-6" *ngFor="let card of homeCardQuincena">
+               <mat-card class="orange-card">
+                 <mat-card-content>
+                   <br>
+                   <div class="row">
+                     <div class="col-8 d-flex align-items-center justify-content-center">
+                        <ngx-charts-line-chart
+                        class="hide-mini-chart"
+                        [view]="view"
+                        [scheme]="colorScheme"
+                        [results]="quincenas"
+                        [gradient]="gradient"
+                        [xAxis]="showXAxis"
+                        [yAxis]="showYAxis"
+                        [showXAxisLabel]="showXAxisLabel"
+                        [showYAxisLabel]="showYAxisLabel"
+                        [xAxisLabel]="xAxisLabel"
+                        [yAxisLabel]="yAxisLabel2"
+                        [timeline]="true"
+                        [legend]="false"
+                        (select)="onSelectQuincena($event)">
+                      </ngx-charts-line-chart>
+                      
+                     </div>
+                     <div class="col-4">
+                       <br>
+                       <p style="color: rgb(0, 0, 0); font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Mensualidades: {{ card.totalUsuariosQu }}</p>
+                       <p style="color: rgb(0, 0, 0); font-size: 15px; font-family: Verdana, Geneva, Tahoma, sans-serif;">Total: {{ card.cantidadM }}</p>
+                     </div>
+                   </div>
+                 </mat-card-content>
+               </mat-card>
              </div>
-          </mat-card-content>
-       </mat-card>
-       <mat-card *ngIf="isAdmin() || isRecep()">
-          <mat-card-header>
-             <h3 class="icon-title">
-                <mat-icon class="icon">grid_view</mat-icon>
-                PRODUCTOS MÁS VENDIDOS
-             </h3>
-          </mat-card-header>
-          <mat-card-content>
-             <p style="border-top: 2px solid orange;"></p>
-             <div *ngIf="tablaHTML" [innerHTML]="tablaHTML ">
-    </div>
-    </mat-card-content>
-    <!-- <mat-card class="ancho-2">
-       <mat-card-header>
-           <h3 class="icon-title">
+           </div>
+         </mat-card-content>
+         </mat-card>-->
+      <mat-card *ngIf="isAdmin() || isRecep()">
+         <mat-card-header>
+            <h3 class="icon-title">
                <mat-icon class="icon">grid_view</mat-icon>
-               ÚLTIMAS VENTAS
-           </h3>
-       </mat-card-header>
-       <mat-card-content>
-           <p style="border-top: 2px solid orange;"></p>
-           <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
-       </mat-card-content>
-       </mat-card>-->
-    </mat-card>
-    <mat-card *ngIf="isAdmin() || isRecep()">
-       <mat-card-header>
+               PRODUCTOS MÁS VENDIDOS
+            </h3>
+         </mat-card-header>
+         <mat-card-content>
+            <p style="border-top: 2px solid orange;"></p>
+            <div *ngIf="tablaHTML" [innerHTML]="tablaHTML ">
+   </div>
+   </mat-card-content>
+   <!-- <mat-card class="ancho-2">
+      <mat-card-header>
           <h3 class="icon-title">
-             <mat-icon class="icon">people</mat-icon>
-             LISTA DE ASISTENCIA
+              <mat-icon class="icon">grid_view</mat-icon>
+              ÚLTIMAS VENTAS
           </h3>
-       </mat-card-header>
-       <mat-card-content>
+      </mat-card-header>
+      <mat-card-content>
           <p style="border-top: 2px solid orange;"></p>
-       </mat-card-content>
-       <div  class="table-container">
-          <table mat-table [dataSource]="dataSource" >
-             <ng-container matColumnDef="title">
-                <th mat-header-cell *matHeaderCellDef>Nombre</th>
-                <td mat-cell *matCellDef="let item">{{ item.nombre }}</td>
-             </ng-container>
-             <ng-container matColumnDef="details">
-                <th mat-header-cell *matHeaderCellDef>Hora de entrada</th>
-                <td mat-cell *matCellDef="let item">{{ item.fechaHoraEntrada }}</td>
-             </ng-container>
-             <ng-container matColumnDef="price">
-                <th mat-header-cell *matHeaderCellDef>Membresia</th>
-                <td mat-cell *matCellDef="let item">{{ item.membresia }}</td>
-             </ng-container>
-             <ng-container matColumnDef="rol">
-                <th mat-header-cell *matHeaderCellDef>Rol</th>
-                <td mat-cell *matCellDef="let item">{{ item.rol }}</td>
-             </ng-container>
-             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-             <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
-          </table>
-          <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20, 30,40,50,100,200,300,4000]" showFirstLastButtons></mat-paginator>
-       </div>
-    </mat-card>
- </div>
- <!--<div>
-    <br>
-    <button (click)="Sincronizar()">Sincronizar</button>
-    </div>-->
- </div>
+          <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
+      </mat-card-content>
+      </mat-card>-->
+   </mat-card>
+   <mat-card *ngIf="isAdmin() || isRecep()">
+      <mat-card-header>
+         <h3 class="icon-title">
+            <mat-icon class="icon">people</mat-icon>
+            LISTA DE ASISTENCIA
+         </h3>
+      </mat-card-header>
+      <mat-card-content>
+         <p style="border-top: 2px solid orange;"></p>
+      </mat-card-content>
+      <div  class="table-container">
+         <table mat-table [dataSource]="dataSource" >
+            <ng-container matColumnDef="title">
+               <th mat-header-cell *matHeaderCellDef>Nombre</th>
+               <td mat-cell *matCellDef="let item">{{ item.nombre }}</td>
+            </ng-container>
+            <ng-container matColumnDef="details">
+               <th mat-header-cell *matHeaderCellDef>Hora de entrada</th>
+               <td mat-cell *matCellDef="let item">{{ item.fechaHoraEntrada }}</td>
+            </ng-container>
+            <ng-container matColumnDef="price">
+               <th mat-header-cell *matHeaderCellDef>Membresia</th>
+               <td mat-cell *matCellDef="let item">{{ item.membresia }}</td>
+            </ng-container>
+            <ng-container matColumnDef="rol">
+               <th mat-header-cell *matHeaderCellDef>Rol</th>
+               <td mat-cell *matCellDef="let item">{{ item.rol }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
+         </table>
+         <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20, 30,40,50,100,200,300,4000]" showFirstLastButtons></mat-paginator>
+      </div>
+   </mat-card>
+</div>
+<!--<div>
+   <br>
+   <button (click)="Sincronizar()">Sincronizar</button>
+   </div>-->
+</div>
