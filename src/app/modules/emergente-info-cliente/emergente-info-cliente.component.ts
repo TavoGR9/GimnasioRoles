@@ -18,7 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 
 export class EmergenteInfoClienteComponent implements OnInit{
-  url: string = `Finger://?id=${this.data.idCliente}`;
+  url: string = `Finger://?idCliente=${this.data.idCliente}&idSucursal=${this.data.idSucursal}`;
   currentDate: Date = new Date();
   duracion: any;
   photo: any;
