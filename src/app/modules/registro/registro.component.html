@@ -48,28 +48,26 @@
                           <mat-icon>add_a_photo</mat-icon>
                           <span>Tomar foto</span>
                        </button>
-
                        <div >
                         <br>
-                          <div *ngIf="actualizar_imagen === 'take'">
-                             <div *ngIf="showWebcam">
-                                <webcam
-                                [height]="400"
-                                [width]="400"
-                                [trigger]="triggerObservable"
-                                (imageCapture)="handleImage($event)"
-                                *ngIf="showWebcam"
-                                [allowCameraSwitch]="allowCameraSwitch"
-                                [switchCamera]="nextWebcamObservable"
-                                [videoOptions]="videoOptions"
-                                [imageQuality]="1"
-                                (cameraSwitched)="cameraWasSwitched($event)"
-                                (initError)="handleInitError($event)"
-                                >
-                                </webcam>
-                             </div>
-                             <button (click)="triggerSnapshot()" *ngIf="!webcamImage">Tomar foto</button>
-                          </div>
+                        <div *ngIf="actualizar_imagen === 'take'">
+                           <div *ngIf="showWebcam">
+                              <webcam
+                              [height]="400"
+                              [width]="400"
+                              [trigger]="triggerObservable"
+                              (imageCapture)="handleImage($event)"
+                              *ngIf="showWebcam"
+                              [allowCameraSwitch]="allowCameraSwitch"
+                              [switchCamera]="nextWebcamObservable"
+                              [imageQuality]="1"
+                              (cameraSwitched)="cameraWasSwitched($event)"
+                              (initError)="handleInitError($event)"
+                              >
+                              </webcam>
+                           </div>
+                           <button (click)="triggerSnapshot()" *ngIf="!webcamImage">Tomar foto</button>
+                        </div>
                        </div>
                     </div>
                  </div>
