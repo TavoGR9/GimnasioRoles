@@ -48,14 +48,21 @@ export class EmergenteInfoClienteComponent implements OnInit{
     private auth: AuthService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
+
+      const sanitizeValue = (value: any): string => {
+        return (value === null || value === 'null') ? '' : value;
+      };
+  
+      // Inicializar el formulario
       this.form = this.fb.group({
-        id_cliente: [this.data.idCliente, Validators.required],
-        estafeta: [this.data.estafeta, Validators.required],
-        nombre: [this.data.nombre, Validators.required],
-        telefono: [this.data.telefono],
-        correo: [this.data.email]
-      }); 
-  }  
+        id_cliente: [sanitizeValue(this.data.idCliente), Validators.required],
+        estafeta: [sanitizeValue(this.data.estafeta), Validators.required],
+        nombre: [sanitizeValue(this.data.nombre), Validators.required],
+        telefono: [sanitizeValue(this.data.telefono)], 
+        correo: [sanitizeValue(this.data.email)] 
+      });
+    }
+   
 
   cerrarDialogo(): void {
     this.dialogo.close(true);
