@@ -1,8 +1,8 @@
 <div>
     <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
-    <h1 class="title" *ngIf="optionToShow == 1" mat-dialog-title>Agregar membresia</h1>
+    <h1 class="title" *ngIf="optionToShow == 1" mat-dialog-title>AGREGAR MEMBRESÍA</h1>
     <h1 class="title" *ngIf="optionToShow == 2"  mat-dialog-title>Servicios de membresia</h1>
-    <h1 class="title" *ngIf="optionToShow == 3" mat-dialog-title >Editar membresia</h1>
+    <h1 class="title" *ngIf="optionToShow == 3" mat-dialog-title >EDITAR MEMBRESÍA</h1>
     <div class="services_table" *ngIf="optionToShow == 2 || optionToShow == 5" mat-dialog-content>
         <h2 *ngIf="dataSource && dataSource.data && dataSource.data.length > 0">{{dataSource.data[0].titulo}}</h2>
         <div *ngIf="dataSource.data.length == 0" class="center-container">
@@ -47,7 +47,7 @@
                                 <mat-form-field appearance="outline" style="width: 95%;" required>
                                     <mat-label>Nombre de la membresia:</mat-label>
                                     <input type="text" matInput placeholder="Titulo" autocomplete="off" id="titulo" formControlName="titulo">
-                                    <mat-error *ngIf="isFieldInvalid('titulo', 'required')">
+                                    <mat-error >
                                         El título es requerido.
                                       </mat-error>
                                 </mat-form-field>
@@ -58,10 +58,10 @@
                                 <mat-form-field appearance="outline"  style="width: 95%;" required>
                                     <mat-label>Precio</mat-label>
                                     <input type="number" placeholder="Precio" matInput autocomplete="off" id="precio" formControlName="precio" [readonly]="selection == 2 || dataToUpdate.tipo_membresia == 2">
-                                    <mat-error *ngIf="isFieldInvalid('precio', 'required')">
+                                    <mat-error >
                                         El precio es requerido.
                                       </mat-error>
-                                      <mat-error *ngIf="isFieldInvalid('precio', 'pattern')">
+                                      <mat-error >
                                         Solo se aceptan números.
                                       </mat-error>
                                 </mat-form-field>
@@ -87,7 +87,7 @@
                                         <mat-option  value="30">Mensualidad </mat-option>
                                         <mat-option  value="365">Anualidad</mat-option>
                                       </mat-select>
-                                    <mat-error *ngIf="isFieldInvalid('duracion', 'required')">
+                                    <mat-error >
                                         La duracion es requerida.
                                       </mat-error>
                                 </mat-form-field>
@@ -97,7 +97,7 @@
                                 <mat-form-field style="display: inline-block; width: 95%; height: 110px;" required appearance="outline">
                                     <mat-label>Detalles</mat-label>
                                     <textarea class="textarea" matInput rows="4" placeholder="Detalles" cols="50" style="display: inline-block; width: 100%;height: 100%;" id="detalles" formControlName="detalles"> </textarea>
-                                    <mat-error *ngIf="isFieldInvalid('detalles', 'required')">
+                                    <mat-error >
                                         Los detalles son requeridos.
                                       </mat-error>
                                 </mat-form-field>
@@ -112,7 +112,7 @@
                                       {{servicio.nombre_servicio}}
                                     </mat-option>
                                   </mat-select>
-                                  <mat-error *ngIf="isFieldInvalid('servicioseleccionado', 'required')">
+                                  <mat-error >
                                     El servicio es requerido.
                                   </mat-error>
                                 </mat-form-field>
@@ -142,10 +142,10 @@
                                     <mat-form-field appearance="outline" class="inputs_properties" style="margin-right: 35px;" required>
                                         <mat-label>nombre</mat-label>
                                         <input type="text" matInput placeholder="Nombre" autocomplete="off" id="nombre" formControlName="nombre">
-                                        <mat-error *ngIf="isFieldInvalidService('nombre', 'required')">
+                                        <mat-error >
                                             El nombre es requerido.
                                           </mat-error>
-                                          <mat-error *ngIf="isFieldInvalidService('nombre', 'pattern')">
+                                          <mat-error >
                                             Solo se aceptan letras.
                                           </mat-error>
                                     </mat-form-field>
@@ -155,10 +155,10 @@
                                     <mat-form-field appearance="outline" class="inputs_properties" style="margin-right: 35px;" required>
                                         <mat-label>precio</mat-label>
                                         <input type="number" matInput placeholder="precio" autocomplete="off" id="precio" formControlName="precio">
-                                        <mat-error *ngIf="isFieldInvalidService('precio', 'required')">
+                                        <mat-error >
                                             El precio es requerido.
                                           </mat-error>
-                                          <mat-error *ngIf="isFieldInvalidService('precio', 'pattern')">
+                                          <mat-error >
                                             Solo se aceptan numeros.
                                           </mat-error>
                                     </mat-form-field>
@@ -175,8 +175,8 @@
     </div>
 
     <div style="display: flex; justify-content: center;" mat-dialog-actions>
-        <button *ngIf="optionToShow === 1" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px; height: 40px; margin-right: 90px;width: 120px;">Aceptar</button>
-        <button *ngIf="optionToShow === 3" mat-stroked-button type="submit" (click)="validarFormulario()" style="background-color: #fd9727; font-size: 20px;  height: 40px; margin-right: 90px;width: 120px;">Actualizar</button>
-        <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px; height: 40px;color: white; width: 120px;">Cancelar</button>
+        <button *ngIf="optionToShow === 1" mat-stroked-button type="submit" (click)="validarFormulario()" class="aceptar">Aceptar</button>
+        <button *ngIf="optionToShow === 3" mat-stroked-button type="submit" (click)="validarFormulario()" class="aceptar">Actualizar</button>
+        <button mat-stroked-button (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
       </div>   
 </div>

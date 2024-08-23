@@ -16,8 +16,6 @@ table {
     text-align: center; /* Centrar el texto horizontalmente solo en las celdas de esta tabla */
   }
 
-
-  
   .toggle-container {
     float: left;
     margin-right: 10px;

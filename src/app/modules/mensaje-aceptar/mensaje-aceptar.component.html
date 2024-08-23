@@ -1,0 +1,12 @@
+<h1 mat-dialog-title class="title">Confirmación</h1>
+<div mat-dialog-content class="dialog-content">
+  <p class="message">{{data.mensaje}}</p>
+  <div class="details">
+    <p><strong>USUARIO:</strong> <span style="margin-left: 10px" class="highlight">{{data.cliente}}</span></p>
+    <p><strong>MEMBRESIA SELECCIONADA:</strong> <span style="margin-left: 10px" class="highlight">{{data.membresia}}</span></p>
+  </div>
+</div>
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-button (click)="cerrarDialogo()" class="cancel-button">Cancelar</button>
+  <button mat-button (click)="confirmado()" class="confirm-button" cdkFocusInitial>Aceptar</button>
+</div>

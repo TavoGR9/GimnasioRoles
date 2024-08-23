@@ -85,11 +85,6 @@ export class MembresiasComponent implements OnInit {
   listaTabla() {
     this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
       (respuesta) => {
-        /*if(respuesta[2] && respuesta[2].success == 2){
-          const combinedArray = respuesta[0].concat(respuesta[1]);
-          this.dataSource = new MatTableDataSource(combinedArray);
-          this.loadData(); 
-        } else {*/
         if (Array.isArray(respuesta)) {
           this.plan = respuesta;
           this.dataSource = new MatTableDataSource(this.plan);
@@ -99,11 +94,6 @@ export class MembresiasComponent implements OnInit {
             this.isLoading = false;
           }, 1000);
         }
-       /* if (respuesta) {
-          this.plan = respuesta;
-          this.dataSource = new MatTableDataSource(this.plan);
-          this.loadData();
-        } else {}*/
       },
       (error) => {
       }
@@ -146,7 +136,6 @@ export class MembresiasComponent implements OnInit {
     this.membresiaService.optionShow.subscribe((option) => {});
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: "70%",
-      height: "90%",
       disableClose: true,
       data: { name: "¿Para quién es esta membresía?" },
     });
@@ -173,8 +162,7 @@ export class MembresiasComponent implements OnInit {
     this.membresiaService.optionShow.subscribe((option) => {});
     this.membresiaService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-      width: "50%",
-      height: "50%",
+      width: "70%",
       disableClose: true,
       data: { name: "Servicios de la membresia" },
     });
@@ -186,7 +174,6 @@ export class MembresiasComponent implements OnInit {
     this.membresiaService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
       width: "70%",
-      height: "90%",
       disableClose: true,
       data: { name: "Editar membresia", id: idMem },
     });
@@ -205,7 +192,6 @@ export class MembresiasComponent implements OnInit {
       if (option == 4) {
         const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
           width: "70%",
-          height: "90%",
           data: { name: "Agregar servicios" },
         });
       }

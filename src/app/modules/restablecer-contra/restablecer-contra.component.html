@@ -1,0 +1,42 @@
+<h2 mat-dialog-title class="title">RESTABLECER CONTRASEÑA</h2>
+<mat-dialog-content>
+   <div class="row">
+      <div class="col-md-3">
+         <img src="../assets/img/candado.png" alt="Candado" style="width: 90%;" />
+      </div>
+      <div class="col-md-9" style="margin-top: 20px;">
+         <form [formGroup]="resetPasswordForm">
+         <mat-form-field appearance="outline">
+            <mat-label>Contraseña</mat-label>
+            <div class="password-container">
+               <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="newPassword">
+               <mat-icon (click)="togglePasswordVisibility()">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </div>
+            <mat-error *ngIf="resetPasswordForm.get('newPassword')?.hasError('required') &&
+               (resetPasswordForm.get('newPassword')?.touched || resetPasswordForm.dirty)">
+               Contraseña es obligatoria.
+            </mat-error>
+         </mat-form-field>
+         <mat-form-field appearance="outline">
+            <mat-label>Confirmar contraseña</mat-label>
+            <div class="password-container">
+               <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword">
+               <mat-icon (click)="toggleConfirmPasswordVisibility()">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </div>
+            <mat-error *ngIf="resetPasswordForm.get('confirmPassword')?.hasError('required') &&
+               (resetPasswordForm.get('confirmPassword')?.touched || resetPasswordForm.dirty)">
+               Confirmar contraseña es obligatoria.
+            </mat-error>
+            <mat-error *ngIf="resetPasswordForm.hasError('mismatch') &&
+               (resetPasswordForm.get('confirmPassword')?.touched || resetPasswordForm.dirty)">
+               Las contraseñas no coinciden.
+            </mat-error>
+         </mat-form-field>
+         <mat-dialog-actions style="margin-top: 20px;" fxLayoutAlign="center center">
+            <button mat-raised-button (click)="onSubmit()" class="aceptar">Aceptar</button>
+            <button mat-raised-button (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
+         </mat-dialog-actions>
+         </form>
+      </div>
+   </div>
+</mat-dialog-content>

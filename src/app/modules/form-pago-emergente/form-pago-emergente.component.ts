@@ -5,7 +5,11 @@ import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergent
 import { ToastrService } from 'ngx-toastr';
 import { GimnasioService } from '../../service/gimnasio.service'; 
 import { AuthService } from '../../service/auth.service';
-import { NgxSpinnerService } from "ngx-spinner";
+import { NgxSpinnerService } from "ngx-spinner"; 
+import { MensajeAceptarComponent } from '../mensaje-aceptar/mensaje-aceptar.component';
+import { MatDialogConfig } from '@angular/material/dialog';
+
+
 @Component({
   selector: 'app-form-pago-emergente',
   templateUrl: './form-pago-emergente.component.html',
@@ -364,8 +368,23 @@ export class FormPagoEmergenteComponent implements OnInit{
       }
     }
   
-    successDialog() {  
-      this.spinner.show();
+    successDialog() { 
+
+      const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '30%'; // Ajusta el ancho del diálogo
+    dialogConfig.height = 'auto'; // Ajusta la altura del diálogo, 'auto' para ajustar según el contenido
+    dialogConfig.disableClose = true; // Opcional: Deshabilita el cierre del diálogo al hacer clic fuera de él
+    dialogConfig.data = {
+      mensaje: `¿Está seguro/a de que desea pagar la membresía seleccionada?`,
+      cliente: this.data.nombre,
+      membresia: this.nombreMembresia
+    };
+
+    this.dialog.open(MensajeAceptarComponent, dialogConfig)
+      .afterClosed()
+      .subscribe((confirmado: boolean) => {
+        if (confirmado) {
+          this.spinner.show();
        
       if (this.membresiaSeleccionada != undefined){
         if(this.moneyRecibido >= this.precio){
@@ -443,9 +462,11 @@ export class FormPagoEmergenteComponent implements OnInit{
           this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
         }
       }
-      else {
-        this.spinner.hide(); 
-        this.toastr.warning('Selecciona una membresía', 'Alerta!!!');
-      }
+        } else {
+          // Acción a realizar si se cancela
+        }
+      });
+
+      
     }
 }

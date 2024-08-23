@@ -8,12 +8,6 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { AuthService } from '../../service/auth.service';
 import { NgxSpinnerService } from "ngx-spinner";
 
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = formulario && formulario.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
 @Component({
   selector: 'app-editar-colaborador',
   templateUrl: './editar-colaborador.component.html',
@@ -26,7 +20,6 @@ export class EditarColaboradorComponent implements OnInit{
   public idParam: any;
   resultadoData:  any = {};
   idGym!: number;
-  matcher = new MyErrorStateMatcher();
   constructor (private fb: FormBuilder,
     public dialogo: MatDialogRef<EditarColaboradorComponent>,
     public dialog: MatDialog,

@@ -8,6 +8,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desactivar.component";
 import { IndexedDBService } from './../../service/indexed-db.service';
+import { RestablecerContraComponent } from '../restablecer-contra/restablecer-contra.component';
+
 @Component({
   selector: 'app-colaboradores',
   templateUrl: './colaboradores.component.html',
@@ -53,6 +55,7 @@ export class ColaboradoresComponent {
     if (this.isSupadmin()){
       this.http.listaColaboradores().subscribe({
         next: (resultData) => {
+         
           this.empleados = resultData;
         }
       });
@@ -90,15 +93,6 @@ export class ColaboradoresComponent {
     return this.auth.isSupadmin();
   }
 
-  nextPage() {
-    this.page += 5;
-  }
-
-  prevPage() {
-    if ( this.page > 0 )
-      this.page -= 5;
-  }
-
   onSearchPokemon( search: Event ) {
     const filterValue = (search.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -107,9 +101,25 @@ export class ColaboradoresComponent {
   OpenAgregar() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '70%';
-    dialogConfig.height = '90%';
+    //dialogConfig.height = '90%';
     dialogConfig.disableClose = true;
     this.dialog.open(AltaColaboradoresComponent, dialogConfig)
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+          this.listaTabla();
+        } else {
+        }
+      });
+  }
+
+  OpenRestablecer(empleados: any) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '70%';
+    dialogConfig.disableClose = true; // Evita que el diálogo se cierre haciendo clic fuera de él
+    dialogConfig.data = empleados;
+    dialogConfig.disableClose = true;
+    this.dialog.open(RestablecerContraComponent, dialogConfig)
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
@@ -122,7 +132,7 @@ export class ColaboradoresComponent {
   OpenEditar(empleados: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '70%';
-    dialogConfig.height = '90%';
+    //dialogConfig.height = '90%';
     dialogConfig.disableClose = true; // Evita que el diálogo se cierre haciendo clic fuera de él
     dialogConfig.data = {
       empleadoID: `${empleados.id_empleado}`

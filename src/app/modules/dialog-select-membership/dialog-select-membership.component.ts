@@ -11,19 +11,7 @@ import { ErrorStateMatcher } from "@angular/material/core";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
 import { MembresiaService } from "../../service/membresia.service";
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    formulario: FormGroupDirective | NgForm | null
-  ): boolean {
-    const isSubmitted = formulario && formulario.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
-  }
-}
+
 @Component({
   selector: "app-dialog-select-membership",
   templateUrl: "./dialog-select-membership.component.html",
@@ -32,7 +20,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class DialogSelectMembershipComponent implements OnInit {
   noServicios: boolean = false; 
   displayedColumns: string[] = ["No", "nombre", "precio"];
-  dataSource: MatTableDataSource<MyElement> = new MatTableDataSource<MyElement>();
+  dataSource: any;
   tipo_membresia: number = 0;
   optionToShow: number = 0;
   selection: number = 0;
@@ -51,7 +39,6 @@ export class DialogSelectMembershipComponent implements OnInit {
   dataToUpdate: any = {};
   plan: any[] = [];
   selectedService: number = 4;
-  matcher = new MyErrorStateMatcher();
   seleccionado: number = 0;
 
   constructor(
@@ -72,12 +59,12 @@ export class DialogSelectMembershipComponent implements OnInit {
       titulo: ["", Validators.required],
       duracion: ["", [Validators.required, Validators.pattern(/^\d+$/)]],
       precio: ["",[Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],],
-      detalles: ["",[Validators.required]],  //,[Validators.required]
+      detalles: ["",[Validators.required]], 
       servicioseleccionado: [[], Validators.required],
-      status: ["1", [Validators.pattern(/^\d+$/)]],
-      tipo_membresia: ["1", [Validators.required, Validators.pattern(/^\d+$/)]],
+      status: ["1"],
+      tipo_membresia: ["1"],
       Gimnasio_idGimnasio: [this.AuthService.idGym.value, Validators.required],
-      created_by: [""],
+      created_by: [this.AuthService.idUser.getValue()],
     });
 
     this.formService = this.formulario.group({
@@ -107,9 +94,7 @@ export class DialogSelectMembershipComponent implements OnInit {
                     if (respuesta) {
                       if (this.dataToUpdate.id == respuesta[0].idMem) {
                         this.sucursalServices = respuesta;
-                        this.dataSource = new MatTableDataSource<MyElement>(
-                        this.sucursalServices[0].servicios
-                        );
+                        this.dataSource = this.sucursalServices[0].servicios
                       } else {
                       }
                     }
@@ -190,9 +175,7 @@ export class DialogSelectMembershipComponent implements OnInit {
     this.seleccionado = 1;
     this.ServiciosService.seleccionado.next(this.seleccionado);
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
-      width: "55%",
-      height: "60%",
-      data: { name: "¿para quien es esta membresia?" },
+      width: "70%",
       disableClose: true,
     });
 
@@ -212,16 +195,6 @@ export class DialogSelectMembershipComponent implements OnInit {
     });
   }
 
-  isFieldInvalid(field: string, error: string): boolean {
-    const control = this.formPlan.get(field);
-    return control?.errors?.[error] && (control?.touched ?? false);
-  }
-
-  isFieldInvalidService(field: string, error: string): boolean {
-    const control = this.formService.get(field);
-    return control?.errors?.[error] && (control?.touched ?? false);
-  }
-
   validarFormulario() {
     if (this.formPlan.invalid) {
       if (!this.formPlan.value.servicioseleccionado || this.formPlan.value.servicioseleccionado.length === 0) {
@@ -235,17 +208,8 @@ export class DialogSelectMembershipComponent implements OnInit {
       });
     } else {
       this.spinner.show();
-      this.formPlan.setValue({
-        idMem: 0,
-        titulo: this.formPlan.value.titulo,
-        duracion: this.formPlan.value.duracion,
-        precio: this.formPlan.value.precio,
-        detalles: this.formPlan.value.detalles,
-        servicioseleccionado: this.formPlan.value.servicioseleccionado,
-        status: this.formPlan.value.status,
-        tipo_membresia: this.tipo_membresia,
+      this.formPlan.patchValue({
         Gimnasio_idGimnasio: this.idGym,
-        created_by: this.AuthService.idUser.getValue()
       });
       if (this.optionToShow == 1 || this.optionToShow == 2) {
         let formValue = this.formPlan.value;
@@ -261,28 +225,12 @@ export class DialogSelectMembershipComponent implements OnInit {
             if (respuesta.success == 1) {
               this.spinner.hide();
               const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
-                width: "300px",
-                height: "200px",
                 data: "La membresía se ha insertado correctamente",
               });
               dialogRef.afterClosed().subscribe((result) => {
                 this.ServiciosService.confirmButton.next(true);
                 this.dialogo.close(respuesta);
               });
-            }else if (respuesta.success == '2'){
-              this.spinner.hide();
-              const dialogRefConfirm = this.dialog.open(
-                MensajeEmergentesComponent,
-                {
-                  width: "25%",
-                  height: "30%",
-                  data: `Registro agregado a base de datos local.`,
-                } 
-              );
-              dialogRefConfirm.afterClosed().subscribe((result) => {
-                this.dialogo.close();
-              });
-
             }
           }
         }); 
@@ -372,12 +320,4 @@ export class DialogSelectMembershipComponent implements OnInit {
         this.servicios = respuesta;
     });
   }
-}
-interface MyElement {
-  fk_idMem: string;
-  fk_servicios_individuales: string;
-  id_servicio_membresia: string;
-  nombre_servicio: string;
-  precio_unitario: string;
-  titulo: string;
 }

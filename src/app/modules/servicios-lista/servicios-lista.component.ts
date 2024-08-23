@@ -10,25 +10,21 @@ import { MatTableDataSource } from "@angular/material/table";
 import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
 import { MembresiaService } from "../../service/membresia.service";
 import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: "app-servicios-lista",
   templateUrl: "./servicios-lista.component.html",
   styleUrls: ["./servicios-lista.component.css"],
 })
 export class ServiciosListaComponent implements OnInit{
-  plan: plan[] = [];
+  
   services: any[] = [];
-  membresias: plan[] = [];
-  sucursales: any;
   dataSource: any;
-  page: number = 0;
   idGym: number = 0;
   seleccionado: number = 0;
-  search: string = "";
   message: string = "";
   currentUser: string = "";
   confirmButton: boolean = false;
-  membresiaActiva: boolean = true; 
   displayedColumns: string[] = ["title", "details", "price", "actions", "eliminar"];
   dialogRef: any;
   isLoading: boolean = true; 
@@ -45,7 +41,6 @@ export class ServiciosListaComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    // this.gimnasioService.comprobar();
     this.auth.comprobar().subscribe((respuesta)=>{ 
       this.habilitarBoton = respuesta.status;
     });
@@ -86,20 +81,8 @@ export class ServiciosListaComponent implements OnInit{
 
   listaTabla() {
     this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => { 
-        
-      /*if (res[2] && res[2].success === 2) { 
-        const combinedArray = res[0].concat(res[1]);
-        if (Array.isArray(combinedArray)) { // Verificar si combinedArray es un array
-          this.dataSource = new MatTableDataSource(combinedArray);
-          this.loadData(); 
-        } else {
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 1000); 
-        }
-      } else {*/
         this.services = res;
-        if (Array.isArray(this.services)) { // Verificar si this.services es un array
+        if (Array.isArray(this.services)) {
           this.dataSource = new MatTableDataSource(this.services);
           this.loadData(); 
         } else {
@@ -107,65 +90,24 @@ export class ServiciosListaComponent implements OnInit{
             this.isLoading = false;
           }, 1000); 
         }
-      
     });
   }
-  
-  
   
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  toggleCheckbox(idMem: number, status: number) {
-    const estadoOriginal = status;
-    const dialogRef = this.dialog.open(MensajeEliminarComponent, {
-      data: `¿Desea cambiar el estatus de la categoría?`,
-    });
-
-    dialogRef.afterClosed().subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        // Invierte el estado actual de la categoría
-        const nuevoEstado = status == 1 ? { status: 0 } : { status: 1 };
-        // Actualiza el estado solo si el usuario confirma en el diálogo
-        this.actualizarEstatusMembresia(idMem, nuevoEstado);
-      } else {
-      }
-    });
-  }
-
-  actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
-    this.membresiaService.updateMembresiaStatus(idMem, estado).subscribe(
-      (respuesta) => {
-        this.membresiaActiva = estado.status == 1;
-      },
-      (error) => {
-      }
-    );
-  }
-
   openDialog(): void {
     this.seleccionado = 1;
     this.ServiciosService.seleccionado.next(this.seleccionado);
     this.dialogRef = this.dialog.open(ServiceDialogComponent, {
-      width: "55%",
-      height: "60%",
-      data: { name: "¿para quien es esta membresia?" },
+      width: "70%",
       disableClose: true,
     });
     
    this.dialogRef.afterClosed().subscribe((result: any) => {
-      this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
-        this.services = res;
-        this.dataSource = new MatTableDataSource(this.services);
-        this.dataSource.paginator = this.paginator;
-      });
-      this.ServiciosService.confirmButton.next(false);
-      this.ServiciosService.confirmButton.subscribe((res) => {
-        if (!res) {
-        }
-      });
+      this.listaTabla();
     });
   }
 
@@ -174,37 +116,14 @@ export class ServiciosListaComponent implements OnInit{
     this.ServiciosService.idService.next(idServicio);
     this.ServiciosService.seleccionado.next(this.seleccionado);
     const dialogRef = this.dialog.open(ServiceDialogComponent, {
-      width: "55%",
-      height: "60%",
+      width: "70%",
       disableClose: true,
     });
 
-    this.ServiciosService.idService.next(idServicio);
-    this.ServiciosService.getService(idServicio).subscribe((res) => {
-      if (res) {
-      }
-    });
-
     dialogRef.afterClosed().subscribe((result) => {
-      this.ServiciosService.confirmButton.subscribe((res) => {
-        if (res) {
-          this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
-            this.services = res;
-            this.dataSource = new MatTableDataSource(this.services);
-            this.dataSource.paginator = this.paginator;
-          });
-        }
-      });
-      this.ServiciosService.confirmButton.next(false);
-      this.ServiciosService.confirmButton.subscribe((res) => {
-        if (!res) {
-      
-        }
-      });
+      this.listaTabla();
     });
   }
-
-
 
   borrarSucursal(idGimnasio: any) {
     this.dialog.open(MensajeEliminarComponent,{
@@ -215,19 +134,12 @@ export class ServiciosListaComponent implements OnInit{
       if (confirmado) {
         this.ServiciosService.deleteService(idGimnasio).subscribe(
           (respuesta) => {
-                this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
-                  this.services = res;
-                  this.dataSource = new MatTableDataSource(this.services);
-                  this.dataSource.paginator = this.paginator;
-                });
-                this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
-                  positionClass: 'toast-bottom-left',
-                });
-          },
-          (error) => {
+            this.listaTabla();
+            this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
+              positionClass: 'toast-bottom-left',
+            });
           }
         );
-      } else {
       }
     });
   }

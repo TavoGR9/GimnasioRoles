@@ -8,6 +8,7 @@ import { throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -208,10 +209,6 @@ export class ColaboradorService {
                 });
             });
         }
-
-
-
-
     
     InfoIdEmpleado(idEmp: any) {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
@@ -224,6 +221,17 @@ export class ColaboradorService {
         let params = 'pid_bodega=' + pid_bodega + '&pnombreCompleto=' + pnombreCompleto + '&pCorreoEmpleado=' + pCorreoEmpleado + '&ptelefono=' + ptelefono + '&pidEmp=' + pidEmp;
         return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
       }
+
+      ActualizarContrasenia(p_idUsuario: number, p_contrasenia: string) {
+        // Define headers and params for the request
+        const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        const params = new HttpParams()
+            .set('p_idUsuario', p_idUsuario.toString())
+            .set('p_contrasenia', p_contrasenia);
+    
+        // Perform the POST request
+        return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params.toString(), { headers });
+    }
 
       actualizarEstatus(idGimnasio: any, estatus: any, correo:any): Observable<any> {
         let body = new URLSearchParams();

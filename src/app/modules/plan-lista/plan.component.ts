@@ -142,7 +142,7 @@ export class planComponent implements OnInit {
     this.membresiaService.section.next(1);
     const dialogRef = this.dialog.open(planAgregarComponent, {
       width: '70%',
-      height: '90%',
+      //height: '90%',
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -168,8 +168,8 @@ export class planComponent implements OnInit {
   openDialogService(idMem: number, tipo_membresia: number){
     this.membresiaService.optionShow.next(5);
     const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-      width: '50%',
-      height: '50%',
+      width: '70%',
+      //height: '50%',
       disableClose: true,
       data: {name: 'Servicios de la membresia'}
     });
@@ -182,7 +182,7 @@ export class planComponent implements OnInit {
     this.membresiaService.setDataToupdate(idMem, tipo_membresia);
     const dialogRef = this.dialog.open(planEditarComponent, {
       width: '70%',
-      height: '90%',
+      //height: '90%',
       disableClose: true,
       data: { idMem: idMem },
     })
@@ -213,7 +213,7 @@ export class planComponent implements OnInit {
       if(option == 4){
         const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
           width: '70%',
-          height: '90%',
+         // height: '90%',
           disableClose: true,
           data: {name: 'Agregar servicios'}
         });

@@ -4,8 +4,8 @@
     <div >
         <!--SE AGREGA CONTENIDO DE LA PANTALLA-->
         <div >
-           <div mat-dialog-title class="title_page">
-              <h1>¡Registra a tu cliente aquí!</h1>
+           <div mat-dialog-title class="title">
+              <h1>¡REGISTRA A TU CLIENTE AQUÍ!</h1>
            </div>
            <!--cierra title page-->
            <div mat-dialog-content >
@@ -265,10 +265,10 @@
               </form>
            </div>
            <div mat-dialog-actions fxLayoutAlign="center center">
-            <button mat-button [disabled]="!habilitarBoton" (click)="registrarUsuario()" mat-raised-button style="background: #fd9727; color: white; width: 20%;">
+            <button mat-button [disabled]="!habilitarBoton" (click)="registrarUsuario()" style=" background-color: #fd9727; " mat-raised-button class="aceptar">
               ¡Registrar!
             </button>
-            <button  mat-button (click)="cerrarDialogo()" mat-raised-button style="background: #000000; color: white; width: 20%;">Cerrar</button>
+            <button  mat-button (click)="cerrarDialogo()" mat-raised-button class="cancelar" style="background-color: #000000; color: white;">Cerrar</button>
           </div>
         </div>
      </div>
