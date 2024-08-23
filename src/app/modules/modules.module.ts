@@ -85,6 +85,8 @@ import { NgChartsModule } from 'ng2-charts';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PagoMemComponent } from './pago-mem/pago-mem.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { RestablecerContraComponent } from './restablecer-contra/restablecer-contra.component';
+import { MensajeAceptarComponent } from './mensaje-aceptar/mensaje-aceptar.component';
 
 
 @NgModule({
@@ -135,7 +137,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     ArchivosComponent,
     SidebarComponent,
     PagoMemComponent,
-    //InventarioComponent
+    RestablecerContraComponent,
+    MensajeAceptarComponent
   ],
   imports: [
     RouterModule,

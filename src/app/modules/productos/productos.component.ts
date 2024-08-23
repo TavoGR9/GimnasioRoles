@@ -121,8 +121,7 @@ export class ProductosComponent implements OnInit {
 
   crearProducto(): void {
     const dialogRef = this.dialog.open(CrearProductoComponent, {
-      width: '65%',
-      height: '90%',
+      width: '70%',
       disableClose: true,   
     });
     dialogRef.afterClosed().subscribe(() => {
@@ -138,8 +137,7 @@ export class ProductosComponent implements OnInit {
   editarProducto(idProducto: number): void {
     const dialogRef = this.dialog.open(EditarProductoComponent, {
       data: { idProducto: idProducto },
-      width: '65%',
-      height: '90%', 
+      width: '70%',
       disableClose: true,  
     });
     dialogRef.afterClosed().subscribe(() => {

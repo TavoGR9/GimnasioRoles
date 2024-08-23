@@ -1,5 +1,5 @@
 <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
-            <h1 class="title" mat-dialog-title>Editar Plan</h1>
+            <h1 class="title" mat-dialog-title>EDITAR PLAN</h1>
       
             <form [formGroup]="formulariodePlan" mat-dialog-content>
                 <div >
@@ -91,8 +91,8 @@
       
 
         <div style="display: flex; justify-content: center;" mat-dialog-actions>
-            <button mat-stroked-button (click)="actualizar()" style="background-color: #fd9727; font-size: 20px;  height: 40px; margin-right: 90px;">Aceptar</button>
-            <button mat-stroked-button (click)="cerrarDialogo()" style="background-color: #000000; font-size: 20px;  height: 40px;color: white;">Cancelar</button>
+            <button mat-stroked-button (click)="actualizar()" class="aceptar">Aceptar</button>
+            <button mat-stroked-button (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
           </div>   
 
 

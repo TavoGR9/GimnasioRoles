@@ -87,3 +87,18 @@ tbody tr:nth-of-type(even) {
 tbody tr:last-of-type {
   border-bottom: 2px solid #d8d8d8;
 }
+
+.aceptar{
+  background-color: #fd9727; 
+  font-size: 20px; 
+  height: 40px; 
+  width: 200px;
+}
+
+.cancelar{
+  background-color: #000000; 
+  font-size: 20px;  
+  height: 40px;
+  color: white; 
+  width: 200px;
+}

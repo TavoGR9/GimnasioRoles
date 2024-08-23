@@ -16,10 +16,10 @@
                   <mat-form-field appearance="outline" style="width: 95%;">
                      <mat-label>Nombre del servicio</mat-label>
                      <input matInput formControlName="nombre_servicio" placeholder="Nombre del servicio" />
-                     <mat-error *ngIf="isFieldInvalidService('nombre_servicio', 'required')">
+                     <mat-error >
                         El nombre es requerido.
                      </mat-error>
-                     <mat-error *ngIf="isFieldInvalidService('nombre_servicio', 'pattern')">
+                     <mat-error >
                         Solo se aceptan letras.
                      </mat-error>
                   </mat-form-field>
@@ -28,10 +28,10 @@
                   <mat-form-field appearance="outline" style="width: 95%;">
                      <mat-label>Precio unitario</mat-label>
                      <input matInput formControlName="precio_unitario" placeholder="Precio unitario" type="number" inputmode="numeric" />
-                     <mat-error *ngIf="isFieldInvalidService('precio_unitario', 'required')">
+                     <mat-error >
                         El precio es requerido.
                      </mat-error>
-                     <mat-error *ngIf="isFieldInvalidService('precio_unitario', 'pattern')">
+                     <mat-error >
                         Solo se aceptan números.
                      </mat-error>
                   </mat-form-field>
@@ -42,10 +42,10 @@
                   <mat-form-field appearance="outline" style="width: 95%;">
                      <mat-label>Detalles</mat-label>
                      <textarea matInput formControlName="detalles" placeholder="Detalles"></textarea>
-                     <mat-error *ngIf="isFieldInvalidService('detalles', 'required')">
+                     <mat-error>
                         El detalle es requerido.
                      </mat-error>
-                     <mat-error *ngIf="isFieldInvalidService('detalles', 'pattern')">
+                     <mat-error >
                         Solo se aceptan letras.
                      </mat-error>
                   </mat-form-field>
@@ -56,7 +56,7 @@
    </form>
 </div>
 <div style="display: flex; justify-content: center;" mat-dialog-actions>
-   <button *ngIf="seleccionado == 1" mat-stroked-button type="submit" (click)="validaFormService()" style="background-color: #fd9727; font-size: 20px;  height: 40px; margin-right: 90px;">Aceptar</button>
-   <button *ngIf="seleccionado == 2" mat-stroked-button type="submit" (click)="actualizarForm()" style="background-color: #fd9727; font-size: 20px;  height: 40px; margin-right: 90px;">Actualizar</button>
-   <button mat-stroked-button (click)="cancelar()" style="background-color: #000000; font-size: 20px; height: 40px;color: white;">Cancelar</button>
+   <button *ngIf="seleccionado == 1" mat-stroked-button type="submit" (click)="validaFormService()" class="aceptar">Aceptar</button>
+   <button *ngIf="seleccionado == 2" mat-stroked-button type="submit" (click)="actualizarForm()" class="aceptar">Actualizar</button>
+   <button mat-stroked-button (click)="cancelar()" class="cancelar">Cancelar</button>
 </div>

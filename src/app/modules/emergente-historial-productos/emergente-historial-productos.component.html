@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Historial del inventario</h1>
+<h1 mat-dialog-title class="title">HISTORIAL DEL INVENTARIO</h1>
     <div mat-dialog-content>
         <div class="grid">
             <div style="display: flex; justify-content: flex-end;">
@@ -50,7 +50,7 @@
     </div>
 <div mat-dialog-actions class="grid">
     <div class="move-right">
-        <button mat-button style="background-color: #F9A640;" [matMenuTriggerFor]="menu">
+        <button mat-button class="aceptar" [matMenuTriggerFor]="menu">
             <mat-icon style="font-size: 22px;">download</mat-icon>
             Descargar
         </button>
@@ -61,6 +61,6 @@
     </div>
     <div></div>
     <div>
-        <button mat-button style="background-color: #000000; color: #ffffff" (click)="cerrarDialogo()"><mat-icon >cancel</mat-icon>Cerrar</button>
+        <button mat-button class="cancelar" (click)="cerrarDialogo()"><mat-icon >cancel</mat-icon>Cerrar</button>
     </div>
 </div>

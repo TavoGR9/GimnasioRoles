@@ -272,22 +272,15 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           foto: `${prod.foto}`,
           action: `${prod.accion}`,
         },
-        width: "80%",
-        height: "90%",
+        width: "70%",
+        //height: "90%",
         disableClose: true,
       })
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          this.pagoService
-            .obtenerActivos(this.auth.idGym.getValue())
-            .subscribe((respuesta) => {
-              this.clienteActivo = respuesta.data;
-              this.dataSourceActivos.data = this.clienteActivo.slice();
-              this.dataSourceActivos._updateChangeSubscription();
-            });
-        } else {
-        }
+          this.listaClientesData();
+        } 
       });
   }
 
@@ -305,20 +298,14 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         idMem: `${prod.Membresia_idMem}`,
         detMemID: `${prod.idDetMem}`,
       },
-      width: "50%",
-      height: "80%",
+      width: "70%",
+      //height: "80%",
       disableClose: true,
     });
     dialogRef.componentInstance.actualizarTablas.subscribe(
       (actualizar: boolean) => {
         if (actualizar) {
-          this.pagoService
-            .obtenerActivos(this.auth.idGym.getValue())
-            .subscribe((respuesta) => {
-              this.clienteActivo = respuesta.data;
-              this.dataSourceActivos.data = this.clienteActivo.slice();
-              this.dataSourceActivos._updateChangeSubscription();
-            });
+          this.listaClientesData();
         }
       }
     );
@@ -354,30 +341,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       .afterClosed()
       .subscribe((confirmado: boolean) => {
         if (confirmado) {
-          this.pagoService.deleteService(prueba).subscribe((respuesta) => {
-            this.pagoService
-              .obtenerActivos(this.auth.idGym.getValue())
-              .subscribe(
-                (response: any) => {
-                  /*if (response[2] && response[2].success === '2') {
-                //const combinedArray = response[0].data.concat(response[1]);
-                const combinedArray = response[0].data;
-                this.dataSourceActivos = new MatTableDataSource(combinedArray);
-                this.loadData(); 
-              } else {*/
-                  this.clienteActivo = response.data;
-                  this.dataSourceActivos = new MatTableDataSource(
-                    this.clienteActivo
-                  );
-                  this.loadData();
-                },
-                (error: any) => {
-                  console.error("Error al obtener activos:", error);
-                }
-              );
-          });
-        } else {
-        }
+          this.listaClientesData();
+        } 
       });
   }
 
@@ -395,20 +360,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
           this.pagoService
             .deleteServiceUsuario(prueba)
             .subscribe((respuesta) => {
-              this.pagoService
-                .obtenerActivos(this.auth.idGym.getValue())
-                .subscribe(
-                  (response: any) => {
-                    this.clienteActivo = response.data;
-                    this.dataSourceActivos = new MatTableDataSource(
-                      this.clienteActivo
-                    );
-                    this.loadData();
-                  },
-                  (error: any) => {
-                    console.error("Error al obtener activos:", error);
-                  }
-                );
+              this.listaClientesData();
             });
         } else {
         }

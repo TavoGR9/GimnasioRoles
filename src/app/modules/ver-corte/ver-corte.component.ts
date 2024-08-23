@@ -320,8 +320,7 @@ export class VerCorteComponent implements OnInit  {
 
   ventas(): void {
     this.dialogRef = this.dialog.open(VentasComponent, {
-      width: '80%',
-      height: '90%',
+      width: '70%',
       disableClose: true
     });
     this.dialogRef.afterClosed().subscribe(() => {

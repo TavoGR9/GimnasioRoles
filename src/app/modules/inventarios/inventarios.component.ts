@@ -86,8 +86,7 @@ export class InventariosComponent implements OnInit {
 
   abrirHistorial(): void {
     this.dialog.open(EmergenteHistorialProductosComponent, {
-      maxWidth: '100%',
-      width: 'auto',
+      width: '70%',
     })
     .afterClosed()
     .subscribe((cerrarDialogo: Boolean) => {

@@ -5,7 +5,9 @@ import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { NgxSpinnerService } from "ngx-spinner";
-import { DialogStateService } from "../../service/dialogState.service";
+
+
+
 @Component({
   selector: "app-service-dialog",
   templateUrl: "./service-dialog.component.html",
@@ -15,17 +17,15 @@ export class ServiceDialogComponent implements OnInit {
   serviceForm!: FormGroup;
   idGym: number = 0;
   idService: number = 0;
-  service: Service | null = null;
+  service: any;
   seleccionado: number = 0;
   message: string = "";
-  isMaximized = false;
 
   constructor(
     private fb: FormBuilder,
     public dialog: MatDialog,
     private auth: AuthService,
     private ServiciosService: serviciosService,
-    private dialogStateService: DialogStateService,
     private spinner: NgxSpinnerService,
     private dialogRef: MatDialogRef<ServiceDialogComponent>,
   ) {
@@ -33,15 +33,10 @@ export class ServiceDialogComponent implements OnInit {
       id_servicios_individuales: [0],
       nombre_servicio: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
       detalles: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
-      precio_unitario: [""],
+      precio_unitario: ["", Validators.required],
       fk_idGimnasio: [0],
-      created_by: [""],
+      created_by: [this.auth.idUser.getValue()],
     });
-  }
-
-  toggleMaximize() {
-    this.isMaximized = !this.isMaximized;
-    this.dialogStateService.updateMaximizeState(this.isMaximized);
   }
 
   ngOnInit(): void {
@@ -53,8 +48,7 @@ export class ServiceDialogComponent implements OnInit {
     this.ServiciosService.seleccionado.subscribe((id) => {
       if (id) {
         this.seleccionado = id;
-        if (id == 1) {
-        } else if (id == 2) {
+        if (id == 2) {
           this.ServiciosService.idService.subscribe((id) => {
             if (id) {
               this.idService = id;
@@ -71,7 +65,6 @@ export class ServiceDialogComponent implements OnInit {
                       created_by: this.service.created_by,
                     });
                   }
-                } else {
                 }
               });
             }
@@ -81,61 +74,27 @@ export class ServiceDialogComponent implements OnInit {
     });
   }
 
-  isFieldInvalidService(field: string, error: string): boolean {
-    const control = this.serviceForm.get(field);
-    return control?.errors?.[error] && (control?.touched ?? false);
-  }
-
   validaFormService() {
     if (this.serviceForm.invalid) {
-      Object.values(this.serviceForm.controls).forEach((control) => {
-        control.markAsTouched();
-      });
       this.message = "Por favor, complete todos los campos requeridos.";
+      this.marcarCamposInvalidos(this.serviceForm);
     } else {
       this.spinner.show();
-      this.serviceForm.setValue({
+      this.serviceForm.patchValue({
         id_servicios_individuales: 0,
-        nombre_servicio: this.serviceForm.value.nombre_servicio,
-        detalles: this.serviceForm.value.detalles,
-        precio_unitario: this.serviceForm.value.precio_unitario,
         fk_idGimnasio: this.idGym,
-        created_by: this.auth.idUser.getValue()
       });
-      this.ServiciosService
-        .newService(this.serviceForm.value)
-        .subscribe((respuesta) => {
-          if (respuesta) {
-            if (respuesta.success == '1') {
-              this.spinner.hide();
-              const dialogRefConfirm = this.dialog.open(
-                MensajeEmergentesComponent,
-                {
-                  width: "25%",
-                  height: "30%",
-                  data: `¡Servicio agregado con éxito!`,
-                }
-              );
-              dialogRefConfirm.afterClosed().subscribe((result) => {
-                this.dialogRef.close(respuesta);
-              });
-            }else if(respuesta.success == '2'){
-              this.spinner.hide();
-              const dialogRefConfirm = this.dialog.open(
-                MensajeEmergentesComponent,
-                {
-                  width: "25%",
-                  height: "30%",
-                  data: `Registro agregado a base de datos local.`,
-                } 
-              );
-              dialogRefConfirm.afterClosed().subscribe((result) => {
-                this.dialogRef.close(respuesta);
-              });
-            }
-          } else {
+      this.ServiciosService.newService(this.serviceForm.value).subscribe((respuesta) => {
+        if (respuesta) {
+          if (respuesta.success == '1') {
+            this.spinner.hide();
+            const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent,{ data: `¡Servicio agregado con éxito!`});
+            dialogRefConfirm.afterClosed().subscribe((result) => {
+              this.dialogRef.close(respuesta);
+            });
           }
-        });
+        } 
+      });
     }
   }
 
@@ -143,21 +102,24 @@ export class ServiceDialogComponent implements OnInit {
     this.spinner.show();
     this.ServiciosService.updateService(this.serviceForm.value).subscribe((res) => {
       if (res) {
-        if (res) {
-          this.spinner.hide();
-          const dialogRefConfirm = this.dialog.open(
-            MensajeEmergentesComponent,
-            {
-              width: "25%",
-              height: "30%",
-              data: `¡Servicio actualizado con éxito!`,
-            }
-          );
+        this.spinner.hide();
+        const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent,{data: `¡Servicio actualizado con éxito!`});
+        dialogRefConfirm.afterClosed().subscribe((result) => {
+          this.ServiciosService.confirmButton.next(true);
+          this.dialogRef.close();
+        });
+      }
+    });
+  }
 
-          dialogRefConfirm.afterClosed().subscribe((result) => {
-            this.ServiciosService.confirmButton.next(true);
-            this.dialogRef.close();
-          });
+  marcarCamposInvalidos(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const control = formGroup.get(campo);
+      if (control instanceof FormGroup) {
+        this.marcarCamposInvalidos(control);
+      } else {
+        if (control) {
+          control.markAsTouched();
         }
       }
     });
@@ -167,11 +129,4 @@ export class ServiceDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 }
-interface Service {
-  id_servicios_individuales: number;
-  nombre_servicio: string;
-  detalles: string;
-  precio_unitario: number;
-  fk_idGimnasio: number;
-  created_by: number;
-}
+

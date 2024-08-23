@@ -17,6 +17,7 @@ import { HomeComponent } from "../home/home.component";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { detalleVenta } from "../../models/detalleVenta";
 import { NgxSpinnerService } from "ngx-spinner";
+import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 @Component({
   selector: "app-home",
   templateUrl: "./ventas.component.html",
@@ -277,7 +278,13 @@ export class VentasComponent implements OnInit {
   }
 
   imprimirResumen() {
-    this.spinner.show();
+    this.dialog.open(MensajeEliminarComponent,{
+      data: `¿Está seguro/a de que desea completar esta venta?`,
+    })
+    .afterClosed()
+    .subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.spinner.show();
     let allProductsValid = true;
     for (let i = 0; i < this.selectedProducts.length; i++) {
       if (this.selectedProducts[i].cantidad > this.selectedProducts[i].existencia) {
@@ -511,6 +518,10 @@ export class VentasComponent implements OnInit {
       ///////////////////////
      
     }
+        
+      } else {
+      }
+    });
   }
 
   cerrarDialogo(): void {
