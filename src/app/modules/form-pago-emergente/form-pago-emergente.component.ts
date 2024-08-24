@@ -1,22 +1,24 @@
-import { Component, OnInit, Inject, EventEmitter, Output } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
-import { MensajeEmergenteComponent } from '../mensaje-emergente/mensaje-emergente.component';
-import { ToastrService } from 'ngx-toastr';
-import { GimnasioService } from '../../service/gimnasio.service'; 
-import { AuthService } from '../../service/auth.service';
-import { NgxSpinnerService } from "ngx-spinner"; 
-import { MensajeAceptarComponent } from '../mensaje-aceptar/mensaje-aceptar.component';
-import { MatDialogConfig } from '@angular/material/dialog';
-
+import { Component, OnInit, Inject, EventEmitter, Output } from "@angular/core";
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialog,
+} from "@angular/material/dialog";
+import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
+import { MensajeEmergenteComponent } from "../mensaje-emergente/mensaje-emergente.component";
+import { ToastrService } from "ngx-toastr";
+import { GimnasioService } from "../../service/gimnasio.service";
+import { AuthService } from "../../service/auth.service";
+import { NgxSpinnerService } from "ngx-spinner";
+import { MensajeAceptarComponent } from "../mensaje-aceptar/mensaje-aceptar.component";
+import { MatDialogConfig } from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-form-pago-emergente',
-  templateUrl: './form-pago-emergente.component.html',
-  styleUrls: ['./form-pago-emergente.component.css']
+  selector: "app-form-pago-emergente",
+  templateUrl: "./form-pago-emergente.component.html",
+  styleUrls: ["./form-pago-emergente.component.css"],
 })
-export class FormPagoEmergenteComponent implements OnInit{
-
+export class FormPagoEmergenteComponent implements OnInit {
   idSucursal: number = 0;
   membresias: any[] = [];
   membresiaSeleccionada: any;
@@ -25,186 +27,197 @@ export class FormPagoEmergenteComponent implements OnInit{
   nombreMembresia: any;
   precio: any;
   duracion: number = 0;
-  moneyRecibido: number = 0; 
+  moneyRecibido: number = 0;
   fechaDeInicio: Date | null = null;
   fechaDeFin: Date | null = null;
   ticketInfo: any;
   @Output() actualizarTablas = new EventEmitter<boolean>();
-  
+
   constructor(
-    private toastr: ToastrService, 
+    private toastr: ToastrService,
     private auth: AuthService,
-    public dialog: MatDialog, 
+    public dialog: MatDialog,
     private spinner: NgxSpinnerService,
-    private GimnasioService:GimnasioService,
+    private GimnasioService: GimnasioService,
     @Inject(MAT_DIALOG_DATA)
     public data: any,
-    private membresiaService: PagoMembresiaEfectivoService, 
-    public dialogo: MatDialogRef<FormPagoEmergenteComponent>,
-  ) { 
+    private membresiaService: PagoMembresiaEfectivoService,
+    public dialogo: MatDialogRef<FormPagoEmergenteComponent>
+  ) {
     this.obtenerFoto();
   }
-     
+
   private fotoUrl: string | null = null;
-  
+
   ngOnInit(): void {
     this.precio = 0;
     this.getMembresiasLista(this.data.idSucursal);
-     if (this.data ) {
+    if (this.data) {
       this.membresiaSeleccionada = this.data.idMem;
-      this.precio = this.data.precio !== 'null' ? this.data.precio : 'N/A';
-      this.duracion = this.data.duracion !== 'null' ? this.data.duracion : 'N/A';
+      this.precio = this.data.precio !== "null" ? this.data.precio : "N/A";
+      this.duracion =
+        this.data.duracion !== "null" ? this.data.duracion : "N/A";
     }
   }
 
   getMembresiasLista(idgimnasio: number): void {
-    this.membresiaService.membresiasLista(idgimnasio)
-      .subscribe(data => {
+    this.membresiaService.membresiasLista(idgimnasio).subscribe(
+      (data) => {
         this.membresias = data;
-      }, error => {
-        console.error('Error al obtener la lista de membresías:', error);
-      });
+      },
+      (error) => {
+        console.error("Error al obtener la lista de membresías:", error);
+      }
+    );
   }
 
   onMembresiaChange(): void {
-    this.membresiaService.membresiasInfo(this.membresiaSeleccionada).subscribe((resultado)=> {
-     // this.duracion = `${resultado.Duracion} dias `;
-      this.duracion = resultado.Duracion;
-      this.precio = `${resultado.Precio}`;
-      this.nombreMembresia = `${resultado.Membresia}`;
-    });
+    this.membresiaService
+      .membresiasInfo(this.membresiaSeleccionada)
+      .subscribe((resultado) => {
+        this.duracion = resultado.Duracion;
+        this.precio = `${resultado.Precio}`;
+        this.nombreMembresia = `${resultado.Membresia}`;
+      });
   }
 
   cancelDialogo(): void {
     this.dialogo.close(true);
   }
 
-    convertirNumeroAPalabrasPesos(numero: number): string {
-      const unidades = [
-        "CERO",
-        "UN",
-        "DOS",
-        "TRES",
-        "CUATRO",
-        "CINCO",
-        "SEIS",
-        "SIETE",
-        "OCHO",
-        "NUEVE",
-      ];
-      const decenas = [
-        "DIEZ",
-        "ONCE",
-        "DOCE",
-        "TRECE",
-        "CATORCE",
-        "QUINCE",
-        "DIECISEIS",
-        "DIECISIETE",
-        "DIECIOCHO",
-        "DIECINUEVE",
-      ];
-      const decenasCompuestas = [
-        "VEINTE",
-        "TREINTA",
-        "CUARENTA",
-        "CINCUENTA",
-        "SESENTA",
-        "SETENTA",
-        "OCHENTA",
-        "NOVENTA",
-      ];
-      const centenas = [
-        "CIENTO",
-        "DOSCIENTOS",
-        "TRESCIENTOS",
-        "CUATROCIENTOS",
-        "QUINIENTOS",
-        "SEISCIENTOS",
-        "SETECIENTOS",
-        "OCHOCIENTOS",
-        "NOVECIENTOS",
-      ];
-  
-      const decimales = [
-        "CERO",
-        "UN",
-        "DOS",
-        "TRES",
-        "CUATRO",
-        "CINCO",
-        "SEIS",
-        "SIETE",
-        "OCHO",
-        "NUEVE",
-      ];
-  
-      const miles = "MIL";
-      const millones = "MILLÓN";
-      const millonesPlural = "MILLONES";
-  
-      let palabras = "";
-      const entero = Math.floor(numero);
-      const decimal = Math.round((numero - entero) * 100); // Obtiene los dos decimales
-  
-      if (numero === 0) {
-        palabras = "CERO";
-      } else if (numero < 10) {
-        palabras = unidades[numero];
-      } else if (numero < 20) {
-        palabras = decenas[numero - 10];
-      } else if (numero < 100) {
-        palabras = decenasCompuestas[Math.floor(numero / 10) - 2];
-        if (numero % 10 !== 0) palabras += ` Y ${unidades[numero % 10]}`;
-      } else if (numero < 1000) {
-        palabras = centenas[Math.floor(numero / 100) - 1];
-        if (numero % 100 !== 0)
-          palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 100)}`;
-      } else if (numero < 10000) {
-        palabras = unidades[Math.floor(numero / 1000)] + ` ${miles}`;
-        if (numero % 1000 !== 0)
-          palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 1000)}`;
-      } else if (numero < 1000000) {
-        palabras =
-          this.convertirNumeroAPalabrasPesos(Math.floor(numero / 1000)) +
-          ` ${miles}`;
-        if (numero % 1000 !== 0)
-          palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 1000)}`;
-      } else {
-        palabras = "Número demasiado grande";
-      }
-  
-      return palabras;
+  convertirNumeroAPalabrasPesos(numero: number): string {
+    const unidades = [
+      "CERO",
+      "UN",
+      "DOS",
+      "TRES",
+      "CUATRO",
+      "CINCO",
+      "SEIS",
+      "SIETE",
+      "OCHO",
+      "NUEVE",
+    ];
+    const decenas = [
+      "DIEZ",
+      "ONCE",
+      "DOCE",
+      "TRECE",
+      "CATORCE",
+      "QUINCE",
+      "DIECISEIS",
+      "DIECISIETE",
+      "DIECIOCHO",
+      "DIECINUEVE",
+    ];
+    const decenasCompuestas = [
+      "VEINTE",
+      "TREINTA",
+      "CUARENTA",
+      "CINCUENTA",
+      "SESENTA",
+      "SETENTA",
+      "OCHENTA",
+      "NOVENTA",
+    ];
+    const centenas = [
+      "CIENTO",
+      "DOSCIENTOS",
+      "TRESCIENTOS",
+      "CUATROCIENTOS",
+      "QUINIENTOS",
+      "SEISCIENTOS",
+      "SETECIENTOS",
+      "OCHOCIENTOS",
+      "NOVECIENTOS",
+    ];
+
+    const decimales = [
+      "CERO",
+      "UN",
+      "DOS",
+      "TRES",
+      "CUATRO",
+      "CINCO",
+      "SEIS",
+      "SIETE",
+      "OCHO",
+      "NUEVE",
+    ];
+
+    const miles = "MIL";
+    const millones = "MILLÓN";
+    const millonesPlural = "MILLONES";
+
+    let palabras = "";
+    const entero = Math.floor(numero);
+    const decimal = Math.round((numero - entero) * 100); // Obtiene los dos decimales
+
+    if (numero === 0) {
+      palabras = "CERO";
+    } else if (numero < 10) {
+      palabras = unidades[numero];
+    } else if (numero < 20) {
+      palabras = decenas[numero - 10];
+    } else if (numero < 100) {
+      palabras = decenasCompuestas[Math.floor(numero / 10) - 2];
+      if (numero % 10 !== 0) palabras += ` Y ${unidades[numero % 10]}`;
+    } else if (numero < 1000) {
+      palabras = centenas[Math.floor(numero / 100) - 1];
+      if (numero % 100 !== 0)
+        palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 100)}`;
+    } else if (numero < 10000) {
+      palabras = unidades[Math.floor(numero / 1000)] + ` ${miles}`;
+      if (numero % 1000 !== 0)
+        palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 1000)}`;
+    } else if (numero < 1000000) {
+      palabras =
+        this.convertirNumeroAPalabrasPesos(Math.floor(numero / 1000)) +
+        ` ${miles}`;
+      if (numero % 1000 !== 0)
+        palabras += ` ${this.convertirNumeroAPalabrasPesos(numero % 1000)}`;
+    } else {
+      palabras = "Número demasiado grande";
     }
 
-    obtenerFoto() {
-      this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
-        respuesta => {
-          if (respuesta && respuesta[0] && respuesta[0].foto) {
-            let fotoUrl = respuesta[0].foto;
-            // Añadir el esquema si no está presente
-            if (!/^https?:\/\//i.test(fotoUrl)) {
-              fotoUrl = 'https://' + fotoUrl;
-            }
-            this.fotoUrl = fotoUrl;
+    return palabras;
+  }
+
+  obtenerFoto() {
+    this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
+      (respuesta) => {
+        if (respuesta && respuesta[0] && respuesta[0].foto) {
+          let fotoUrl = respuesta[0].foto;
+          // Añadir el esquema si no está presente
+          if (!/^https?:\/\//i.test(fotoUrl)) {
+            fotoUrl = "https://" + fotoUrl;
           }
-        },
-        error => {
-          console.error('Error al obtener la foto:', error);
-          this.fotoUrl = null;
+          this.fotoUrl = fotoUrl;
         }
-      );
-    }
-  
-    imprimirResumen() {       
-      if (this.precio <= this.moneyRecibido) {
-        const PrecioCalcular = this.moneyRecibido - this.precio ;
-        this.membresiaService.ticketPagoInfo(this.data.idCliente).subscribe((respuesta) => {
+      },
+      (error) => {
+        console.error("Error al obtener la foto:", error);
+        this.fotoUrl = null;
+      }
+    );
+  }
+
+  imprimirResumen() {
+    if (this.precio <= this.moneyRecibido) {
+      const PrecioCalcular = this.moneyRecibido - this.precio;
+      this.membresiaService
+        .ticketPagoInfo(this.data.idCliente)
+        .subscribe((respuesta) => {
           if (respuesta && respuesta.length > 0) {
             const ticketInfo = respuesta[0];
-            const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.precio);
-            const totalEnPesosRecibido = this.convertirNumeroAPalabrasPesos(this.moneyRecibido);
-            const totalEnPesosCambio = this.convertirNumeroAPalabrasPesos(PrecioCalcular);
+            const totalEnPesos = this.convertirNumeroAPalabrasPesos(
+              this.precio
+            );
+            const totalEnPesosRecibido = this.convertirNumeroAPalabrasPesos(
+              this.moneyRecibido
+            );
+            const totalEnPesosCambio =
+              this.convertirNumeroAPalabrasPesos(PrecioCalcular);
             const ventanaImpresion = window.open("", "_blank");
             const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
             const horaActual = new Date().toLocaleTimeString("es-MX", {
@@ -289,7 +302,11 @@ export class FormPagoEmergenteComponent implements OnInit{
                 </head>
                 <body> 
                 <div class="ticket">
-                ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
+                ${
+                  this.fotoUrl
+                    ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">`
+                    : ""
+                }
                 <p class="direccion">${this.auth.nombreGym.getValue()}</p>
                     <table>
                       <thead>
@@ -338,135 +355,175 @@ export class FormPagoEmergenteComponent implements OnInit{
                 </body>
               </html>
             `);
-            ventanaImpresion.document.close();
+              ventanaImpresion.document.close();
 
-            // Esperar a que la imagen se cargue antes de imprimir
-            const image: HTMLImageElement | null = ventanaImpresion.document.querySelector('img');
-            if (image) {
-              image.onload = () => {
+              // Esperar a que la imagen se cargue antes de imprimir
+              const image: HTMLImageElement | null =
+                ventanaImpresion.document.querySelector("img");
+              if (image) {
+                image.onload = () => {
+                  ventanaImpresion.print();
+                  ventanaImpresion.close();
+                };
+
+                image.onerror = (error) => {
+                  console.error("Error al cargar la imagen:", error);
+                  ventanaImpresion.print();
+                  ventanaImpresion.close();
+                };
+              } else {
                 ventanaImpresion.print();
                 ventanaImpresion.close();
-              };
-      
-              image.onerror = (error) => {
-                console.error('Error al cargar la imagen:', error);
-                ventanaImpresion.print();
-                ventanaImpresion.close();
-              };
-            } else {
-              ventanaImpresion.print();
-              ventanaImpresion.close();
-            }
+              }
             }
           } else {
-            console.error('La respuesta del servicio no contiene los datos necesarios para generar el ticket.');
+            console.error(
+              "La respuesta del servicio no contiene los datos necesarios para generar el ticket."
+            );
           }
         });
-      
-      } else {
-        this.toastr.error("Ingresa el pago");
-      }
+    } else {
+      this.toastr.error("Ingresa el pago");
     }
-  
-    successDialog() { 
+  }
 
+  successDialog() {
+    if (this.moneyRecibido >= this.precio) {
+    this.spinner.show();
+    this.onMembresiaChange();
+    setTimeout(() => {
       const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '30%'; // Ajusta el ancho del diálogo
-    dialogConfig.height = 'auto'; // Ajusta la altura del diálogo, 'auto' para ajustar según el contenido
-    dialogConfig.disableClose = true; // Opcional: Deshabilita el cierre del diálogo al hacer clic fuera de él
-    dialogConfig.data = {
-      mensaje: `¿Está seguro/a de que desea pagar la membresía seleccionada?`,
-      cliente: this.data.nombre,
-      membresia: this.nombreMembresia
-    };
+      dialogConfig.width = "30%"; // Ajusta el ancho del diálogo
+      dialogConfig.height = "auto"; // Ajusta la altura del diálogo, 'auto' para ajustar según el contenido
+      dialogConfig.disableClose = true; // Opcional: Deshabilita el cierre del diálogo al hacer clic fuera de él
+      dialogConfig.data = {
+        mensaje: `¿Está seguro/a de que desea pagar la membresía seleccionada?`,
+        cliente: this.data.nombre,
+        membresia: this.nombreMembresia,
+      };
 
-    this.dialog.open(MensajeAceptarComponent, dialogConfig)
-      .afterClosed()
-      .subscribe((confirmado: boolean) => {
-        if (confirmado) {
-          this.spinner.show();
-       
-      if (this.membresiaSeleccionada != undefined){
-        if(this.moneyRecibido >= this.precio){
-          const PrecioCalcular = this.moneyRecibido - this.precio;
+      this.dialog
+        .open(MensajeAceptarComponent, dialogConfig)
+        .afterClosed()
+        .subscribe((confirmado: boolean) => {
+          if (confirmado) {
+            if (this.membresiaSeleccionada != undefined) {
+                const PrecioCalcular = this.moneyRecibido - this.precio;
 
-          if(this.fechaDeInicio && this.fechaDeFin){
-            const añoInicio = this.fechaDeInicio.getFullYear();
-            const mesInicio = String(this.fechaDeInicio.getMonth() + 1).padStart(2, '0'); // Los meses son indexados desde 0
-            const díaInicio = String(this.fechaDeInicio.getDate()).padStart(2, '0');
-            const fechaFormateada1 = `${añoInicio}-${mesInicio}-${díaInicio}`;
+                if (this.fechaDeInicio && this.fechaDeFin) {
+                  const añoInicio = this.fechaDeInicio.getFullYear();
+                  const mesInicio = String(
+                    this.fechaDeInicio.getMonth() + 1
+                  ).padStart(2, "0"); // Los meses son indexados desde 0
+                  const díaInicio = String(
+                    this.fechaDeInicio.getDate()
+                  ).padStart(2, "0");
+                  const fechaFormateada1 = `${añoInicio}-${mesInicio}-${díaInicio}`;
 
-            const añoFin = this.fechaDeInicio.getFullYear();
-            const mesFin = String(this.fechaDeInicio.getMonth() + 1).padStart(2, '0');
-            const díaFin = String(this.fechaDeInicio.getDate()).padStart(2, '0');
-            const fechaFormateada2 = `${añoFin}-${mesFin}-${díaFin}`;
-            this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada1, this.data.detMemID, this.precio, fechaFormateada2,this.auth.idUser.getValue()).subscribe((dataResponse: any)=> {
-              this.spinner.hide(); 
-              this.actualizarTablas.emit(true);
-              this.dialogo.close(true);
-              this.dialog.open(MensajeEmergenteComponent, {
-                data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
-                disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
-              })
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-                if (cerrarDialogo) {
-                  this.imprimirResumen();
+                  const añoFin = this.fechaDeInicio.getFullYear();
+                  const mesFin = String(
+                    this.fechaDeInicio.getMonth() + 1
+                  ).padStart(2, "0");
+                  const díaFin = String(this.fechaDeInicio.getDate()).padStart(
+                    2,
+                    "0"
+                  );
+                  const fechaFormateada2 = `${añoFin}-${mesFin}-${díaFin}`;
+                  this.membresiaService
+                    .actualizacionMemebresia(
+                      this.data.idCliente,
+                      this.membresiaSeleccionada,
+                      fechaFormateada1,
+                      this.data.detMemID,
+                      this.precio,
+                      fechaFormateada2,
+                      this.auth.idUser.getValue()
+                    )
+                    .subscribe((dataResponse: any) => {
+                      this.spinner.hide();
+                      this.actualizarTablas.emit(true);
+                      this.dialogo.close(true);
+                      this.dialog
+                        .open(MensajeEmergenteComponent, {
+                          data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
+                          disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
+                        })
+                        .afterClosed()
+                        .subscribe((cerrarDialogo: Boolean) => {
+                          if (cerrarDialogo) {
+                            this.imprimirResumen();
+                          } else {
+                          }
+                        });
+                    });
                 } else {
-      
-                }
-              });
-            });
-          }else {
-          const fechaActual: Date = new Date();
-          const year = fechaActual.getFullYear();
-          const month = String(fechaActual.getMonth() + 1).padStart(2, '0'); 
-          const day = String(fechaActual.getDate()).padStart(2, '0');
-          const fechaFormateada = `${year}-${month}-${day}`;
-          let fechaFin: Date = new Date(fechaActual); 
-          if (this.duracion == 1) {
-          } else if (this.duracion == 30) {
-              fechaFin.setMonth(fechaFin.getMonth() + 1);
-              if (fechaFin.getMonth() == 0) {
-                fechaFin.setFullYear(fechaFin.getFullYear() + 1);
-              }   
-              fechaFin.setDate(fechaFin.getDate() - 1);
-          } else {
-              this.duracion = Number(this.duracion); 
-              fechaFin.setDate(fechaFin.getDate() + this.duracion -1);
-          }
+                  const fechaActual: Date = new Date();
+                  const year = fechaActual.getFullYear();
+                  const month = String(fechaActual.getMonth() + 1).padStart(
+                    2,
+                    "0"
+                  );
+                  const day = String(fechaActual.getDate()).padStart(2, "0");
+                  const fechaFormateada = `${year}-${month}-${day}`;
+                  let fechaFin: Date = new Date(fechaActual);
+                  if (this.duracion == 1) {
+                  } else if (this.duracion == 30) {
+                    fechaFin.setMonth(fechaFin.getMonth() + 1);
+                    if (fechaFin.getMonth() == 0) {
+                      fechaFin.setFullYear(fechaFin.getFullYear() + 1);
+                    }
+                    fechaFin.setDate(fechaFin.getDate() - 1);
+                  } else {
+                    this.duracion = Number(this.duracion);
+                    fechaFin.setDate(fechaFin.getDate() + this.duracion - 1);
+                  }
 
-          const fechaFormateadaFin: string = fechaFin.toISOString().split('T')[0];                    
+                  const fechaFormateadaFin: string = fechaFin
+                    .toISOString()
+                    .split("T")[0];
 
-          this.membresiaService.actualizacionMemebresia(this.data.idCliente, this.membresiaSeleccionada, fechaFormateada, this.data.detMemID, this.precio, fechaFormateadaFin,this.auth.idUser.getValue()).subscribe((dataResponse: any)=> {
-          this.spinner.hide(); 
-          this.actualizarTablas.emit(true);
-          
-          this.dialogo.close(true);
-          
-          this.dialog.open(MensajeEmergenteComponent, {
-            data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
-            disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
-          })
-          .afterClosed()
-          .subscribe((cerrarDialogo: Boolean) => {
-            if (cerrarDialogo) {
-              this.imprimirResumen();
-            } else {
-  
+                  this.membresiaService
+                    .actualizacionMemebresia(
+                      this.data.idCliente,
+                      this.membresiaSeleccionada,
+                      fechaFormateada,
+                      this.data.detMemID,
+                      this.precio,
+                      fechaFormateadaFin,
+                      this.auth.idUser.getValue()
+                    )
+                    .subscribe((dataResponse: any) => {
+                      this.spinner.hide();
+                      this.actualizarTablas.emit(true);
+
+                      this.dialogo.close(true);
+
+                      this.dialog
+                        .open(MensajeEmergenteComponent, {
+                          data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
+                          disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
+                        })
+                        .afterClosed()
+                        .subscribe((cerrarDialogo: Boolean) => {
+                          if (cerrarDialogo) {
+                            this.imprimirResumen();
+                          } else {
+                          }
+                        });
+                    });
+                } 
             }
-          });
-        });}
-        }else{
-          this.spinner.hide(); 
-          this.toastr.error('No alcanza para pagar esta membresia', 'Error!!!');
-        }
-      }
-        } else {
-          // Acción a realizar si se cancela
-        }
-      });
-
-      
-    }
+          } else {
+            this.spinner.hide();
+          }
+        });
+    }, 2000);
+  } else {
+    this.spinner.hide();
+    this.toastr.error(
+      "Cantidad suficiente para cubrir el costo de esta membresía.",
+      "¡Error!"
+    );
+  }
+  }
 }
