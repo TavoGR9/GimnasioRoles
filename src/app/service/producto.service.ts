@@ -20,7 +20,8 @@ export class ProductoService {
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGimnasio/';
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
     }
@@ -76,13 +77,13 @@ export class ProductoService {
           })
         ) as Observable<any[]>; // Añadir una conversión de tipo
     }
-      
+
 
     private saveDataToIndexedDB(data: any) {
       // Guarda los datos en IndexedDB
       this.indexedDBService.saveProductosData('Productos', data);
     }
-    
+
     getServiceDatos2() {
       return new Observable(observer => {
         this.indexedDBService.getProductosData('Productos').then(data => {
@@ -105,7 +106,7 @@ export class ProductoService {
         });
       });
     }
-    
+
     actualizarProducto(datosP: any): Observable<any> {
       const url = `${this.API}producto_bod.php?actualizarP`;
       return this.clienteHttp.post(url, datosP).pipe(
@@ -118,8 +119,8 @@ export class ProductoService {
       );
     }
 
-   
-  
+
+
 
     obternerProductos(id:any):Observable<any>{
       const data = { id_bodega_param: id };
@@ -130,7 +131,7 @@ export class ProductoService {
       const data = { id_bodega_param: id };
       return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodegaVenta=",data);
     }
-  
+
     obternerInventario(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };
       return this.clienteHttp.post<any[]>(this.API +'producto_bod.php?listaInventario=',data).pipe(
@@ -140,14 +141,14 @@ export class ProductoService {
         catchError(error => {
           return this.getServiceDatos3();
         })
-      ) as Observable<any[]>; 
+      ) as Observable<any[]>;
     }
-  
+
     private saveDataToIndexedDB3(data: any) {
       // Guarda los datos en IndexedDB
       this.indexedDBService.saveInventarioData('Inventario', data);
     }
-    
+
     getServiceDatos3() {
       return new Observable(observer => {
         this.indexedDBService.getInventarioData('Inventario').then(data => {
@@ -178,7 +179,7 @@ export class ProductoService {
       const url = `${this.API}producto_bod.php?consultarProductoId`;
       return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto, id_bodega: idBodega });
     }
-    
+
 
 
     obtenerListaProduct(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
@@ -193,12 +194,12 @@ export class ProductoService {
         })
       );
     }
-  
+
     private saveDataToIndexedDB2(data: any) {
       // Guarda los datos en IndexedDB
       this.indexedDBService.saveProductosVendidosData('ProductosVendidos', data);
     }
-    
+
     getServiceDatos() {
       return new Observable(observer => {
         this.indexedDBService.getProductosVendidosData('ProductosVendidos').then(data => {
@@ -228,5 +229,5 @@ export class ProductoService {
       const data ={id: idP}
       return this.clienteHttp.post(this.API+"producto_bod.php?eliminarProBodPre", data);
     }
-    
+
 }

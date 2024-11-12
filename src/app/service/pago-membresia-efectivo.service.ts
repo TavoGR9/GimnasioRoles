@@ -12,10 +12,12 @@ import { filter, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class PagoMembresiaEfectivoService {
-  
+
   isConnected: boolean = true;
-  
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGimnasio/';
+
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
@@ -44,21 +46,25 @@ export class PagoMembresiaEfectivoService {
   obtenerActivos(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"Usuario.php?obtenerVista="+id).pipe(
       tap(dataResponse => {
+        console.log("Obteniendo activos:")
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
+        console.log('Error en API:', error.message || error);
+        console.log('Código de estado:', error.status);
+        console.log('Cargando datos desde IndexedDB debido a error en API:', error);
         return this.getServiceDatos();
-        
+
         /*const resultData = { success: '2' }; // Objeto que indica éxito
         return forkJoin([
           this.getServiceDatos().pipe(
             filter(data => data !== null)
-            
+
           ),
           this.getServiceDatosInsert().pipe(
 
            filter((data: any) => Array.isArray(data)),
-            map((data: any[]) => data.map(item => item.data)) 
+            map((data: any[]) => data.map(item => item.data))
           ),
           of(resultData) // Convierte el objeto en un observable
         ]);*/
@@ -69,8 +75,9 @@ export class PagoMembresiaEfectivoService {
   private saveDataToIndexedDB2(data: any) {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveObtenerActivosData('ObtenerActivos', data);
+    console.log("Datos obtenidos")
   }
-  
+
   getServiceDatos() {
     return new Observable(observer => {
       this.indexedDBService.getObtenerActivosData('ObtenerActivos').then(data => {
@@ -124,7 +131,7 @@ export class PagoMembresiaEfectivoService {
     };
     return this.clienteHttp.get(this.API + 'Usuario.php', { params });
   }
-  
+
   membresiasLista(idSucu: any):Observable<any>{
     const params = {
       id_bodega: idSucu
@@ -169,7 +176,7 @@ export class PagoMembresiaEfectivoService {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveMembresiaIdData('AgregarMemId', data);
   }
-  
+
   membresiasInfo(idMemb: any):Observable<any>{
     const params = {
       id_mem: idMemb
@@ -197,7 +204,7 @@ export class PagoMembresiaEfectivoService {
   }
 
   actualizaDatosCliente(data: any): Observable<any> {
-    const form = { 
+    const form = {
       email:data.correo,
       idU:data.id_cliente,
       nombre:data.nombre,

@@ -11,8 +11,9 @@ export class JoinDetalleVentaService {
 
 
   isConnected: boolean = true;
-  
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+
+  // API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGimnasio/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -49,7 +50,7 @@ export class JoinDetalleVentaService {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveVentasData('Ventas', data);
   }
-  
+
   getServiceDatos() {
     return new Observable(observer => {
       this.indexedDBService.getVentasData('Ventas').then(data => {

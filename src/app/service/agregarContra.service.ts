@@ -27,7 +27,7 @@ export class agregarContra {
       }
     );
   }
-  
+
   actualizaPassword(id: string, token: string, nuevaPass: string) : Observable<any> {
     return this.clienteHttp.post(
       this.API + 'agregarPass.php?actualizarPass' + '&id=' + id + '&token=' + token,
