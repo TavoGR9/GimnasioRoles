@@ -7,6 +7,12 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
 import { MembresiaService } from "../../service/membresia.service";
+
+// Reemplazar por productos
+import { ListaProductos } from "../../models/listaProductos";
+import { ProductoService } from "../../service/producto.service";
+import { CrearProductoComponent } from "../crearProducto/crearProducto.component";
+import { EditarProductoComponent } from "../editar-producto/editar-producto.component";
 @Component({
   selector: "app-membresias",
   templateUrl: "./membresias.component.html",
@@ -24,18 +30,26 @@ export class MembresiasComponent implements OnInit {
   currentUser: string = "";
   services: any[] = [];
   idGym: number = 0;
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  // Reemplazar por productos
+  productos: any[] = [];
+  listProductData: ListaProductos[] = [];
+  dataSourceDos: any;
+  productoActiva: boolean = true;
 
   constructor(
     private membresiaService: MembresiaService,
     private auth: AuthService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    //Reemplazar por productos
+    public productoService: ProductoService
   ) {}
 
   displayedColumns: string[] = [
     "title",
-    "details",
+    // "details",
     "servicio",
     "price",
     "duration",
@@ -46,7 +60,7 @@ export class MembresiasComponent implements OnInit {
   ngOnInit(): void {
     // this.membresiaService.comprobar();
     // this.gimnasioService.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
     this.currentUser = this.auth.getCurrentUser();
@@ -56,6 +70,7 @@ export class MembresiasComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
+      this.listaTablaProd();
     });
   }
 
@@ -70,7 +85,7 @@ export class MembresiasComponent implements OnInit {
         this.auth.email.next(resultData.email);
         this.auth.encryptedMail.next(resultData.encryptedMail);
       },
-      error: (error) => {
+      error: (error) => { console.log(error);
       },
     });
   }
@@ -88,7 +103,7 @@ export class MembresiasComponent implements OnInit {
         if (Array.isArray(respuesta)) {
           this.plan = respuesta;
           this.dataSource = new MatTableDataSource(this.plan);
-          this.loadData(); 
+          this.loadData();
         }else{
           setTimeout(() => {
             this.isLoading = false;
@@ -99,10 +114,10 @@ export class MembresiasComponent implements OnInit {
       }
     );
   }
-  
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.dataSourceDos.filter = filterValue.trim().toLowerCase();
   }
 
   toggleCheckbox(idMem: number, status: number) {
@@ -139,7 +154,7 @@ export class MembresiasComponent implements OnInit {
       disableClose: true,
       data: { name: "¿Para quién es esta membresía?" },
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
         (respuesta) => {
@@ -156,7 +171,7 @@ export class MembresiasComponent implements OnInit {
       );
     });
   }
-  
+
   openDialogService(idMem: number, tipo_membresia: number) {
     this.membresiaService.optionShow.next(2);
     this.membresiaService.optionShow.subscribe((option) => {});
@@ -195,6 +210,76 @@ export class MembresiasComponent implements OnInit {
           data: { name: "Agregar servicios" },
         });
       }
+    });
+  }
+
+
+  //Reemplazar por productos
+  listaTablaProd(){
+    this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+      //this.productos = resultData
+      this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() !== 'jugos y bebidas' && producto.nombreCategoria.toLowerCase() !== 'suplementos' && producto.nombreCategoria.toLowerCase() !== 'accesorios');
+      this.dataSourceDos = new MatTableDataSource(this.productos);
+
+      this.loadData();
+    });
+  }
+
+
+  sortField: string = '';
+  sortDirection: string = 'asc';
+
+  sortData(column: string): void {
+    const data = this.dataSource.data;
+    if (this.sortField === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = column;
+      this.sortDirection = 'asc';
+    }
+    data.sort((a: any, b:any) => {
+      const isAsc = this.sortDirection === 'asc';
+      switch (column) {
+        case 'nombre': return this.compare(a.nombreProducto, b.nombreProducto, isAsc);
+        // Añade más casos según las columnas que tengas
+        default: return 0;
+      }
+    });
+
+    this.dataSource.data = data;
+  }
+
+  compare(a: string | number | Date, b: string | number | Date, isAsc: boolean): number {
+    if (typeof a === 'string' && typeof b === 'string') {
+      // Utiliza localeCompare para comparar cadenas de texto
+      return a.localeCompare(b, undefined, { sensitivity: 'base' }) * (isAsc ? 1 : -1);
+    }
+    // Para otros tipos, utiliza comparación estándar
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+
+  isRecep(): boolean {
+    return this.auth.isRecepcion();
+  }
+
+  openDialogEditProd(idProducto: number): void {
+    const dialogRef = this.dialog.open(EditarProductoComponent, {
+      width: "70%",
+      disableClose: true,
+      data: { idProducto: idProducto },
+    });
+    dialogRef.afterClosed().subscribe(() => {
+      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+
+        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'jugos y bebidas' && producto.nombreCategoria.toLowerCase() !== 'suplementos' && producto.nombreCategoria.toLowerCase() !== 'accesorios');
+        this.dataSourceDos = new MatTableDataSource(this.productos);
+        this.dataSourceDos.paginator = this.paginator; // Asigna el paginador a tu dataSource
+        this.loadData();
+      });
     });
   }
 }

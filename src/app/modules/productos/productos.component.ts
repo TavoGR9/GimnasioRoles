@@ -75,6 +75,7 @@ export class ProductosComponent implements OnInit {
     this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
       this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.marca !== 'Olympus');
+
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData();
     });

@@ -18,7 +18,7 @@ import { MembresiaService } from "../../service/membresia.service";
   styleUrls: ["./dialog-select-membership.component.css"],
 })
 export class DialogSelectMembershipComponent implements OnInit {
-  noServicios: boolean = false; 
+  noServicios: boolean = false;
   displayedColumns: string[] = ["No", "nombre", "precio"];
   dataSource: any;
   tipo_membresia: number = 0;
@@ -59,7 +59,7 @@ export class DialogSelectMembershipComponent implements OnInit {
       titulo: ["", Validators.required],
       duracion: ["", [Validators.required, Validators.pattern(/^\d+$/)]],
       precio: ["",[Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],],
-      detalles: ["",[Validators.required]], 
+      detalles: ["",[Validators.required]],
       servicioseleccionado: [[], Validators.required],
       status: ["1"],
       tipo_membresia: ["1"],
@@ -186,9 +186,9 @@ export class DialogSelectMembershipComponent implements OnInit {
         }
         this.servicios.push(nuevoServicio.registroInsertado);
       }
-    });  
+    });
   }
-  
+
   getIdGym() {
     this.AuthService.idGym.subscribe((respuesta) => {
       this.idGym = respuesta;
@@ -233,7 +233,7 @@ export class DialogSelectMembershipComponent implements OnInit {
               });
             }
           }
-        }); 
+        });
       }
       if (this.optionToShow == 3) {
         this.formPlan.setValue({
@@ -299,7 +299,7 @@ export class DialogSelectMembershipComponent implements OnInit {
   }
 
   setPrice(servicios: any[]) {
-    this.prices = []; 
+    this.prices = [];
     if (servicios) {
       servicios.forEach((servicio) => {
         this.prices.push(servicio.precio_unitario);

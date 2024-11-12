@@ -1,4 +1,5 @@
 <?php
+
 $bd = "sistema";
 //$bd = "superhou_prueba";
 //$enlace =  mysqli_connect('localhost:3306', 'root', '', $bd);
