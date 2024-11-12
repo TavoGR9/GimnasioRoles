@@ -280,7 +280,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
           this.listaClientesData();
-        } 
+        }
       });
   }
 
@@ -328,7 +328,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   isRecep(): boolean {
     return this.auth.isRecepcion();
   }
-  
+
   eliminarUs(prod: any) {
     const prueba = {
       idUsuario: prod.ID,
@@ -342,7 +342,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       .subscribe((confirmado: boolean) => {
         if (confirmado) {
           this.listaClientesData();
-        } 
+        }
       });
   }
 

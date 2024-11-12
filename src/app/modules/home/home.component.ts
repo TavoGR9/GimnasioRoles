@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit {
   yAxisLabel2 = "Quincena";
   yAxisLabel3 = "Visita";
   timeline: boolean = false;
-  
+
 
   //define la apariencia visual del gráfico en términos de colores.
   colorScheme: Color = {
@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit {
   homeCardVisita: any[] = [];
   homeCardQuincena: any[] = [];
 
-  
+
   meses = {
     Enero: "01",
     Febrero: "02",
@@ -133,7 +133,7 @@ export class HomeComponent implements OnInit {
 
     this.fechaFormateada = [year, month, day].join('-');
     this.año = year;
-  
+
 
     this.obtenerMesActual();
     this.obtenerMesAnterior();
@@ -321,7 +321,7 @@ export class HomeComponent implements OnInit {
     this.homeService.consultasFechaMensualidad(this.idGym, fecha).subscribe(
       (respuesta: any) => {
         if (typeof respuesta === "object" && respuesta !== null) {
-          this.homeCard21 = [respuesta]; 
+          this.homeCard21 = [respuesta];
         } else {
           console.error("La respuesta no es un objeto válido:", respuesta);
         }
@@ -377,7 +377,7 @@ export class HomeComponent implements OnInit {
       console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
   }
-  
+
 
   onSelectQuincena(event?: any): void {
     if (event == undefined) {
