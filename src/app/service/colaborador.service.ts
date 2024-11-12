@@ -25,7 +25,8 @@ export class ColaboradorService {
     // APIv3: string = 'http://localhost/olimpusGym/conf/';
     // API: String = '';
 
-    API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+    //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+    API: string = 'http://localhost/serviciosGimnasio/'
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
@@ -40,7 +41,7 @@ export class ColaboradorService {
     //       }
     //     });
     //   }
-    
+
     //servicio correspondiente a llenado de los datos del combo nombre Gym
     comboDatosGym(gimID: any){
         return this.clienteHttp.get(this.API+"empleado.php?nomGym="+gimID);
@@ -58,7 +59,7 @@ export class ColaboradorService {
     obtenerPersonalPorNombre(nombre:any):Observable<any>{
 
       return this.clienteHttp.get(this.API+"empleado.php?personalName="+nombre);
-    }  
+    }
 
     getPersonal(): Observable<any> {
       return this.clienteHttp.get(this.API + "empleado.php?consultarPersonal");
@@ -71,7 +72,7 @@ export class ColaboradorService {
             catchError(error => {
               this.saveDataToIndexedDB(datosEmpleado);
               const resultData = { success: '2' };
-              return of(resultData);        
+              return of(resultData);
             })
           );
     }
@@ -83,7 +84,7 @@ export class ColaboradorService {
             catchError(error => {
               this.saveDataToIndexedDB(datosEmpleado);
               const resultData = { success: '2' };
-              return of(resultData);        
+              return of(resultData);
             })
           );
     }
@@ -105,14 +106,14 @@ export class ColaboradorService {
     }
 
     agregarUsuario(datosEmpleado: any): Observable<any> {
-      
+
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuario", datosEmpleado).pipe(
             tap(dataResponse => {
             }),
             catchError(error => {
               this.saveDataToIndexedDBC(datosEmpleado);
               const resultData = { success: '2' };
-              return of(resultData);        
+              return of(resultData);
             })
           );
     }
@@ -124,13 +125,13 @@ export class ColaboradorService {
     agregarBodegaEmpleado(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "BodegaEmpleado.php?insertar=1", datosEmpleado);
     }
-      
+
     comboDatosAllGym(){
         return this.clienteHttp.get(this.API+"empleado.php?nomAllGym");
     }
 
     listaColaboradores():Observable<any[]>{
-        return this.clienteHttp.get<any[]>(this.API+"empleado.php?tEmp");   
+        return this.clienteHttp.get<any[]>(this.API+"empleado.php?tEmp");
     }
 
     getCategoriasSubject() {
@@ -155,7 +156,7 @@ export class ColaboradorService {
     actualizaEmpleado(id: any, datosEmpleado: listaEmpleados):Observable<any>{
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         return this.clienteHttp.post<msgResult>(this.API+"empleado.php?actEmp="+id,datosEmpleado, {headers});
-    }   
+    }
 
 
 
@@ -180,12 +181,12 @@ export class ColaboradorService {
             })
         );
     }
-    
+
     private saveDataToIndexedDB1(data: any) {
         // Guarda los datos en IndexedDB
         this.indexedDBService.saveData('receptionists', data);
     }
-    
+
      getDataFromIndexedDB() {
         // Intenta obtener los datos de IndexedDB
         return new Observable(observer => {
@@ -209,7 +210,7 @@ export class ColaboradorService {
                 });
             });
         }
-    
+
     InfoIdEmpleado(idEmp: any) {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'idEmp=' + idEmp;
@@ -228,7 +229,7 @@ export class ColaboradorService {
         const params = new HttpParams()
             .set('p_idUsuario', p_idUsuario.toString())
             .set('p_contrasenia', p_contrasenia);
-    
+
         // Perform the POST request
         return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params.toString(), { headers });
     }
@@ -245,4 +246,3 @@ export class ColaboradorService {
         return this.clienteHttp.post(this.API+"empleado.php?actualizaEstatus", body.toString(), options);
       }
   }
-  

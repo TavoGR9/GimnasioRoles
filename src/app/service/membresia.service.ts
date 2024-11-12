@@ -14,12 +14,13 @@ export class MembresiaService {
   private datosPlan: any;
   data: any = {};
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGimnasio/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
-  
+
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
   }
 
@@ -49,12 +50,12 @@ export class MembresiaService {
       catchError(error => {
         this.saveDataToIndexedDBM(datosPlan);
         const resultData = { success: '2' };
-        return of(resultData);        
+        return of(resultData);
       })
-    );  
+    );
   }
 
-  updateMembresia(formData: any): Observable<any>{ 
+  updateMembresia(formData: any): Observable<any>{
     return this.clienteHttp.put(this.API+"membresias.php", formData);
   }
 
@@ -83,7 +84,7 @@ export class MembresiaService {
       catchError(error => {
         this.saveDataToIndexedDBP(datosPlan);
         const resultData = { success: '2' };
-        return of(resultData);        
+        return of(resultData);
       })
     );
   }
@@ -110,11 +111,11 @@ export class MembresiaService {
       })
     );
   }
-  
+
   private saveDataToIndexedDB(data: any) {
     this.indexedDBService.saveMembresiaData('membresia', data);
   }
-  
+
   getMembresiaDatos() {
     return new Observable(observer => {
       this.indexedDBService.getMembresiaData('membresia').then(data => {
@@ -137,7 +138,7 @@ export class MembresiaService {
       });
   });
   }
-  
+
   getMemDatosInsert() {
     return new Observable(observer => {
         this.indexedDBService.getAgregarMembresiaData('AgregarMembresia').then(data => {
@@ -164,7 +165,7 @@ export class MembresiaService {
     // Guarda los datos en IndexedDB
     this.indexedDBService.savePlanData('Plan', data);
   }
-  
+
   getServiceDatos() {
     return new Observable(observer => {
       this.indexedDBService.getPlanData('Plan').then(data => {
@@ -215,11 +216,11 @@ export class MembresiaService {
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
-    
+
     return this.clienteHttp.post(this.API+"membresias.php?actualizarPlan="+id,datosPlan);
-  }  
+  }
 
   deletePlan(id: any):Observable<any>{
     return this.clienteHttp.get(this.API+"membresias.php?borrar="+id);
-  }  
+  }
 }

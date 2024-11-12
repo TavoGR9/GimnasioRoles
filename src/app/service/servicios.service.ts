@@ -9,8 +9,9 @@ import { catchError, of } from 'rxjs';
   providedIn: 'root'
 })
 export class serviciosService {
- 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGimnasio/';
   isConnected: boolean = true;
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
@@ -20,10 +21,10 @@ export class serviciosService {
   public idService: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public confirmButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
- 
+
   services: any[] = [];
   data: any = {};
-  
+
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private indexedDBService:IndexedDBService) {
   }
 
@@ -47,7 +48,7 @@ export class serviciosService {
       catchError(error => {
         this.saveDataToIndexedDB(data);
         const resultData = { success: '2' };
-        return of(resultData);        
+        return of(resultData);
       })
     );
   }
