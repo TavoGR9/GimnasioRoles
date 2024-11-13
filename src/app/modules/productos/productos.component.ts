@@ -1,7 +1,8 @@
+
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ListaProductos } from '../../models/listaProductos';
 import { ProductoService } from '../../service/producto.service';
-import { MatTableDataSource } from '@angular/material/table'; 
+import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from '../../service/auth.service';
@@ -20,7 +21,7 @@ export class ProductosComponent implements OnInit {
     'codigoBarras',
     'nombre',
     'estatus',
-    'categoria', 
+    'categoria',
   ];
 
   productos: any[] = [];
@@ -29,7 +30,7 @@ export class ProductosComponent implements OnInit {
   idGym: number = 0;
   dataSource: any;
   productoActiva: boolean = true;
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   habilitarBoton: boolean = false;
 
@@ -37,16 +38,16 @@ export class ProductosComponent implements OnInit {
     private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog,
-  ) { 
+  ) {
   }
 
   ngOnInit(): void {
     // this.productoService.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
 
-    // this.categoriaService.comprobar(); 
+    // this.categoriaService.comprobar();
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -54,7 +55,7 @@ export class ProductosComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
-    }); 
+    });
   }
 
   getSSdata(data: any){
@@ -76,7 +77,7 @@ export class ProductosComponent implements OnInit {
       //this.productos = resultData
       this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
       this.dataSource = new MatTableDataSource(this.productos);
-      this.loadData(); 
+      this.loadData();
     });
   }
 
@@ -122,14 +123,14 @@ export class ProductosComponent implements OnInit {
   crearProducto(): void {
     const dialogRef = this.dialog.open(CrearProductoComponent, {
       width: '70%',
-      disableClose: true,   
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
       this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
         //this.productos = resultData
         this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
         this.dataSource = new MatTableDataSource(this.productos);
-        this.loadData(); 
+        this.loadData();
       });
     })
   }
@@ -138,14 +139,14 @@ export class ProductosComponent implements OnInit {
     const dialogRef = this.dialog.open(EditarProductoComponent, {
       data: { idProducto: idProducto },
       width: '70%',
-      disableClose: true,  
+      disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
       this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
         //this.productos = resultData
         this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
         this.dataSource = new MatTableDataSource(this.productos);
-        this.loadData(); 
+        this.loadData();
       });
     });
   }
@@ -154,7 +155,7 @@ export class ProductosComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
- 
+
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
@@ -176,7 +177,7 @@ export class ProductosComponent implements OnInit {
               //this.productos = resultData
               this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
               this.dataSource = new MatTableDataSource(this.productos);
-              this.loadData(); 
+              this.loadData();
             });
           },
           (error) => {

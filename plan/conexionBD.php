@@ -1,8 +1,8 @@
 <?php
-$bd = "Sistema_gimnasio";
-//$bd = "superhou_prueba"; 
-$enlace =  mysqli_connect('localhost:3306', 'root', '', $bd);
-//$enlace =  mysqli_connect('localhost', 'root', '', $bd);
+$bd = "gimnasio";
+//$bd = "superhou_prueba";
+//$enlace =  mysqli_connect('localhost:3306', 'root', '', $bd);
+$enlace =  mysqli_connect('localhost', 'root', '', $bd);
 
 if (!$enlace) {
     die('Conexión incorrecta: ' . mysqli_connect_error());
