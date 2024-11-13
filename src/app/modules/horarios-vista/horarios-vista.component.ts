@@ -276,7 +276,7 @@ export class HorariosVistaComponent implements OnInit {
 
   editarCosa() {
     this.gimnasioService.gimnasioSeleccionado.subscribe((data) => {
-      if (data) {   
+      if (data) {
         this.idGimnasio = data;
         this.gimnasioService
           .consultarPlan(this.idGimnasio)
@@ -345,14 +345,14 @@ export class HorariosVistaComponent implements OnInit {
    removerAcentos(texto: string): string {
     return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
-  
+
   generarCorreoYContrasena() {
     const nombreSinAcentos = this.personaForm.value.nombreS ? this.removerAcentos(this.personaForm.value.nombreS) : "";
     const apellidoPaternoSinAcentos = this.personaForm.value.apPaterno ? this.removerAcentos(this.personaForm.value.apPaterno) : "";
-  
+
     const nombreSinEspacios = nombreSinAcentos.replace(/\s/g, "");
     const apellidoPaternoSinEspacios = apellidoPaternoSinAcentos.replace(/\s/g, "");
-  
+
     if (nombreSinEspacios && apellidoPaternoSinEspacios) {
       this.correoEmp = `${nombreSinEspacios.toLowerCase()}.${apellidoPaternoSinEspacios.toLowerCase()}@gmail.com`;
       this.pass = this.generarContrasena(8); // Generar contraseña
@@ -386,11 +386,14 @@ export class HorariosVistaComponent implements OnInit {
       this.personaForm.patchValue({
         nombre: nombreCompleto,
       });
+      console.log("Se agrego el nombre: ", nombreCompleto);
 
       const datosFormulario = this.personaForm.value;
       datosFormulario.correoEmp = this.correoEmp;
       datosFormulario.pass = this.pass;
-     
+      console.log("Correo: ", this.correoEmp);
+      console.log("pass: ", this.pass);
+
       this.http.correoEmpleado(datosFormulario.correoEmp).subscribe((respuesta) => {
         if(respuesta.message === 'MailExists'){
           this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
@@ -409,18 +412,20 @@ export class HorariosVistaComponent implements OnInit {
           this.formularioSucursales.patchValue({
             direccion: direccionCompleta,
           });
+          console.log("dirección completa: ", direccionCompleta);
+          console.log("Datos de la sucursal: ", this.formularioSucursales.value);
 
-        
 
           this.gimnasioService
           .agregarSucursal(this.formularioSucursales.value)
           .subscribe(
             (respuestaSucursal) => {
-              
+              console.log("Se creo la sucursal: ", this.formularioSucursales.value);
+
               if (respuestaSucursal && respuestaSucursal.success === 1) {
-  
+
                 datosFormulario.idGym = respuestaSucursal.id_bodega;
-          
+
                 this.http.agregarEmpleadoA(datosFormulario).subscribe(
                   (respuestaEmpleado) => {
                      if (respuestaEmpleado.success == "1") {
@@ -463,15 +468,16 @@ export class HorariosVistaComponent implements OnInit {
               }
             },
             (error) => {
+              console.log("Error al agregar la sucirsal: ", error)
               this.toastr.error('Error al agregar sucursal, intentelo más tarde....', 'Error', {
                 positionClass: 'toast-bottom-left',
               });
             }
           );
         }
-  
+
       });
-     
+
     } else {
       this.toastr.error('Completa los campos requeridos.', 'Error!!!');
       this.marcarCamposInvalidos(this.formularioSucursales);
@@ -537,9 +543,9 @@ export class HorariosVistaComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = e => this.photoSelected = reader.result;
       reader.readAsDataURL(this.file);
-     
+
       if (files && file) {
-        
+
         const newReader = new FileReader();
         newReader.onload = this._handleReaderLoaded.bind(this);
         newReader.readAsBinaryString(file);
