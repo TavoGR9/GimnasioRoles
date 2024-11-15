@@ -127,7 +127,7 @@ export class ProductosComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
         //this.productos = resultData
-        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
+        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
         this.dataSource = new MatTableDataSource(this.productos);
         this.loadData();
       });
@@ -143,7 +143,7 @@ export class ProductosComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
         //this.productos = resultData
-        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
+        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
         this.dataSource = new MatTableDataSource(this.productos);
         this.loadData();
       });
@@ -174,7 +174,7 @@ export class ProductosComponent implements OnInit {
           (respuesta) => {
             this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
               //this.productos = resultData
-              this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0');
+              this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
               this.dataSource = new MatTableDataSource(this.productos);
               this.loadData();
             });

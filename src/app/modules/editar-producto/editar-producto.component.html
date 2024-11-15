@@ -17,7 +17,7 @@
                                {{ archivo.nombreProducto }}-{{ archivo.detalleCompra }}-{{ archivo.marca }}
                            </label>
                        </div>
-                       <div class="col-sm-6">
+                       <div class="col-sm-6" *ngIf="!esServicio">
                            <label><strong>Codigo de barras:</strong></label>
                            <mat-form-field appearance="outline" style="width: 100%;" required>
                                <mat-label>Codigo de barras</mat-label>
@@ -28,7 +28,7 @@
                    </div>
                    <br>
                    <div class="row">
-                       <div class="col-sm-6">
+                       <div class="col-sm-6" *ngIf="!esServicio">
                            <p>
                                <mat-form-field appearance="outline" style="width: 100%;" required>
                                    <mat-label>Precio compra</mat-label>
@@ -46,7 +46,7 @@
                        </div>
                    </div>
                    <div class="row">
-                       <div class="col-sm-12">
+                       <div class="col-sm-12" *ngIf="!esServicio">
                            <p>
                                <mat-form-field style="width: 100%;" required appearance="outline">
                                    <mat-label>Existencia</mat-label>
@@ -59,8 +59,8 @@
            </div>
        </div>
        <div style="display: flex; justify-content: center;" mat-dialog-actions>
-           <button mat-raised-button (click)="actualizar()" class="aceptar">Aceptar</button>
-           <button mat-raised-button (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
+           <button mat-stroked-button (click)="actualizar()" class="aceptar">Aceptar</button>
+           <button mat-stroked-button (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
        </div>
    </div>
 </div>

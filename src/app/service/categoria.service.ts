@@ -62,6 +62,10 @@ export class CategoriaService {
     return this.clienteHttp.post(this.API+"categoria.php?insertarMarca=1",datosMarca);
   }
 
+  agregarMarcaSer(datosMarca:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"categoria.php?insertarMarcaSer=1",datosMarca);
+  }
+
   obtenerCategoria():Observable<any>{
     return this.clienteHttp.get(this.API+"categoria.php?consultarCategorias");
   }
@@ -72,6 +76,10 @@ export class CategoriaService {
 
   obtenerMarcas():Observable<any>{
     return this.clienteHttp.get(this.API+"categoria.php?consultarMarcas");
+  }
+
+  obtenerMarcasSer():Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?consultarMarcasSer");
   }
 
   obtenerCategoriaPorNombre(nombre:string):Observable<any>{

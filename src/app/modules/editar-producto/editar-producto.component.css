@@ -89,16 +89,16 @@ tbody tr:last-of-type {
 }
 
 .aceptar{
-  background-color: #fd9727; 
-  font-size: 20px; 
-  height: 40px; 
+  background-color: #fd9727;
+  font-size: 20px;
+  height: 40px;
   width: 200px;
 }
 
 .cancelar{
-  background-color: #000000; 
-  font-size: 20px;  
+  background-color: #000000;
+  font-size: 20px;
   height: 40px;
-  color: white; 
+  color: white !important;
   width: 200px;
 }

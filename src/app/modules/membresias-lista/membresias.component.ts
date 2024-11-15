@@ -52,7 +52,7 @@ export class MembresiasComponent implements OnInit {
     // "details",
     "servicio",
     "price",
-    "duration",
+    // "duration",
     "actions",
   ];
   habilitarBoton: boolean = false;
@@ -69,7 +69,7 @@ export class MembresiasComponent implements OnInit {
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      this.listaTabla();
+      // this.listaTabla();
       this.listaTablaProd();
     });
   }
@@ -93,7 +93,7 @@ export class MembresiasComponent implements OnInit {
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
-      this.dataSource.paginator = this.paginator;
+      this.dataSourceDos.paginator = this.paginator;
     }, 1000);
   }
 
@@ -218,8 +218,11 @@ export class MembresiasComponent implements OnInit {
   listaTablaProd(){
     this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
-      this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() !== 'jugos y bebidas' && producto.nombreCategoria.toLowerCase() !== 'suplementos' && producto.nombreCategoria.toLowerCase() !== 'accesorios');
+      this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios');
       this.dataSourceDos = new MatTableDataSource(this.productos);
+      console.log('Lista de productos: ', this.productos);
+      console.log('Datos de la lista de productos: ', this.dataSourceDos);
+
 
       this.loadData();
     });
@@ -275,7 +278,7 @@ export class MembresiasComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
 
-        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'jugos y bebidas' && producto.nombreCategoria.toLowerCase() !== 'suplementos' && producto.nombreCategoria.toLowerCase() !== 'accesorios');
+        this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios');
         this.dataSourceDos = new MatTableDataSource(this.productos);
         this.dataSourceDos.paginator = this.paginator; // Asigna el paginador a tu dataSource
         this.loadData();
