@@ -25,12 +25,6 @@ import { addDays } from 'date-fns'; //Calcular duración
 export class FormPagoEmergenteComponent implements OnInit {
   idSucursal: number = 0;
   membresias: any[] = [];
-  productos: any[] = []; //Llamar productos en lugar de membresias
-  productosFiltrados: any[] = []; // Esta será la lista filtrada de productos para la categoría "servicios"
-  membresiaProdSeleccionada: any; // Seleccionar producto tipo membresia
-  nombreMembresiaProd: any; // Nombre del producto tipo membresia
-  precioSucursal: any; // Precio del producto tipo membresia
-  moneyRecibidoProd: number = 0; // Pago del producto tipo membresia
   membresiaSeleccionada: any;
   precioSeleccionado: any;
   idMembresiaSelec: any;
@@ -42,6 +36,14 @@ export class FormPagoEmergenteComponent implements OnInit {
   fechaDeFin: Date | null = null;
   ticketInfo: any;
   @Output() actualizarTablas = new EventEmitter<boolean>();
+
+  // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
+  productos: any[] = []; //Llamar productos en lugar de membresias
+  productosFiltrados: any[] = []; // Esta será la lista filtrada de productos para la categoría "servicios"
+  membresiaProdSeleccionada: any; // Seleccionar producto tipo membresia
+  nombreMembresiaProd: any; // Nombre del producto tipo membresia
+  precioSucursal: any; // Precio del producto tipo membresia
+  moneyRecibidoProd: number = 0; // Pago del producto tipo membresia
 
   constructor(
     private toastr: ToastrService,
@@ -63,6 +65,8 @@ export class FormPagoEmergenteComponent implements OnInit {
   ngOnInit(): void {
     this.precio = 0;
     this.getMembresiasLista(this.data.idSucursal);
+
+    // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
     this.getProductosLista(this.data.idSucursal);
 
     if (this.data) {
@@ -75,21 +79,13 @@ export class FormPagoEmergenteComponent implements OnInit {
 
     }
 
+    // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
     if (this.data) {
       this.membresiaProdSeleccionada = this.data.idProbob;
       console.log('Producto categoria servicio seleccionado: ', this.membresiaProdSeleccionada);
 
       this.precioSucursal = this.data.precioSucursal !== "null" ? this.data.precioSucursal : "N/A";
     }
-
-    //   // Ejemplo de uso
-    // const nombreProducto = 'Membresía Quincena';
-    // const fechaInicio = new Date(); // fecha actual
-    // const fechaFin = this.calcularFechaFin(nombreProducto, fechaInicio);
-
-
-    // console.log('Fecha de inicio:', fechaInicio);
-    // console.log('Fecha de fin:', fechaFin);
   }
 
   getMembresiasLista(idgimnasio: number): void {
@@ -616,6 +612,18 @@ export class FormPagoEmergenteComponent implements OnInit {
       this.spinner.show();
       this.onMembresiaProdChange();
 
+      // const fechaInicio = this.fechaDeInicio || new Date();
+      // const fechaFin = this.fechaDeFin || this.calcularFechaFin(this.nombreMembresiaProd, fechaInicio);
+
+      // const fechaInicioFormateada = this.formatDate(fechaInicio);
+      // const fechaFinFormateada = this.formatDate(fechaFin);
+
+      // this.data.precio = this.precioSucursal;
+      // this.data.duracion = this.duracion;
+      // this.data.membresia = this.nombreMembresiaProd;
+      // this.data.dateStart = fechaInicioFormateada;
+      // this.data.dateEnd = fechaFinFormateada;
+
       setTimeout(() => {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.width = "30%";
@@ -625,6 +633,8 @@ export class FormPagoEmergenteComponent implements OnInit {
           cliente: this.data.nombre,
           membresia: this.nombreMembresiaProd,
         };
+        // console.log('Datos del cliente: ', this.data);
+
 
         this.dialog.open(MensajeAceptarComponent, dialogConfig)
           .afterClosed()
@@ -649,6 +659,15 @@ export class FormPagoEmergenteComponent implements OnInit {
 
     const fechaInicioFormateada = this.formatDate(fechaInicio);
     const fechaFinFormateada = this.formatDate(fechaFin);
+
+      this.data.precio = this.precioSucursal;
+      this.data.duracion = this.duracion;
+      this.data.membresia = this.nombreMembresiaProd;
+      this.data.dateStart = fechaInicioFormateada;
+      this.data.dateEnd = fechaFinFormateada;
+
+      console.log('Datos del cliente: ', this.data);
+
 
     console.log('Nombre Membresia: ', this.nombreMembresiaProd);
     console.log('Fecha Inicio formateada: ', fechaInicioFormateada);
