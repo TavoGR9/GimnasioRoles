@@ -66,7 +66,7 @@ export class ProductoService {
 
     consultarAllProducto(id: any): Observable<any[]> {
       const data = { id_pro_param: id };
-      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?getAllProductos", data)
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?getAllProductosMemb", data)
         .pipe(
           tap((nuevosProductos: any[]) => {
             this.productoSubject.next(nuevosProductos);

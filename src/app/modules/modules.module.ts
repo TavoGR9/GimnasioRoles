@@ -88,6 +88,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { RestablecerContraComponent } from './restablecer-contra/restablecer-contra.component';
 import { MensajeAceptarComponent } from './mensaje-aceptar/mensaje-aceptar.component';
 import { CrearMarcaComponent } from './crear-marca/crear-marca.component';
+import { EditarMarcaComponent } from './editar-marca/editar-marca.component';
+import { AgregarProductoMembresiaComponent } from './agregar-producto-membresia/agregar-producto-membresia.component';
 
 
 @NgModule({
@@ -140,7 +142,9 @@ import { CrearMarcaComponent } from './crear-marca/crear-marca.component';
     PagoMemComponent,
     RestablecerContraComponent,
     MensajeAceptarComponent,
-    CrearMarcaComponent
+    CrearMarcaComponent,
+    EditarMarcaComponent,
+    AgregarProductoMembresiaComponent
   ],
   imports: [
     RouterModule,

@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ListaMarcas } from "../../models/marcas";
 import { CategoriaService } from "../../service/categoria.service";
 import { CrearMarcaComponent } from "../crear-marca/crear-marca.component";
+import { EditarMarcaComponent } from "../editar-marca/editar-marca.component";
 
 @Component({
   selector: "app-servicios-lista",
@@ -34,7 +35,7 @@ export class ServiciosListaComponent implements OnInit{
     "title",
     "details",
     // "price",
-    // "actions",
+    "actions",
     // "eliminar",
   ];
   dialogRef: any;
@@ -69,6 +70,8 @@ export class ServiciosListaComponent implements OnInit{
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
+      console.log('ID GYM: ',this.idGym);
+
       // this.listaTabla();
       this.listaTablaMarca();
     });
@@ -185,23 +188,32 @@ export class ServiciosListaComponent implements OnInit{
 // }
 
 
-  listaTablaMarca() {
-    this.categoriaService.obtenerMarcasSer().subscribe((res) => {
-          //
-          this.marcas = res
-            .filter((marcas: any) => marcas.servicio !== null && marcas.servicio !== 0)
-            .map((marcas: any) => ({
-            ...marcas,
+listaTablaMarca() {
+  this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe((res) => {
+    if (res) {  // Verificación de que `res` no es null ni undefined
+      this.marcas = res
+        .filter((marca: any) => marca.servicio !== null && marca.servicio !== 0 && marca.fk_idGimnasio == this.idGym )
+        .map((marcas: any) => ({
+          ...marcas,
         }));
 
+      // Asignar las marcas transformadas a dataSource
+      this.dataSourceDos = new MatTableDataSource(this.marcas);
+      console.log('Datos de la lista de las marcas: ', this.dataSourceDos);
+    } else {
+      console.warn("No se encontraron marcas para el gimnasio especificado.");
+      this.marcas = []; // Asignar una lista vacía si `res` es null o undefined
+      this.dataSourceDos = new MatTableDataSource(this.marcas);
+    }
 
-          // Asignar las marcas transformadas a dataSource
-          this.dataSourceDos = new MatTableDataSource(this.marcas);
-          console.log('Datos de la lista de las marcas: ', this.dataSourceDos);
-
-          this.loadData();
-    });
+    this.loadData();
+  }, (error) => {
+    console.error("Error al obtener marcas:", error);
+    this.marcas = [];
+    this.dataSourceDos = new MatTableDataSource(this.marcas);
+  });
 }
+
 
 openDialogMar(): void {
   this.seleccionado = 1;
@@ -216,5 +228,30 @@ openDialogMar(): void {
   });
 }
 
+editarMarcaSer(idMarca: number) {
+  //this.seleccionado = 2;
+  //this.ServiciosService.idService.next(idMarca);
+  //this.ServiciosService.seleccionado.next(this.seleccionado);
+  const dialogRef = this.dialog.open(EditarMarcaComponent, {
+    width: "70%",
+    disableClose: true,
+    data: { idMarca: idMarca}
+  });
+
+  dialogRef.afterClosed().subscribe((result) => {
+    this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe((res) => {
+        this.marcas = res
+          .filter((marcas: any) => marcas.servicio !== null && marcas.servicio !== 0)
+          .map((marcas: any) => ({
+            ...marcas,
+          }));
+
+        // Asignar las marcas transformadas a dataSource
+        this.dataSourceDos = new MatTableDataSource(this.marcas);
+        this.loadData();
+  });
+});
+
+}
 
 }

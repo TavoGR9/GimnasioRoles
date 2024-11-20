@@ -37,6 +37,8 @@ export class CrearMarcaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getIdGym();
+
     this.categoriaService.obtenerMarcasSer().subscribe((res) => {
       if (res) {
         this.marcasDisponibles = res; // Guardamos las marcas obtenidas
@@ -47,6 +49,12 @@ export class CrearMarcaComponent implements OnInit {
     });
   }
 
+  getIdGym() {
+    this.auth.idGym.subscribe((respuesta) => {
+      this.idGym = respuesta;
+    });
+  }
+
   // Método para validar el formulario y guardar la marca
   validaFormService() {
     if (this.serviceForm.invalid) {
@@ -54,14 +62,19 @@ export class CrearMarcaComponent implements OnInit {
       this.marcarCamposInvalidos(this.serviceForm);
     } else {
       this.spinner.show();
-      const newMarca = this.serviceForm.value;
-      // Llamamos al servicio para agregar la marca
+          console.log("ID de Gimnasio:", this.idGym);
+
+      const newMarca = {
+        ...this.serviceForm.value,
+        idGimnasio: this.idGym  // Incluye el idGym en el objeto de la nueva marca
+      };
+
       this.categoriaService.agregarMarcaSer(newMarca).subscribe((respuesta) => {
         if (respuesta) {
           if (respuesta.success == '1') {
             this.spinner.hide();
             const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
-              data: `¡Marca agregada con éxito!`,
+              data: `¡Servicio agregado con éxito!`,
             });
             dialogRefConfirm.afterClosed().subscribe(() => {
               this.dialogRef.close(respuesta);
