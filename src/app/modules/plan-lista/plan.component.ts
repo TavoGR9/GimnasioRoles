@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
-import { plan } from '../../models/plan';
+import { Plan } from '../../models/plan';
 import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 import { AuthService } from '../../service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
@@ -18,8 +18,8 @@ import { MembresiaService } from '../../service/membresia.service';
 export class planComponent implements OnInit {
 
   membresiaActiva: boolean = true; // Inicializa según el estado de la membresía
-  membresias: plan[] = [];
-  plan: plan[] = [];
+  membresias: Plan[] = [];
+  plan: Plan[] = [];
   message: string = "";
   public sucursales: any;
   public page: number = 0;

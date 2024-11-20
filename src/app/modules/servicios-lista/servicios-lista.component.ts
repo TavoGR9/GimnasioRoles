@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { plan } from "../../models/plan";
+import { Plan } from "../../models/plan";
 import { serviciosService } from "../../service/servicios.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { GimnasioService } from "../../service/gimnasio.service";

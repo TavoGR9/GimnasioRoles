@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { plan } from "../../models/plan";
+import { Plan } from "../../models/plan";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { AuthService } from "../../service/auth.service";
 import { MatPaginator } from "@angular/material/paginator";
@@ -13,6 +13,7 @@ import { ListaProductos } from "../../models/listaProductos";
 import { ProductoService } from "../../service/producto.service";
 import { CrearProductoComponent } from "../crearProducto/crearProducto.component";
 import { EditarProductoComponent } from "../editar-producto/editar-producto.component";
+import { DetallePromocion } from "../../models/DetallePromocion";
 @Component({
   selector: "app-membresias",
   templateUrl: "./membresias.component.html",
@@ -20,8 +21,8 @@ import { EditarProductoComponent } from "../editar-producto/editar-producto.comp
 })
 export class MembresiasComponent implements OnInit {
   membresiaActiva: boolean = true; // Inicializa según el estado de la membresía
-  membresias: plan[] = [];
-  plan: plan[] = [];
+  membresias: Plan[] = [];
+  plan: Plan[] = [];
   message: string = "";
   public sucursales: any;
   public page: number = 0;
