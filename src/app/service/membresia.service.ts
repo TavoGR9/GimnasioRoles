@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import { catchError, of, BehaviorSubject, Observable} from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
+import { Plan } from '../models/plan';
 @Injectable({
   providedIn: 'root'
 })
@@ -77,20 +78,23 @@ export class MembresiaService {
     this.indexedDBService.saveAgregarPlanData('AgregarPlan', data);
   }
 
-  agregarPlan(datosPlan:membresia):Observable<any>{
-    return this.clienteHttp.post(this.API+"membresias.php?insertarplan",datosPlan).pipe(
+  agregarPlan(datosPlan: Plan): Observable<any> {
+    return this.clienteHttp.post<any>(`${this.API}promociones.php?insertarplan`, datosPlan).pipe(
       tap(dataResponse => {
+        console.log('Plan agregado exitosamente:', dataResponse);
       }),
       catchError(error => {
+        console.error('Error al agregar el plan:', error);
         this.saveDataToIndexedDBP(datosPlan);
-        const resultData = { success: '2' };
+        const resultData = { success: '2', message: 'Datos guardados localmente por error de conexión.' };
         return of(resultData);
       })
     );
   }
+  
 
   consultarPlanIdMem(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMMem="+id).pipe(
+    return this.clienteHttp.get(this.API+"promociones.php?consultarPromocion="+id).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
       }),
@@ -118,7 +122,7 @@ export class MembresiaService {
 
   getMembresiaDatos() {
     return new Observable(observer => {
-      this.indexedDBService.getMembresiaData('membresia').then(data => {
+      this.indexedDBService.getMembresiaData('Promociones').then(data => {
         if (data && data.length > 0) {
           let maxId = -1;
           let lastData: any;
@@ -163,12 +167,12 @@ export class MembresiaService {
 
   private saveDataToIndexedDB2(data: any) {
     // Guarda los datos en IndexedDB
-    this.indexedDBService.savePlanData('Plan', data);
+    this.indexedDBService.savePlanData('Promociones', data);
   }
 
   getServiceDatos() {
     return new Observable(observer => {
-      this.indexedDBService.getPlanData('Plan').then(data => {
+      this.indexedDBService.getPlanData('Promociones').then(data => {
         if (data && data.length > 0) {
           let maxId = -1;
           let lastData: any;
@@ -204,23 +208,23 @@ export class MembresiaService {
   }
 
   consultarPlan(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"membresias.php?consultarPlanes="+id);
+    return this.clienteHttp.get(this.API+"Promociones.php?consultarPlanes="+id);
   }
 
   agregarPlanMem(datosPlanM:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"membresias.php?insertarPlanM",datosPlanM);
+    return this.clienteHttp.post(this.API+"Promociones.php?insertarPromocion",datosPlanM);
   }
 
   consultarPlanId(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"membresias.php?consultarGYM="+id);
+    return this.clienteHttp.get(this.API+"Promociones.php?consultarPromocion="+id);
   }
 
   actualizarPlan(id:any,datosPlan:any):Observable<any>{
 
-    return this.clienteHttp.post(this.API+"membresias.php?actualizarPlan="+id,datosPlan);
+    return this.clienteHttp.post(this.API+"Promociones.php?actualizarPromocion="+id,datosPlan);
   }
 
   deletePlan(id: any):Observable<any>{
-    return this.clienteHttp.get(this.API+"membresias.php?borrar="+id);
+    return this.clienteHttp.get(this.API+"Promociones.php?borrar="+id);
   }
 }

@@ -1,15 +1,11 @@
-export class plan{
-    idMem!:number;
-    titulo!:string;
-    detalles!:string;
-    entrenador!:string;
-    ofertas!:string;
-    duracion!:string;
-    precio!:string;
-    canchaAcc!:string;
-    albercaAcc!:string;
-    gymAcc!:string;
-    status!:number;
-    Gimnasio_idGimnasio !:number;
-    
+export class Plan {
+  id_promocion!: number;
+  nombrePromocion!: string; 
+  detalle_promocion!: string;
+  estatus!: number; 
+  id_categoria!: number; 
+  FechaInicio!: string; 
+  FechaFin!: string;
+  PrecioPaquete!: number; 
+  existencias!: number;
 }

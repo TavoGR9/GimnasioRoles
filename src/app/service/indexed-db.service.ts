@@ -195,7 +195,7 @@ export class IndexedDBService extends Dexie {
   }
 
   async getMembresiaData(key: string) {
-    return await this.table('membresia')
+    return await this.table('Promociones')
         .where('key')
         .equals(key)
         .toArray();
@@ -206,7 +206,7 @@ export class IndexedDBService extends Dexie {
   }
 
   async getPlanData(key: string) {
-    return await this.table('Plan')
+    return await this.table('Promociones')
         .where('key')
         .equals(key)
         .toArray();
