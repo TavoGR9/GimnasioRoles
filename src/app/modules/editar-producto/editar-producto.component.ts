@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, ChangeDetectionStrategy} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { MessageService } from 'primeng/api'; 
+import { MessageService } from 'primeng/api';
 import { ProductoService } from '../../service/producto.service';
 import { MatDialog } from "@angular/material/dialog";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -40,6 +40,9 @@ export class EditarProductoComponent implements OnInit{
   filteredMarcas: string[] = [];
   editarProd: any;
 
+  esServicio: boolean = false;
+
+
   constructor( public dialogo: MatDialogRef<EditarProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public fb:FormBuilder,
@@ -52,11 +55,17 @@ export class EditarProductoComponent implements OnInit{
     public dialog: MatDialog){
 
     this.idProducto = data.idProducto;
+
     this.productoService.consultarProductosJ(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
         this.editarProd = respuesta;
+
+        // Imprimir en consola el nombre de la categoría
+        console.log('Nombre de la categoría:', this.editarProd[0]?.nombreCategoria);
+
+
         this.form.setValue({
-          codigoBarra:respuesta [0]['codigoBarras'],       
+          codigoBarra:respuesta [0]['codigoBarras'],
           nomsubcate:respuesta [0]['subCategoria'],
           nombreCategoriaP:respuesta [0]['nombreCategoria'],
           descripcion:respuesta [0]['nombreProducto'],
@@ -70,6 +79,13 @@ export class EditarProductoComponent implements OnInit{
           idProbob:respuesta [0]['idProbob'],
           id_bodega:respuesta [0]['id_bodega']
         });
+
+         // Deshabilitar el campo y ocultar precioCaja si la categoría es "Servicios"
+         if (this.editarProd[0]?.nombreCategoria === 'Servicios') {
+          // this.form.get('codigoBarra')?.disable();
+          this.esServicio = true;
+        }
+
       }
     );
 
@@ -105,16 +121,16 @@ export class EditarProductoComponent implements OnInit{
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-    
+
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-    });  
+    });
   }
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
-        
+
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.id);
@@ -146,9 +162,9 @@ export class EditarProductoComponent implements OnInit{
 
   actualizar(){
     const fechaActual: Date = new Date();
-    const dia: string = fechaActual.getDate().toString().padStart(2, '0'); 
-    const mes: string = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); 
-    const año: string = fechaActual.getFullYear().toString(); 
+    const dia: string = fechaActual.getDate().toString().padStart(2, '0');
+    const mes: string = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
+    const año: string = fechaActual.getFullYear().toString();
     const fechaFormateada: string = `${año}-${mes}-${dia}`;
     const data = {
       ultimo_id:this.form.value.idBodPro,
@@ -171,16 +187,16 @@ export class EditarProductoComponent implements OnInit{
           .subscribe((cerrarDialogo: Boolean) => {
           if (cerrarDialogo) {
             this.dialogo.close();
-            
+
           } else {
           }
-          }); 
+          });
         } else {
           this.toastr.error(update.message, 'Error', {
             positionClass: 'toast-bottom-left',
           });
         }
-      }});     
+      }});
 }
 
 infoCategoria(event: number) {

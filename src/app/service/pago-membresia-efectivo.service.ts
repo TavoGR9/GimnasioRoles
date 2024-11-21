@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { msgResult } from '../models/empleado';
 import { ConnectivityService } from './connectivity.service';
@@ -220,6 +220,22 @@ export class PagoMembresiaEfectivoService {
 
   deleteServiceUsuario(datos: any): Observable<any>{
     return this.clienteHttp.post(this.API+"Usuario.php?eliminarUsuario", datos);
+  }
+
+  // Actualización del estado del cliente de su membresia (producto)
+
+  actualizacionMemebresiaProd(idCli:any,idMem:any, fechaActual: any, detMemID: any, precio: any, fechaFormateadaFin: any, created_by: any):Observable<any>{
+    const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fechaActual).set('detMemID',detMemID).set('precio',precio).set('fechaFormateadaFin',fechaFormateadaFin).set('created_by',created_by);
+    return this.clienteHttp.get(this.API+"UsuarioProds.php", { params });
+  }
+
+  agregarPedido(datos: any):Observable<any>{
+    return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedido", datos).pipe(
+      catchError(error => {
+        console.error('Error al enviar la solicitud: ', error)
+        return throwError(error);
+      })
+    );
   }
 
 }

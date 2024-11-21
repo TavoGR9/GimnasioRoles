@@ -78,7 +78,7 @@ export class MembresiaService {
   }
 
   agregarPlan(datosPlan:membresia):Observable<any>{
-    return this.clienteHttp.post(this.API+"membresias.php?insertarplan",datosPlan).pipe(
+    return this.clienteHttp.post(this.API+"Promociones.php?insertarPromocion",datosPlan).pipe(
       tap(dataResponse => {
       }),
       catchError(error => {
@@ -208,7 +208,7 @@ export class MembresiaService {
   }
 
   agregarPlanMem(datosPlanM:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"membresias.php?insertarPlanM",datosPlanM);
+    return this.clienteHttp.post(this.API+"Promociones.php?insertarPromocion",datosPlanM);
   }
 
   consultarPlanId(id:any):Observable<any>{

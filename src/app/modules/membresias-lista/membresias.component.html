@@ -70,12 +70,12 @@
   <div style="margin-top: 60px;">
      <div class="container mt-4" >
      <h2 class="mb-3">MEMBRESIAS DISPONIBLES</h2>
-     <!-- <div style="text-align: right;">
-      <button mat-raised-button [disabled]="!habilitarBoton" style="background-color: #fd9727; font-size: 16px;" (click)="openDialog()">
+     <div style="text-align: right;">
+      <button mat-raised-button [disabled]="!habilitarBoton" style="background-color: #fd9727; font-size: 16px;" (click)="openDialogProd()">
          <mat-icon>add</mat-icon>
          AGREGAR MEMBRESIA
       </button>
-     </div> -->
+     </div>
 
      <br/>
      <div style="margin-left: 70px;color:red;font-size: 20px;">{{message}}</div>
@@ -100,17 +100,17 @@
               <td mat-cell *matCellDef="let item">{{ item.detalleCompra }}</td>
            </ng-container> -->
            <ng-container matColumnDef="servicio">
-              <th mat-header-cell *matHeaderCellDef>Servicio</th>
-              <td mat-cell *matCellDef="let item">{{ item.detalleCompra }}</td>
+              <th mat-header-cell *matHeaderCellDef>Detalles</th>
+              <td mat-cell *matCellDef="let item">{{ item.marca }}</td>
            </ng-container>
            <ng-container matColumnDef="price">
               <th mat-header-cell *matHeaderCellDef>Precio</th>
               <td mat-cell *matCellDef="let item">$ {{ item.precioSucursal }}</td>
            </ng-container>
-           <ng-container matColumnDef="duration">
+           <!-- <ng-container matColumnDef="duration">
               <th mat-header-cell *matHeaderCellDef>Duración</th>
               <td mat-cell *matCellDef="let item">{{ item.duracionProd }} días</td>
-           </ng-container>
+           </ng-container> -->
 
            <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Acciones</th>

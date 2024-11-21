@@ -93,7 +93,7 @@ export class ServiceDialogComponent implements OnInit {
               this.dialogRef.close(respuesta);
             });
           }
-        } 
+        }
       });
     }
   }
