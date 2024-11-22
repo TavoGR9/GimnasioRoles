@@ -69,6 +69,9 @@ export class CrearMarcaComponent implements OnInit {
         idGimnasio: this.idGym  // Incluye el idGym en el objeto de la nueva marca
       };
 
+      console.log('Datos actualizados: ', newMarca);
+
+
       this.categoriaService.agregarMarcaSer(newMarca).subscribe((respuesta) => {
         if (respuesta) {
           if (respuesta.success == '1') {

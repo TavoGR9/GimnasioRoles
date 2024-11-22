@@ -121,10 +121,15 @@ export class ProductoService {
 
 
 
+    // obternerProductos(id:any):Observable<any>{
+    //   const data = { id_bodega_param: id };
+    //   return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodega=",data);
+    // }
 
+    // Aqui obtengo el id de la bodega en un json
     obternerProductos(id:any):Observable<any>{
       const data = { id_bodega_param: id };
-      return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodega=",data);
+      return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoIDBodega=",data);
     }
 
     obternerProductosV(id:any):Observable<any>{

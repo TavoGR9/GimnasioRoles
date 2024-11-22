@@ -2,8 +2,8 @@
     <p style="color: white" > Cargando... </p>
  </ngx-spinner>
 <h1 mat-dialog-title class="title">PAGAR MEMBRESIA</h1>
-<!--
-<div mat-dialog-content>
+
+<!--<div mat-dialog-content>
     <form>
         <br>
         <div class="row">
@@ -88,14 +88,14 @@
 <!-- REEMPLAZAR MEMBRESIAS POR PRODUCTOS -->
 
 <div mat-dialog-content>
-  <form>
+  <form [formGroup]="serviceForm">
       <br>
       <div class="row">
           <div class="col-sm-6">
               <div>
                   <mat-form-field appearance="outline" style="width: 100%;" class="disabled-input" >
                       <mat-label>Nombre del cliente:</mat-label>
-                      <input matInput [value]="data.nombre" [disabled]="true" >
+                      <input matInput [value]="data.nombre" >
                   </mat-form-field>
               </div>
           </div>
@@ -103,9 +103,9 @@
               <div>
                   <mat-form-field appearance="outline" style="width: 100%;">
                     <mat-label for="membresiaSelect">Membresía</mat-label>
-                    <mat-select id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaProdSeleccionada" (ngModelChange)="onMembresiaProdChange()">
+                    <mat-select formControlName="membresiaProdSeleccionada" id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaProdSeleccionada" (ngModelChange)="onMembresiaProdChange()">
                       <mat-option *ngFor="let producto of productosFiltrados" [value]="producto.idProbob">
-                        {{ producto.nombreProducto }} -{{ producto.marca}}
+                        {{ producto.nombreProducto }} - {{ producto.marca}}
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
@@ -116,13 +116,13 @@
           <div class="col-sm-6">
               <mat-form-field appearance="outline" style="width: 100%;">
                   <mat-label>Precio</mat-label>
-                  <input matInput [value]="this.precioSucursal" [disabled]='true'>
+                  <input matInput [value]="this.precioSucursal">
               </mat-form-field>
           </div>
           <div class="col-sm-6">
               <mat-form-field appearance="outline" style="width: 100%;">
                   <mat-label>Duración</mat-label>
-                  <input matInput [value]="duracion" [disabled]='true'>
+                  <input matInput [value]="duracionMem">
               </mat-form-field>
           </div>
       </div>
@@ -158,7 +158,7 @@
       </div>
     </form>
     <div style="display: flex; justify-content: center;" mat-dialog-actions>
-      <button mat-stroked-button (click)="successDialogPago()"style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 30%; margin-right: 90px;"><mat-icon>attach_money</mat-icon>Pagar</button>
+      <button mat-stroked-button (click)="validarFormulario()"style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 30%; margin-right: 90px;"><mat-icon>attach_money</mat-icon>Pagar</button>
       <button mat-stroked-button (click)="cancelDialogo()" style="background-color: #000000; font-size: 20px;  height: 40px;width: 30%; color: white;"><mat-icon>cancel</mat-icon>Cancelar</button>
    </div>
 </div>
