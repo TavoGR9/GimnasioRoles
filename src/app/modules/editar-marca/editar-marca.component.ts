@@ -1,0 +1,139 @@
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { AuthService } from "../../service/auth.service";
+import { CategoriaService } from '../../service/categoria.service';
+import { serviciosService } from '../../service/servicios.service';
+import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ServiceDialogComponent } from '../service-dialog/service-dialog.component';
+
+
+@Component({
+  selector: 'app-editar-marca',
+  templateUrl: './editar-marca.component.html',
+  styleUrls: ['./editar-marca.component.css']
+})
+export class EditarMarcaComponent {
+
+  serviceForm!: FormGroup;
+  idGym: number = 0;
+  idMarca: number = 0;
+  marca: any;
+  marcasDisponibles: any;
+  seleccionado: number = 0;
+  message: string = "";
+
+  esServicio: boolean = true;
+
+
+  constructor(
+    private fb: FormBuilder,
+    public dialog: MatDialog,
+    private auth: AuthService,
+    private categoriaService: CategoriaService,
+    private dialogRef: MatDialogRef<EditarMarcaComponent>,
+    private spinner: NgxSpinnerService,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+
+  ) {
+
+    // Inicializar ID de marca desde los datos proporcionados
+    this.idMarca = data.idMarca;
+
+
+    this.serviceForm = this.fb.group({
+      id_marcas: [0],
+      marcaP: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
+      servicio: ["", Validators.required],
+      fk_idGimnasio: [0],
+    });
+  }
+
+  ngOnInit(): void {
+    this.getIdGym();
+
+    // Esperar a que idGym esté definido antes de realizar la solicitud
+    if (this.idGym && this.idMarca) {
+      this.categoriaService.getMarcaService(this.idMarca, this.idGym).subscribe((res) => {
+        if (res) {
+          this.marca = res;
+          console.log('Datos de la marca recibidos:', this.marca);
+
+          // Llenar el formulario con los datos de la marca
+          this.serviceForm.patchValue({
+            id_marcas: this.marca.id_marcas,
+            marcaP: this.marca.marca,
+            servicio: this.marca.servicio,
+            fk_idGimnasio: this.idGym,
+          });
+        }
+      });
+    }
+
+
+    this.categoriaService.obtenerMarcasSer().subscribe((res) => {
+      if (res) {
+        this.marcasDisponibles = res; // Guardamos las marcas obtenidas
+        console.log("Marcas disponibles: ", this.marcasDisponibles);
+      } else {
+        console.error("No se pudieron obtener las marcas.");
+      }
+    });
+  }
+
+
+  getIdGym() {
+    this.auth.idGym.subscribe((respuesta) => {
+      this.idGym = respuesta;
+    });
+  }
+
+  actualizarForm() {
+
+    if (this.serviceForm.invalid) {
+      // Marcar todos los campos del formulario como inválidos si la validación falla
+      this.marcarCamposInvalidos(this.serviceForm);
+      this.message = "Por favor, complete los campos obligatorios correctamente.";
+      return;
+    }
+
+    this.spinner.show();
+    console.log('Datos a enviar: ', this.serviceForm.value);
+
+    // Llamada a updateMarcaService para actualizar la información de la marca
+  this.categoriaService.updateMarcaService(this.serviceForm.value).subscribe((res) => {
+    this.spinner.hide();
+    if (res && res.success) {  // Si la respuesta contiene un indicador de éxito
+      const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, { data: `¡Servicio actualizado con éxito!` });
+      dialogRefConfirm.afterClosed().subscribe(() => {
+        this.categoriaService.confirmButton.next(true);
+        this.dialogRef.close();
+      });
+    } else {
+      this.message = res.message || "Error al actualizar la marca.";
+      console.error("Error en la actualización", res);
+    }
+  }, (error) => {
+    // Manejo de errores de la solicitud
+    this.spinner.hide();
+    this.message = "Error en la conexión al servidor.";
+    console.error("Error al actualizar la marca:", error);
+  });
+  }
+
+  // Método para marcar los campos del formulario como inválidos
+  marcarCamposInvalidos(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach((campo) => {
+      const control = formGroup.get(campo);
+      if (control) {
+        control.markAsTouched();
+      }
+    });
+  }
+
+  cancelar() {
+    this.dialogRef.close();
+  }
+
+}

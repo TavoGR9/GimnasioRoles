@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { msgResult } from '../models/empleado';
 import { ConnectivityService } from './connectivity.service';
@@ -12,10 +12,12 @@ import { filter, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class PagoMembresiaEfectivoService {
-  
+
   isConnected: boolean = true;
-  
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGimnasio/';
+
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
@@ -44,21 +46,25 @@ export class PagoMembresiaEfectivoService {
   obtenerActivos(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"Usuario.php?obtenerVista="+id).pipe(
       tap(dataResponse => {
+        console.log("Obteniendo activos:")
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
+        console.log('Error en API:', error.message || error);
+        console.log('Código de estado:', error.status);
+        console.log('Cargando datos desde IndexedDB debido a error en API:', error);
         return this.getServiceDatos();
-        
+
         /*const resultData = { success: '2' }; // Objeto que indica éxito
         return forkJoin([
           this.getServiceDatos().pipe(
             filter(data => data !== null)
-            
+
           ),
           this.getServiceDatosInsert().pipe(
 
            filter((data: any) => Array.isArray(data)),
-            map((data: any[]) => data.map(item => item.data)) 
+            map((data: any[]) => data.map(item => item.data))
           ),
           of(resultData) // Convierte el objeto en un observable
         ]);*/
@@ -69,8 +75,9 @@ export class PagoMembresiaEfectivoService {
   private saveDataToIndexedDB2(data: any) {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveObtenerActivosData('ObtenerActivos', data);
+    console.log("Datos obtenidos")
   }
-  
+
   getServiceDatos() {
     return new Observable(observer => {
       this.indexedDBService.getObtenerActivosData('ObtenerActivos').then(data => {
@@ -124,7 +131,7 @@ export class PagoMembresiaEfectivoService {
     };
     return this.clienteHttp.get(this.API + 'Usuario.php', { params });
   }
-  
+
   membresiasLista(idSucu: any):Observable<any>{
     const params = {
       id_bodega: idSucu
@@ -169,7 +176,7 @@ export class PagoMembresiaEfectivoService {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveMembresiaIdData('AgregarMemId', data);
   }
-  
+
   membresiasInfo(idMemb: any):Observable<any>{
     const params = {
       id_mem: idMemb
@@ -197,7 +204,7 @@ export class PagoMembresiaEfectivoService {
   }
 
   actualizaDatosCliente(data: any): Observable<any> {
-    const form = { 
+    const form = {
       email:data.correo,
       idU:data.id_cliente,
       nombre:data.nombre,
@@ -213,6 +220,22 @@ export class PagoMembresiaEfectivoService {
 
   deleteServiceUsuario(datos: any): Observable<any>{
     return this.clienteHttp.post(this.API+"Usuario.php?eliminarUsuario", datos);
+  }
+
+  // Actualización del estado del cliente de su membresia (producto)
+
+  actualizacionMemebresiaProd(idCli:any,idMem:any, fechaActual: any, detMemID: any, precio: any, fechaFormateadaFin: any, created_by: any):Observable<any>{
+    const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fechaActual).set('detMemID',detMemID).set('precio',precio).set('fechaFormateadaFin',fechaFormateadaFin).set('created_by',created_by);
+    return this.clienteHttp.get(this.API+"UsuarioProds.php", { params });
+  }
+
+  agregarPedido(datos: any):Observable<any>{
+    return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedido", datos).pipe(
+      catchError(error => {
+        console.error('Error al enviar la solicitud: ', error)
+        return throwError(error);
+      })
+    );
   }
 
 }
