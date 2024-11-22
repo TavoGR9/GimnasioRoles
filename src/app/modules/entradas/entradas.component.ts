@@ -1,4 +1,4 @@
-import { DatePipe } from "@angular/common"; 
+import { DatePipe } from "@angular/common";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
@@ -115,7 +115,7 @@ export class EntradasComponent implements OnInit {
         this.verCompras();
       }
     });
-    
+
     this.buscarProducto();
   }
 
@@ -187,7 +187,7 @@ export class EntradasComponent implements OnInit {
     this.productoService.consultarProductosJ(product.idProd, this.auth.idGym.getValue()).subscribe(respuesta => {
       this.resultadoData = respuesta;
       if (respuesta.length > 0) {
-        // patchValue: Actualiza solo los campos necesarios 
+        // patchValue: Actualiza solo los campos necesarios
         this.form.patchValue({
           precioCaja: this.resultadoData[0].precioCaja,
           precciosucu: this.resultadoData[0].precioSucursal
@@ -200,7 +200,7 @@ export class EntradasComponent implements OnInit {
       }
     });
   }
-  
+
   infoProducto(event: number) {
     this.idProducto = event;
   }
@@ -621,7 +621,7 @@ export class EntradasComponent implements OnInit {
         this.compras = respuesta.data;
         this.dataSource = new MatTableDataSource(this.compras);
         this.loadData();
-        
+
       });
   }
 

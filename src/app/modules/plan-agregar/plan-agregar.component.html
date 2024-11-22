@@ -2,7 +2,7 @@
     <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
 
         <h1 class="title" mat-dialog-title>AGREGAR PLAN</h1>
-        
+
         <div mat-dialog-content>
             <form [formGroup]="formulariodePlan">
                 <div>
@@ -14,11 +14,11 @@
                                 <label>Nombre del plan:</label>
                                 <mat-form-field appearance="outline" style="width: 95%;" required>
                                     <mat-label>Nombre del plan:</mat-label>
-                                    <input type="text" matInput placeholder="Titulo" autocomplete="off" id="titulo" formControlName="titulo">
-                                    <mat-error *ngIf="isFieldInvalid('titulo', 'required')">
+                                    <input type="text" matInput placeholder="nombrePromocion" autocomplete="off" id="nombrePromocion" formControlName="nombrePromocion">
+                                    <mat-error *ngIf="isFieldInvalid('nombrePromocion', 'required')">
                                         El título es requerido.
                                       </mat-error>
-                                      <mat-error *ngIf="isFieldInvalid('titulo', 'pattern')">
+                                      <mat-error *ngIf="isFieldInvalid('nombrePromocion', 'pattern')">
                                         Solo se aceptan letras.
                                       </mat-error>
                                 </mat-form-field>
@@ -29,11 +29,44 @@
                                     <label>Precio:</label>
                                     <mat-form-field appearance="outline"  style="width: 95%;" required>
                                         <mat-label>Precio</mat-label>
-                                        <input type="number" placeholder="Precio" matInput autocomplete="off" id="precio" formControlName="precio" >
+                                        <input type="number" placeholder="PrecioPaquete" matInput autocomplete="off" id="PrecioPaquete" formControlName="PrecioPaquete" >
                                         <mat-error *ngIf="isFieldInvalid('precio', 'required')">
                                             El precio es requerido.
                                           </mat-error>
                                           <mat-error *ngIf="isFieldInvalid('precio', 'pattern')">
+                                            Solo se aceptan números.
+                                          </mat-error>
+                                    </mat-form-field>
+                                </p>
+                            </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>
+                                <label>Detalle Promoción:</label>
+                                <mat-form-field appearance="outline" style="width: 95%;" required>
+                                    <mat-label>Detalle Promoción:</mat-label>
+                                    <input type="text" matInput placeholder="Detalle promoción" autocomplete="off" id="detalle_promocion" formControlName="detalle_promocion">
+                                    <mat-error *ngIf="isFieldInvalid('detalle_promocion', 'required')">
+                                        La promocion es requerida.
+                                      </mat-error>
+                                      <mat-error *ngIf="isFieldInvalid('detalle_promocion', 'pattern')">
+                                        Solo se aceptan letras.
+                                      </mat-error>
+                                </mat-form-field>
+                            </p>
+                        </div>
+                        <div class="col-sm-6">
+                                <p>
+                                    <label>Existencias:</label>
+                                    <mat-form-field appearance="outline"  style="width: 95%;" required>
+                                        <mat-label>Existencias</mat-label>
+                                        <input type="number" placeholder="Existencias" matInput autocomplete="off" id="Existencias" formControlName="Existencias" >
+                                        <mat-error *ngIf="isFieldInvalid('Existencias', 'required')">
+                                            Las existencias son requeridas.
+                                          </mat-error>
+                                          <mat-error *ngIf="isFieldInvalid('Existencias', 'pattern')">
                                             Solo se aceptan números.
                                           </mat-error>
                                     </mat-form-field>
@@ -63,30 +96,32 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-6">
+                       <!-- <div class="col-sm-6">
                             <p>
                                 <label>Detalles:</label>
                                 <mat-form-field style="display: inline-block; width: 95%; height: 110px;" required appearance="outline">
                                     <mat-label>Detalles</mat-label>
                                     <textarea class="textarea" matInput rows="4" placeholder="Detalles" cols="50" style="display: inline-block; width: 100%;height: 100%;" id="detalles" formControlName="detalles"> </textarea>
-                                    
+
                                 </mat-form-field>
                             </p>
 
-                        </div>
+                        </div>-->
                         <div class="col-sm-6">
                             <p *ngIf="plan && plan.length > 0; else noServicios">
                                 <label>Membresías:</label>
                                 <mat-form-field appearance="outline" style="width: 95%;" required>
                                     <mat-label>Selecciona una membresía</mat-label>
-                                    <mat-select [(value)]="selectedMembresia" multiple formControlName="membresias"> 
+                                    <mat-select [(value)]="selectedMembresia" multiple formControlName="membresias">
                                       <mat-option *ngFor="let membresia of plan" [value]="membresia">
                                         {{ membresia.titulo }} - {{ membresia.duracion }} días - {{ membresia.nombre_servicio }}
                                       </mat-option>
                                     </mat-select>
                                   </mat-form-field>
                             </p>
+                          </div>
 
+                            <div class="col-sm-6">
                             <p *ngIf="plan && plan.length > 0">Agrega otra membresía:<a href="javascript:void(0)" (click)="openDialog()">Aquí</a></p>
 
                             <ng-template #noServicios>
@@ -95,7 +130,7 @@
                               </ng-template>
 
                         </div>
-                       
+
                     </div>
                     <!--<div class="row">
                         <div class="col-sm-6">
@@ -107,15 +142,15 @@
                             </p>
 
                         </div>
-                    </div>  -->    
+                    </div>  -->
                 </div>
             </form>
         </div>
-        
+
         <div style="display: flex; justify-content: center;" mat-dialog-actions>
             <button mat-stroked-button (click)="enviar()" class="aceptar">Aceptar</button>
             <button mat-stroked-button (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
-        </div>  
+        </div>
 </div>
 
 

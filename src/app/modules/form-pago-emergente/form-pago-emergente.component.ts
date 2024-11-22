@@ -13,6 +13,10 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeAceptarComponent } from "../mensaje-aceptar/mensaje-aceptar.component";
 import { MatDialogConfig } from "@angular/material/dialog";
 
+//PARA LLAMAR PRODUCTOS EN LUGAR DE MEMBRESIAS
+import { ProductoService } from "../../service/producto.service";
+import { addDays } from 'date-fns'; //Calcular duración
+
 @Component({
   selector: "app-form-pago-emergente",
   templateUrl: "./form-pago-emergente.component.html",
@@ -33,6 +37,14 @@ export class FormPagoEmergenteComponent implements OnInit {
   ticketInfo: any;
   @Output() actualizarTablas = new EventEmitter<boolean>();
 
+  // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
+  productos: any[] = []; //Llamar productos en lugar de membresias
+  productosFiltrados: any[] = []; // Esta será la lista filtrada de productos para la categoría "servicios"
+  membresiaProdSeleccionada: any; // Seleccionar producto tipo membresia
+  nombreMembresiaProd: any; // Nombre del producto tipo membresia
+  precioSucursal: any; // Precio del producto tipo membresia
+  moneyRecibidoProd: number = 0; // Pago del producto tipo membresia
+
   constructor(
     private toastr: ToastrService,
     private auth: AuthService,
@@ -42,7 +54,8 @@ export class FormPagoEmergenteComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA)
     public data: any,
     private membresiaService: PagoMembresiaEfectivoService,
-    public dialogo: MatDialogRef<FormPagoEmergenteComponent>
+    public dialogo: MatDialogRef<FormPagoEmergenteComponent>,
+    private productoService: ProductoService
   ) {
     this.obtenerFoto();
   }
@@ -52,11 +65,26 @@ export class FormPagoEmergenteComponent implements OnInit {
   ngOnInit(): void {
     this.precio = 0;
     this.getMembresiasLista(this.data.idSucursal);
+
+    // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
+    this.getProductosLista(this.data.idSucursal);
+
     if (this.data) {
       this.membresiaSeleccionada = this.data.idMem;
+      console.log('Membresia seleccionada: ', this.membresiaSeleccionada);
+
       this.precio = this.data.precio !== "null" ? this.data.precio : "N/A";
       this.duracion =
         this.data.duracion !== "null" ? this.data.duracion : "N/A";
+
+    }
+
+    // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
+    if (this.data) {
+      this.membresiaProdSeleccionada = this.data.idProbob;
+      console.log('Producto categoria servicio seleccionado: ', this.membresiaProdSeleccionada);
+
+      this.precioSucursal = this.data.precioSucursal !== "null" ? this.data.precioSucursal : "N/A";
     }
   }
 
@@ -64,6 +92,8 @@ export class FormPagoEmergenteComponent implements OnInit {
     this.membresiaService.membresiasLista(idgimnasio).subscribe(
       (data) => {
         this.membresias = data;
+        console.log('LISTA: ', this.membresias);
+
       },
       (error) => {
         console.error("Error al obtener la lista de membresías:", error);
@@ -300,7 +330,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                     }
                   </style>
                 </head>
-                <body> 
+                <body>
                 <div class="ticket">
                 ${
                   this.fotoUrl
@@ -327,7 +357,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                               <td>${ticketInfo.Fecha_Inicio}</td>
                               <td>${ticketInfo.Fecha_Fin}</td>
                               <td>$${ticketInfo.Precio}</td>
-                            </tr> 
+                            </tr>
                       </tbody>
                     </table>
                     <hr>
@@ -511,7 +541,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                           }
                         });
                     });
-                } 
+                }
             }
           } else {
             this.spinner.hide();
@@ -526,4 +556,554 @@ export class FormPagoEmergenteComponent implements OnInit {
     );
   }
   }
+
+
+  // REEMPLAZAR MEMBRESIAS POR PRODUCTOS CON CATEGORIA SERVICIOS
+  getProductosLista(idgimnasio: number): void {
+    this.productoService.obternerProductos(idgimnasio).subscribe(
+      (data) => {
+        this.productos = data;
+        console.log('LISTA DE PRODUCTOS DE LA BODEGA: ', this.productos);
+        // Filtrar productos para que solo incluyan aquellos con categoría "servicios"
+        this.productosFiltrados = this.productos.filter(producto => producto.nombreCategoria === 'Servicios');
+        console.log('LISTA DE PRODUCTOS FILTRADOS: ', this.productosFiltrados);
+
+      },
+      (error) => {
+        console.error("Error al obtener la lista de productos: ", error);
+      }
+    );
+  }
+
+
+  onMembresiaProdChange(): void {
+    this.productoService.consultarProductosJ(this.membresiaProdSeleccionada, this.data.idSucursal)
+      .subscribe((resultado) => {
+        if (resultado && resultado.length > 0) {
+          this.precioSucursal = resultado[0].precioSucursal || "N/A";
+          this.nombreMembresiaProd = `${resultado[0].nombreProducto + ' - ' + resultado[0].marca}`
+
+          // Asigna la duración basada en el nombre del producto
+          const nombreProducto = resultado[0].nombreProducto.toLowerCase();
+          if (nombreProducto.includes('mensualidad')) {
+            this.duracion = 30;
+          } else if (nombreProducto.includes('anualidad')) {
+            this.duracion = 365;
+          } else if (nombreProducto.includes('quincena')) {
+            this.duracion = 15;
+          } else if (nombreProducto.includes('visita') || nombreProducto.includes('día') || nombreProducto.includes('dia')) {
+            this.duracion = 1;
+          } else {
+            this.duracion = 0; // Valor predeterminado en caso de no coincidencia
+          }
+        } else {
+          this.precioSucursal = "N/A";
+        }
+        console.log('Precio del producto seleccionado: ', this.precioSucursal);
+      },
+      (error) => {
+        console.error("Error al consultar el precio del producto:", error);
+        this.precioSucursal = "N/A";
+      });
+  }
+
+  successDialogPago() {
+    if (this.moneyRecibidoProd >= this.precioSucursal) {
+      this.spinner.show();
+      this.onMembresiaProdChange();
+
+      // const fechaInicio = this.fechaDeInicio || new Date();
+      // const fechaFin = this.fechaDeFin || this.calcularFechaFin(this.nombreMembresiaProd, fechaInicio);
+
+      // const fechaInicioFormateada = this.formatDate(fechaInicio);
+      // const fechaFinFormateada = this.formatDate(fechaFin);
+
+      // this.data.precio = this.precioSucursal;
+      // this.data.duracion = this.duracion;
+      // this.data.membresia = this.nombreMembresiaProd;
+      // this.data.dateStart = fechaInicioFormateada;
+      // this.data.dateEnd = fechaFinFormateada;
+
+      setTimeout(() => {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.width = "30%";
+        dialogConfig.disableClose = true;
+        dialogConfig.data = {
+          mensaje: "¿Está seguro/a de que desea pagar la membresía seleccionada?",
+          cliente: this.data.nombre,
+          membresia: this.nombreMembresiaProd,
+        };
+        // console.log('Datos del cliente: ', this.data);
+
+
+        this.dialog.open(MensajeAceptarComponent, dialogConfig)
+          .afterClosed()
+          .subscribe((confirmado: boolean) => {
+            if (confirmado) {
+              this.procesarPago();
+            } else {
+              this.spinner.hide();
+            }
+          });
+      }, 2000);
+    } else {
+      this.spinner.hide();
+      this.toastr.error("La cantidad no es suficiente para cubrir el costo de esta membresía.", "¡Error!");
+    }
+  }
+
+  procesarPago() {
+    const PrecioCalcular = this.moneyRecibidoProd - this.precioSucursal;
+    const fechaInicio = this.fechaDeInicio || new Date();
+    const fechaFin = this.fechaDeFin || this.calcularFechaFin(this.nombreMembresiaProd, fechaInicio);
+
+    const fechaInicioFormateada = this.formatDate(fechaInicio);
+    const fechaFinFormateada = this.formatDate(fechaFin);
+
+      this.data.precio = this.precioSucursal;
+      this.data.duracion = this.duracion;
+      this.data.membresia = this.nombreMembresiaProd;
+      this.data.dateStart = fechaInicioFormateada;
+      this.data.dateEnd = fechaFinFormateada;
+
+      console.log('Datos del cliente: ', this.data);
+
+
+    console.log('Nombre Membresia: ', this.nombreMembresiaProd);
+    console.log('Fecha Inicio formateada: ', fechaInicioFormateada);
+    console.log('Fecha Fin formateada: ', fechaFinFormateada);
+
+    this.membresiaService
+      .actualizacionMemebresiaProd(
+        this.data.idCliente,
+        this.membresiaProdSeleccionada,
+        fechaInicioFormateada,
+        this.data.detMemID,
+        this.precioSucursal,
+        fechaFinFormateada,
+        this.auth.idUser.getValue()
+      )
+      .subscribe(() => {
+        this.spinner.hide();
+        this.actualizarTablas.emit(true);
+        this.dialogo.close(true);
+        this.mostrarDialogoExito(PrecioCalcular);
+      });
+  }
+
+  mostrarDialogoExito(cambio: number) {
+    this.dialog.open(MensajeEmergenteComponent, {
+      data: `Pago exitoso, el cambio es de: $${cambio}`,
+      disableClose: true,
+    })
+    .afterClosed()
+    .subscribe((cerrarDialogo: Boolean) => {
+      if (cerrarDialogo) {
+        this.imprimirResumenProd();
+      }
+    });
+  }
+
+  // Calcula la fecha fin según el nombre del producto
+  calcularFechaFin(nombreProducto: string, fechaInicio: Date = new Date()): Date {
+    let diasDuracion = 0;
+
+    if (nombreProducto.toLowerCase().includes("mensualidad")) {
+      diasDuracion = 30;
+    } else if (nombreProducto.toLowerCase().includes("anualidad")) {
+      diasDuracion = 365;
+    } else if (nombreProducto.toLowerCase().includes("quincena")) {
+      diasDuracion = 15;
+    } else if (nombreProducto.toLowerCase().includes("visita") || nombreProducto.toLowerCase().includes("día")) {
+      diasDuracion = 1;
+    } else {
+      throw new Error("No se pudo determinar la duración del producto basado en su nombre.");
+    }
+
+    return new Date(fechaInicio.getTime() + diasDuracion * 24 * 60 * 60 * 1000);
+  }
+
+  // Formato de fecha YYYY-MM-DD
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+
+
+  // successDialogPago() {
+  //   if (this.moneyRecibidoProd >= this.precioSucursal) {
+  //     this.spinner.show();
+  //     this.onMembresiaProdChange();
+  //     setTimeout(() => {
+  //       const dialogConfig = new MatDialogConfig();
+  //       dialogConfig.width = "30%"; // Ajusta el ancho del diálogo
+  //       dialogConfig.height = "auto"; // Ajusta la altura del diálogo, 'auto' para ajustar según el contenido
+  //       dialogConfig.disableClose = true; // Opcional: Deshabilita el cierre del diálogo al hacer clic fuera de él
+  //       dialogConfig.data = {
+  //         mensaje: `¿Está seguro/a de que desea pagar la membresía seleccionada?`,
+  //         cliente: this.data.nombre,
+  //         membresia: this.nombreMembresiaProd,
+  //       };
+
+  //       this.dialog
+  //       .open(MensajeAceptarComponent, dialogConfig)
+  //       .afterClosed()
+  //       .subscribe((confirmado: boolean) => {
+  //         if (confirmado) {
+  //           if (this.membresiaProdSeleccionada != undefined) {
+  //             const PrecioCalcular = this.moneyRecibidoProd - this.precioSucursal;
+
+  //              if (this.fechaDeInicio && this.fechaDeFin) {
+  //               const añoInicio = this.fechaDeInicio.getFullYear();
+  //               const mesInicio = String(
+  //                 this.fechaDeInicio.getMonth() + 1
+  //               ).padStart(2, "0"); // Los meses son indexados desde 0
+  //               const díaInicio = String(
+  //                 this.fechaDeInicio.getDate()
+  //               ).padStart(2, "0");
+  //               const fechaFormateada1 = `${añoInicio}-${mesInicio}-${díaInicio}`;
+
+  //               const añoFin = this.fechaDeInicio.getFullYear();
+  //               const mesFin = String(
+  //                 this.fechaDeInicio.getMonth() + 1
+  //               ).padStart(2, "0");
+  //               const díaFin = String(this.fechaDeInicio.getDate()).padStart(
+  //                 2,
+  //                 "0"
+  //               );
+  //               const fechaFormateada2 = `${añoFin}-${mesFin}-${díaFin}`;
+
+  //               this.membresiaService
+  //               .actualizacionMemebresiaProd(
+  //                 this.data.idCliente,
+  //                 this.membresiaProdSeleccionada,
+  //                 fechaFormateada1,
+  //                 this.data.detMemID,
+  //                 this.precioSucursal,
+  //                 fechaFormateada2,
+  //                 this.auth.idUser.getValue()
+  //               )
+
+  //               .subscribe((dataResponse: any) => {
+  //                 this.spinner.hide();
+  //                 this.actualizarTablas.emit(true);
+  //                 this.dialogo.close(true);
+  //                 this.dialog
+  //                 .open(MensajeEmergenteComponent, {
+  //                   data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
+  //                   disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
+  //                   })
+  //                   .afterClosed()
+  //                   .subscribe((cerrarDialogo: Boolean) => {
+  //                     if (cerrarDialogo) {
+  //                       this.imprimirResumenProd();
+  //                     } else {
+  //                     }
+  //                   });
+  //                 });
+  //               } else {
+  //           //       const fechaActual: Date = new Date();
+  //           //       const year = fechaActual.getFullYear();
+  //           //       const month = String(fechaActual.getMonth() + 1).padStart(
+  //           //         2,
+  //           //         "0"
+  //           //       );
+  //           //       const day = String(fechaActual.getDate()).padStart(2, "0");
+  //           //       const fechaFormateada = `${year}-${month}-${day}`;
+  //           //       let fechaFin: Date = new Date(fechaActual);
+  //           //       if (this.duracion == 1) {
+  //           //       } else if (this.duracion == 30) {
+  //           //         fechaFin.setMonth(fechaFin.getMonth() + 1);
+  //           //         if (fechaFin.getMonth() == 0) {
+  //           //           fechaFin.setFullYear(fechaFin.getFullYear() + 1);
+  //           //         }
+  //           //         fechaFin.setDate(fechaFin.getDate() - 1);
+  //           //       } else {
+  //           //         this.duracion = Number(this.duracion);
+  //           //         fechaFin.setDate(fechaFin.getDate() + this.duracion - 1);
+  //           //       }
+
+  //           //       const fechaFormateadaFin: string = fechaFin
+  //           //         .toISOString()
+  //           //         .split("T")[0];
+
+  //           // Calcula las fechas de inicio y fin
+  //           const fechaDeInicio: Date = new Date(); // Fecha de inicio como la fecha actual
+  //           const fechaDeFin: Date = this.calcularFechaFin(this.nombreMembresiaProd, fechaDeInicio);
+
+
+  //           const fechaFormateada = this.formatDate(fechaDeInicio);
+  //          const fechaFormateadaFin = this.formatDate(fechaDeFin);
+  //          console.log('Nombre Membresia: ', this.nombreMembresiaProd);
+  //          console.log('Fecha Inicio formateada: ', fechaFormateada);
+  //          console.log('Fecha Fin formateada: ', fechaFormateadaFin);
+
+
+  //                 this.membresiaService
+  //                   .actualizacionMemebresiaProd(
+  //                     this.data.idCliente,
+  //                     this.membresiaProdSeleccionada,
+  //                     fechaFormateada,
+  //                     this.data.detMemID,
+  //                     this.precioSucursal,
+  //                     fechaFormateadaFin,
+  //                     this.auth.idUser.getValue()
+  //                   )
+  //                   .subscribe((dataResponse: any) => {
+  //                     this.spinner.hide();
+  //                     this.actualizarTablas.emit(true);
+
+  //                     this.dialogo.close(true);
+
+  //                     this.dialog
+  //                       .open(MensajeEmergenteComponent, {
+  //                         data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
+  //                         disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
+  //                       })
+  //                       .afterClosed()
+  //                       .subscribe((cerrarDialogo: Boolean) => {
+  //                         if (cerrarDialogo) {
+  //                           this.imprimirResumenProd();
+  //                         } else {
+  //                         }
+  //                       });
+  //                   });
+  //               }
+  //           // }
+  //               }
+  //         } else {
+  //           this.spinner.hide();
+  //         }
+  //       });
+  //     }, 2000);
+  //   } else {
+  //     this.spinner.hide();
+  //     this.toastr.error(
+  //       "Cantidad suficiente para cubrir el costo de esta membresía.",
+  //       "¡Error!"
+  //     );
+  //   }
+  // }
+
+  // // Función para calcular la fecha fin basada en el nombre del producto
+  // calcularFechaFin(nombreProducto: string, fechaInicio: Date = new Date()): Date {
+  //   let diasDuracion = 0;
+
+  //   if (nombreProducto.toLowerCase().includes('mensualidad')) {
+  //     diasDuracion = 30;
+  //   } else if (nombreProducto.toLowerCase().includes('anualidad')) {
+  //     diasDuracion = 365;
+  //   } else if (nombreProducto.toLowerCase().includes('quincena')) {
+  //     diasDuracion = 15;
+  //   } else if (nombreProducto.toLowerCase().includes('visita') || nombreProducto.toLowerCase().includes('día') || nombreProducto.toLowerCase().includes('dia')) {
+  //     diasDuracion = 1;
+  //   } else {
+  //     throw new Error('No se pudo determinar la duración del producto basado en su nombre.');
+  //   }
+
+  //   // Calcula la fecha de fin sumando los días de duración a la fecha de inicio
+  //   //return addDays(fechaInicio, diasDuracion);
+
+  //   // Calcula la fecha fin sumando los días de duración a la fecha de inicio
+  //   return new Date(fechaInicio.getTime() + diasDuracion * 24 * 60 * 60 * 1000);
+
+  // }
+
+  // // Función para formatear una fecha en 'YYYY-MM-DD'
+  // formatDate(date: Date): string {
+  //   const year = date.getFullYear();
+  //   const month = String(date.getMonth() + 1).padStart(2, '0');
+  //   const day = String(date.getDate()).padStart(2, '0');
+  //   return `${year}-${month}-${day}`;
+  // }
+
+  imprimirResumenProd() {
+    if (this.precioSucursal <= this.moneyRecibidoProd) {
+      const PrecioCalcular = this.moneyRecibidoProd - this.precioSucursal;
+      this.membresiaService
+        .ticketPagoInfo(this.data.idCliente)
+        .subscribe((respuesta) => {
+          if (respuesta && respuesta.length > 0) {
+            const ticketInfo = respuesta[0];
+            const totalEnPesos = this.convertirNumeroAPalabrasPesos(
+              this.precioSucursal
+            );
+            const totalEnPesosRecibido = this.convertirNumeroAPalabrasPesos(
+              this.moneyRecibidoProd
+            );
+            const totalEnPesosCambio =
+              this.convertirNumeroAPalabrasPesos(PrecioCalcular);
+            const ventanaImpresion = window.open("", "_blank");
+            const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
+            const horaActual = new Date().toLocaleTimeString("es-MX", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }); // Obtener solo la hora en formato local de México
+            if (ventanaImpresion) {
+              ventanaImpresion.document.open();
+              ventanaImpresion.document.write(`
+              <html>
+                <head>
+                  <style>
+                    body {
+                      font-family: 'Arial', sans-serif;
+                      margin: 0;
+                      padding: 0;
+                      background-color: #f5f5f5;
+                    }
+                    .ticket {
+                      width: 80%;
+                      max-width: 600px;
+                      margin: 20px auto;
+                      background-color: #fff;
+                      border-radius: 4px;
+                      padding: 20px;
+                    }
+
+                    h1 {
+                      text-align: center;
+                      color: #333;
+                      margin-bottom: 20px;
+                    }
+                    table {
+                      width: 100%;
+                      border-collapse: collapse;
+                      margin-bottom: 20px;
+                    }
+                    th, td {
+                      padding: 8px;
+                      border-bottom: 1px solid #ddd;
+                      text-align: left;
+                    }
+                    th {
+                      background-color: #f2f2f2;
+                    }
+                    .total {
+                      text-align: right;
+                      margin-top: 20px;
+                      font-weight: bold;
+                    }
+                    .total p {
+                      margin: 5px 0;
+                      font-size: 1.1em;
+                    }
+                    hr {
+                      border: none;
+                      border-top: 1px dashed #ccc;
+                      margin: 20px 0;
+                    }
+                    .brand {
+                      text-align: center;
+                      color: #888;
+                      font-size: 20px;
+                      margin-top: 20px;
+                    }
+                    .fecha-hora {
+                      display: flex;
+                      justify-content: space-between;
+                    }
+                    .logo {
+                      display: block;
+                      margin: 0 auto 20px;
+                      max-width: 150px;
+                      width: 100%;
+                      height: auto;
+                    }
+                    .direccion{
+                     font-size: 0.8em;
+                    text-align: center;
+                    }
+                  </style>
+                </head>
+                <body>
+                <div class="ticket">
+                ${
+                  this.fotoUrl
+                    ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">`
+                    : ""
+                }
+                <p class="direccion">${this.auth.nombreGym.getValue()}</p>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Nombre</th>
+                          <th>Sucursal</th>
+                          <th>Membresia</th>
+                          <th>Fecha Inicio</th>
+                          <th>Fecha Fin</th>
+                          <th>Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                            <tr>
+                              <td>${ticketInfo.Nombre}</td>
+                              <td>${ticketInfo.Sucursal}</td>
+                              <td>${ticketInfo.Membresia}</td>
+                              <td>${ticketInfo.Fecha_Inicio}</td>
+                              <td>${ticketInfo.Fecha_Fin}</td>
+                              <td>$${ticketInfo.Precio}</td>
+                            </tr>
+                      </tbody>
+                    </table>
+                    <hr>
+                    <div>
+                      <p>(${totalEnPesos} PESOS)</p>
+                      <div class="total">
+                        <p>Total a Pagar: $${this.precioSucursal}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="total">
+                        <p>Dinero recibido: $${this.moneyRecibidoProd}</p>
+                        <p>Cambio: $${PrecioCalcular}</p>
+                      </div>
+                    </div>
+                    <div class="fecha-hora">
+                      <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
+                      <p>Hora: ${horaActual}</p> <!-- Hora -->
+                    </div>
+                    <div class="brand">
+                      <p>Gracias por su compra</p>
+                      <p>¡Vuelva pronto!</p>
+                    </div>
+                  </div>
+                </body>
+              </html>
+            `);
+              ventanaImpresion.document.close();
+
+              // Esperar a que la imagen se cargue antes de imprimir
+              const image: HTMLImageElement | null =
+                ventanaImpresion.document.querySelector("img");
+              if (image) {
+                image.onload = () => {
+                  ventanaImpresion.print();
+                  ventanaImpresion.close();
+                };
+
+                image.onerror = (error) => {
+                  console.error("Error al cargar la imagen:", error);
+                  ventanaImpresion.print();
+                  ventanaImpresion.close();
+                };
+              } else {
+                ventanaImpresion.print();
+                ventanaImpresion.close();
+              }
+            }
+          } else {
+            console.error(
+              "La respuesta del servicio no contiene los datos necesarios para generar el ticket."
+            );
+          }
+        });
+    } else {
+      this.toastr.error("Ingresa el pago");
+    }
+  }
+
+
 }

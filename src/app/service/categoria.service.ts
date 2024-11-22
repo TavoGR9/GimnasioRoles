@@ -12,14 +12,26 @@ import { IndexedDBService } from './indexed-db.service';
 export class CategoriaService {
 
   isConnected: boolean = true;
-  
+
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGimnasio/';
+
+  public confirmButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  public idMarca: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private indexedDBService:IndexedDBService) {
+  }
+
+  idGym = new BehaviorSubject<number>(0);
+
+  // Método para actualizar el idGym
+  setIdGym(idGym: number): void {
+    this.idGym.next(idGym);
   }
 
   // comprobar(){
@@ -42,11 +54,11 @@ export class CategoriaService {
       catchError(error => {
         this.saveDataToIndexedDB(datosSubCategoria);
         const resultData = { success: '2' };
-        return of(resultData);        
+        return of(resultData);
       })
     );
   }
-  
+
   private saveDataToIndexedDB(data: any) {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveAgregarCategoriaData('AgregarCategoria', data);
@@ -61,6 +73,10 @@ export class CategoriaService {
     return this.clienteHttp.post(this.API+"categoria.php?insertarMarca=1",datosMarca);
   }
 
+  agregarMarcaSer(datosMarca:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"categoria.php?insertarMarcaSer=1",datosMarca);
+  }
+
   obtenerCategoria():Observable<any>{
     return this.clienteHttp.get(this.API+"categoria.php?consultarCategorias");
   }
@@ -73,6 +89,43 @@ export class CategoriaService {
     return this.clienteHttp.get(this.API+"categoria.php?consultarMarcas");
   }
 
+  obtenerMarcasSer():Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?consultarMarcasSer");
+  }
+
+
+  obtenerMarcasServiciosIdGym(idGym: string | number): Observable<any> {
+    // Validar si el usuario tiene conexión antes de realizar la solicitud
+    if (!this.isConnected) {
+      return of({ success: 0, message: 'No hay conexión a Internet' });
+    }
+
+    console.log('Consultando marcas con idGym:', idGym);
+
+    // Realizar la solicitud HTTP y capturar errores si ocurren
+    return this.clienteHttp.get(`${this.API}categoria.php?consultarMarcasSerGim=${idGym}`).pipe(
+      catchError((error) => {
+        console.error('Error al obtener marcas y servicios:', error);
+        return of({ success: 0, message: 'Error al obtener datos del servidor' });
+      })
+    );
+  }
+
+  updateMarcaService(data: any): Observable<any> {
+    // Llamada POST al archivo PHP para actualizar marca y servicio
+    return this.clienteHttp.post(this.API + "categoria.php?updateMarcaServ=true", data).pipe(
+      catchError((error) => {
+        console.error('Error al actualizar la marca y servicio:', error);
+        return of({ success: 0, message: 'Error al actualizar la marca y servicio' });
+      })
+    );
+  }
+
+  getMarcaService(id: number, idGimnasio: number): Observable<any> {
+    return this.clienteHttp.get(`${this.API}categoria.php?getMarcaServicio=${id}&idGimnasio=${idGimnasio}`);
+}
+
+
   obtenerCategoriaPorNombre(nombre:string):Observable<any>{
     return this.clienteHttp.get(this.API+"categoria.php?categoriaName="+nombre);
   }
@@ -83,5 +136,5 @@ export class CategoriaService {
 
   obtenerMarcaPorNombre(nombre:string):Observable<any>{
     return this.clienteHttp.get(this.API+"categoria.php?marcaName="+nombre);
-  }  
+  }
 }

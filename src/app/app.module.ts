@@ -30,7 +30,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     LoginComponent,
     NotFoundComponent,
     ResetPasswordComponent,
-    AddPasswordComponent
+    AddPasswordComponent,
   ],
   imports: [
     BrowserModule,

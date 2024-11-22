@@ -1,0 +1,156 @@
+<div >
+  <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true">
+     <p style="color: white" > Cargando... </p>
+  </ngx-spinner>
+  <div >
+     <div class="title"  mat-dialog-title>
+        <label>MEMBRESIA</label>
+     </div>
+     <div mat-dialog-content>
+        <br>
+        <div >
+           <form [formGroup]="form" enctype="multipart/form-data">
+              <div >
+                 <div style="color:red">{{message}}</div>
+                 <fieldset>
+                    <div class="row" *ngIf="isAdmin()">
+                       <p>
+                          <mat-form-field appearance="outline"  style="width: 100%;" required >
+                             <mat-label>Codigo de barra</mat-label>
+                             <input
+                                matInput
+                                type="text"
+                                placeholder="Escribelo o escanealo"
+                                id="codigoBarra"
+                                formControlName="codigoBarra"
+                                autocomplete="off"
+                                (blur)="vercodigoBarras()"
+                                />
+                          </mat-form-field>
+                       </p>
+                    </div>
+
+                    <div class="row" *ngIf="isRecep()">
+                       <p>
+                          <mat-form-field appearance="outline"  style="width: 100%;" required >
+                             <mat-label>Codigo de barra</mat-label>
+                             <input
+                                matInput
+                                type="text"
+                                placeholder="Escribelo o escanealo"
+                                id="codigoBarra"
+                                formControlName="codigoBarra"
+                                autocomplete="off"
+                                />
+                          </mat-form-field>
+                       </p>
+                    </div>
+
+                    <div class="row">
+                       <div class="col-sm-12">
+                          <p>
+                             <mat-form-field style="width: 100%;" required appearance="outline">
+                                <mat-label>Nombre</mat-label>
+                                <input
+                                   matInput
+                                   placeholder="Nombre del producto"
+                                   type="text"
+                                   id="descripcion"
+                                   autocomplete="off"
+                                   formControlName="descripcion"
+                                   />
+                             </mat-form-field>
+                          </p>
+                       </div>
+                    </div>
+                    <div class="row">
+                       <div class="col-sm-6">
+                          <p>
+                             <mat-form-field appearance="outline" style="width: 100%;">
+                                <mat-label>Nombre de la categoria</mat-label>
+                                <input
+                                  matInput
+                                  formControlName="nombreCategoriaP"
+                                  placeholder="Escribe una categoria"
+                                  [matAutocomplete]="auto"
+                                  (input)="buscarCategorias()"
+                                />
+                                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="buscarCategorias()">
+                                  <mat-option *ngFor="let categoria of filteredCategorias" [value]="categoria">
+                                    {{ categoria }}
+                                  </mat-option>
+                                </mat-autocomplete>
+                              </mat-form-field>
+                          </p>
+                       </div>
+                       <div class="col-sm-6">
+                          <p >
+                             <mat-form-field appearance="outline" style="width: 100%;">
+                                <mat-label>Subcategoria</mat-label>
+                                <input
+                                  matInput
+                                  formControlName="nomsubcate"
+                                  placeholder="Escribe una subcategoria"
+                                  [matAutocomplete]="autoSubcategoria"
+                                  (input)="buscarSubCategorias()"
+                                />
+                                <mat-autocomplete #autoSubcategoria="matAutocomplete" (optionSelected)="buscarSubCategorias()">
+                                  <mat-option *ngFor="let subCategoria of filteredSubCategorias" [value]="subCategoria">
+                                    {{ subCategoria }}
+                                  </mat-option>
+                                </mat-autocomplete>
+                              </mat-form-field>
+                          </p>
+
+                       </div>
+                    </div>
+                    <div class="row">
+                       <div class="col-sm-6">
+                          <p>
+                             <mat-form-field appearance="outline" style="width: 100%;">
+                                <mat-label>Marca</mat-label>
+                                <input
+                                  matInput
+                                  formControlName="marcaP"
+                                  placeholder="Escribe una marca"
+                                  [matAutocomplete]="autoMarca"
+                                  (input)="buscarMarca()"
+                                />
+                                <mat-autocomplete #autoMarca="matAutocomplete" (optionSelected)="buscarMarca()">
+                                  <mat-option *ngFor="let marcas of filteredMarcas" [value]="marcas">
+                                    {{ marcas }}
+                                  </mat-option>
+                                </mat-autocomplete>
+                              </mat-form-field>
+                          </p>
+                       </div>
+                       <div class="col-sm-6">
+                          <p>
+                             <mat-form-field appearance="outline"  style="width: 100%;" required>
+                                <mat-label>Detalle del producto</mat-label>
+                                <input
+                                   id="detalleCompra"
+                                   formControlName="detalleCompra"
+                                   type="text"
+                                   matInput
+                                   autocomplete="off"
+                                   placeholder="Detalle del producto"
+                                   />
+                             </mat-form-field>
+                          </p>
+                       </div>
+                    </div>
+                 </fieldset>
+              </div>
+           </form>
+        </div>
+     </div>
+     <div style="display: flex; justify-content: center;" mat-dialog-actions>
+        <!-- <button *ngIf="isAdmin()" mat-raised-button (click)="registrarProd()"  class="aceptar">Aceptar</button>
+        <button *ngIf="isRecep()" mat-raised-button (click)="registrarP()"  class="aceptar">Aceptar</button>
+        <button mat-raised-button  (click)="cerrarDialogo()" class="cancelar">Cancelar</button> -->
+        <button *ngIf="isAdmin()" mat-raised-button (click)="registrarProd()"  class="aceptar">Aceptar</button>
+        <button mat-raised-button  (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
+     </div>
+  </div>
+</div>
