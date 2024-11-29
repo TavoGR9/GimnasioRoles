@@ -13,11 +13,11 @@ export class ClienteService {
   //Servicio para el registro y actualizaciones del cliente.
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-  URLServices: String = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/registros.php"; 
+  URLServices: String = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/registros.php";
   URL: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/formaPago.php/";
   //apiFoto: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/update_image.php";
   apiFoto: string = "https://olympus.arvispace.com/olimpusGym/conf/";
-  
+
   constructor(private clienteHttp:HttpClient) {
   }
   private dataSubject = new BehaviorSubject<any>(null);
@@ -42,7 +42,7 @@ export class ClienteService {
   sendData(data: any) {
     this.dataSubject.next(data);
   }
-  
+
   //validaciones correo
   consultarEmail(id:any):Observable<any>{
     return this.clienteHttp.get(this.URLServices+"?consultar="+id);

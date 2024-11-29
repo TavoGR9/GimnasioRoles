@@ -33,16 +33,21 @@
            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
               <ng-container matColumnDef="title">
                  <th mat-header-cell *matHeaderCellDef>Título</th>
-                 <td mat-cell *matCellDef="let item">{{ item.titulo }}</td>
+                 <td mat-cell *matCellDef="let item">{{item.nombrePromocion}} </td>
               </ng-container>
               <ng-container matColumnDef="details">
                  <th mat-header-cell *matHeaderCellDef>Detalles</th>
-                 <td mat-cell *matCellDef="let item">{{ item.detalles }}</td>
+                 <td mat-cell *matCellDef="let item">{{item.id_detalle_promocion}}</td>
               </ng-container>
               <ng-container matColumnDef="price">
                  <th mat-header-cell *matHeaderCellDef>Precio</th>
-                 <td mat-cell *matCellDef="let item">${{ item.precio }}</td>
+                 <td mat-cell *matCellDef="let item">{{item.PrecioPaquete}}$</td>
               </ng-container>
+
+              <ng-container matColumnDef="Existencias">
+               <th mat-header-cell *matHeaderCellDef>Existencias</th>
+               <td mat-cell *matCellDef="let item">{{item.existencias}}</td>   
+            </ng-container>
               <!--<ng-container matColumnDef="duration">
                  <th mat-header-cell *matHeaderCellDef>Duración</th>
                  <td mat-cell *matCellDef="let item">{{ item.duracion}}</td>

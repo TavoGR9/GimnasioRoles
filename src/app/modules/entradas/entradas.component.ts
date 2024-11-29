@@ -158,11 +158,12 @@ export class EntradasComponent implements OnInit {
     const marcaIngresado = this.form.get("idProbob")?.value;
     this.entrada.listaProductos().subscribe({
       next: (respuesta) => {
+        console.log(respuesta); // Para ver la estructura de los datos
         const marcasU = new Set(
-          respuesta.productos.map((product: any) => ({
+          respuesta.productos?.map((product: any) => ({
             idProd: product.idProbob,
             nombre: `${product.descripcion} ${product.marca} ${product.detalleCompra}`,
-          }))
+          })) || []  // Agregamos || [] para evitar el error si productos es undefined
         );
         this.productoss = Array.from(marcasU);
         this.filteredProducto = this.productoss.filter(
@@ -171,8 +172,12 @@ export class EntradasComponent implements OnInit {
             product.nombre.toLowerCase().includes(marcaIngresado.toLowerCase())
         );
       },
+      error: (err) => {
+        console.error("Error al obtener los productos:", err);
+      },
     });
   }
+  
 
   displayFn(product: any): string {
     return product && product.nombre ? product.nombre : "";

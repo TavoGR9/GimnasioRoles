@@ -24,7 +24,8 @@ export class GimnasioService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGym/';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -120,11 +121,11 @@ getDataFromIndexedDB() {
   getServicesForId(id: any): Observable<any> {
     return this.clienteHttp.post(this.API + "serviciosGym.php", { id: id }).pipe(
       tap(dataResponse => {
-        
+
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
-       
+
         return this.getServiceDatos();
       /*  const resultData = { success: '2' }; // Objeto que indica éxito
         return forkJoin([
@@ -145,7 +146,7 @@ getDataFromIndexedDB() {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveServiceData('service', data);
   }
-  
+
   getServiceDatos() {
     return new Observable(observer => {
       this.indexedDBService.getServiceData('service').then(data => {

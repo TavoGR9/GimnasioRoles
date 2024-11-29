@@ -15,11 +15,12 @@ export class DetalleVentaService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGym/';
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
-  
+
   // comprobar(){
   //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
   //     this.isConnected = isConnected;
@@ -48,7 +49,7 @@ export class DetalleVentaService {
   agregarVentaDetalle(datosVentaDetalle: any[]): Observable<any> {
     return this.clienteHttp.post(this.API + 'venta_detalleVenta.php?insertar=1', datosVentaDetalle);
   }
-  
+
   consultarVentaDetalle(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"venta_detalleVenta.php?consultar="+id);
   }

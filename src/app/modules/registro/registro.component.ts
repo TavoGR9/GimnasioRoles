@@ -294,15 +294,18 @@ export class RegistroComponent implements OnInit {
     });
   
     if (this.form.valid) {
-      this.usuario.agregarUsuario(this.form.value).subscribe({
+     
+    
+      
+   this.usuario.agregarUsuario(this.form.value).subscribe({
         next: (resultData) => {
-          if (resultData.message === 'MailExists') {
+          if (resultData.message === 'correo ya existe.') {
             this.toastr.error('Correo o clave ya existente', 'Error!!!');
             this.spinner.hide();
           } else if (resultData.success == '1') {
             this.dialogo.close(true);
             this.spinner.hide();
-            this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
+           // this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
               if (cerrarDialogo) {
                 this.router.navigateByUrl(`/home`);
@@ -328,7 +331,7 @@ export class RegistroComponent implements OnInit {
         positionClass: 'toast-bottom-left',
       });
       this.marcarCamposInvalidos(this.form);
-    }
+    } 
   }
 
   marcarCamposInvalidos(formGroup: FormGroup) {

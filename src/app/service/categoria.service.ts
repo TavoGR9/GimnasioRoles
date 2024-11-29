@@ -12,12 +12,13 @@ import { IndexedDBService } from './indexed-db.service';
 export class CategoriaService {
 
   isConnected: boolean = true;
-  
+
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGym/'
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private indexedDBService:IndexedDBService) {
   }
@@ -42,11 +43,11 @@ export class CategoriaService {
       catchError(error => {
         this.saveDataToIndexedDB(datosSubCategoria);
         const resultData = { success: '2' };
-        return of(resultData);        
+        return of(resultData);
       })
     );
   }
-  
+
   private saveDataToIndexedDB(data: any) {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveAgregarCategoriaData('AgregarCategoria', data);
@@ -83,5 +84,5 @@ export class CategoriaService {
 
   obtenerMarcaPorNombre(nombre:string):Observable<any>{
     return this.clienteHttp.get(this.API+"categoria.php?marcaName="+nombre);
-  }  
+  }
 }

@@ -19,8 +19,9 @@ export class EntradasService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGym/';
+
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {}
 
   // comprobar(){
@@ -50,7 +51,7 @@ export class EntradasService {
  /* agregarEntradaProducto(entradaProductos:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaPro",entradaProductos);
   }*/
-  
+
   verficarProducto(id_bodega: any, id_producto:any):Observable<any>{
     const data = {
       p_id_bodega: id_bodega,
@@ -70,12 +71,12 @@ export class EntradasService {
   actualizarProducto(data:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1Histo",data);
   }
-  
+
   actualizarProductoVDos(data:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1HistoDialog",data);
   }
 
-  
+
  /* actualizarProducto(data:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1",data);
   }*/
@@ -84,7 +85,7 @@ export class EntradasService {
     return this.clienteHttp.get<any>(this.API+'producto_bod.php?getProBodPre').pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
-        
+
       }),
       catchError(error => {
         return this.getEntradasDatos();
@@ -96,7 +97,7 @@ export class EntradasService {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveEntradasData('Entradas', data);
   }
-  
+
   getEntradasDatos() {
     return new Observable(observer => {
       this.indexedDBService.getEntradasData('Entradas').then(data => {
@@ -119,7 +120,7 @@ export class EntradasService {
       });
     });
   }
-  
+
 
   insertarHistorial(data:any): Observable<any>{
     return this.clienteHttp.post<any>(this.API+'producto_bod.php?addHistorialInventario',data);

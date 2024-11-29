@@ -1,7 +1,7 @@
 <?php
-$bd = "Sistema_gimnasio";
+$bd = "gimnasio";
 //$bd = "superhou_prueba"; 
-$enlace =  mysqli_connect('localhost:3306', 'root', '', $bd);
+$enlace =  mysqli_connect('localhost', 'root', '', $bd);
 //$enlace =  mysqli_connect('localhost', 'root', '', $bd);
 
 if (!$enlace) {

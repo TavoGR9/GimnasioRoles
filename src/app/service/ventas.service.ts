@@ -15,8 +15,9 @@ export class VentasService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  
+  // API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGym/';
+
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
 
@@ -32,7 +33,7 @@ export class VentasService {
   //     }
   //   });
   // }
-  
+
   obternerVentas(){
     return this.clienteHttp.get(this.API+"venta_detalleVenta.php")
   }

@@ -32,7 +32,7 @@ export class planComponent implements OnInit {
   currentUser: string = '';
   isLoading: boolean = true; 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  displayedColumns: string[] = ['title', 'details','price','actions'];
+  displayedColumns: string[] = ['title', 'details','price','Existencias','actions'];
   habilitarBoton: boolean = false;
 
   constructor(
@@ -78,6 +78,7 @@ export class planComponent implements OnInit {
         if (respuesta.data && Array.isArray(respuesta.data)) {
           this.plan = respuesta.data; 
           this.dataSource = new MatTableDataSource(this.plan);
+          console.log(this.plan)
           this.loadData();
         } else {
           console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
