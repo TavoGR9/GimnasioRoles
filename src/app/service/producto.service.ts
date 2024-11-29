@@ -23,6 +23,8 @@ export class ProductoService {
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
 
+  API2: string ='http://localhost/serviciosGym/'
+
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
     }
 
@@ -62,20 +64,6 @@ export class ProductoService {
             this.productoSubject.next(nuevosProductos);
           })
         );
-    }
-
-    consultarAllProducto(id: any): Observable<any[]> {
-      const data = { id_pro_param: id };
-      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?getAllProductosMemb", data)
-        .pipe(
-          tap((nuevosProductos: any[]) => {
-            this.productoSubject.next(nuevosProductos);
-            this.saveDataToIndexedDB(nuevosProductos);
-          }),
-          catchError(error => {
-            return this.getServiceDatos2();
-          })
-        ) as Observable<any[]>; // Añadir una conversión de tipo
     }
 
 
@@ -233,6 +221,22 @@ export class ProductoService {
     deleteProd(idP: any): Observable<any> {
       const data ={id: idP}
       return this.clienteHttp.post(this.API+"producto_bod.php?eliminarProBodPre", data);
+    }
+
+
+    //Metodo utilizado para consultar productos(membresias) de un gimnasio
+    consultarAllProducto(id: any): Observable<any[]> {
+      const data = { id_pro_param: id };
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?getAllProductosMemb", data)
+        .pipe(
+          tap((nuevosProductos: any[]) => {
+            this.productoSubject.next(nuevosProductos);
+            this.saveDataToIndexedDB(nuevosProductos);
+          }),
+          catchError(error => {
+            return this.getServiceDatos2();
+          })
+        ) as Observable<any[]>; // Añadir una conversión de tipo
     }
 
 }

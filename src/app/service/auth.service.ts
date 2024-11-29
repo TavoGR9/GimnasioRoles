@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 import { tap,map } from 'rxjs/operators';
 import { of  } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
@@ -32,6 +32,7 @@ export class AuthService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/'
+  API2: string = 'http://localhost/serviciosGym/'
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -64,7 +65,7 @@ export class AuthService {
   }
 
   loginBS(data: User): Observable<any> {
-  const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;
+  const url = `${this.API2}login.php?email=${data.email}&pass=${data.pass}`;
   return this.clienteHttp.request('GET', url, {responseType:'json'})
       .pipe(
         catchError((err: any) => {

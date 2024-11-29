@@ -24,28 +24,12 @@
                     </mat-error>
                  </mat-form-field>
               </div>
-              <!-- <div class="col-sm-6">
-                <p>
-                  <mat-form-field style="width: 95%;" required appearance="outline">
-                      <mat-label style="font-family: Arial; font-size: 18px;">Seleccionar Si es Servicio</mat-label>
-                      <mat-select formControlName="servicio" multiple="false" >
-                          <mat-option  value="1">Si</mat-option>
-                          <mat-option  value="0">No</mat-option>
-                        </mat-select>
-                      <mat-error >
-                          La duracion es requerida.
-                        </mat-error>
-                  </mat-form-field>
-                </p>
-              </div> -->
            </div>
         </div>
      </div>
   </form>
 </div>
 <div style="display: flex; justify-content: center;" mat-dialog-actions>
-  <!-- <button *ngIf="seleccionado == 1" mat-stroked-button type="submit" (click)="validaFormService()" class="aceptar">Aceptar</button>
-  <button *ngIf="seleccionado == 2" mat-stroked-button type="submit" (click)="actualizarForm()" class="aceptar">Actualizar</button> -->
   <button mat-stroked-button type="submit" (click)="validaFormService()" class="aceptar">Aceptar</button>
   <button mat-stroked-button (click)="cancelar()" class="cancelar">Cancelar</button>
 </div>

@@ -23,7 +23,7 @@ export class RoleGuard implements CanActivate {
     }
     this.authService.role.subscribe((data) => {
     this.rol = data;
-    });  
+    });
   }
 
   getSSdata(data: any) {
@@ -59,12 +59,12 @@ export class RoleGuard implements CanActivate {
           return of(true);
         } else {
           // Verifica si el usuario tiene acceso a las rutas compartidas entre "Administrador" y "Recepcionista"
-          if ((userRole === "Administrador" || userRole === "Recepcionista") && 
+          if ((userRole === "Administrador" || userRole === "Recepcionista") &&
               (expectedRole == "Administrador" || expectedRole == "Recepcionista")) {
             return of(true);
           }
           // Verifica si el usuario es "SuperAdmin"
-          else if (userRole === "SuperAdmin" && expectedRole === "SuperAdmin") { 
+          else if (userRole === "SuperAdmin" && expectedRole === "SuperAdmin") {
             this.router.navigate(['/listaSucursales']);
             return of(false);
           }
@@ -73,7 +73,7 @@ export class RoleGuard implements CanActivate {
             if(userRole === "Administrador" || userRole === "Recepcionista"){
               this.router.navigate(['/home']);
             }
-             else if (userRole === "SuperAdmin"){ 
+             else if (userRole === "SuperAdmin"){
               this.router.navigate(['/listaSucursales']);
             }
             return of(false);
@@ -86,8 +86,8 @@ export class RoleGuard implements CanActivate {
 }
 
 
-  
-  
+
+
 
 
 

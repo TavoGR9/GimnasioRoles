@@ -227,6 +227,10 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedidoMem=1", datos);
   }
 
+  obtenerPedidosActivos(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"UsuarioProds.php?obtenerVista="+id);
+  }
+
   ticketPagoInfoPed(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"UsuarioProds.php?infoTicketMembresia="+id);
   }

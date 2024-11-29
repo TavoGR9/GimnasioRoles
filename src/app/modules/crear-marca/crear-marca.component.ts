@@ -3,10 +3,8 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef, MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { AuthService } from "../../service/auth.service";
 import { CategoriaService } from '../../service/categoria.service';
-import { serviciosService } from '../../service/servicios.service';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ServiceDialogComponent } from '../service-dialog/service-dialog.component';
 
 @Component({
   selector: 'app-crear-marca',
@@ -32,7 +30,6 @@ export class CrearMarcaComponent implements OnInit {
     this.serviceForm = this.fb.group({
       id_marcas: [0],
       marcaP: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
-      // servicio: ["", Validators.required],
     });
   }
 
@@ -41,38 +38,31 @@ export class CrearMarcaComponent implements OnInit {
 
     this.categoriaService.obtenerMarcasSer().subscribe((res) => {
       if (res) {
-        this.marcasDisponibles = res; // Guardamos las marcas obtenidas
-        console.log("Marcas disponibles: ", this.marcasDisponibles);
+        this.marcasDisponibles = res;
       } else {
         console.error("No se pudieron obtener las marcas.");
       }
     });
   }
-
   getIdGym() {
     this.auth.idGym.subscribe((respuesta) => {
       this.idGym = respuesta;
     });
   }
 
-  // Método para validar el formulario y guardar la marca
   validaFormService() {
     if (this.serviceForm.invalid) {
       this.message = "Por favor, complete todos los campos requeridos.";
       this.marcarCamposInvalidos(this.serviceForm);
     } else {
       this.spinner.show();
-          console.log("ID de Gimnasio:", this.idGym);
 
       const newMarca = {
         ...this.serviceForm.value,
         idGimnasio: this.idGym  // Incluye el idGym en el objeto de la nueva marca
       };
 
-      console.log('Datos actualizados: ', newMarca);
-
-
-      this.categoriaService.agregarMarcaSer(newMarca).subscribe((respuesta) => {
+      this.categoriaService.agregarMarcaSer2(newMarca).subscribe((respuesta) => {
         if (respuesta) {
           if (respuesta.success == '1') {
             this.spinner.hide();
@@ -95,7 +85,6 @@ export class CrearMarcaComponent implements OnInit {
     }
   }
 
-  // Método para marcar los campos del formulario como inválidos
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);

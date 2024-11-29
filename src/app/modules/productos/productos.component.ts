@@ -1,3 +1,4 @@
+
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ListaProductos } from '../../models/listaProductos';
 import { ProductoService } from '../../service/producto.service';
@@ -74,7 +75,8 @@ export class ProductosComponent implements OnInit {
   listaTabla(){
     this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
-      this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
+      this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.marca !== 'Olympus');
+
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData();
     });

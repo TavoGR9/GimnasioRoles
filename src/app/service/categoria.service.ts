@@ -19,6 +19,7 @@ export class CategoriaService {
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
+  API2: string = 'http://localhost/serviciosGym/';
 
   public confirmButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -111,6 +112,8 @@ export class CategoriaService {
     );
   }
 
+
+
   updateMarcaService(data: any): Observable<any> {
     // Llamada POST al archivo PHP para actualizar marca y servicio
     return this.clienteHttp.post(this.API + "categoria.php?updateMarcaServ=true", data).pipe(
@@ -137,4 +140,39 @@ export class CategoriaService {
   obtenerMarcaPorNombre(nombre:string):Observable<any>{
     return this.clienteHttp.get(this.API+"categoria.php?marcaName="+nombre);
   }
+
+  // REEMPLAZAR POR MARCAS
+
+  // lista de marcas de un gimnasio
+  obtenerMarcasServiciosIdGym2(idGym: string | number): Observable<any> {
+    return this.clienteHttp.get(`${this.API2}getMarcasServB.php?idGimnasio=${idGym}`).pipe(
+      catchError((error) => {
+        console.error('Error al obtener marcas y servicios:', error);
+        return of({ success: 0, message: 'Error al obtener datos del servidor' });
+      })
+    );
+  }
+
+  // crear marca para un gimnasio
+  agregarMarcaSer2(datosMarca:any):Observable<any>{
+    return this.clienteHttp.post(this.API2+"addMarcaServ.php?insertarMarcaServ=1",datosMarca);
+  }
+
+  // obtener una marca por el idMarca
+  getMarcaService2(id: number): Observable<any> {
+    return this.clienteHttp.get(`${this.API2}getMarcaServId.php?id_marcas=${id}`);
+}
+
+// actualizar marca
+updateMarcaService2(data: any): Observable<any> {
+  return this.clienteHttp.post(this.API2 + "updateMarcaServ.php?updateMarcaServ=1", data);
+}
+
+//eliminar marca
+deleteMarcaServ(idM: any): Observable<any> {
+  const data ={id: idM}
+  return this.clienteHttp.post(this.API2+"deleteMarcaServ.php?eliminarMarcaServ", data);
+}
+
+
 }

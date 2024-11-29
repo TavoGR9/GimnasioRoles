@@ -59,7 +59,7 @@ export class SidebarComponent {
         this.idGym = idGym;
         this.idUser = idUser; 
         this.nombreGym = nombreGym;
-        this.url = `HuellaTorniquete://?id=${this.idGym}`;
+        this.url = `HuellaTorniquete://?idSucursal=${this.idGym}`;
       }
     });
   }

@@ -36,7 +36,7 @@ export class ServiciosListaComponent implements OnInit{
     "details",
     // "price",
     "actions",
-    // "eliminar",
+    "eliminar",
   ];
   dialogRef: any;
   isLoading: boolean = true;
@@ -70,7 +70,7 @@ export class ServiciosListaComponent implements OnInit{
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      console.log('ID GYM: ',this.idGym);
+      // console.log('ID GYM: ',this.idGym);
 
       // this.listaTabla();
       this.listaTablaMarca();
@@ -101,116 +101,90 @@ export class ServiciosListaComponent implements OnInit{
     });
   }
 
-  listaTabla() {
-    this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
-        this.services = res;
-        if (Array.isArray(this.services)) {
-          this.dataSource = new MatTableDataSource(this.services);
-          this.loadData();
-        } else {
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 1000);
-        }
-    });
-  }
+  // listaTabla() {
+  //   this.gimnasioService.getServicesForId(this.idGym).subscribe((res) => {
+  //       this.services = res;
+  //       if (Array.isArray(this.services)) {
+  //         this.dataSource = new MatTableDataSource(this.services);
+  //         this.loadData();
+  //       } else {
+  //         setTimeout(() => {
+  //           this.isLoading = false;
+  //         }, 1000);
+  //       }
+  //   });
+  // }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceDos.filter = filterValue.trim().toLowerCase();
   }
 
-  openDialog(): void {
-    this.seleccionado = 1;
-    this.ServiciosService.seleccionado.next(this.seleccionado);
-    this.dialogRef = this.dialog.open(ServiceDialogComponent, {
-      width: "70%",
-      disableClose: true,
-    });
+  // openDialog(): void {
+  //   this.seleccionado = 1;
+  //   this.ServiciosService.seleccionado.next(this.seleccionado);
+  //   this.dialogRef = this.dialog.open(ServiceDialogComponent, {
+  //     width: "70%",
+  //     disableClose: true,
+  //   });
 
-   this.dialogRef.afterClosed().subscribe((result: any) => {
-      this.listaTabla();
-    });
-  }
+  //  this.dialogRef.afterClosed().subscribe((result: any) => {
+  //     this.listaTabla();
+  //   });
+  // }
 
-  editarServicio(idServicio: number) {
-    this.seleccionado = 2;
-    this.ServiciosService.idService.next(idServicio);
-    this.ServiciosService.seleccionado.next(this.seleccionado);
-    const dialogRef = this.dialog.open(ServiceDialogComponent, {
-      width: "70%",
-      disableClose: true,
-    });
+  // editarServicio(idServicio: number) {
+  //   this.seleccionado = 2;
+  //   this.ServiciosService.idService.next(idServicio);
+  //   this.ServiciosService.seleccionado.next(this.seleccionado);
+  //   const dialogRef = this.dialog.open(ServiceDialogComponent, {
+  //     width: "70%",
+  //     disableClose: true,
+  //   });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      this.listaTabla();
-    });
-  }
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     this.listaTabla();
+  //   });
+  // }
 
-  borrarSucursal(idGimnasio: any) {
-    this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar este servicio?`,
-    })
-    .afterClosed()
-    .subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        this.ServiciosService.deleteService(idGimnasio).subscribe(
-          (respuesta) => {
-            this.listaTabla();
-            this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
-              positionClass: 'toast-bottom-left',
-            });
-          }
-        );
-      }
-    });
-  }
-
-
-  //REEMPLAZAR POR MARCAS
-
-//   listaTablaMarca() {
-//     this.categoriaService.obtenerMarcasSer().subscribe((res) => {
-//         // Filtrar solo las marcas donde "servicio" es igual a 1 y convertir "marca" a minúsculas
-//         this.marcas = res
-//             .filter((marcas: any) => marcas.servicio === 1) // Filtrar por servicio = 1
-//             .map((marcas: any) => ({
-//                 ...marcas,
-//                 marca: marcas.marca.toLowerCase() // Convertir el nombre de la marca a minúsculas
-//             }));
-
-//         // Asignar las marcas transformadas y filtradas a dataSource
-//         this.dataSourceDos = new MatTableDataSource(this.marcas);
-//         console.log('Datos de la lista de las marcas: ', this.dataSourceDos);
-
-//         this.loadData();
-//     });
-// }
+  // borrarSucursal(idGimnasio: any) {
+  //   this.dialog.open(MensajeEliminarComponent,{
+  //     data: `¿Desea eliminar este servicio?`,
+  //   })
+  //   .afterClosed()
+  //   .subscribe((confirmado: boolean) => {
+  //     if (confirmado) {
+  //       this.ServiciosService.deleteService(idGimnasio).subscribe(
+  //         (respuesta) => {
+  //           this.listaTabla();
+  //           this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
+  //             positionClass: 'toast-bottom-left',
+  //           });
+  //         }
+  //       );
+  //     }
+  //   });
+  // }
 
 
+//REEMPLAZAR POR MARCAS
 listaTablaMarca() {
-  this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe((res) => {
-    if (res) {  // Verificación de que `res` no es null ni undefined
-      this.marcas = res
-        .filter((marca: any) => marca.servicio !== null && marca.servicio !== 0 && marca.fk_idGimnasio == this.idGym )
-        .map((marcas: any) => ({
-          ...marcas,
-        }));
-
-      // Asignar las marcas transformadas a dataSource
+  this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe((res) => {
+    if (res.success === 1 && res.data) {
+      this.marcas = res.data.filter((marca: any) => marca.servicio !== null && marca.servicio !== 0 && marca.fk_idGimnasio == this.idGym);
       this.dataSourceDos = new MatTableDataSource(this.marcas);
-      console.log('Datos de la lista de las marcas: ', this.dataSourceDos);
     } else {
-      console.warn("No se encontraron marcas para el gimnasio especificado.");
-      this.marcas = []; // Asignar una lista vacía si `res` es null o undefined
+      this.marcas = [];
       this.dataSourceDos = new MatTableDataSource(this.marcas);
+      console.warn("No se encontraron marcas para el gimnasio especificado.");
     }
 
-    this.loadData();
+    this.isLoading = false;
   }, (error) => {
     console.error("Error al obtener marcas:", error);
     this.marcas = [];
     this.dataSourceDos = new MatTableDataSource(this.marcas);
+    this.isLoading = false;
   });
 }
 
@@ -229,9 +203,6 @@ openDialogMar(): void {
 }
 
 editarMarcaSer(idMarca: number) {
-  //this.seleccionado = 2;
-  //this.ServiciosService.idService.next(idMarca);
-  //this.ServiciosService.seleccionado.next(this.seleccionado);
   const dialogRef = this.dialog.open(EditarMarcaComponent, {
     width: "70%",
     disableClose: true,
@@ -239,19 +210,28 @@ editarMarcaSer(idMarca: number) {
   });
 
   dialogRef.afterClosed().subscribe((result) => {
-    this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe((res) => {
-        this.marcas = res
-          .filter((marcas: any) => marcas.servicio !== null && marcas.servicio !== 0)
-          .map((marcas: any) => ({
-            ...marcas,
-          }));
-
-        // Asignar las marcas transformadas a dataSource
-        this.dataSourceDos = new MatTableDataSource(this.marcas);
-        this.loadData();
-  });
+    this.listaTablaMarca();
 });
 
+}
+
+borrarMarca(id_marcas: any) {
+  this.dialog.open(MensajeEliminarComponent,{
+    data: `¿Desea eliminar este servicio?`,
+  })
+  .afterClosed()
+  .subscribe((confirmado: boolean) => {
+    if (confirmado) {
+      this.categoriaService.deleteMarcaServ(id_marcas).subscribe(
+        (respuesta) => {
+          this.listaTablaMarca();
+          this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
+            positionClass: 'toast-bottom-left',
+          });
+        }
+      );
+    }
+  });
 }
 
 }

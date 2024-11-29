@@ -23,6 +23,16 @@ interface ClientesActivos {
   Fecha_Fin: string;
   Status: string;
 }
+
+interface ClientesPedidoActivos {
+  id_pedidos: number;
+  precio: string;
+  fechaInicio: string;
+  fechaFin: string;
+  membresiaProdSeleccionada: string;
+  creation_date: string;
+  idCliente: number;
+}
 @Component({
   selector: "app-lista-membresias-pago-efec",
   templateUrl: "./lista-membresias-pago-efec.component.html",
@@ -70,6 +80,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     "Rol",
   ];
 
+  dataSourcePedidosActivos: MatTableDataSource<any>;
+  clientePedidoActivo: ClientesPedidoActivos[] = [];
+
   constructor(
     private pagoService: PagoMembresiaEfectivoService,
     public dialog: MatDialog,
@@ -81,6 +94,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+    this.dataSourcePedidosActivos = new MatTableDataSource(this.clientePedidoActivo);
 
     this.form = this.fb.group({
       idUsuario: [""],
@@ -94,6 +108,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaClientesData();
+      this.listaPedidos();
     });
 
     this.auth.comprobar().subscribe((respuesta) => {
@@ -140,6 +155,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSourceActivos.paginator = this.paginatorActivos;
+      this.dataSourcePedidosActivos.paginator = this.paginatorActivos;
     }, 1000);
   }
 
@@ -365,5 +381,21 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         } else {
         }
       });
+  }
+
+  // PARA REEMPLAZAR POR PEDIDOS
+  listaPedidos(): void {
+    this.pagoService.obtenerPedidosActivos(this.auth.idGym.getValue()).subscribe(
+      (response: any) => {
+        this.clienteActivo = response.data;
+        console.log('PEDIDOS: ', this.clienteActivo);
+
+        this.dataSourcePedidosActivos = new MatTableDataSource(this.clienteActivo);
+        this.loadData();
+      },
+      (error: any) => {
+        console.error("Error al obtener activos:", error);
+      }
+    );
   }
 }

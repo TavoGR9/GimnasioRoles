@@ -43,16 +43,18 @@ export class planAgregarComponent {
   ) {
     this.formulariodePlan = this.formulario.group(
       {
-        titulo: ["", Validators.required],
+        nombrePromocion: ["", Validators.required],
+        detalle_promocion: ["", Validators.required],
         detalles: [""],
         duracion: ["1", Validators.required],
-        precio: ["", Validators.required],
+        PrecioPaquete: ["", Validators.required],
+        Existencias: ["", Validators.required],
         status: [1, Validators.required],
         tipo_membresia: [3],
         Gimnasio_idGimnasio: [this.auth.idGym.getValue(), Validators.required],
         fechaInicio: ["", Validators.required],
         fechaFin: ["", Validators.required],
-        membresias: [[], Validators.required],
+        membresias: ["", Validators.required],
         created_by: [this.auth.idUser.getValue()],
       },
       { validators: this.dateLessThan("fechaInicio", "fechaFin") }
@@ -84,15 +86,19 @@ export class planAgregarComponent {
   enviar(): any {
     const membresiasSeleccionadas = this.formulariodePlan.get("membresias")?.value;
     let duracionMasAlta = 0;
-    // Iterar sobre todas las membresías seleccionadas para encontrar la duración más alta
-    membresiasSeleccionadas.forEach((m: any) => {
-      // Obtener la duración de la membresía actual
-      const duracionActual = parseInt(m.duracion);
-      // Si la duración de la membresía actual es mayor que la duración más alta encontrada hasta ahora, actualizar la duración más alta
-      if (duracionActual > duracionMasAlta) {
-        duracionMasAlta = duracionActual;
-      }
-    });
+
+    //if (Array.isArray(membresiasSeleccionadas)) {
+      //let duracionMasAlta = 0;
+      membresiasSeleccionadas.forEach((m: any) => {
+        const duracionActual = parseInt(m.duracion);
+        if (duracionActual > duracionMasAlta) {
+          duracionMasAlta = duracionActual;
+        }
+      });
+    //} else {
+      //console.error("membresias no es un array", membresiasSeleccionadas);
+
+    //}
 
     this.formulariodePlan.get("duracion")?.setValue(duracionMasAlta);
 
@@ -105,7 +111,7 @@ export class planAgregarComponent {
             this.formulariodePlan.get("membresias")?.value.forEach((m: any) => {
               const datosMembresias = {
                 idMem: m.idMem,
-                nombreMem: m.titulo,
+                nombreMem: m.nombrePromocion,
                 duracion: m.duracion,
                 idPlan: respuesta.id,
               };
