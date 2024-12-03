@@ -101,25 +101,25 @@
            </ng-container> -->
            <ng-container matColumnDef="servicio">
               <th mat-header-cell *matHeaderCellDef>Detalles</th>
-              <td mat-cell *matCellDef="let item">{{ item.marca }}</td>
+              <td mat-cell *matCellDef="let item">{{ item.nombreCategoria }}</td>
            </ng-container>
            <ng-container matColumnDef="price">
               <th mat-header-cell *matHeaderCellDef>Precio</th>
-              <td mat-cell *matCellDef="let item">$ {{ item.precioSucursal }}</td>
+              <td mat-cell *matCellDef="let item">$ {{ item.precioProducto }}</td>
            </ng-container>
            <!-- <ng-container matColumnDef="duration">
               <th mat-header-cell *matHeaderCellDef>Duración</th>
               <td mat-cell *matCellDef="let item">{{ item.duracionProd }} días</td>
            </ng-container> -->
 
-           <ng-container matColumnDef="actions">
+           <!-- <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Acciones</th>
               <td mat-cell *matCellDef="let item">
                  <button mat-icon-button color="primary" [disabled]="!habilitarBoton" (click)="openDialogEditProd(item.idProbob)">
                     <mat-icon>edit</mat-icon>
                  </button>
               </td>
-           </ng-container>
+           </ng-container> -->
            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
            <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
         </table>

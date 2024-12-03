@@ -168,11 +168,32 @@ updateMarcaService2(data: any): Observable<any> {
   return this.clienteHttp.post(this.API2 + "updateMarcaServ.php?updateMarcaServ=1", data);
 }
 
-//eliminar marca
+// eliminar marca
 deleteMarcaServ(idM: any): Observable<any> {
   const data ={id: idM}
   return this.clienteHttp.post(this.API2+"deleteMarcaServ.php?eliminarMarcaServ", data);
 }
 
+
+// PARA LA SECCION DE PRODUCTOS
+obtenerCategoria2():Observable<any>{
+  return this.clienteHttp.get(this.API2+"getCategorias.php?consultarCategorias=");
+}
+
+obtenerSubCategoria2(id: any):Observable<any>{
+  return this.clienteHttp.get(this.API2+"listarProductosCategoriaPro.php?id_categoria="+id);
+}
+
+obtenerCategoriaPorNombre2(nombre:string):Observable<any>{
+  return this.clienteHttp.get(this.API2+"getCategoriaNombre.php?categoriaName="+nombre);
+}
+
+obtenerSubCategoriaPorNombre2(nombre:string, id:any):Observable<any>{
+  return this.clienteHttp.get(this.API2+"getSubCategorisNombre.php?SubcategoriaName="+nombre+"&id="+id);
+}
+
+obtenerMarcaPorNombre2(nombre:string):Observable<any>{
+  return this.clienteHttp.get(this.API2+"getMarcaNombre.php?marcaName="+nombre);
+}
 
 }

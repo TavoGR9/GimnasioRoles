@@ -159,6 +159,7 @@ export class CrearProductoComponent implements OnInit {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria().subscribe({
       next: (respuesta) => {
+        console.log('TODAS LAS CATEGORIAS: ', respuesta);
         const categoriasU = new Set(
           respuesta.categorias.map(
             (categoria: any) => categoria.nombreCategoria
@@ -200,6 +201,7 @@ export class CrearProductoComponent implements OnInit {
     const subCIngresado = this.form.get("nomsubcate")?.value;
     this.categoriaService.obtenerSubCategoria(idCategoriaGuardada).subscribe({
       next: (respuesta) => {
+        console.log('TODAS LAS SUBCATEGORIAS: ', respuesta);
         const subCategoriasU = new Set(
           respuesta.subCategoria.map(
             (subCategoria: any) => subCategoria.nombreProducto
@@ -220,6 +222,7 @@ export class CrearProductoComponent implements OnInit {
     const marcaIngresado = this.form.get("marcaP")?.value;
     this.categoriaService.obtenerMarcas().subscribe({
       next: (respuesta) => {
+        console.log('TODAS LAS MARCAS: ', respuesta);
         const marcasU = new Set(
           respuesta.marcas.map((marca: any) => marca.marca)
         );
@@ -288,6 +291,8 @@ export class CrearProductoComponent implements OnInit {
             this.categoriaService
               .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
               .subscribe((categoriaExistente) => {
+                console.log("CATEGORIA EXISTENTE: ",categoriaExistente.data);
+
                 if (categoriaExistente.success == 1) {
                   ///********** Verifica si la subcategoria ya existe */
                   this.categoriaService
@@ -296,6 +301,8 @@ export class CrearProductoComponent implements OnInit {
                       categoriaExistente.categoria.id_categoria
                     )
                     .subscribe((subCategoriaExistente) => {
+                      console.log("SUBCATEGORIA EXISTENTE: ", subCategoriaExistente);
+
                       if (subCategoriaExistente.success == 1) {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
@@ -1699,7 +1706,7 @@ export class CrearProductoComponent implements OnInit {
                             cantidadMayoreo: this.form.value.cantidadMayoreo,
                             idUsuario: this.auth.idUser.getValue(),
                           };
-  
+
                           this.productoService
                             .creaProducto(formularioP)
                             .subscribe({
@@ -1762,7 +1769,7 @@ export class CrearProductoComponent implements OnInit {
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
                                 idUsuario: this.auth.idUser.getValue(),
                               };
-  
+
                               this.productoService
                                 .creaProducto(formularioP)
                                 .subscribe({
@@ -1811,7 +1818,7 @@ export class CrearProductoComponent implements OnInit {
                       idcatte: categoriaExistente.categoria.id_categoria,
                       nomsubcate: this.form.value.nomsubcate,
                     };
-  
+
                     this.categoriaService
                       .agregarSubCategoria(formSub)
                       .subscribe((respuestaSub) => {
@@ -1822,7 +1829,7 @@ export class CrearProductoComponent implements OnInit {
                             if (marcaExistente.success == 1) {
                               this.spinner.hide();
                               //agregar producto
-  
+
                               const formularioP = {
                                 idProducto: respuestaSub.id_producto,
                                 detalleUnidadMedida: "pza",
@@ -1843,7 +1850,7 @@ export class CrearProductoComponent implements OnInit {
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
                                 idUsuario: this.auth.idUser.getValue(),
                               };
-  
+
                               this.productoService
                                 .creaProducto(formularioP)
                                 .subscribe({
@@ -1910,7 +1917,7 @@ export class CrearProductoComponent implements OnInit {
                                       this.form.value.cantidadMayoreo,
                                       idUsuario: this.auth.idUser.getValue(),
                                   };
-  
+
                                   this.productoService
                                     .creaProducto(formularioP)
                                     .subscribe({
@@ -1977,7 +1984,7 @@ export class CrearProductoComponent implements OnInit {
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               //agregar producto
-  
+
                               const formularioP = {
                                 idProducto:
                                   subCategoriaExistente.producto.id_producto,
@@ -1999,7 +2006,7 @@ export class CrearProductoComponent implements OnInit {
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
                                 idUsuario: this.auth.idUser.getValue(),
                               };
-  
+
                               this.productoService
                                 .creaProducto(formularioP)
                                 .subscribe({
@@ -2067,7 +2074,7 @@ export class CrearProductoComponent implements OnInit {
                                       this.form.value.cantidadMayoreo,
                                       idUsuario: this.auth.idUser.getValue(),
                                   };
-  
+
                                   this.productoService
                                     .creaProducto(formularioP)
                                     .subscribe({
@@ -2118,7 +2125,7 @@ export class CrearProductoComponent implements OnInit {
                           idcatte: respuesta.id_categoria,
                           nomsubcate: this.form.value.nomsubcate,
                         };
-  
+
                         this.categoriaService
                           .agregarSubCategoria(formSub)
                           .subscribe((respuestaSub) => {
@@ -2218,7 +2225,7 @@ export class CrearProductoComponent implements OnInit {
                                           this.form.value.cantidadMayoreo,
                                           idUsuario: this.auth.idUser.getValue(),
                                       };
-  
+
                                       this.productoService
                                         .creaProducto(formularioP)
                                         .subscribe({
@@ -2281,7 +2288,7 @@ export class CrearProductoComponent implements OnInit {
         this.spinner.hide();
       }
       });
-      
+
     } else {
       this.message = "Por favor, complete todos los campos requeridos.";
       this.marcarCamposInvalidos(this.form);

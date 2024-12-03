@@ -22,7 +22,6 @@ export class ProductoService {
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
-
   API2: string ='http://localhost/serviciosGym/'
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
@@ -239,4 +238,27 @@ export class ProductoService {
         ) as Observable<any[]>; // Añadir una conversión de tipo
     }
 
+    // REEMPLAZAR POR PRODUCTOS
+
+    // lista de productos de un gimnasio
+    consultarAllProductoB(id: string | number): Observable<any> {
+      return this.clienteHttp.get(this.API2 + "getProductosMembBodega.php?id_bodega="+id);
+    }
+
+    // crear producto
+    creaProductoMemb(datosFormulario: any): Observable<any> {
+      return this.clienteHttp.post(this.API2 + 'insertarProductoMemb.php?insertarProductoMemb', datosFormulario).pipe(
+        catchError(error => {
+          console.error('Error al enviar la solicitud:', error);
+          return throwError(error);
+        })
+      );
+    }
+
+    // ver producto por codigo de barras
+    verProductoCodigoBarras2(codigo: any) {
+      const data = { codigo: codigo };
+      return this.clienteHttp.post<any[]>(this.API2 + "getProductoCodigoBarras.php?consultarProductoPorCodigo", data);
+
+    }
 }

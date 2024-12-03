@@ -54,7 +54,7 @@ export class MembresiasComponent implements OnInit {
     "servicio",
     "price",
     // "duration",
-    "actions",
+    //"actions",
   ];
   habilitarBoton: boolean = false;
 
@@ -71,7 +71,8 @@ export class MembresiasComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       // this.listaTabla();
-      this.listaTablaProd();
+      //this.listaTablaProd();
+      this.listaTablaProdMem();
     });
   }
 
@@ -216,12 +217,28 @@ export class MembresiasComponent implements OnInit {
 
 
   //Reemplazar por productos
-  listaTablaProd(){
-    this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+  // listaTablaProd(){
+  //   this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+  //     console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
+
+  //     //this.productos = resultData
+  //     this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
+  //     this.dataSourceDos = new MatTableDataSource(this.productos);
+  //     console.log('Lista de productos: ', this.productos);
+  //     console.log('Datos de la lista de productos: ', this.dataSourceDos);
+  //     console.log("ID de Gimnasio:", this.idGym);
+
+
+  //     this.loadData();
+  //   });
+  // }
+
+  listaTablaProdMem(){
+    this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
       console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
 
       //this.productos = resultData
-      this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
+      this.productos = resultData.data.filter((producto: any) => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
       this.dataSourceDos = new MatTableDataSource(this.productos);
       console.log('Lista de productos: ', this.productos);
       console.log('Datos de la lista de productos: ', this.dataSourceDos);
