@@ -9,14 +9,14 @@
     <div class="container mt-4">
       <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
         <h2 class="mb-3">INVENTARIO</h2>
-      
+
         <div style="text-align: right; margin-bottom: 20px;">
           <button
               mat-raised-button [disabled]="!habilitarBoton"
               (click)="abrirHistorial()"
               style="background-color: #fd9727; font-size: 16px;">
               <mat-icon>assignment</mat-icon>Historial de inventario global
-            </button> 
+            </button>
         </div>
         <h3>Ingresa el valor de una columna</h3>
         <mat-form-field class="full-width">
@@ -40,11 +40,11 @@
                       {{ prod.marca }}
                     </ng-container>
                     <ng-container *ngIf="column === 'Nombre'">
-                      {{ prod.nombre }}-{{ prod.detalleCompra }}
+                      {{ prod.nombre }}
                     </ng-container>
                   <ng-container *ngIf="column === 'Cantidad Disponible'">
                       {{ prod.cantidad_disponible }}
-                    </ng-container>              
+                    </ng-container>
                 </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

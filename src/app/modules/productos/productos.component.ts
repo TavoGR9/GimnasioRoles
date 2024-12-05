@@ -73,9 +73,11 @@ export class ProductosComponent implements OnInit {
   }
 
   listaTabla(){
-    this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+    this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
-      this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.marca !== 'Olympus');
+      console.log('Resultados: ', resultData);
+
+      this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
 
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData();
@@ -127,9 +129,9 @@ export class ProductosComponent implements OnInit {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+      this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
         //this.productos = resultData
-        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
+        this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
         this.dataSource = new MatTableDataSource(this.productos);
         this.loadData();
       });
@@ -143,9 +145,9 @@ export class ProductosComponent implements OnInit {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+      this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
         //this.productos = resultData
-        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
+        this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
         this.dataSource = new MatTableDataSource(this.productos);
         this.loadData();
       });
@@ -174,9 +176,9 @@ export class ProductosComponent implements OnInit {
       if (confirmado) {
         this.productoService.deleteProd(id).subscribe(
           (respuesta) => {
-            this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+            this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
               //this.productos = resultData
-              this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
+              this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
               this.dataSource = new MatTableDataSource(this.productos);
               this.loadData();
             });

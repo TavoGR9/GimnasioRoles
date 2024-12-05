@@ -20,16 +20,16 @@ export class InventariosComponent implements OnInit {
   ];
 
   listInventarioData: any[] = [];
-  dataSource: any; 
+  dataSource: any;
   idGym: number = 0;
   currentUser: string = '';
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   habilitarBoton: boolean = false;
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(
-    private productoService: ProductoService, 
+    private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog) {}
 
@@ -37,7 +37,7 @@ export class InventariosComponent implements OnInit {
     // this.productoService.comprobar();
     // this.InventarioService.comprobar();
     // this.auth.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
     this.currentUser = this.auth.getCurrentUser();
@@ -47,19 +47,21 @@ export class InventariosComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTablas();
-    }); 
+    });
   }
 
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSource.paginator = this.paginator;
-    }, 1000); 
+    }, 1000);
   }
 
   listaTablas(){
-    this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      this.listInventarioData = respuesta;
+    this.productoService.obternerInventario2(this.idGym).subscribe((respuesta) => {
+      console.log('TODAS LAS EXISTENCIAS: ', respuesta);
+
+      this.listInventarioData = respuesta.filter((existencia: any) => existencia.categoria.toLowerCase() !== 'servicios');
       this.dataSource= new MatTableDataSource(this.listInventarioData);
       this.loadData();
     });

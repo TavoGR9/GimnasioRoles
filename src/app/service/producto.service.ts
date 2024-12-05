@@ -255,10 +255,36 @@ export class ProductoService {
       );
     }
 
+    // actualiza el producto
+    actualizarProducto2(datosP: any): Observable<any> {
+      const url = `${this.API2}updateProbod.php?actualizarP`;
+      return this.clienteHttp.post(url, datosP).pipe(
+        tap(dataResponse => {
+        }),
+        catchError(error => {
+          console.log(error);
+          return error;
+       })
+      );
+    }
+
     // ver producto por codigo de barras
     verProductoCodigoBarras2(codigo: any) {
       const data = { codigo: codigo };
       return this.clienteHttp.post<any[]>(this.API2 + "getProductoCodigoBarras.php?consultarProductoPorCodigo", data);
 
+    }
+
+    //EXISTENCIAS
+    obternerInventario2(id:any): Observable<any[]> {
+      const data = { id_bodega_param: id };
+      return this.clienteHttp.post<any[]>(this.API2 +'obtenerExistencias.php?listaExistencia=',data).pipe(
+        tap((dataResponse: any[])=> {
+          this.saveDataToIndexedDB3(dataResponse);
+        }),
+        catchError(error => {
+          return this.getServiceDatos3();
+        })
+      ) as Observable<any[]>;
     }
 }

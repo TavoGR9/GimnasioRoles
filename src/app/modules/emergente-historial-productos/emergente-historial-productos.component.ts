@@ -16,9 +16,9 @@ export interface Historial {
   Usuario: number;
   Producto: number;
   Concepto: string;
-  FechaMovimiento: string; 
-  ActualStock: string; 
-  MovimientoStock: string; 
+  FechaMovimiento: string;
+  ActualStock: string;
+  MovimientoStock: string;
   NuevoStock: string;
 }
 @Component({
@@ -29,18 +29,18 @@ export interface Historial {
 })
 
 export class EmergenteHistorialProductosComponent implements OnInit{
-  dataHistorial: Historial[] = []; 
-  dataSource: any; 
+  dataHistorial: Historial[] = [];
+  dataSource: any;
   displayedColumnsHistorial: string[] = [
     'Producto',
     'Concepto',
     'Fecha Movimiento',
     'Stock Movimiento',
   ];
-  fechaInicio: Date = new Date(); 
-  fechaFin: Date = new Date();  
+  fechaInicio: Date = new Date();
+  fechaFin: Date = new Date();
   private fechaInicioAnterior: Date | null = null;
-  private fechaFinAnterior: Date | null = null; 
+  private fechaFinAnterior: Date | null = null;
 
   @ViewChild('paginatorHistorial', { static: true }) paginatorHistorial!: MatPaginator;
 
@@ -51,13 +51,13 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     private toastr: ToastrService,
     private auth: AuthService,
     private datePipe: DatePipe,) { }
-  
+
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
 
   ngOnInit(): void {
-    this.updateDateLogs(); 
+    this.updateDateLogs();
   }
 
   ngDoCheck(): void {
@@ -79,13 +79,15 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   private updateDateLogs(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
-    this.ServiceHistorInventario.HistorialInventario(
+    this.ServiceHistorInventario.HistorialInventario2(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
       this.auth.idGym.getValue()
     ).subscribe(
       response => {
-        if (response.msg == 'No hay resultados') {
+        console.log('RESULTADOS DEL HISTORIAL: ', response);
+
+        if (response.length === 0) {
           this.dataHistorial = [];
           this.dataSource = new MatTableDataSource(this.dataHistorial);
           this.dataSource.paginator = this.paginatorHistorial;
@@ -181,7 +183,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     const fechaInicio = this.formatDateV2(this.fechaInicio);
     const fechaFin = this.formatDateV2(this.fechaFin);
     // Encabezado del PDF con las fechas
-    pdf.text(`Historial del inventario (${fechaInicio} - ${fechaFin})`, 10, 10);   
+    pdf.text(`Historial del inventario (${fechaInicio} - ${fechaFin})`, 10, 10);
     // Contenido del PDF
     const datos = this.dataSource.filteredData.map((listaHist: Historial) => [
       listaHist.Sucursal,

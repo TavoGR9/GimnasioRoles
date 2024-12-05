@@ -16,6 +16,7 @@ export class inventarioService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
+  API2: string ='http://localhost/serviciosGym/'
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
@@ -52,4 +53,13 @@ export class inventarioService {
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
     return this.clienteHttp.post(url, body);
   }
+
+
+  //Historial para la nueva BD
+  HistorialInventario2(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
+    const url = `${this.API2}obtenerHistorialExistencias.php?listaHistorialExistencia`;
+    const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
+    return this.clienteHttp.post(url, body);
+  }
+
 }

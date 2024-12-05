@@ -189,11 +189,48 @@ obtenerCategoriaPorNombre2(nombre:string):Observable<any>{
 }
 
 obtenerSubCategoriaPorNombre2(nombre:string, id:any):Observable<any>{
-  return this.clienteHttp.get(this.API2+"getSubCategorisNombre.php?SubcategoriaName="+nombre+"&id="+id);
+  const url = `${this.API2}getSubCategorisNombre.php?SubcategoriaName=${encodeURIComponent(nombre)}&id=${id}`;
+  return this.clienteHttp.get(url);
+  // return this.clienteHttp.get(this.API2+"getSubCategorisNombre.php?SubcategoriaName="+nombre+"&id="+id);
 }
 
 obtenerMarcaPorNombre2(nombre:string):Observable<any>{
   return this.clienteHttp.get(this.API2+"getMarcaNombre.php?marcaName="+nombre);
 }
+
+obtenerMarcas2():Observable<any>{
+  return this.clienteHttp.get(this.API2+"getMarcasB.php");
+}
+
+agregarMarca2(datosMarca: any): Observable<any> {
+  return this.clienteHttp.post(`${this.API2}addMarca.php`, datosMarca);
+}
+
+agregarSubCategoria2(datosSubCategoria:any):Observable<any>{
+  return this.clienteHttp.post(this.API2+"addSubCategoria.php?insertarSubC=1",datosSubCategoria).pipe(
+    tap(dataResponse => {
+    }),
+    catchError(error => {
+      this.saveDataToIndexedDB(datosSubCategoria);
+      const resultData = { success: '2' };
+      return of(resultData);
+    })
+  );
+}
+
+agregarCategoria2(datosCategoria: any): Observable<any> {
+  return this.clienteHttp.post(this.API2 + "addCategoria.php?insertarCategoria=1", datosCategoria).pipe(
+    tap((dataResponse) => {
+      console.log('Respuesta del servidor:', dataResponse);
+    }),
+    catchError((error) => {
+      console.error('Error al agregar categoría:', error);
+      return of({ success: 0, message: 'Error al agregar categoría' });
+    })
+  );
+}
+
+
+
 
 }
