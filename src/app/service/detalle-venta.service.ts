@@ -17,6 +17,7 @@ export class DetalleVentaService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
+  API2: string ='http://localhost/serviciosGym/';
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
@@ -56,6 +57,18 @@ export class DetalleVentaService {
 
   updateExistencias(data:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?updateExistencias",data)
+  }
+
+
+  //PARA DETALLE PEDIDO
+  agregarDetallePedido(datosVentaDetalle: any[]): Observable<any> {
+    const headers = { 'Content-Type': 'application/json' };
+    return this.clienteHttp.post(this.API2 + 'addDetallePedido.php?addDetailOrder=1', datosVentaDetalle);
+  }
+
+  //PARA DESCUENTO POR PEDIDO
+  updateExistenciasPedido(data:any):Observable<any>{
+    return this.clienteHttp.post(this.API2+"updateExistencias.php?actualizarExistencias",data)
   }
 
 }

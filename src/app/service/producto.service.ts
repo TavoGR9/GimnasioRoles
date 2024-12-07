@@ -22,7 +22,7 @@ export class ProductoService {
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
-  API2: string ='http://localhost/serviciosGym/'
+  API2: string ='http://localhost/serviciosGym/';
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
     }
@@ -286,5 +286,11 @@ export class ProductoService {
           return this.getServiceDatos3();
         })
       ) as Observable<any[]>;
+    }
+
+    //PARA PEDIDOS
+    obternerProductosV2(id:any):Observable<any>{
+      const data = { id_bodega_param: id };
+      return this.clienteHttp.post(this.API2+"obtenerProductoPuntoVenta.php?consultarProductoBodegaVenta=",data);
     }
 }

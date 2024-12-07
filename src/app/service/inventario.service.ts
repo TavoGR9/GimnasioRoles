@@ -16,7 +16,7 @@ export class inventarioService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
-  API2: string ='http://localhost/serviciosGym/'
+  API2: string ='http://localhost/serviciosGym/';
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
@@ -60,6 +60,20 @@ export class inventarioService {
     const url = `${this.API2}obtenerHistorialExistencias.php?listaHistorialExistencia`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
     return this.clienteHttp.post(url, body);
+  }
+
+  //OBTENER PRODUCTO PARA PUNTO DE VENTA
+  buscarProductoPorNombre2( idGym: number): Observable<any> {
+    // Crear los parámetros de la solicitud
+    const params = new HttpParams()
+      .set('idGym', idGym);
+
+    return this.clienteHttp.get<any>(this.API2+"obtenerProductoNombre.php", { params });
+  }
+
+  obtenerProductoPorId2(id: any, idGimnasio: any): Observable<any> {
+    let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
+    return this.clienteHttp.get(this.API2+"obtenerProductoIdYBodega.php", { params: params });
   }
 
 }
