@@ -275,8 +275,8 @@ export class ProductoService {
 
     }
 
-    //EXISTENCIAS
-    obternerInventario2(id:any): Observable<any[]> {
+    //EXISTENCIAS (LISTA INVENTARIO)
+    obtenerInventarioLista(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };
       return this.clienteHttp.post<any[]>(this.API2 +'obtenerExistencias.php?listaExistencia=',data).pipe(
         tap((dataResponse: any[])=> {
@@ -288,7 +288,7 @@ export class ProductoService {
       ) as Observable<any[]>;
     }
 
-    //PARA PEDIDOS
+    //PARA PEDIDOS (obtener los productos de la bodega)
     obternerProductosV2(id:any):Observable<any>{
       const data = { id_bodega_param: id };
       return this.clienteHttp.post(this.API2+"obtenerProductoPuntoVenta.php?consultarProductoBodegaVenta=",data);

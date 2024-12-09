@@ -60,13 +60,12 @@ export class DetalleVentaService {
   }
 
 
-  //PARA DETALLE PEDIDO
+  //PARA AGREGAR DETALLE PEDIDO
   agregarDetallePedido(datosVentaDetalle: any[]): Observable<any> {
-    const headers = { 'Content-Type': 'application/json' };
     return this.clienteHttp.post(this.API2 + 'addDetallePedido.php?addDetailOrder=1', datosVentaDetalle);
   }
 
-  //PARA DESCUENTO POR PEDIDO
+  //PARA EL DESCUENTO DE EXISTENCIAS POR PEDIDO
   updateExistenciasPedido(data:any):Observable<any>{
     return this.clienteHttp.post(this.API2+"updateExistencias.php?actualizarExistencias",data)
   }

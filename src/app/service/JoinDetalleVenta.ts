@@ -14,6 +14,7 @@ export class JoinDetalleVentaService {
 
   // API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
+  API2: string ='http://localhost/serviciosGym/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -81,6 +82,22 @@ export class JoinDetalleVentaService {
   consultarProductosGimnasio(idGimnasio: number | null): Observable<any[]> {
     const url = `${this.API}venta_detalleVenta.php?consultar=true&Gimnasio_idGimnasio=${idGimnasio}`;
     return this.clienteHttp.get<any[]>(url);
+  }
+
+
+
+  //PARA OBTENER DETALLES DE PEDIDOS PARA LA LISTA
+  consultarProductosVentasBodega(id_bodega_param: number | null): Observable<any> {
+    const body = { id_bodega_param };
+    const url = `${this.API2}listaPedidosDetalleIdBodega.php?listaPedidosDetalleBodega`;
+    return this.clienteHttp.post(url, body).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB(dataResponse);
+      }),
+      catchError(error => {
+        return this.getServiceDatos();
+      })
+    );
   }
 
 }

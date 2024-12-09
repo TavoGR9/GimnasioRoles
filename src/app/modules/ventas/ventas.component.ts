@@ -123,20 +123,21 @@ export class VentasComponent implements OnInit {
     // this.ventasService.comprobar();
     this.ubicacion = this.auth.nombreGym.getValue();
     this.idGym = this.auth.idGym.getValue();
-    console.log('idgym: ', this.idGym);
-    console.log('UBICACION? ',this.ubicacion);
+    // console.log('idgym: ', this.idGym);
+    // console.log('UBICACION? ',this.ubicacion);
 
-    this.DetalleVenta.obternerVentaDetalle().subscribe({
-      next: (resultData) => {
-        this.detalle = resultData;
-        console.log('Detalle ventas: ', this.detalle);
+    // this.DetalleVenta.obternerVentaDetalle().subscribe({
+    //   next: (resultData) => {
+    //     this.detalle = resultData;
+    //     console.log('Detalle ventas: ', this.detalle);
 
-      },
-    });
+    //   },
+    // });
 
+    //Obtener productos de la bodega
     this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      console.log('ProductosV: ', this.productData);
+      // console.log('ProductosV: ', this.productData);
 
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator;
@@ -159,10 +160,10 @@ export class VentasComponent implements OnInit {
 
 
   validarYAgregarProducto(producto: any) {
-    this.InventarioService.obtenerProductoPorId2(producto.idProbob, this.auth.idGym.getValue()).subscribe(
+    this.InventarioService.obtenerProductoPorIdYIdBodega(producto.idProbob, this.auth.idGym.getValue()).subscribe(
       (data) => {
         const productoObtenido = data[0];
-        console.log('PRODUCTO OBTENIDO: ', productoObtenido);
+        // console.log('PRODUCTO OBTENIDO: ', productoObtenido);
 
         if (!productoObtenido) {
           this.toastr.error("Producto no encontrado");
@@ -290,255 +291,7 @@ export class VentasComponent implements OnInit {
     return palabras;
   }
 
-  imprimirResumen() {
-    this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Está seguro/a de que desea completar esta venta?`,
-    })
-    .afterClosed()
-    .subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        this.spinner.show();
-        let allProductsValid = true;
-        for (let i = 0; i < this.selectedProducts.length; i++) {
-          if (this.selectedProducts[i].cantidad > this.selectedProducts[i].existencia) {
-            this.toastr.error(`La cantidad es mayor que la existencia para el producto: ${this.selectedProducts[i].nombreProducto}`, 'Error', {
-              positionClass: 'toast-bottom-left',
-            });
-            this.spinner.hide();
-            allProductsValid = false;
-          }
-        }
-
-        if(allProductsValid && this.selectedProducts.length > 0 ){
-          if (this.totalAPagar <= this.dineroRecibido) {
-            /**FECHA */
-            const totalAPagar = this.selectedProducts.reduce((total, producto) => total + producto.precioSucursal * producto.cantidad,0);
-            // Enviar datos de ventas
-            const datosVentas = {
-              total: totalAPagar,
-              idUsuario:this.auth.idUser.getValue()
-            };
-
-            this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
-              const lastInsertedId3 = response.lastInsertedId3;
-              console.log('Producto seleccionado: ', this.selectedProducts);
-
-              const detallesVenta = this.selectedProducts.map((producto) => {
-                return {
-                  Ventas_idVentas: lastInsertedId3,
-                  Producto_idProducto: producto.idProbob,
-                  nombreProducto: producto.nombreProducto + " " + producto.marca + ", " + producto.detalleCompra,
-                  cantidadElegida: producto.cantidad,
-                  precioUnitario: producto.precioSucursal,
-                  Gimnasio_idGimnasio: this.auth.idGym.getValue(),
-                  importe: producto.cantidad * producto.precioSucursal,
-                };
-              });
-
-              this.DetalleVenta.agregarVentaDetalle(detallesVenta).subscribe(
-                (response) => {
-                  if(response.success == 1){
-                    const existencias = this.selectedProducts.map((producto) => {
-                      return {
-                      codigo: producto.codigoBarras,
-                      cantidad: producto.cantidad,
-                      idBodega: this.auth.idGym.getValue()
-                    }
-                    });
-                    this.DetalleVenta.updateExistencias(existencias).subscribe((data) =>{
-                    })
-                    this.spinner.hide();
-
-                    this.dialog.open(MensajeEmergentesComponent, {
-                      data: `Productos registrados correctamente`,
-                    })
-                    .afterClosed()
-                    .subscribe((cerrarDialogo: Boolean) => {
-                      if (cerrarDialogo) {
-                        this.dialogo.close(true);
-                        this.resetearValores();
-                      } else {
-                      }
-                    });
-
-
-                    if (this.totalAPagar <= this.dineroRecibido) {
-                      const totalCantidad = this.selectedProducts.reduce(
-                        (total, producto) => producto.cantidad,
-                        0
-                      );
-                      const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.totalAPagar);
-                      const ventanaImpresion = window.open("", "_blank");
-                      const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
-                      const horaActual = new Date().toLocaleTimeString("es-MX", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      }); // Obtener solo la hora en formato local de México
-                      if (ventanaImpresion) {
-                        ventanaImpresion.document.open();
-                        ventanaImpresion.document.write(`
-                        <html>
-                          <head>
-                            <style>
-                              body {
-                                font-family: 'Arial', sans-serif;
-                                margin: 0;
-                                padding: 0;
-                                background-color: #f5f5f5;
-                              }
-                              .ticket {
-                                width: 80%;
-                                max-width: 600px;
-                                margin: 20px auto;
-                                background-color: #fff;
-                                border-radius: 4px;
-                                padding: 20px;
-
-                              }
-                              h1 {
-                                text-align: center;
-                                color: #333;
-                                margin-bottom: 20px;
-                              }
-                              table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                margin-bottom: 20px;
-                              }
-                              th, td {
-                                padding: 8px;
-                                border-bottom: 1px solid #ddd;
-                                text-align: left;
-                              }
-                              th {
-                                background-color: #f2f2f2;
-                              }
-                              .total {
-                                text-align: right;
-                                margin-top: 20px;
-                                font-weight: bold;
-                              }
-                              .total p {
-                                margin: 5px 0;
-                                font-size: 1.1em;
-                              }
-                              hr {
-                                border: none;
-                                border-top: 1px dashed #ccc;
-                                margin: 20px 0;
-                              }
-                              .brand {
-                                text-align: center;
-                                color: #888;
-                                font-size: 20px;
-                                margin-top: 20px;
-                              }
-                              .fecha-hora {
-                                display: flex;
-                                justify-content: space-between;
-                              }
-                              .logo {
-                                display: block;
-                                margin: 0 auto 20px;
-                                max-width: 150px;
-                                width: 100%;
-                                height: auto;
-                              }
-                            </style>
-                          </head>
-
-                          <body>
-                            <div class="ticket">
-                            ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
-                              <table>
-                                <thead>
-                                  <tr>
-                                    <th>Nombre</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio Unitario</th>
-                                    <th>Total</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  ${this.selectedProducts
-                                    .map(
-                                      (producto) => `
-                                      <tr>
-                                        <td>${producto.nombreProducto}</td>
-                                        <td>${producto.cantidad}</td>
-                                        <td>$${producto.precioSucursal}</td>
-                                        <td>$${producto.precioSucursal * producto.cantidad}</td>
-                                      </tr>
-                                    `
-                                    )
-                                    .join("")}
-                                </tbody>
-                              </table>
-                              <hr>
-                              <p>Cantidad total de productos: ${totalCantidad}</p>
-                              <div class="total">
-
-                                <p>Total a Pagar: $${this.totalAPagar}</p>
-                                </div>
-                                <p>(${totalEnPesos} PESOS)</p>
-                                <div class="total">
-                                <p>Dinero recibido: $${this.dineroRecibido}</p>
-                                <p>Cambio: $${this.dineroRecibido - this.totalAPagar}</p>
-
-                                </div>
-                                <div class="fecha-hora">
-                                <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
-                                <p>Hora: ${horaActual}</p> <!-- Hora -->
-                              </div>
-                              <div class="brand">
-                                <p>Gracias por su compra</p>
-                                <p>¡Vuelva pronto!</p>
-                              </div>
-                            </div>
-                          </body>
-                        </html>
-                      `);
-                      ventanaImpresion.document.close();
-
-                      // Esperar a que la imagen se cargue antes de imprimir
-                      const image: HTMLImageElement | null = ventanaImpresion.document.querySelector('img');
-                      if (image) {
-                        image.onload = () => {
-                          ventanaImpresion.print();
-                          ventanaImpresion.close();
-                        };
-
-                        image.onerror = (error) => {
-                          console.error('Error al cargar la imagen:', error);
-                          ventanaImpresion.print();
-                          ventanaImpresion.close();
-                        };
-                      } else {
-                        ventanaImpresion.print();
-                        ventanaImpresion.close();
-                      }
-                      }
-                    } else {
-                      this.toastr.error("Ingresa el pago");
-                    }
-                  }else {
-                  this.toastr.error("Error al vender producto");
-                }
-                }
-              );
-            });
-          } else {
-            this.toastr.error("Pago incorrecto, verifica");
-          }
-          ///////////////////////
-
-        }
-
-      } else {
-      }
-    });
-  }
-
+  
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
@@ -589,9 +342,9 @@ export class VentasComponent implements OnInit {
 
   buscarPorPro(){
     const productoIngresado = this.form.get("producto")?.value;
-      this.InventarioService.buscarProductoPorNombre2(this.auth.idGym.getValue()).subscribe({
+      this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
-          console.log('PRODUCTOS POR NOMBRE: ', respuesta);
+          // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
 
           const prod = new Set(
             respuesta.nombreproducto.map(
@@ -615,7 +368,6 @@ export class VentasComponent implements OnInit {
       this.form.get('producto')?.setValue(marca);
       this.applyFilter(null); // Aplicar filtro al seleccionar una opción del autocompletado
     }
-
 
     //PEDIDOS
     imprimirResumenPedido() {
@@ -660,86 +412,10 @@ export class VentasComponent implements OnInit {
               };
 
               this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
-                if (response) {
-                  console.log('Pedido: ', response);
-
-                  if (response.success == '1') {
-                    this.spinner.hide();
-                    const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
-                      data: `¡Servicio agregado con éxito!`,
-                    });
-                    dialogRefConfirm.afterClosed().subscribe(() => {
-                      this.dialogo.close(response);
-                    });
-                  } else {
-                    this.spinner.hide();
-                    this.message = "Hubo un error al agregar la marca.";
-                    console.error("Error al agregar marca", response);
-                  }
-                } else {
-                  this.spinner.hide();
-                  this.message = "No se pudo conectar con el servidor.";
-                }
-
-              });
-            } else {
-              this.toastr.error("Pago incorrecto, verifica");
-            }
-
-          }
-
-        } else {
-        }
-      });
-    }
-
-
-    imprimirResumenPedido2() {
-      this.dialog.open(MensajeEliminarComponent,{
-        data: `¿Está seguro/a de que desea completar esta venta?`,
-      })
-      .afterClosed()
-      .subscribe((confirmado: boolean) => {
-        if (confirmado) {
-          this.spinner.show();
-          let allProductsValid = true;
-          for (let i = 0; i < this.selectedProducts.length; i++) {
-            if (this.selectedProducts[i].cantidad > this.selectedProducts[i].existencia) {
-              this.toastr.error(`La cantidad es mayor que la existencia para el producto: ${this.selectedProducts[i].nombreProducto}`, 'Error', {
-                positionClass: 'toast-bottom-left',
-              });
-              this.spinner.hide();
-              allProductsValid = false;
-            }
-          }
-
-          if(allProductsValid && this.selectedProducts.length > 0 ){
-            if (this.totalAPagar <= this.dineroRecibido) {
-              /**FECHA */
-              const totalAPagar = this.selectedProducts.reduce((total, producto) => total + producto.precioSucursal * producto.cantidad,0);
-              // Enviar datos de ventas
-              const datosVentas = {
-                correoCliente: "correo@cliente.com",
-                telefono: "1234567890",
-                id_bodega: this.auth.idGym.getValue(),
-                direccionPedido: "Calle1",
-                fecha_hora_entrega: "12:00 - 14: 00",
-                DetalledireccionPedido: "NA",
-                codigoConfirmacion: "ABC123",
-                codigoPostal: "90000",
-                total: totalAPagar,
-                pago: 0,
-                MetodoPag: "Efectivo",
-                express: 0,
-                lat: 0,
-                lng: 0,
-              };
-
-              this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
                 const lastInsertId = response.id_pedido;
-                console.log('idlast: ', lastInsertId);
+                // console.log('idlast: ', lastInsertId);
 
-                console.log('Producto seleccionado: ', this.selectedProducts);
+                // console.log('Producto seleccionado: ', this.selectedProducts);
 
                 const detallesVentas = this.selectedProducts.map((producto) => {
                   return {
@@ -750,10 +426,10 @@ export class VentasComponent implements OnInit {
                     total_cantidad: producto.cantidad * producto.precioSucursal,
                   };
                 });
-                console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
+                // console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
                 this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe(
                   (response) => {
-                    console.log('Detalle Pedido insertado correctamente:', response);
+                    // console.log('Detalle Pedido insertado correctamente:', response);
                     if (response.success === 1) {
                       //Actualizamos existencias
                       const existencias = this.selectedProducts.map((producto) => {
@@ -954,7 +630,8 @@ export class VentasComponent implements OnInit {
 
               });
             } else {
-              this.toastr.error("Pago incorrecto, verifica");
+              this.spinner.hide();
+              this.toastr.error("Pago incorrecto, verifica que el pago sea igual o mayor al total a pagar");
             }
 
           }

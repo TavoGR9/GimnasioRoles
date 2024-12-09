@@ -56,24 +56,25 @@ export class inventarioService {
 
 
   //Historial para la nueva BD
-  HistorialInventario2(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
+  HistorialInventarioLista(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
     const url = `${this.API2}obtenerHistorialExistencias.php?listaHistorialExistencia`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
     return this.clienteHttp.post(url, body);
   }
 
-  //OBTENER PRODUCTO PARA PUNTO DE VENTA
-  buscarProductoPorNombre2( idGym: number): Observable<any> {
-    // Crear los parámetros de la solicitud
+
+  //OBTENER PRODUCTO PARA PUNTO DE VENTA POR IDPROBOB Y IDBODEGA
+  obtenerProductoPorIdYIdBodega(id: any, idGimnasio: any): Observable<any> {
+    let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
+    return this.clienteHttp.get(this.API2+"obtenerProductoIdYBodega.php", { params: params });
+  }
+
+  //OBTENER PRODUCTO PARA PUNTO DE VENTA POR NOMBRE Y IDBODEGA
+  buscarProductoPorNombreYIdBodega( idGym: number): Observable<any> {
     const params = new HttpParams()
       .set('idGym', idGym);
 
     return this.clienteHttp.get<any>(this.API2+"obtenerProductoNombre.php", { params });
-  }
-
-  obtenerProductoPorId2(id: any, idGimnasio: any): Observable<any> {
-    let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
-    return this.clienteHttp.get(this.API2+"obtenerProductoIdYBodega.php", { params: params });
   }
 
 }

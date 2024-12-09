@@ -48,7 +48,7 @@ export class VentasService {
   }
 
 
-  //PARA PEDIDOS
+  //PARA AGREGAR PEDIDOS
   agregarVentaPedido(Ventas: any): Observable<any> {
     return this.clienteHttp.post(this.API2 + "addPedido.php?addOrder=1", Ventas);
   }

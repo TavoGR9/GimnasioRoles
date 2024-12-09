@@ -79,13 +79,13 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   private updateDateLogs(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
-    this.ServiceHistorInventario.HistorialInventario2(
+    this.ServiceHistorInventario.HistorialInventarioLista(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
       this.auth.idGym.getValue()
     ).subscribe(
       response => {
-        console.log('RESULTADOS DEL HISTORIAL: ', response);
+        // console.log('RESULTADOS DEL HISTORIAL: ', response);
 
         if (response.length === 0) {
           this.dataHistorial = [];
