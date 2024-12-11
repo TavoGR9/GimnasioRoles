@@ -96,17 +96,21 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       this.listaClientesData();
     });
 
-    this.auth.comprobar().subscribe((respuesta) => {
+    /*this.auth.comprobar().subscribe((respuesta) => {
       this.habilitarBoton = respuesta.status;
-    });
+    });*/
 
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
+
     }
+
+    console.log('detector', this.currentUser)
   }
 
   getSSdata(data: any) {
+    console.log('entradndo a gssdata')
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
         this.auth.loggedIn.next(true);
@@ -116,6 +120,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         this.auth.nombreGym.next(resultData.direccion);
         this.auth.email.next(resultData.email);
         this.auth.encryptedMail.next(resultData.encryptedMail);
+        console.log('getSSdata',resultData)
       },
       error: (error) => {
         console.log(error);

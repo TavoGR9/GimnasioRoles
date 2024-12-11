@@ -17,7 +17,8 @@ export class HomeService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
   
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/ServiciosGym/'
 
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService ) {
   }

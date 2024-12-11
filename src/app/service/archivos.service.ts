@@ -8,7 +8,8 @@ import { catchError } from 'rxjs/operators';
 })
 export class ArchivoService {
 
-API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
+//API: string = 'https://olympus.arvispace.com/olimpusGym/conf/'
+API: string = 'http://localhost/ServiciosGym/'
 
 constructor(private clienteHttp: HttpClient) {
 }

@@ -59,7 +59,7 @@ export class SidebarComponent {
         this.idGym = idGym;
         this.idUser = idUser; 
         this.nombreGym = nombreGym;
-        this.url = `HuellaTorniquete://?idSucursal=${this.idGym}`;
+        this.url = `HuellaTorniquete://?id=${this.idGym}`;
       }
     });
   }
@@ -112,7 +112,7 @@ export class SidebarComponent {
   /*abrirAcceso() {
     this.dialog
       .open(EmergenteAccesosComponent, {
-        //data: `Membresía agregada exitosamente`,
+        //data: Membresía agregada exitosamente,
         width: '500px',
         height: '500px',
         disableClose: true
@@ -130,7 +130,7 @@ export class SidebarComponent {
     this.dialog
       .open(EmergenteAperturaPuertoSerialComponent, {
         data: {
-          clienteID: `45`
+          clienteID: 45
         },
         width: '500px',
         height: '500px',

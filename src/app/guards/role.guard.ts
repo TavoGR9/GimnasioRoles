@@ -36,9 +36,10 @@ export class RoleGuard implements CanActivate {
         this.authService.nombreGym.next(resultData.nombreGym);
         this.authService.email.next(resultData.email);
         this.authService.encryptedMail.next(resultData.encryptedMail);
+        console.log(resultData)
       },
       error: (error) => {
-        console.log(error);
+        console.log('ewd',error);
       },
     });
   }
@@ -84,10 +85,3 @@ export class RoleGuard implements CanActivate {
 }
 
 }
-
-
-  
-  
-
-
-

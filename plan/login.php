@@ -1,10 +1,10 @@
 <?php
 session_start();
-header("Access-Control-Allow-Origin: *");
-include('conexionBD.php'); // Incluye el archivo de conexión
+header("Access-Control-Allow-Origin: http://localhost:4200");
+include('Conexion.php'); // Incluye el archivo de conexión
 
 $email = $_REQUEST['email'];
-$pass = md5($_REQUEST['pass']);
+$pass = md5($_REQUEST['pass']);	
 
 $usuario = array();
 
@@ -24,7 +24,8 @@ if ($Usuarios && mysqli_num_rows($Usuarios) > 0) {
         'Correo' => $row['Correo'],
         'encryptedMail' => $encryptedMail, // Codificar el texto cifrado para que sea seguro para su uso en JSON
         'IV' => base64_encode($iv), // También puedes incluir el IV en la respuesta si es necesario
-        'rol' => $row['rol']
+        'rol' => $row['rol'],
+		'clave' => $row['clave']
         // Agrega aquí más campos del usuario si es necesario
     );
 

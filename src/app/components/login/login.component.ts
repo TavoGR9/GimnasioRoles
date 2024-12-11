@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
     //this.auth.comprobar();
     if(this.auth.isLoggedInBS() || this.auth.getCurrentUser()){
       this.router.navigate(['/home']);
+      console.log(this.auth.getCurrentUser())
     }
   }
 
@@ -46,8 +47,10 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
+      console.log('Onsubmit')
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
+          console.log(resultData)
           if (resultData && resultData.rol !== 'No_acceso') {
             this.auth.loggedIn.next(true);
             this.auth.idUser.next(resultData.clave);

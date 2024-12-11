@@ -14,8 +14,8 @@ export class MembresiaService {
   private datosPlan: any;
   data: any = {};
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-
+  // API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+    API: string = 'http://localhost/ServiciosGym/'
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';

@@ -10,7 +10,8 @@ import { catchError, of } from 'rxjs';
 })
 export class serviciosService {
  
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/ServiciosGym/'
   isConnected: boolean = true;
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';

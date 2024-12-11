@@ -317,6 +317,7 @@ async saveAgregarEmpleadoData(key: string, data: any) {
   await this.AgregarEmpleadoDataTable.put({ key, data });
 }
 
+
 async getAgregarEmpleadoData(key: string) {
   return await this.table('AgregarEmpleado')
       .where('key')

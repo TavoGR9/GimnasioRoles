@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 import { tap,map } from 'rxjs/operators';
-import { of  } from 'rxjs'; 
+import { of  } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
 import { ConnectivityService } from './connectivity.service';
@@ -30,7 +30,8 @@ export class AuthService {
   //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
   //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/ServiciosGym/'
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -70,7 +71,7 @@ export class AuthService {
           if (err.status == 0) {
             const errorMessage = err.error;
             return throwError(() => errorMessage);
-            
+
           } else if (err.status === 401) {
             const errorMessage = err.error.message;
             return throwError(() => errorMessage);
@@ -90,6 +91,7 @@ export class AuthService {
 
   isLoggedInBS(): boolean {
     return this.loggedIn.getValue();
+   
   }
 
   isAdmin(): boolean {
@@ -202,9 +204,13 @@ export class AuthService {
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {
+        console.error('Ocurrió un error en la solicitud:', error);
         return this.getUserDatos();
+     
       })
+      
     );
+    
   }
 
   private saveDataToIndexedDB(data: any) {
@@ -231,6 +237,7 @@ export class AuthService {
           observer.complete();
         }).catch(error => {
           observer.error(error); // Emite un error si no se pueden obtener los datos de IndexedDB
+          console.log('sds',error)
         });
   });
   }
@@ -240,4 +247,4 @@ export class AuthService {
     return expectedRoles.includes(userRole);
   }
 
-}
+} 
