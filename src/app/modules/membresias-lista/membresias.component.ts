@@ -54,7 +54,7 @@ export class MembresiasComponent implements OnInit {
     "servicio",
     "price",
     // "duration",
-    //"actions",
+    "actions",
   ];
   habilitarBoton: boolean = false;
 
@@ -297,13 +297,7 @@ export class MembresiasComponent implements OnInit {
       data: { idProducto: idProducto },
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-
-        this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios');
-        this.dataSourceDos = new MatTableDataSource(this.productos);
-        this.dataSourceDos.paginator = this.paginator; // Asigna el paginador a tu dataSource
-        this.loadData();
-      });
+      this.listaTablaProdMem();
     });
   }
 

@@ -137,7 +137,7 @@ export class VentasComponent implements OnInit {
     //Obtener productos de la bodega
     this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      // console.log('ProductosV: ', this.productData);
+      console.log('ProductosV: ', this.productData);
 
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator;
@@ -291,7 +291,7 @@ export class VentasComponent implements OnInit {
     return palabras;
   }
 
-  
+
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }

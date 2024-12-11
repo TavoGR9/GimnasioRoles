@@ -12,6 +12,8 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { Subject } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 import { EntradasService } from '../../service/entradas.service';
+import { inventarioService } from '../../service/inventario.service';
+
 @Component({
   selector: 'app-editar-producto',
   templateUrl: './editar-producto.component.html',
@@ -52,13 +54,16 @@ export class EditarProductoComponent implements OnInit{
     private datePipe: DatePipe,
     private spinner: NgxSpinnerService,
     private auth:AuthService,
-    public dialog: MatDialog){
+    public dialog: MatDialog,
+    public inventarioService: inventarioService){
 
     this.idProducto = data.idProducto;
 
-    this.productoService.consultarProductosJ(this.idProducto, this.auth.idGym.getValue()).subscribe(
+    this.inventarioService.obtenerProductoPorIdYIdBodega(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
         this.editarProd = respuesta;
+        console.log('editarProd: ', this.editarProd);
+
 
         // Imprimir en consola el nombre de la categoría
         console.log('Nombre de la categoría:', this.editarProd[0]?.nombreCategoria);
@@ -171,7 +176,7 @@ export class EditarProductoComponent implements OnInit{
       existencias:this.form.value.existencia,
       precioSucursal:this.form.value.precioSucursal,
       precioCaja:this.form.value.precioCaja,
-      accion: "Edición de nuevo producto",
+      accion: "A",
       fecha_actu: fechaFormateada,
       p_id_producto: this.form.value.idProbob,
       codigoB: this.form.value.codigoBarra,
@@ -179,10 +184,14 @@ export class EditarProductoComponent implements OnInit{
     }
 
     const dataArray = [data];
-    this.entrada.actualizarProductoVDos(dataArray).subscribe({next: (update) =>{
+    console.log('Datos a enviar: ', dataArray);
+
+    this.entrada.actualizarProductoEInsertarHistorial(dataArray).subscribe({next: (update) =>{
       if (update.success == 1) {
+        console.log('Update: ', update);
+
         this.spinner.hide();
-        this.dialog.open(MensajeEmergentesComponent, {data: `Entrada agregada exitosamente`})
+        this.dialog.open(MensajeEmergentesComponent, {data: `Producto actualizado exitosamente`})
           .afterClosed()
           .subscribe((cerrarDialogo: Boolean) => {
           if (cerrarDialogo) {

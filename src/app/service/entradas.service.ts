@@ -18,6 +18,7 @@ export class EntradasService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
+  API2: string ='http://localhost/serviciosGym/';
 
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {}
 
@@ -123,4 +124,9 @@ export class EntradasService {
     return this.clienteHttp.post<any>(this.API+'producto_bod.php?addHistorialInventario',data);
   }
 
+
+  // Actualización de Producto (membresia) y inserción a Historial nueva BD
+  actualizarProductoEInsertarHistorial(data:any):Observable<any>{
+    return this.clienteHttp.post(this.API2+"updateBodegaProbodAddHistorial.php?updateBodegaProductoHistorial",data);
+  }
 }

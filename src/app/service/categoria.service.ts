@@ -95,22 +95,22 @@ export class CategoriaService {
   }
 
 
-  obtenerMarcasServiciosIdGym(idGym: string | number): Observable<any> {
-    // Validar si el usuario tiene conexión antes de realizar la solicitud
-    if (!this.isConnected) {
-      return of({ success: 0, message: 'No hay conexión a Internet' });
-    }
+  // obtenerMarcasServiciosIdGym(idGym: string | number): Observable<any> {
+  //   // Validar si el usuario tiene conexión antes de realizar la solicitud
+  //   if (!this.isConnected) {
+  //     return of({ success: 0, message: 'No hay conexión a Internet' });
+  //   }
 
-    console.log('Consultando marcas con idGym:', idGym);
+  //   console.log('Consultando marcas con idGym:', idGym);
 
-    // Realizar la solicitud HTTP y capturar errores si ocurren
-    return this.clienteHttp.get(`${this.API}categoria.php?consultarMarcasSerGim=${idGym}`).pipe(
-      catchError((error) => {
-        console.error('Error al obtener marcas y servicios:', error);
-        return of({ success: 0, message: 'Error al obtener datos del servidor' });
-      })
-    );
-  }
+  //   // Realizar la solicitud HTTP y capturar errores si ocurren
+  //   return this.clienteHttp.get(`${this.API}categoria.php?consultarMarcasSerGim=${idGym}`).pipe(
+  //     catchError((error) => {
+  //       console.error('Error al obtener marcas y servicios:', error);
+  //       return of({ success: 0, message: 'Error al obtener datos del servidor' });
+  //     })
+  //   );
+  // }
 
 
 
@@ -142,9 +142,8 @@ export class CategoriaService {
   }
 
   // REEMPLAZAR POR MARCAS
-
   // lista de marcas de un gimnasio
-  obtenerMarcasServiciosIdGym2(idGym: string | number): Observable<any> {
+  obtenerMarcasServiciosIdGym(idGym: string | number): Observable<any> {
     return this.clienteHttp.get(`${this.API2}getMarcasServB.php?idGimnasio=${idGym}`).pipe(
       catchError((error) => {
         console.error('Error al obtener marcas y servicios:', error);
@@ -152,22 +151,18 @@ export class CategoriaService {
       })
     );
   }
-
   // crear marca para un gimnasio
   agregarMarcaSer2(datosMarca:any):Observable<any>{
     return this.clienteHttp.post(this.API2+"addMarcaServ.php?insertarMarcaServ=1",datosMarca);
   }
-
   // obtener una marca por el idMarca
   getMarcaService2(id: number): Observable<any> {
     return this.clienteHttp.get(`${this.API2}getMarcaServId.php?id_marcas=${id}`);
 }
-
 // actualizar marca
 updateMarcaService2(data: any): Observable<any> {
   return this.clienteHttp.post(this.API2 + "updateMarcaServ.php?updateMarcaServ=1", data);
 }
-
 // eliminar marca
 deleteMarcaServ(idM: any): Observable<any> {
   const data ={id: idM}
@@ -175,37 +170,38 @@ deleteMarcaServ(idM: any): Observable<any> {
 }
 
 
-// PARA LA SECCION DE PRODUCTOS
+// PARA LA SECCION DE PRODUCTOS(MEMBRESIAS) y PRODUCTOS
+// obtener todas las categorias
 obtenerCategoria2():Observable<any>{
   return this.clienteHttp.get(this.API2+"getCategorias.php?consultarCategorias=");
 }
-
+// obtener las subcategorias de una categoria
 obtenerSubCategoria2(id: any):Observable<any>{
   return this.clienteHttp.get(this.API2+"listarProductosCategoriaPro.php?id_categoria="+id);
 }
-
+// obtener categoria por nombre
 obtenerCategoriaPorNombre2(nombre:string):Observable<any>{
   return this.clienteHttp.get(this.API2+"getCategoriaNombre.php?categoriaName="+nombre);
 }
-
+// obtener subcategoria por nombre
 obtenerSubCategoriaPorNombre2(nombre:string, id:any):Observable<any>{
   const url = `${this.API2}getSubCategorisNombre.php?SubcategoriaName=${encodeURIComponent(nombre)}&id=${id}`;
   return this.clienteHttp.get(url);
   // return this.clienteHttp.get(this.API2+"getSubCategorisNombre.php?SubcategoriaName="+nombre+"&id="+id);
 }
-
+// obtener marca por nombre
 obtenerMarcaPorNombre2(nombre:string):Observable<any>{
   return this.clienteHttp.get(this.API2+"getMarcaNombre.php?marcaName="+nombre);
 }
-
+// obtener todas las marcas en productos
 obtenerMarcas2():Observable<any>{
   return this.clienteHttp.get(this.API2+"getMarcasB.php");
 }
-
+// crear marca sin 1 como servicio en productos
 agregarMarca2(datosMarca: any): Observable<any> {
   return this.clienteHttp.post(`${this.API2}addMarca.php`, datosMarca);
 }
-
+// crear subcategoris en productos
 agregarSubCategoria2(datosSubCategoria:any):Observable<any>{
   return this.clienteHttp.post(this.API2+"addSubCategoria.php?insertarSubC=1",datosSubCategoria).pipe(
     tap(dataResponse => {
@@ -217,7 +213,7 @@ agregarSubCategoria2(datosSubCategoria:any):Observable<any>{
     })
   );
 }
-
+// crear categoria en productos
 agregarCategoria2(datosCategoria: any): Observable<any> {
   return this.clienteHttp.post(this.API2 + "addCategoria.php?insertarCategoria=1", datosCategoria).pipe(
     tap((dataResponse) => {

@@ -244,7 +244,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
   buscarMarca() {
     const marcaIngresado = this.form.get("marcaP")?.value;
-      this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe({
+      this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe({
 
       next: (respuesta) => {
 
@@ -315,14 +315,14 @@ export class AgregarProductoMembresiaComponent implements OnInit {
       ///********** Verifica si la categoria ya existe */
       const codigo = this.form.get("codigoBarra")?.value;
       this.productoService
-        .verProductoCodigoBarras(codigo)
+        .verProductoCodigoBarras2(codigo)
         .subscribe((respuesta: any) => {
           if (respuesta.success == 0) {
             this.categoriaService
               .obtenerCategoriaPorNombre2(this.form.value.nombreCategoriaP)
               .subscribe((categoriaExistente) => {
-                const idCategoria = categoriaExistente.id_categoria;
-                if (idCategoria) {
+                const idCategoria = categoriaExistente.categoria.id_categoria;
+                if (categoriaExistente.success == 1) {
                   ///********** Verifica si la subcategoria ya existe */
                   this.categoriaService
                     .obtenerSubCategoriaPorNombre2(

@@ -84,7 +84,7 @@ export class VerCorteComponent implements OnInit  {
       if (idGym && idUser) {
         this.idGym = idGym;
         this.idUser = idUser;
-        console.log('idGym combine: ',this.idGym);
+        // console.log('idGym combine: ',this.idGym);
         this.listaTablas();
       }
     });
@@ -146,7 +146,7 @@ export class VerCorteComponent implements OnInit  {
 
   aplicarFiltross() {
     const fechaInicioFiltrar = new Date(this.fechaInicio);
-    fechaInicioFiltrar.setHours(0, 0, 0, 0);  // Ajusta la hora a las 00:00:00
+    fechaInicioFiltrar.setHours(23, 59, 59, 999);  // Ajusta la hora a las 00:00:00
     const fechaFinFiltrar = new Date(this.fechaFin);
     fechaFinFiltrar.setHours(23, 59, 59, 999);
 
@@ -161,6 +161,8 @@ export class VerCorteComponent implements OnInit  {
       const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' a tu propiedad de fecha
       fechaItem.setHours(0, 0, 0, 0);
       const fechaItemIso = fechaItem.toISOString().slice(0, 10);
+
+      // console.log("Fecha Item (ISO): ", fechaItemIso);
 
       return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
     };

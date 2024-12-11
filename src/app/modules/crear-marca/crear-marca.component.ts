@@ -36,13 +36,13 @@ export class CrearMarcaComponent implements OnInit {
   ngOnInit(): void {
     this.getIdGym();
 
-    this.categoriaService.obtenerMarcasSer().subscribe((res) => {
-      if (res) {
-        this.marcasDisponibles = res;
-      } else {
-        console.error("No se pudieron obtener las marcas.");
-      }
-    });
+    // this.categoriaService.obtenerMarcasSer().subscribe((res) => {
+    //   if (res) {
+    //     this.marcasDisponibles = res;
+    //   } else {
+    //     console.error("No se pudieron obtener las marcas.");
+    //   }
+    // });
   }
   getIdGym() {
     this.auth.idGym.subscribe((respuesta) => {

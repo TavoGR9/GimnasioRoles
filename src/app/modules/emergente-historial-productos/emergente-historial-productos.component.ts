@@ -17,9 +17,9 @@ export interface Historial {
   Producto: number;
   Concepto: string;
   FechaMovimiento: string;
-  ActualStock: string;
-  MovimientoStock: string;
-  NuevoStock: string;
+  StockActual: string;
+  StockMovimiento: string;
+  StockNuevo: string;
 }
 @Component({
   selector: 'app-emergente-historial-productos',
@@ -124,16 +124,25 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     }
 
     const datos = [
-      ['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Actual', 'Stock Movimiento', 'Stock Nuevo'],
+      [
+        'Sucursal',
+        'Usuario',
+        'Producto',
+        'Concepto',
+        'Fecha Movimiento',
+        // 'Stock Actual',
+        // 'Stock Movimiento',
+        'Stock'
+      ],
       ...this.dataSource.filteredData.map((listaHist: Historial) => [
         listaHist.Sucursal,
         listaHist.Usuario,
         listaHist.Producto,
         listaHist.Concepto,
         listaHist.FechaMovimiento,
-        listaHist.ActualStock,
-        listaHist.MovimientoStock,
-        listaHist.NuevoStock
+        // listaHist.StockActual,
+        // listaHist.StockMovimiento,
+        listaHist.StockNuevo
       ])
     ];
 
@@ -191,13 +200,21 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       listaHist.Producto,
       listaHist.Concepto,
       listaHist.FechaMovimiento,
-      listaHist.ActualStock,
-      listaHist.MovimientoStock,
-      listaHist.NuevoStock
+      // listaHist.StockActual,
+      // listaHist.StockMovimiento,
+      listaHist.StockNuevo
     ]);
     // Añadir filas al PDF con encabezado naranja
     pdf.autoTable({
-      head: [['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Actual', 'Stock Movimiento', 'Stock Nuevo']],
+      head: [[
+        'Sucursal',
+        'Usuario',
+        'Producto',
+        'Concepto',
+        'Fecha Movimiento',
+        // 'Stock Actual',
+        // 'Stock Movimiento',
+        'Stock']],
       body: datos,
       startY: 20,  // Ajusta la posición inicial del contenido
       headStyles: {

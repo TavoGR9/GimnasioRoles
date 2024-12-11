@@ -238,14 +238,13 @@ export class ProductoService {
         ) as Observable<any[]>; // Añadir una conversión de tipo
     }
 
-    // REEMPLAZAR POR PRODUCTOS
-
-    // lista de productos de un gimnasio
+    // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
+    // lista de productos(membresias) y productos de un gimnasio
     consultarAllProductoB(id: string | number): Observable<any> {
       return this.clienteHttp.get(this.API2 + "getProductosMembBodega.php?id_bodega="+id);
     }
 
-    // crear producto
+    // crear producto(membresia) y poducto
     creaProductoMemb(datosFormulario: any): Observable<any> {
       return this.clienteHttp.post(this.API2 + 'insertarProductoMemb.php?insertarProductoMemb', datosFormulario).pipe(
         catchError(error => {
@@ -255,7 +254,7 @@ export class ProductoService {
       );
     }
 
-    // actualiza el producto
+    // actualiza el producto en caso de ser necesario en el componente crearProducto
     actualizarProducto2(datosP: any): Observable<any> {
       const url = `${this.API2}updateProbod.php?actualizarP`;
       return this.clienteHttp.post(url, datosP).pipe(

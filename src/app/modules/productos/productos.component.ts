@@ -144,6 +144,8 @@ export class ProductosComponent implements OnInit {
       width: '70%',
       disableClose: true,
     });
+    console.log('idProducto: ', idProducto);
+
     dialogRef.afterClosed().subscribe(() => {
       this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
         //this.productos = resultData

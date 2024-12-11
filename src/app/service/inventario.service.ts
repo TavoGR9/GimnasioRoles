@@ -55,7 +55,7 @@ export class inventarioService {
   }
 
 
-  //Historial para la nueva BD
+  //Lista del Historial para la nueva BD
   HistorialInventarioLista(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
     const url = `${this.API2}obtenerHistorialExistencias.php?listaHistorialExistencia`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
@@ -63,7 +63,7 @@ export class inventarioService {
   }
 
 
-  //OBTENER PRODUCTO PARA PUNTO DE VENTA POR IDPROBOB Y IDBODEGA
+  //OBTENER PRODUCTO PARA EDICION Y PARA PUNTO DE VENTA POR IDPROBOB Y IDBODEGA
   obtenerProductoPorIdYIdBodega(id: any, idGimnasio: any): Observable<any> {
     let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
     return this.clienteHttp.get(this.API2+"obtenerProductoIdYBodega.php", { params: params });
