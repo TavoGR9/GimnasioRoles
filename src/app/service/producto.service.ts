@@ -21,7 +21,8 @@ export class ProductoService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string = 'http://localhost/serviciosGimnasio/';
+  //API: string = 'http://localhost/serviciosGimnasio/';
+  API: string = 'http://localhost/serviciosGym/';
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
     }
@@ -132,9 +133,12 @@ export class ProductoService {
       return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodegaVenta=",data);
     }
 
+
+
+
     obternerInventario(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };
-      return this.clienteHttp.post<any[]>(this.API +'producto_bod.php?listaInventario=',data).pipe(
+      return this.clienteHttp.post<any[]>(this.API +'getProductosBodega.php',data).pipe(
         tap((dataResponse: any[])=> {
           this.saveDataToIndexedDB3(dataResponse);
         }),
@@ -171,6 +175,9 @@ export class ProductoService {
         });
       });
     }
+
+
+
     updateProductoStatus(id: number, estado: { estatus: number }): Observable<any> {
       return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
     }

@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class SyncService {
 
-  private localApiUrl = 'http://localhost/serviciosGimnasio/sync.php';
+  //private localApiUrl = 'http://localhost/serviciosGimnasio/sync.php';
+  private localApiUrl = 'http://localhost/serviciosGym/sync.php';
   private remoteApiUrl = 'https://olympus.arvispace.com/olimpusGym/conf/sync.php';
 
   constructor(private http: HttpClient) {}
