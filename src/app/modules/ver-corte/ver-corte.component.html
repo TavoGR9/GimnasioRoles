@@ -16,12 +16,12 @@
                <div class="col-sm-6">
                   <p>Filtro por fecha:</p>
                   <select [(ngModel)]="opcionSeleccionada" style="margin-right: 20px;">
-                  <option value="diario">Diario</option>
+                  <!-- <option value="diario">Diario</option> -->
                   <option value="rango">Rango Personalizado</option>
                   </select>
-                  <ng-container *ngIf="opcionSeleccionada === 'diario'">
+                  <!-- <ng-container *ngIf="opcionSeleccionada === 'diario'">
                      <input type="date" [(ngModel)]="fechaFiltro" (ngModelChange)="aplicarFiltro()" class="input-date" style="margin-right: 20px;">
-                  </ng-container>
+                  </ng-container> -->
                   <ng-container *ngIf="opcionSeleccionada === 'rango'">
                      <input type="date" [(ngModel)]="fechaInicio" (change)="aplicarFiltross()" class="input-date">
                      <input type="date" [(ngModel)]="fechaFin" (change)="aplicarFiltross()" class="input-date">

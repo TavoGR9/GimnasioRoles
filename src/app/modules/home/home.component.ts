@@ -416,6 +416,8 @@ export class HomeComponent implements OnInit {
   listaTablas() {
     this.homeService.consultarHome(this.idGym).subscribe((respuesta) => {
       this.homeCard = respuesta;
+      console.log('homeCard: ', this.homeCard);
+
     });
 
     this.homeService.consultarHome2(this.idGym).subscribe((respuesta) => {

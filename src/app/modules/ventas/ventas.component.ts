@@ -123,6 +123,9 @@ export class VentasComponent implements OnInit {
     // this.ventasService.comprobar();
     this.ubicacion = this.auth.nombreGym.getValue();
     this.idGym = this.auth.idGym.getValue();
+    this.idUsuarioo = this.auth.idUser.getValue();
+    console.log('idUsuario: ', this.idUsuarioo);
+
     // console.log('idgym: ', this.idGym);
     // console.log('UBICACION? ',this.ubicacion);
 
@@ -137,7 +140,7 @@ export class VentasComponent implements OnInit {
     //Obtener productos de la bodega
     this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      console.log('ProductosV: ', this.productData);
+      // console.log('ProductosV: ', this.productData);
 
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator;
@@ -397,6 +400,7 @@ export class VentasComponent implements OnInit {
               const datosVentas = {
                 correoCliente: "correo@cliente.com",
                 telefono: "1234567890",
+                id_empleado: this.auth.idUser.getValue(),
                 id_bodega: this.auth.idGym.getValue(),
                 direccionPedido: "Calle1",
                 fecha_hora_entrega: "12:00 - 14: 00",
@@ -426,10 +430,10 @@ export class VentasComponent implements OnInit {
                     total_cantidad: producto.cantidad * producto.precioSucursal,
                   };
                 });
-                // console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
+                console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
                 this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe(
                   (response) => {
-                    // console.log('Detalle Pedido insertado correctamente:', response);
+                    console.log('Detalle Pedido insertado correctamente:', response);
                     if (response.success === 1) {
                       //Actualizamos existencias
                       const existencias = this.selectedProducts.map((producto) => {

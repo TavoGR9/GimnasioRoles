@@ -44,6 +44,7 @@ export class CrearMarcaComponent implements OnInit {
     //   }
     // });
   }
+
   getIdGym() {
     this.auth.idGym.subscribe((respuesta) => {
       this.idGym = respuesta;

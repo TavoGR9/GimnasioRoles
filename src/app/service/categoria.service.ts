@@ -158,73 +158,73 @@ export class CategoriaService {
   // obtener una marca por el idMarca
   getMarcaService2(id: number): Observable<any> {
     return this.clienteHttp.get(`${this.API2}getMarcaServId.php?id_marcas=${id}`);
-}
-// actualizar marca
-updateMarcaService2(data: any): Observable<any> {
-  return this.clienteHttp.post(this.API2 + "updateMarcaServ.php?updateMarcaServ=1", data);
-}
-// eliminar marca
-deleteMarcaServ(idM: any): Observable<any> {
-  const data ={id: idM}
-  return this.clienteHttp.post(this.API2+"deleteMarcaServ.php?eliminarMarcaServ", data);
-}
+  }
+  // actualizar marca
+  updateMarcaService2(data: any): Observable<any> {
+    return this.clienteHttp.post(this.API2 + "updateMarcaServ.php?updateMarcaServ=1", data);
+  }
+  // eliminar marca
+  deleteMarcaServ(idM: any): Observable<any> {
+    const data ={id: idM}
+    return this.clienteHttp.post(this.API2+"deleteMarcaServ.php?eliminarMarcaServ", data);
+  }
 
 
-// PARA LA SECCION DE PRODUCTOS(MEMBRESIAS) y PRODUCTOS
-// obtener todas las categorias
-obtenerCategoria2():Observable<any>{
-  return this.clienteHttp.get(this.API2+"getCategorias.php?consultarCategorias=");
-}
-// obtener las subcategorias de una categoria
-obtenerSubCategoria2(id: any):Observable<any>{
-  return this.clienteHttp.get(this.API2+"listarProductosCategoriaPro.php?id_categoria="+id);
-}
-// obtener categoria por nombre
-obtenerCategoriaPorNombre2(nombre:string):Observable<any>{
-  return this.clienteHttp.get(this.API2+"getCategoriaNombre.php?categoriaName="+nombre);
-}
-// obtener subcategoria por nombre
-obtenerSubCategoriaPorNombre2(nombre:string, id:any):Observable<any>{
-  const url = `${this.API2}getSubCategorisNombre.php?SubcategoriaName=${encodeURIComponent(nombre)}&id=${id}`;
-  return this.clienteHttp.get(url);
-  // return this.clienteHttp.get(this.API2+"getSubCategorisNombre.php?SubcategoriaName="+nombre+"&id="+id);
-}
-// obtener marca por nombre
-obtenerMarcaPorNombre2(nombre:string):Observable<any>{
-  return this.clienteHttp.get(this.API2+"getMarcaNombre.php?marcaName="+nombre);
-}
-// obtener todas las marcas en productos
-obtenerMarcas2():Observable<any>{
-  return this.clienteHttp.get(this.API2+"getMarcasB.php");
-}
-// crear marca sin 1 como servicio en productos
-agregarMarca2(datosMarca: any): Observable<any> {
-  return this.clienteHttp.post(`${this.API2}addMarca.php`, datosMarca);
-}
-// crear subcategoris en productos
-agregarSubCategoria2(datosSubCategoria:any):Observable<any>{
-  return this.clienteHttp.post(this.API2+"addSubCategoria.php?insertarSubC=1",datosSubCategoria).pipe(
-    tap(dataResponse => {
-    }),
-    catchError(error => {
-      this.saveDataToIndexedDB(datosSubCategoria);
-      const resultData = { success: '2' };
-      return of(resultData);
-    })
-  );
-}
-// crear categoria en productos
-agregarCategoria2(datosCategoria: any): Observable<any> {
-  return this.clienteHttp.post(this.API2 + "addCategoria.php?insertarCategoria=1", datosCategoria).pipe(
-    tap((dataResponse) => {
-      console.log('Respuesta del servidor:', dataResponse);
-    }),
-    catchError((error) => {
-      console.error('Error al agregar categoría:', error);
-      return of({ success: 0, message: 'Error al agregar categoría' });
-    })
-  );
-}
+  // PARA LA SECCION DE PRODUCTOS(MEMBRESIAS) y PRODUCTOS
+  // obtener todas las categorias
+  obtenerCategoria2():Observable<any>{
+    return this.clienteHttp.get(this.API2+"getCategorias.php?consultarCategorias=");
+  }
+  // obtener las subcategorias de una categoria
+  obtenerSubCategoria2(id: any):Observable<any>{
+    return this.clienteHttp.get(this.API2+"listarProductosCategoriaPro.php?id_categoria="+id);
+  }
+  // obtener categoria por nombre
+  obtenerCategoriaPorNombre2(nombre:string):Observable<any>{
+    return this.clienteHttp.get(this.API2+"getCategoriaNombre.php?categoriaName="+nombre);
+  }
+  // obtener subcategoria por nombre
+  obtenerSubCategoriaPorNombre2(nombre:string, id:any):Observable<any>{
+    const url = `${this.API2}getSubCategorisNombre.php?SubcategoriaName=${encodeURIComponent(nombre)}&id=${id}`;
+    return this.clienteHttp.get(url);
+    // return this.clienteHttp.get(this.API2+"getSubCategorisNombre.php?SubcategoriaName="+nombre+"&id="+id);
+  }
+  // obtener marca por nombre
+  obtenerMarcaPorNombre2(nombre:string):Observable<any>{
+    return this.clienteHttp.get(this.API2+"getMarcaNombre.php?marcaName="+nombre);
+  }
+  // obtener todas las marcas en productos
+  obtenerMarcas2():Observable<any>{
+    return this.clienteHttp.get(this.API2+"getMarcasB.php");
+  }
+  // crear marca sin 1 como servicio en productos
+  agregarMarca2(datosMarca: any): Observable<any> {
+    return this.clienteHttp.post(`${this.API2}addMarca.php`, datosMarca);
+  }
+  // crear subcategoris en productos
+  agregarSubCategoria2(datosSubCategoria:any):Observable<any>{
+    return this.clienteHttp.post(this.API2+"addSubCategoria.php?insertarSubC=1",datosSubCategoria).pipe(
+      tap(dataResponse => {
+      }),
+      catchError(error => {
+        this.saveDataToIndexedDB(datosSubCategoria);
+        const resultData = { success: '2' };
+        return of(resultData);
+      })
+    );
+  }
+  // crear categoria en productos
+  agregarCategoria2(datosCategoria: any): Observable<any> {
+    return this.clienteHttp.post(this.API2 + "addCategoria.php?insertarCategoria=1", datosCategoria).pipe(
+      tap((dataResponse) => {
+        console.log('Respuesta del servidor:', dataResponse);
+      }),
+      catchError((error) => {
+        console.error('Error al agregar categoría:', error);
+        return of({ success: 0, message: 'Error al agregar categoría' });
+      })
+    );
+  }
 
 
 

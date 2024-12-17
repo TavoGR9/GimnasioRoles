@@ -199,7 +199,7 @@ export class AuthService {
   // }
 
   dataUser(data: any): Observable<any> {
-    return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
+    return this.clienteHttp.post<dataLogin>(this.API2 + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
       }),

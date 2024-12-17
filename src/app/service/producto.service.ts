@@ -126,7 +126,7 @@ export class ProductoService {
 
     obternerInventario(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };
-      return this.clienteHttp.post<any[]>(this.API +'producto_bod.php?listaInventario=',data).pipe(
+      return this.clienteHttp.post<any[]>(this.API2 +'getProductosBodega.php',data).pipe(
         tap((dataResponse: any[])=> {
           this.saveDataToIndexedDB3(dataResponse);
         }),
@@ -135,6 +135,11 @@ export class ProductoService {
         })
       ) as Observable<any[]>;
     }
+
+    // listaProductos(): Observable<any> {
+    //   return this.clienteHttp.get<any>(this.API2+'getProBod.php?getProBodPre');
+    // }
+
 
     private saveDataToIndexedDB3(data: any) {
       // Guarda los datos en IndexedDB
@@ -275,21 +280,27 @@ export class ProductoService {
     }
 
     //EXISTENCIAS (LISTA INVENTARIO)
-    obtenerInventarioLista(id:any): Observable<any[]> {
-      const data = { id_bodega_param: id };
-      return this.clienteHttp.post<any[]>(this.API2 +'obtenerExistencias.php?listaExistencia=',data).pipe(
-        tap((dataResponse: any[])=> {
-          this.saveDataToIndexedDB3(dataResponse);
-        }),
-        catchError(error => {
-          return this.getServiceDatos3();
-        })
-      ) as Observable<any[]>;
-    }
+    // obtenerInventarioLista(id:any): Observable<any[]> {
+    //   const data = { id_bodega_param: id };
+    //   return this.clienteHttp.post<any[]>(this.API2 +'obtenerExistencias.php?listaExistencia=',data).pipe(
+    //     tap((dataResponse: any[])=> {
+    //       this.saveDataToIndexedDB3(dataResponse);
+    //     }),
+    //     catchError(error => {
+    //       return this.getServiceDatos3();
+    //     })
+    //   ) as Observable<any[]>;
+    // }
 
     //PARA PEDIDOS (obtener los productos de la bodega)
     obternerProductosV2(id:any):Observable<any>{
       const data = { id_bodega_param: id };
       return this.clienteHttp.post(this.API2+"obtenerProductoPuntoVenta.php?consultarProductoBodegaVenta=",data);
+    }
+
+    //ENTRADAS
+    consultarProductosId(idProducto: number | null, idBodega: number | null): Observable<any[]> {
+      const url = `${this.API2}obtenerProductosPorId.php?consultarProductoId`;
+      return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto, id_bodega: idBodega });
     }
 }

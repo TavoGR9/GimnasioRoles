@@ -73,11 +73,11 @@ export class ProductosComponent implements OnInit {
   }
 
   listaTabla(){
-    this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
+    this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
-      console.log('Resultados: ', resultData);
+      // console.log('Resultados: ', resultData);
 
-      this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
+      this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
 
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData();
@@ -129,12 +129,7 @@ export class ProductosComponent implements OnInit {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
-        //this.productos = resultData
-        this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
-        this.dataSource = new MatTableDataSource(this.productos);
-        this.loadData();
-      });
+      this.listaTabla();
     })
   }
 
@@ -144,15 +139,10 @@ export class ProductosComponent implements OnInit {
       width: '70%',
       disableClose: true,
     });
-    console.log('idProducto: ', idProducto);
+    // console.log('idProducto: ', idProducto);
 
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
-        //this.productos = resultData
-        this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
-        this.dataSource = new MatTableDataSource(this.productos);
-        this.loadData();
-      });
+      this.listaTabla();
     });
   }
 

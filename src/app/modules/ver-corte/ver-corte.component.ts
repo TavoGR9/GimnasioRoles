@@ -88,6 +88,14 @@ export class VerCorteComponent implements OnInit  {
         this.listaTablas();
       }
     });
+
+
+    const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
+  this.fechaFiltro = fechaActual;
+  this.fechaInicio = new Date(fechaActual);
+  this.fechaFin = new Date(fechaActual);
+  this.opcionSeleccionada = 'rango'; // Configuración por defecto
+
   }
 
   loadData() {
@@ -107,6 +115,8 @@ export class VerCorteComponent implements OnInit  {
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
+          console.log('DATAUSER: ', resultData);
+
       }, error: (error) => { console.log(error); }
     });
   }
@@ -132,7 +142,7 @@ export class VerCorteComponent implements OnInit  {
 
   private obtenerFechaActual(): Date {
     const fechaActual = new Date();
-    fechaActual.setHours(fechaActual.getHours() - 0); // Agregar 6 horas
+    // fechaActual.setHours(fechaActual.getHours() - 0); // Agregar 6 horas
     return fechaActual;
   }
 

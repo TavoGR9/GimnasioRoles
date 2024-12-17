@@ -34,7 +34,7 @@ export class EntradasService {
   // }
 
   agregarEntradaProducto(entradaProductos:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaProHisto",entradaProductos);
+    return this.clienteHttp.post(this.API2+"insertarBodegaProHisto.php?insertarBodegaProHisto",entradaProductos);
   }
 
   obtenerCompras(inicioDate: any, finDate: any, idGym: any): Observable<any> {
@@ -46,6 +46,15 @@ export class EntradasService {
     return this.clienteHttp.get(this.API + 'producto_bod.php?', { params });
   }
 
+  obtenerEntradas(inicioDate: any, finDate: any, idGym: any): Observable<any>{
+    const params = {
+      GYMid: idGym,
+      fechaInicio: inicioDate,
+      fechaFin: finDate
+    };
+    return this.clienteHttp.get(this.API2+'obtenerEntradas.php', { params });
+  }
+
  /* agregarEntradaProducto(entradaProductos:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaPro",entradaProductos);
   }*/
@@ -55,7 +64,7 @@ export class EntradasService {
       p_id_bodega: id_bodega,
       p_id_producto: id_producto
     }
-    return this.clienteHttp.post(this.API+"producto_bod.php?ObtenerProductoPorBodegaYID",data);
+    return this.clienteHttp.post(this.API2+"ObtenerProductoPorBodegaYID.php?ObtenerProductoPorBodegaYID",data);
   }
 
   existencias(id_bodega: any,id_producto: any):Observable<any>{
@@ -67,7 +76,7 @@ export class EntradasService {
   }
 
   actualizarProducto(data:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1Histo",data);
+    return this.clienteHttp.post(this.API2+"updateBodegaProducto1Histo.php?updateBodegaProducto1Histo",data);
   }
 
   actualizarProductoVDos(data:any):Observable<any>{
@@ -79,8 +88,9 @@ export class EntradasService {
     return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1",data);
   }*/
 
+
   listaProductos(): Observable<any> {
-    return this.clienteHttp.get<any>(this.API+'producto_bod.php?getProBodPre').pipe(
+    return this.clienteHttp.get<any>(this.API2+'getProBod.php?getProBodPre').pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
 

@@ -14,9 +14,10 @@ import { AuthService } from '../../service/auth.service';
 export class InventariosComponent implements OnInit {
   displayedColumns: string[] = [
     'Código De Barras',
+    'Producto',
     'Marca',
-    'Nombre',
-    'Cantidad Disponible'
+    'Existencia',
+    'Categoria'
   ];
 
   listInventarioData: any[] = [];
@@ -58,10 +59,10 @@ export class InventariosComponent implements OnInit {
   }
 
   listaTablas(){
-    this.productoService.obtenerInventarioLista(this.idGym).subscribe((respuesta) => {
+    this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
       // console.log('TODAS LAS EXISTENCIAS: ', respuesta);
 
-      this.listInventarioData = respuesta.filter((existencia: any) => existencia.categoria.toLowerCase() !== 'servicios');
+      this.listInventarioData = respuesta.filter((existencia: any) => existencia.nombreCategoria.toLowerCase() !== 'servicios');
       this.dataSource= new MatTableDataSource(this.listInventarioData);
       this.loadData();
     });

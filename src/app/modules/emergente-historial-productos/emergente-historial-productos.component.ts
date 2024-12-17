@@ -19,7 +19,7 @@ export interface Historial {
   FechaMovimiento: string;
   StockActual: string;
   StockMovimiento: string;
-  StockNuevo: string;
+  NuevoStock: string;
 }
 @Component({
   selector: 'app-emergente-historial-productos',
@@ -79,13 +79,13 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   private updateDateLogs(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
-    this.ServiceHistorInventario.HistorialInventarioLista(
+    this.ServiceHistorInventario.HistorialInventario(
       this.formatDate(this.fechaInicio),
       this.formatDate(this.fechaFin),
       this.auth.idGym.getValue()
     ).subscribe(
       response => {
-        // console.log('RESULTADOS DEL HISTORIAL: ', response);
+        console.log('RESULTADOS DEL HISTORIAL: ', response);
 
         if (response.length === 0) {
           this.dataHistorial = [];
@@ -142,7 +142,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
         listaHist.FechaMovimiento,
         // listaHist.StockActual,
         // listaHist.StockMovimiento,
-        listaHist.StockNuevo
+        listaHist.NuevoStock
       ])
     ];
 
@@ -202,7 +202,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       listaHist.FechaMovimiento,
       // listaHist.StockActual,
       // listaHist.StockMovimiento,
-      listaHist.StockNuevo
+      listaHist.NuevoStock
     ]);
     // Añadir filas al PDF con encabezado naranja
     pdf.autoTable({

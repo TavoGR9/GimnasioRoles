@@ -19,6 +19,7 @@ export class HomeService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string = 'http://localhost/serviciosGimnasio/';
+  API2: string ='http://localhost/serviciosGym/';
 
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService ) {
   }
@@ -35,7 +36,7 @@ export class HomeService {
   // }
 
   consultarHome(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHome="+id).pipe(
+    return this.clienteHttp.get(this.API2+"obtenerSumaPedidos.php?idGim="+id).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
       }),

@@ -62,11 +62,11 @@ export class EditarProductoComponent implements OnInit{
     this.inventarioService.obtenerProductoPorIdYIdBodega(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
         this.editarProd = respuesta;
-        console.log('editarProd: ', this.editarProd);
+        // console.log('editarProd: ', this.editarProd);
 
 
         // Imprimir en consola el nombre de la categoría
-        console.log('Nombre de la categoría:', this.editarProd[0]?.nombreCategoria);
+        // console.log('Nombre de la categoría:', this.editarProd[0]?.nombreCategoria);
 
 
         this.form.setValue({
@@ -176,7 +176,7 @@ export class EditarProductoComponent implements OnInit{
       existencias:this.form.value.existencia,
       precioSucursal:this.form.value.precioSucursal,
       precioCaja:this.form.value.precioCaja,
-      accion: "A",
+      accion: "Edición de producto",
       fecha_actu: fechaFormateada,
       p_id_producto: this.form.value.idProbob,
       codigoB: this.form.value.codigoBarra,
@@ -184,11 +184,11 @@ export class EditarProductoComponent implements OnInit{
     }
 
     const dataArray = [data];
-    console.log('Datos a enviar: ', dataArray);
+    // console.log('Datos a enviar: ', dataArray);
 
     this.entrada.actualizarProductoEInsertarHistorial(dataArray).subscribe({next: (update) =>{
       if (update.success == 1) {
-        console.log('Update: ', update);
+        // console.log('Update: ', update);
 
         this.spinner.hide();
         this.dialog.open(MensajeEmergentesComponent, {data: `Producto actualizado exitosamente`})

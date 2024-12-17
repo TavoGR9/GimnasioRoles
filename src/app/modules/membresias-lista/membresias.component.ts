@@ -71,7 +71,6 @@ export class MembresiasComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       // this.listaTabla();
-      //this.listaTablaProd();
       this.listaTablaProdMem();
     });
   }
@@ -97,24 +96,6 @@ export class MembresiasComponent implements OnInit {
       this.isLoading = false;
       this.dataSourceDos.paginator = this.paginator;
     }, 1000);
-  }
-
-  listaTabla() {
-    this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
-      (respuesta) => {
-        if (Array.isArray(respuesta)) {
-          this.plan = respuesta;
-          this.dataSource = new MatTableDataSource(this.plan);
-          this.loadData();
-        }else{
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 1000);
-        }
-      },
-      (error) => {
-      }
-    );
   }
 
   applyFilter(event: Event) {
@@ -217,33 +198,16 @@ export class MembresiasComponent implements OnInit {
 
 
   //Reemplazar por productos
-  // listaTablaProd(){
-  //   this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-  //     console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
-
-  //     //this.productos = resultData
-  //     this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
-  //     this.dataSourceDos = new MatTableDataSource(this.productos);
-  //     console.log('Lista de productos: ', this.productos);
-  //     console.log('Datos de la lista de productos: ', this.dataSourceDos);
-  //     console.log("ID de Gimnasio:", this.idGym);
-
-
-  //     this.loadData();
-  //   });
-  // }
-
   listaTablaProdMem(){
-    this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
-      console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
+    this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
+      // console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
 
       //this.productos = resultData
-      this.productos = resultData.data.filter((producto: any) => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
+      this.productos = resultData.filter((producto: any) => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
       this.dataSourceDos = new MatTableDataSource(this.productos);
-      console.log('Lista de productos: ', this.productos);
-      console.log('Datos de la lista de productos: ', this.dataSourceDos);
-      console.log("ID de Gimnasio:", this.idGym);
-
+      // console.log('Lista de productos: ', this.productos);
+      // console.log('Datos de la lista de productos: ', this.dataSourceDos);
+      // console.log("ID de Gimnasio:", this.idGym);
 
       this.loadData();
     });
@@ -308,15 +272,9 @@ export class MembresiasComponent implements OnInit {
       data: { name: "¿Para quién es esta membresía?" },
     });
 
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-
-    //     this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios');
-    //     this.dataSourceDos = new MatTableDataSource(this.productos);
-    //     this.dataSourceDos.paginator = this.paginator; // Asigna el paginador a tu dataSource
-    //     this.loadData();
-    //   });
-    // });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.listaTablaProdMem();
+    });
 
   }
 
