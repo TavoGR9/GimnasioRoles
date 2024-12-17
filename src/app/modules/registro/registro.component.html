@@ -16,9 +16,13 @@
               </strong>
               </p>
               <br />
+              
               <div class="row">
                  <div class="col-md-6">
+                
                   <div >
+
+                     
                      <h2><strong> Sube tu foto.</strong></h2>
                      <input accept="image/*" type="file" name="image" class="d-none" (change)="onPhotoSelected($event)" #photoInput />
                      <img
@@ -70,7 +74,11 @@
                         </div>
                        </div>
                     </div>
+                   
                  </div>
+
+               
+
                  <div class="col-sm-6">
                   <br>
                   <br>
@@ -156,7 +164,8 @@
                            <p>
                               <mat-form-field appearance="outline" class="inputs_properties">
                                  <mat-label>Codigo postal</mat-label>
-                                 <input type="text" matInput placeholder="Codigo postal" autocomplete="off" minlength="5" maxlength="5" formControlName="codigoPostal" />
+                                 <input type="text" matInput placeholder="Codigo postal" autocomplete="off" minlength="5" maxlength="5"
+                                     formControlName="codigoPostal" id="codigoPostal" (blur)="consultarCodigoPostal()"/>
                                  <mat-error *ngIf="form.get('codigoPostal')?.hasError('minlength') && !form.get('codigoPostal')?.hasError('required')">
                                     <strong class="txt_msg">**Minimo 5 carácteres</strong>
                                  </mat-error>
@@ -195,7 +204,12 @@
                               <p>
                                  <mat-form-field appearance="outline" class="inputs_properties">
                                     <mat-label>Colonia</mat-label>
-                                    <input type="text" matInput placeholder="Colonia" autocomplete="off" formControlName="colonia" />
+                                    
+                                    <mat-select formControlName="colonia">
+                                       <mat-option *ngFor="let asentamiento of asentamientosUnicos" [value]="asentamiento">
+                                           {{ asentamiento }}
+                                       </mat-option>
+                                   </mat-select>
                                     <mat-error *ngIf="form.get('colonia')?.hasError('pattern') && !form.get('colonia')?.hasError('required')">
                                        <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                                     </mat-error>
@@ -226,6 +240,10 @@
                               </mat-form-field>
                            </p>
                         </div>
+                        
+
+
+
                      </div>
                     </div>
               </div>
@@ -254,7 +272,25 @@
                      </mat-form-field>
                   </p>
                </div>
+
+               <div class="col-sm-6">
+                  <!-- Campo Género -->
+                  <p>
+                    <mat-form-field appearance="outline" class="inputs_properties">
+                      <mat-label>Género</mat-label>
+                      <mat-select matInput placeholder="Selecciona el género" formControlName="genero">
+                        <mat-option value="masculino">Masculino</mat-option>
+                        <mat-option value="femenino">Femenino</mat-option>
+                       
+                      </mat-select>
+                    </mat-form-field>
+                  </p>
+                </div>
+
+
+
               </div>
+              
               
               <!--<div class="button-container">
                 <button class="btn_int" (click)="registrar()" mat-raised-button style="background: #fd9727; color: white; width: 30%;">

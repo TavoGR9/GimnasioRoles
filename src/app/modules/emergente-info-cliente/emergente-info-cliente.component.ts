@@ -19,6 +19,7 @@ import { ToastrService } from 'ngx-toastr';
 
 export class EmergenteInfoClienteComponent implements OnInit{
   url: string = `Finger://?idCliente=${this.data.idCliente}&idSucursal=${this.data.idSucursal}`;
+  productos:any;
   currentDate: Date = new Date();
   duracion: any;
   photo: any;
@@ -56,6 +57,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
       // Inicializar el formulario
       this.form = this.fb.group({
         id_cliente: [sanitizeValue(this.data.idCliente), Validators.required],
+        id_bodega:[this.data.idSucursal],
         estafeta: [sanitizeValue(this.data.estafeta), Validators.required],
         nombre: [sanitizeValue(this.data.nombre), Validators.required],
         telefono: [sanitizeValue(this.data.telefono)], 
@@ -72,17 +74,39 @@ export class EmergenteInfoClienteComponent implements OnInit{
     this.duracion = this.data.duracion + ' ' + 'días';
     this.photo = this.img+this.data.foto;
     this.huella = this.data.huella;
-    this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
+    this.productos = JSON.parse(this.data.productos);
+    /*this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
       this.membresiaHisto = respuesta;
       this.dataSource = new MatTableDataSource(this.membresiaHisto);
       this.dataSource.paginator = this.paginator;
-    });
-  }
+    }); */
+    this.UserHIstorial(this.data.idCliente);
+    console.log('idCliente', this.data.idCliente);
+    console.log('data de lista mebresias:',this.data)
 
+  }
+// en desuhso
   estaEnRango(fechaInicio: string, fechaFin: string): boolean {
     const fechaInicioDate = this.parseFecha(fechaInicio);
     const fechaFinDate = this.parseFecha(fechaFin);
     return this.currentDate >= fechaInicioDate && this.currentDate <= fechaFinDate;
+  }
+
+  duracionCalculo(fechaFin: string){
+    const fechaFinal= new Date (fechaFin)
+    const hoy = new Date();  // Fecha actual
+    hoy.setHours(0, 0, 0, 0); // Establecer a las 00:00 para evitar que las horas afecten el cálculo
+    fechaFinal.setHours(0, 0, 0, 0);
+
+    const diferenciaTiempo = fechaFinal.getTime() - hoy.getTime();  // Diferencia en milisegundos
+
+    // Convertir la diferencia de milisegundos a días completos
+    const diferenciaDias = Math.floor(diferenciaTiempo / (1000 * 3600 * 24));  // Redondear hacia abajo
+
+    // Si la diferencia es menor a 0, devolver 0
+    return diferenciaDias < 0 ? 0 : diferenciaDias;
+  
+    
   }
 
   private parseFecha(fecha: string): Date {
@@ -128,12 +152,14 @@ export class EmergenteInfoClienteComponent implements OnInit{
       }
     });
   }
+ 
   
   actualizar(): void {
     if(!this.form.valid){
       return;
     }
     this.spinner.show();
+    console.log(this.form.value);
     this.pagoService.actualizaDatosCliente(this.form.value).subscribe({
       next: (resultData) => {
         this.spinner.hide();
@@ -147,11 +173,98 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
           } else {
     
-          }
+          } 
         });
       }, error: (error) => { console.log(error); }
     });
-  }
+  } 
+
+    actualizarCliente(): void {
+      this.spinner.show();
+      
+      console.log(this.form.value);
+      if (!this.form.valid) {
+        console.log("Formulario no válido");
+        return;
+      }
+    
+      // Mostrar spinner mientras se procesa la solicitud
+    
+    
+      // Capturar los valores del formulario
+   
+    
+      // Llamar al servicio para actualizar los datos del cliente
+      this.pagoService.actualizaDatosCliente(this.form.value).subscribe({
+        next: (resultData) => {
+         
+          console.log(resultData);
+    
+          // Verificar el estado de la respuesta del servidor
+          if (resultData?.success === 1) {
+            console.log(1)
+            // Caso exitoso: Datos actualizados satisfactoriamente
+           // this.dialog.open(MensajeEmergenteComponent, {
+             // data: resultData.Mensaje || `Datos actualizados satisfactoriamente`,
+            //});
+
+            // this.cerrarDialogo();
+          
+
+            const estado = resultData.data?.Estado;
+
+            if (estado === 1) {
+
+              this.spinner.hide();
+              this.cerrarDialogo();
+              this.dialog.open(MensajeEmergenteComponent, {
+                data: `Datos actualizados satisfacoriamente`,
+              })
+              .afterClosed()
+              .subscribe((cerrarDialogo: Boolean) => {
+                if (cerrarDialogo) {
+      
+                } else {
+          
+                } 
+              });
+
+
+
+              console.log("Actualizacion con exito");
+            } else {
+              this.spinner.hide();
+              this.dialog.open(MensajeEmergenteComponent, {
+                data: `Clave existente o sin cambios`,
+                })
+
+              console.log("Clave existente o sin cambios");
+            }
+        
+          } else {
+
+            console.log('error')
+            // Otro caso de error lógico
+            //this.dialog.open(MensajeEmergenteComponent, {
+              //data: resultData?.Mensaje || `Hubo un problema al actualizar los datos.`,
+            //});
+          }
+        },
+        error: (error) => {
+          // Ocultar el spinner y manejar errores de conexión
+          this.spinner.hide();
+          console.error(error);
+    
+          // Mostrar mensaje de error genérico
+         this.dialog.open(MensajeEmergenteComponent, {
+           data: `Ocurrió un error al procesar la solicitud. Por favor, intenta nuevamente.`,
+          });
+        },
+      });
+    }
+    
+
+
 
   capturarHuella(): void {
     this.spinner.show();
@@ -199,4 +312,131 @@ export class EmergenteInfoClienteComponent implements OnInit{
   isRecep(): boolean {
     return this.auth.isRecepcion();
   }
+/*
+  UserHIstorial(clave: string) {
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+      (respuesta: any) => {
+    
+          const datosFiltrados = respuesta.data.filter((item: any) => item.clave === clave);
+          this.membresiaHisto = datosFiltrados;
+          console.log("Datos filtrados:", this.membresiaHisto);
+    
+  
+       
+        this.dataSource = new MatTableDataSource(this.membresiaHisto);
+        this.dataSource.paginator = this.paginator;
+      },
+      (error: any) => {
+        console.error("Error al obtener activos:", error);
+      }
+    );
+  }
+  
+  
+
+
+
+/*
+UserHIstorial(clave: string) {
+  this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+    (respuesta: any) => {
+      // Filtrar por la clave proporcionada
+      const datosFiltrados = respuesta.filter((item: any) => item.clave === clave);
+
+      // Guardar el resultado filtrado en la variable deseada
+      this.membresiaHisto = datosFiltrados;
+
+
+      
+
+      // Si necesitas usar MatTableDataSource, puedes descomentar las líneas
+      // this.dataSource = new MatTableDataSource(this.membresiaHisto);
+      // this.dataSource.paginator = this.paginator;
+
+      console.log("Datos filtrados:", this.membresiaHisto);
+    },
+    (error: any) => {
+      console.error("Error al obtener activos:", error);
+    }
+  );
+} */
+
+
+  UserHIstorial(clave: string): void {
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+      (respuesta: any) => {
+        // Filtramos los datos para obtener solo el usuario con la clave proporcionada
+        const datosFiltrados = respuesta.data.filter((item: any) => item.clave === clave);
+  
+        // Agrupamos los registros por id_pedido directamente (sin aplicar el filtro de conteoPedidos y estatus)
+        const agrupadosPorPedido = this.agruparPorPedido(datosFiltrados);
+  
+        // Asignamos los resultados a la variable de la tabla
+        this.membresiaHisto = agrupadosPorPedido;
+        console.log("membresiaHisto final (agrupados por pedido):", this.membresiaHisto);
+  
+        // Actualizamos el DataSource de la tabla
+        this.dataSource = new MatTableDataSource(this.membresiaHisto);
+        this.dataSource.paginator = this.paginator;
+      },
+      (error: any) => {
+        console.error("Error al obtener activos:", error);
+      }
+    );
+    console.log('executed');
+  }
+  
+  // Función para agrupar por pedido
+  private agruparPorPedido(clientes: any[]): any[] {
+    const agrupadosPorPedido: { [key: string]: any } = {};
+  
+    clientes.forEach(cliente => {
+      const idPedido = cliente.id_pedido;
+  
+      if (!agrupadosPorPedido[idPedido]) {
+        agrupadosPorPedido[idPedido] = {
+          clave: cliente.clave,
+          estafeta: cliente.estafeta,
+          telefono: cliente.telefono,
+          fotoUrl: cliente.fotoUrl,
+          Correo: cliente.Correo,
+          nombreCompleto: cliente.nombreCompleto,
+          fechaRegistro: cliente.fechaRegistro,
+          huella: cliente.huella,
+          precioPedido: cliente.precioPedido,
+          total: cliente.total,
+          membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
+          correoCliente: cliente.correoCliente,
+          id_pedido: cliente.id_pedido,
+          fecha_hora_pedido: cliente.fecha_hora_pedido,
+          id_bodega: cliente.id_bodega,
+          precioCompra: cliente.precioCompra,
+          conteoPedidos: cliente.conteoPedidos,
+          fecha_inicio: cliente.fecha_inicio,
+          fecha_caducidad: cliente.fecha_caducidad,
+          idPromocion: cliente.idPromocion,
+          nombrePromocion: cliente.nombrePromocion,
+          estatus: cliente.estatus,
+          productos: [] // Inicializamos un array vacío para los productos
+        };
+      }
+  
+      // Agregamos la información del producto al array `productos` correspondiente
+      agrupadosPorPedido[idPedido].productos.push({
+        id_producto: cliente.id_producto,
+        marca: cliente.marca,
+        nombreProducto: cliente.nombreProducto,
+        idProbob: cliente.idProbob
+      });
+    });
+  
+    // Convertimos el objeto agrupado en un array
+    return Object.values(agrupadosPorPedido);
+  }
+  
+
+
+
+
+
 }

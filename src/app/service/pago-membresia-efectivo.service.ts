@@ -45,9 +45,9 @@ export class PagoMembresiaEfectivoService {
   }
 
   obtenerActivos(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"Usuario.php?obtenerVista="+id).pipe(
+    return this.clienteHttp.get(this.API+"getClientes3.php?bodegaId="+id).pipe(
       tap(dataResponse => {
-        console.log("Obteniendo activos:")
+        
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
@@ -137,15 +137,15 @@ export class PagoMembresiaEfectivoService {
     const params = {
       id_bodega: idSucu
     };
-    return this.clienteHttp.get(this.API+"Usuario.php?listaMembre=", { params }).pipe(
+    return this.clienteHttp.get(this.API+"getProductosGym.php?id_bodega=", { params }).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
+        console.log('params',params)
       }),
       catchError(error => {
         return this.getDataFromIndexedDB();
       })
     );
-
   }
 
   getDataFromIndexedDB() {
@@ -204,24 +204,33 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.API+"Usuario.php?deleteMembresia=", { params });
   }
 
+
   actualizaDatosCliente(data: any): Observable<any> {
-    const form = {
-      email:data.correo,
-      idU:data.id_cliente,
-      nombre:data.nombre,
-      cel:data.telefono,
-      estafeta: data.estafeta
-    }
-    return this.clienteHttp.post<msgResult>(this.API+"Usuario.php?updatePersonalData", form);
+    return this.clienteHttp.post<msgResult>(this.API + "updateCliente_Gym2.php", data).pipe(
+      catchError(error => {
+        // Manejo del error
+        console.error('Error en la actualización de cliente:', error);
+        return throwError(() => new Error('Hubo un problema al actualizar los datos del cliente.'));
+      })
+    );
   }
 
   deleteService(datos: any): Observable<any>{
     return this.clienteHttp.post(this.API+"Usuario.php?eliminarServicio", datos);
   }
 
-  deleteServiceUsuario(datos: any): Observable<any>{
-    return this.clienteHttp.post(this.API+"Usuario.php?eliminarUsuario", datos);
+  deleteServiceUsuario(correo: any): Observable<any> {
+    return this.clienteHttp
+      .get(this.API + "deleteCliente.php?correo=" + correo)
+      .pipe(
+        catchError((error) => {
+          // Manejo de errores
+          console.error("Error al intentar eliminar el usuario:", error);
+          return throwError(() => new Error("Error en la API: " + error.message));
+        })
+      );
   }
+
 
   // Actualización del estado del cliente de su membresia (producto)
 
@@ -237,6 +246,14 @@ export class PagoMembresiaEfectivoService {
         return throwError(error);
       })
     );
+  }
+
+  checkPromoPaquete(data: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+console.log("datos emnviado en servico",data);
+    return this.clienteHttp.post<any>(this.API+"test_membresia.php", JSON.stringify(data), { headers });
   }
 
 }
