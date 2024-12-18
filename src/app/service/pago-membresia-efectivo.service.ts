@@ -204,6 +204,17 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.API+"Usuario.php?deleteMembresia=", { params });
   }
 
+deleteMembresia(id: any): Observable<any> {
+  const params = { id_pedido: id };
+  return this.clienteHttp.get(this.API + 'deletePedido.php', { params })
+    .pipe(
+      catchError((error) => {
+        console.error('Error al eliminar la membresía:', error.message);
+        return throwError(() => new Error('Error al procesar la solicitud'));
+      })
+    );
+}
+
 
   actualizaDatosCliente(data: any): Observable<any> {
     return this.clienteHttp.post<msgResult>(this.API + "updateCliente_Gym2.php", data).pipe(
@@ -219,9 +230,27 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.post(this.API+"Usuario.php?eliminarServicio", datos);
   }
 
+
+  // Alternativa con correo
+  /*
   deleteServiceUsuario(correo: any): Observable<any> {
     return this.clienteHttp
       .get(this.API + "deleteCliente.php?correo=" + correo)
+      .pipe(
+        catchError((error) => {
+          // Manejo de errores
+          console.error("Error al intentar eliminar el usuario:", error);
+          return throwError(() => new Error("Error en la API: " + error.message));
+        })
+      );
+  }
+*/
+
+  //Alternativa con  clave 
+
+  deleteServiceUsuario(clave: any): Observable<any> {
+    return this.clienteHttp
+      .get(this.API + "deleteCliente_test_alternative.php?clave=" + clave)
       .pipe(
         catchError((error) => {
           // Manejo de errores

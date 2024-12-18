@@ -35,8 +35,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   clienteActivo: ClientesActivos[] = [];
   dataSourceActivos: MatTableDataSource<any>;
   dataSourceReenovacion: any;
-  fechaInicio: Date  = new Date("0000-00-00");
-  fechaFin: Date = new Date("0000-00-00");
+  fechaInicio: Date = new Date();
+  fechaFin: Date = new Date();
   id: any;
   dineroRecibido: number = 0;
   moneyRecibido: number = 0;
@@ -82,6 +82,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+    this.fechaInicio.setHours(0, 0, 0, 0);
+    this.fechaFin.setHours(23, 59, 0, 0);
 
     this.form = this.fb.group({
       idUsuario: [""],
@@ -92,6 +94,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ngOnInit(): void {
     // this.pagoService.comprobar();
     // this.auth.comprobar();
+    this.loadData()
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaClientesData();
@@ -147,7 +150,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
        
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        this.loadData();
+        this.dataSourceActivos.paginator = this.paginatorActivos;
+        
         
       },
       (error: any) => {
@@ -159,8 +163,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   loadData() {
     setTimeout(() => {
-      this.isLoading = false;
       this.dataSourceActivos.paginator = this.paginatorActivos;
+      this.isLoading = false;
+   
     }, 1000);
   }
 
@@ -195,7 +200,7 @@ verificarCambios(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
 
-    this.filtroFechas()
+    this.listaClientesData()
     //this.updateDateLogs();
   }
 }
@@ -418,7 +423,9 @@ verificarCambios(): void {
   }
 
   eliminarCliente(prod: any) {
-    const correo = prod.Correo;
+    //const correo = prod.Correo; 
+    const correo =prod.clave;
+
   
     this.dialog
       .open(MensajeEliminarComponent, {
@@ -441,7 +448,7 @@ verificarCambios(): void {
       });
   }
 
-
+/*
   filtroFechas() {
     const Clientes = [...this.clienteActivo]; // Hacer una copia de los datos originales
     
@@ -460,50 +467,91 @@ verificarCambios(): void {
       // Verificar que la fechaRegistro esté en el rango (inclusive)
       return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
     });
-    
+   
 
     // Actualizar la fuente de datos para la tabla sin sobrescribir los datos originales
     this.dataSourceActivos = new MatTableDataSource(filtradosFechas);
+    this.loadData()
   }
+    */
 
   listaClientesData(): void {
+    console.log(this.fechaInicio, this.fechaFin);
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (response: any) => {
+
+        if (!response) {
+          // Muestra el mensaje de error
+         // this.toastr.warning('No hay información disponible', 'Advertencia');
+          return; // Salir del método
+        }
+
+
         // Obtenemos la lista completa de clientes desde la respuesta.
+        
         const Clientes = response.data;
-  
+
+      
+      
+        // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
+        const fechaInicio = this.fechaInicio
+          ? new Date(this.fechaInicio)
+          : new Date('2000-01-01'); // Fecha predeterminada.
+        const fechaFin = this.fechaFin
+          ? new Date(this.fechaFin)
+          : new Date(); // Fecha predeterminada (hoy).
+        fechaFin.setHours(23, 59, 0); // Ajustamos hora fin del día.
+
+        console.log('const', fechaInicio, fechaFin);
+
+        // Filtramos los clientes dentro del rango de fechas.
+        const filtradosPorFecha = Clientes.filter((cliente: any) => {
+          const fechaRegistro = new Date(cliente.fechaRegistro);
+          return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+        });
+
         // Aplicamos el filtro inicial: usuarios con conteoPedidos = "1" y estatus = "1", o conteoPedidos === null.
-        const filtrados = Clientes.filter((item: any) =>
+        const filtrados = filtradosPorFecha.filter((item: any) =>
           (item.conteoPedidos === "1" && item.estatus === "1") || item.conteoPedidos === null
         );
-  
+
         // Dividimos entre usuarios con pedidos y usuarios sin pedidos.
         const conPedidos = filtrados.filter((item: any) => item.conteoPedidos === "1");
         const sinPedidos = filtrados.filter((item: any) => item.conteoPedidos === null);
-  
+
         // Agrupamos los usuarios con pedidos.
         const agrupadosConPedidos = this.agruparPorPedido(conPedidos);
-  
+
         // A los usuarios sin pedidos, les añadimos un campo `productos` vacío.
         const procesadosSinPedidos = sinPedidos.map((usuario: any) => ({
           ...usuario,
           productos: [] // Añadimos un array vacío para mantener consistencia en la estructura.
         }));
-  
+
         // Combinamos ambos resultados (con pedidos y sin pedidos).
-        this.clienteActivo = [...agrupadosConPedidos, ...procesadosSinPedidos];
+        const clientesFinales = [...agrupadosConPedidos, ...procesadosSinPedidos];
+
+        // Ahora ordenamos el arreglo final por `fechaRegistro` antes de asignarlo a `clienteActivo`.
+        this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
+          const fechaA = new Date(a.fechaRegistro).getTime();
+          const fechaB = new Date(b.fechaRegistro).getTime();
+          return fechaB- fechaA; // Ascendente (de más antiguo a más reciente)
+        });
+
         console.log("clienteActivo final (agrupados y sin pedidos):", this.clienteActivo);
-  
+
         // Actualizamos el DataSource de la tabla.
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        this.loadData();
+        this.dataSourceActivos.paginator = this.paginatorActivos;
       },
       (error: any) => {
         console.error("Error al obtener activos:", error);
       }
     );
     console.log('executed');
-  }
+}
+
+
   
   // Nueva función: agruparPorPedido
   private agruparPorPedido(clientes: any[]): any[] {

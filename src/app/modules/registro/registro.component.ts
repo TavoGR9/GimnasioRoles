@@ -335,7 +335,7 @@ export class RegistroComponent implements OnInit {
           } 
         },
         error: (error) => {
-          this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
+          this.toastr.error('Ocurrió un error al intentar agregar el cliente.', 'Error!!!');
         }
       });
     } else {

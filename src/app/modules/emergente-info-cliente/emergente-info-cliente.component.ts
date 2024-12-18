@@ -109,6 +109,9 @@ export class EmergenteInfoClienteComponent implements OnInit{
     
   }
 
+
+
+  //En desuhso
   private parseFecha(fecha: string): Date {
     const partes = fecha.split('/');
     const fechaLocal = new Date(+partes[2], +partes[1] - 1, +partes[0]);
@@ -133,9 +136,13 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
+
+  // NO se USA o lo dejaron incompleto (borrar)
   abrirDialogCapturarHuella(data: any): void {
   }
 
+
+  //No se usa para nada  (borrar)
   abrirPuertoSerial(data: any): void {
     this.dialogo.close(true);
     this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
@@ -264,7 +271,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     }
     
 
-
+// no hace nada (borrar) (hacer)
 
   capturarHuella(): void {
     this.spinner.show();
@@ -274,31 +281,39 @@ export class EmergenteInfoClienteComponent implements OnInit{
     }, 550);
   }
 
-  borrarSucursal(id:any){
-    this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar la membresia de tu socio?`,
+  borrarSucursal(id: any) {
+    console.log(id);
+    this.dialog.open(MensajeEliminarComponent, {
+      data: `¿Desea eliminar la membresía de tu socio?`,
     })
     .afterClosed()
     .subscribe((confirmado: boolean) => {
       if (confirmado) {
-        this.pagoService.deleteMem(id).subscribe(
+        this.pagoService.deleteMembresia(id).subscribe(
           (respuesta) => {
-            this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
-              this.membresiaHisto = respuesta;
-              this.dataSource = new MatTableDataSource(this.membresiaHisto);
-              this.dataSource.paginator = this.paginator;
-            });
-                this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
-                  positionClass: 'toast-bottom-left',
-                });
+            
+            if (respuesta === 1) { // Validar si la respuesta es 1
+              this.toastr.success('Registro eliminado exitosamente', 'Éxito', {
+                positionClass: 'toast-bottom-left',
+               
+              });
+              this.UserHIstorial(this.data.idCliente);
+            } else { // Respuesta no exitosa
+              this.toastr.error('No se pudo eliminar el registro', 'Error', {
+                positionClass: 'toast-bottom-left',
+              });
+            }
           },
-          (error) => {
+          (error) => { // Error en la solicitud HTTP
+            this.toastr.error('Ocurrió un error al eliminar el registro', 'Error', {
+              positionClass: 'toast-bottom-left',
+            });
           }
         );
-      } else {
       }
     });
   }
+  
 
 
   isAdmin(): boolean {
@@ -367,9 +382,12 @@ UserHIstorial(clave: string) {
       (respuesta: any) => {
         // Filtramos los datos para obtener solo el usuario con la clave proporcionada
         const datosFiltrados = respuesta.data.filter((item: any) => item.clave === clave);
+
+         // Filtramos solo los registros donde id_pedido esté presente (no sea null ni undefined)
+         const registrosConPedido = datosFiltrados.filter((item: any) => item.id_pedido);
   
         // Agrupamos los registros por id_pedido directamente (sin aplicar el filtro de conteoPedidos y estatus)
-        const agrupadosPorPedido = this.agruparPorPedido(datosFiltrados);
+        const agrupadosPorPedido = this.agruparPorPedido(registrosConPedido);
   
         // Asignamos los resultados a la variable de la tabla
         this.membresiaHisto = agrupadosPorPedido;

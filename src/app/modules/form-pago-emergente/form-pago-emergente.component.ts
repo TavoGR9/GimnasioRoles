@@ -274,9 +274,9 @@ export class FormPagoEmergenteComponent implements OnInit {
             
 
 
-              this.imprimirResumen3();
+              //this.imprimirResumen3();
               
-/*
+
               console.log("data",this.data);
               console.log (dataPromo);
               this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
@@ -289,13 +289,18 @@ export class FormPagoEmergenteComponent implements OnInit {
                 },
                 error => {
                   console.error('Error al consultar la API de promociones:', error);
+                  this.spinner.hide();
+                  this.toastr.error(
+                    "Cantidad insuficiente para cubrir el costo de esta membresía.",
+                    "¡Error!"
+                  );
                 }
               );
               // si es exitpsa 
                 // imprimir datos
             // si no
               // mensaje emergente algo fallo
-              */
+              
             
           }
           this.spinner.hide(); // Se oculta el spinner después de la operación

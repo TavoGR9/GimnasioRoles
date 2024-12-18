@@ -32,11 +32,19 @@ export class PagoMemComponent implements OnInit{
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   clienteActivo: any;
 
-  constructor(private pagoMem: PagoMembresiaEfectivoService,private datePipe: DatePipe,private toastr: ToastrService, private auth:AuthService){
+  constructor(
+    private pagoMem: PagoMembresiaEfectivoService,
+    private datePipe: DatePipe,
+    private toastr: ToastrService, 
+    private auth:AuthService){
+      
+      this.fechaInicio.setHours(0, 0, 0, 0);
+     
   }
 
   ngOnInit(): void {  
-    this.verTabla()
+    this.verTabla();
+    console.log(this.fechaInicio,this.fechaFin)
   }
 
 
@@ -228,10 +236,11 @@ export class PagoMemComponent implements OnInit{
             // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
             const fechaInicio = this.fechaInicio
                 ? new Date(this.fechaInicio)
-                : new Date('2000-01-01'); // Fecha predeterminada (por ejemplo, inicio del milenio).
+                : new Date('2000-01-01'); // Fecha predeterminada 
             const fechaFin = this.fechaFin
                 ? new Date(this.fechaFin)
                 : new Date(); // Fecha predeterminada (hoy).
+                fechaFin.setHours(23, 59, 0); 
 
             // Aseguramos que las fechas sean válidas antes de filtrar.
             const filtradosPorFecha = Clientes.filter((cliente: any) => {
@@ -261,6 +270,7 @@ export class PagoMemComponent implements OnInit{
 
             // Actualizamos el DataSource de la tabla.
             this.dataSource = new MatTableDataSource(this.clienteActivo);
+            this.dataSource.paginator = this.paginator;
             this.total();
         },
         (error: any) => {

@@ -154,7 +154,7 @@
               </ng-container>
 
           <ng-container *ngIf="column === 'Eliminar'">
-            <button *ngIf="isAdmin()" mat-icon-button color="warn"  (click)="borrarSucursal(memCli.idDetMem)">
+            <button *ngIf="isAdmin()" mat-icon-button color="warn"  (click)="borrarSucursal(memCli.id_pedido)">
               <mat-icon>delete</mat-icon>
             </button>
             <button *ngIf="isRecep()" mat-icon-button color="warn" >
