@@ -1,6 +1,6 @@
 <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
             <h1 class="title" mat-dialog-title>EDITAR PLAN</h1>
-      
+
             <form [formGroup]="formulariodePlan" mat-dialog-content>
                 <div >
                     <div class="row">
@@ -59,41 +59,51 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <p>
-                                <label>Detalles:</label>
-                                <mat-form-field style="display: inline-block; width: 95%; height: 110px;" required appearance="outline">
-                                    <mat-label>Detalles</mat-label>
-                                    <textarea class="textarea" matInput rows="4" placeholder="Detalles" cols="50" style="display: inline-block; width: 100%;height: 100%;" id="detalles" formControlName="detalles"> </textarea>
-                                    
-                                </mat-form-field>
-                            </p>
-
+                          <p>
+                            <label>Existencias:</label>
+                            <mat-form-field appearance="outline"  style="width: 95%;" required>
+                                <mat-label>Existencias</mat-label>
+                                <input type="number" placeholder="Existencias" matInput autocomplete="off" id="existencias" formControlName="existencias" >
+                                <mat-error *ngIf="isFieldInvalid('existencias', 'required')">
+                                    Las existencias son requeridas.
+                                  </mat-error>
+                                  <mat-error *ngIf="isFieldInvalid('existencias', 'pattern')">
+                                    Solo se aceptan números.
+                                  </mat-error>
+                            </mat-form-field>
+                          </p>
                         </div>
+
                         <div class="col-sm-6">
-                            <p>
-                                <label>Membresías:</label>
-                                <mat-form-field appearance="outline" style="width: 95%;" required>
-                                    <mat-label>Selecciona una membresía</mat-label>
-                                    <mat-select multiple formControlName="membresias"> 
+                          <p>
+                            <label>Membresías:</label>
+                            <mat-form-field appearance="outline" style="width: 95%;" required>
+                                <mat-label>Selecciona una membresía</mat-label>
+                                <mat-select multiple formControlName="membresias">
 
-                                        <mat-option *ngFor="let membresia of servicios" [value]="membresia">
-                                        {{ membresia.titulo }} - {{ membresia.duracion }} días - {{ membresia.nombre_servicio }}
-                                      </mat-option>
+                                    <mat-option *ngFor="let membresia of plan" [value]="membresia" >
+                                    {{ membresia.nombreProducto }} - {{ membresia.nombreCategoria	 }}  - {{ membresia.marca }}
+                                  </mat-option>
 
-                                    </mat-select>
-                                  </mat-form-field>
-                              </p>
-                              
+                                </mat-select>
+                              </mat-form-field>
+                          </p>
                         </div>
-                    </div>   
+                    </div>
+
+                    <div class="row">
+                      <div class="col-sm-6">
+
+                      </div>
+                    </div>
                 </div>
             </form>
-      
+
 
         <div style="display: flex; justify-content: center;" mat-dialog-actions>
             <button mat-stroked-button (click)="actualizar()" class="aceptar">Aceptar</button>
             <button mat-stroked-button (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
-          </div>   
+          </div>
 
 
 

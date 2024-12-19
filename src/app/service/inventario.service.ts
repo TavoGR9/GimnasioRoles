@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, tap } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 
 @Injectable({
@@ -15,7 +15,8 @@ export class inventarioService {
   // API: String = '';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string = 'http://localhost/serviciosGimnasio/';
+  //API: string = 'http://localhost/serviciosGimnasio/';
+  API: string = 'http://localhost/serviciosGym/';
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
@@ -48,8 +49,18 @@ export class inventarioService {
   }
 
   HistorialInventario(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
-    const url = `${this.API}producto_bod.php?obtenerHistorialInventario`;
+    const url = `${this.API}verHistorialPedido.php`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
-    return this.clienteHttp.post(url, body);
+    console.log("DATOS ENVIADOS AL API: ",body);
+    return this.clienteHttp.post(url,body).pipe(
+      tap(dataResponse => {
+        console.log("RESPUESTA DE LA API: ",dataResponse);
+      }),
+      catchError(error => {
+        console.error("ERROR EN LA API: ",error);
+        return error;
+      })
+
+    );
   }
 }

@@ -2,10 +2,10 @@
 <div class="img-container">
     <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
 
-</div>    
+</div>
  <div class="container">
     <div class="gym-details">
-       <h1 style="color: #ff8400">DETALLES DE TÚ GIMNASIO</h1>
+       <h1 style="color: #ff8400">DETALLES - GIMNASIO</h1>
        <div style="text-align: right; margin-bottom: 50px;">
           <button mat-raised-button routerLink="../configuracion" style="background-color: #fd9727; width: 190px; font-size: 16px; ">
              <mat-icon>edit</mat-icon>
@@ -16,7 +16,7 @@
           <div class="card">
              <li style="font-size: 18px;">
                 <img src="../../../../../assets/img/gym.png" width="40px" alt="Icono gym" style="margin-right: 20px;margin-left: 20px; ">
-                <strong style="margin-right: 10px; ">TÚ GIMNASIO:</strong> {{ gimnasio.nombreBodega}}
+                <strong style="margin-right: 10px; ">GIMNASIO:</strong> {{ gimnasio.nombreBodega}}
              </li>
           </div>
           <br>
@@ -37,13 +37,14 @@
           <div class="card">
             <li style="font-size: 18px;">
                <img src="../../../../../assets/img/correo.png" width="40px" alt="Icono correo" style="margin-right: 20px;margin-left: 20px; ">
-               <strong style="margin-right: 70px; ">Correo:</strong> {{ gimnasio.correoEmpleado }}
+               <strong style="margin-right: 70px; ">Correo:</strong> {{ gimnasio.Correo }}
             </li>
          </div>
 
           <br>
        </ul>
     </div>
+    <!--
     <div class="card" style="font-size: 18px;">
       <ng-container *ngIf="datosHorario && datosHorario.length > 0; else noHorario">
           <table style="margin-top: 30px; margin-bottom: 30px;" class="horario-table">
@@ -69,10 +70,11 @@
             <button *ngFor="let gimnasio of gimnasio" mat-raised-button style="background-color: #fd9727; width: 190px; font-size: 16px; margin-bottom: 30px;" (click)="agregarHorario(gimnasio.id_bodega)">
                 <mat-icon>add</mat-icon> Agregar horario
             </button>
-            <br><br>  
+            <br><br>
          </div>
         <br>
       </ng-template>
   </div>
+  -->
  </div>
 </div>

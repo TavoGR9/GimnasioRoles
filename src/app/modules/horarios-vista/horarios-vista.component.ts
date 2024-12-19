@@ -195,7 +195,7 @@ export class HorariosVistaComponent implements OnInit {
           this.consultarHorario();
         } else if (this.optionToShow === 2) {
         } else if (this.optionToShow === 3) {
-          this.editarCosa();
+          //this.editarCosa();
         }
       }
     });
@@ -274,6 +274,7 @@ export class HorariosVistaComponent implements OnInit {
     this.dialogo.close();
   }
 
+  /*
   editarCosa() {
     this.gimnasioService.gimnasioSeleccionado.subscribe((data) => {
       if (data) {
@@ -303,7 +304,7 @@ export class HorariosVistaComponent implements OnInit {
       }
     });
   }
-
+*/
   confirmarEdicion() {
     this.spinner.show();
     const datosAc = {

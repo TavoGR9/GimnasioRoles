@@ -15,7 +15,8 @@ export class MembresiaService {
   data: any = {};
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string = 'http://localhost/serviciosGimnasio/';
+  //API: string = 'http://localhost/serviciosGimnasio/';
+  API: string = 'http://localhost/serviciosGym/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -83,7 +84,7 @@ export class MembresiaService {
       }),
       catchError(error => {
         this.saveDataToIndexedDBP(datosPlan);
-        const resultData = { success: '2' };
+        const resultData = { success: '1' };
         return of(resultData);
       })
     );
@@ -200,7 +201,9 @@ export class MembresiaService {
    }
 
   getDataToUpdate(): Observable<any> {
+    console.log("IDS: ",this.dataToUpdate);
     return this.dataToUpdate.asObservable();
+
   }
 
   consultarPlan(id:any):Observable<any>{
@@ -208,7 +211,7 @@ export class MembresiaService {
   }
 
   agregarPlanMem(datosPlanM:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"Promociones.php?insertarPromocion",datosPlanM);
+    return this.clienteHttp.post(this.API+"Promociones.php?insertarPlanM",datosPlanM);
   }
 
   consultarPlanId(id:any):Observable<any>{

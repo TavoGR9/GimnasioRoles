@@ -5,6 +5,9 @@ import { ProductoService } from '../../service/producto.service';
 import { EmergenteHistorialProductosComponent } from '../emergente-historial-productos/emergente-historial-productos.component';
 import { MatDialog} from '@angular/material/dialog';
 import { AuthService } from '../../service/auth.service';
+
+import { Inventario } from "../../models/inventario";
+
 @Component({
   selector: 'inventarios',
   templateUrl: './inventarios.component.html',
@@ -14,22 +17,25 @@ import { AuthService } from '../../service/auth.service';
 export class InventariosComponent implements OnInit {
   displayedColumns: string[] = [
     'Código De Barras',
+    'Producto',
     'Marca',
-    'Nombre',
-    'Cantidad Disponible'
+    //'Precio',
+    'Existencia',
+    'Categoria',
+    //'Bodega'
   ];
 
   listInventarioData: any[] = [];
-  dataSource: any; 
+  dataSource: any;
   idGym: number = 0;
   currentUser: string = '';
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   habilitarBoton: boolean = false;
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   constructor(
-    private productoService: ProductoService, 
+    private productoService: ProductoService,
     private auth: AuthService,
     public dialog: MatDialog) {}
 
@@ -37,7 +43,7 @@ export class InventariosComponent implements OnInit {
     // this.productoService.comprobar();
     // this.InventarioService.comprobar();
     // this.auth.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
     this.currentUser = this.auth.getCurrentUser();
@@ -47,20 +53,28 @@ export class InventariosComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTablas();
-    }); 
+    });
   }
 
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSource.paginator = this.paginator;
-    }, 1000); 
+    }, 1000);
+  }
+
+  aplicarFiltro(productos: Inventario[]): Inventario[] {
+    return productos.filter((producto) => {
+      return producto.nombreCategoria !== "Servicios";
+    });
   }
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      this.listInventarioData = respuesta;
+      this.listInventarioData = this.aplicarFiltro(respuesta);
+      //this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);
+      //console.log("DATOs: " ,this.listInventarioData);
       this.loadData();
     });
   }
@@ -72,6 +86,7 @@ export class InventariosComponent implements OnInit {
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
+          console.log("Este es el ID: " +this.idGym);
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
@@ -79,6 +94,7 @@ export class InventariosComponent implements OnInit {
     });
   }
 
+  //Filtro para los datos
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
