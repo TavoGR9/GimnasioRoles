@@ -598,4 +598,10 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+
+
+consultarMembresia(){ 
+//this.homeService.ConsultarPedidosMembresias(this)
+
+}
 }

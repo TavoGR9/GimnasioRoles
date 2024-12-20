@@ -271,8 +271,8 @@ verificarCambios(): void {
           return this.compare(Number(a.total || 0), Number(b.total || 0), isAsc);
           case "Membresia":
             return this.compare(
-              `${a.nombreProducto || ""} - ${a.marca || ""}`,
-              `${b.nombreProducto || ""} - ${b.marca || ""}`,
+              `${a.membresia || ""}`,
+              `${b.membresia || ""}`,
               isAsc
             );
         case "Fecha Inicio":

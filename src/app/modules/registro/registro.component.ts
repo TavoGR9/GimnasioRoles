@@ -305,8 +305,10 @@ export class RegistroComponent implements OnInit {
         next: (resultData) => {
           
           console.log('Enviando peticion');
-          if (resultData.message === 'Ya existe un usuario en su gimnasio con esa clave.') {
-            this.toastr.error('clave ya existente', 'Error!!!');
+
+
+          if (resultData.success == 0) {
+            this.toastr.error(resultData.message, 'Error!!!');
             this.spinner.hide();
           } else if (resultData.success == '1') {
             this.dialogo.close(true)
