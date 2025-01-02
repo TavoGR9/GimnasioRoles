@@ -34,16 +34,33 @@ export class GimnasioService {
 
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {}
 
-  // comprobar(){
-  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-  //     this.isConnected = isConnected;
-  //     if (isConnected) {
-  //       this.API = this.APIv2;
-  //     } else {
-  //       this.API = this.APIv3;
-  //     }
-  //   });
-  // }
+  ///CONSULTAR DATOS DE LA BODEGA
+  consultarPlan(datos:{idG: number, id:number}):Observable<any>{
+    const url = `${this.API}getBodegaEmpleado.php`;
+    return this.clienteHttp.post<any>(url, datos).pipe(
+      tap((dataResponse: any) => {
+        console.log("Respuesta de la API: ",dataResponse);
+      }),
+      catchError(error => {
+          return error;
+      })
+    );
+  }
+
+
+  obternerPlan(){
+    return this.clienteHttp.get<any[]>(this.API+"getBodega.php").pipe(
+      tap(dataResponse => {
+        console.log("Respuesta de la API: ",dataResponse);
+          this.saveDataToIndexedDB1(dataResponse);
+      }),
+      catchError(error => {
+          // Intenta obtener los datos de IndexedDB en caso de error
+          console.error("DATOS NO OBTENIDOS: ",error);
+          return this.getDataFromIndexedDB();
+      })
+  );
+  }
 
   private saveDataToIndexedDB1(data: any) {
     // Guarda los datos en IndexedDB
@@ -73,7 +90,6 @@ getDataFromIndexedDB() {
           });
       });
   }
-
   obtenerPlan(): Observable<any> {
     const url = `${this.API}getbodegass`;
     console.log('URL para obtener bodegas:', url);  // Verificar URL
@@ -97,8 +113,7 @@ getDataFromIndexedDB() {
       })
     );
   }
-  
-  
+
 
   getCategoriasSubject() {
     return this.gymSubject.asObservable();
@@ -116,9 +131,10 @@ getDataFromIndexedDB() {
     return this.clienteHttp.post(this.API+"getBodegaById", datosGym);
   }
 
-  consultarPlan(id:any):Observable<any>{
+  /*consultarPlan(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"getbodegas.php"+id);
-  }
+  }*/
+
 
   actualizarEstatus(idGimnasio: any, estatus: any): Observable<any> {
     let body = new URLSearchParams();

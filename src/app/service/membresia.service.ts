@@ -201,7 +201,9 @@ export class MembresiaService {
    }
 
   getDataToUpdate(): Observable<any> {
+    console.log("IDS: ",this.dataToUpdate);
     return this.dataToUpdate.asObservable();
+
   }
 
   consultarPlan(id:any):Observable<any>{

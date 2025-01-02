@@ -15,6 +15,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from "ngx-toastr";
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
 import { PromocionService } from "../../service/promocion.service";
+import { ProductoService } from "../../service/producto.service";
 
 @Component({
   selector: "app-membresias-agregar",
@@ -26,15 +27,15 @@ export class planAgregarComponent {
   private enviando = false;
   message: string = "";
   hide = true;
-  gimnasio: any;
   selectedMembresia: any;
   idGym: number = 0;
   plan: any[] = [];
-  noServicios: boolean = false;
+  noServicios: boolean = false;//saber si hay membresias
+  Producto: any[] = [];
 
   constructor(
     public dialogo: MatDialogRef<planAgregarComponent>,
-    @Inject(MAT_DIALOG_DATA) public mensaje: string,
+   @Inject(MAT_DIALOG_DATA) public mensaje: string,
     private fb: FormBuilder,
     private router: Router,
    // private membresiaService: MembresiaService,
@@ -42,7 +43,7 @@ export class planAgregarComponent {
     private auth: AuthService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {
     this.formulariodePlan = this.fb.group(
       {
@@ -83,8 +84,13 @@ export class planAgregarComponent {
 /*
       this.membresiaService
         .consultarPlanIdMem(this.idGym)
+=======
+
+      //se optinene las membresias
+      this.productoService.obternerInventario(this.idGym)
         .subscribe((respuesta) => {
-          this.plan = respuesta;
+          if (respuesta )
+          this.plan = this.aplicarFiltro(respuesta);
         });
         */
 
@@ -96,7 +102,6 @@ export class planAgregarComponent {
       this.setDuration();
     });
 */
-
   }
 
 
@@ -194,7 +199,6 @@ export class planAgregarComponent {
     this.marcarCamposInvalidos(this.formulariodePlan);
   }
 */
-
 //MANEJAR ERRORES DEL LADO DEL COMPONENTE
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
@@ -243,20 +247,35 @@ export class planAgregarComponent {
   }
 
 
+=======
+  //VALIDAR LAS FECHAS
+>>>>>>> 12def37fbf7e14dbdba349fa009df9b5a11c0083
   dateLessThan(from: string, to: string) {
     return (group: FormGroup): { [key: string]: any } => {
       let f = group.controls[from];
       let t = group.controls[to];
       if (f.value > t.value) {
         return {
-          dates: "La fecha de inicio debe ser anterior a la fecha de fin",
+          dates: `La fecha de inicio debe ser anterior a la fecha de fin`,
         };
       }
       return {};
     };
   }
+<<<<<<< HEAD
     */
 /*
+=======
+
+   //FILTRO DE LAS MEMBRESIAS A MOSTRAR
+   aplicarFiltro(productos: Inventario[]): Inventario[] {
+    return productos.filter((producto) => {
+      return producto.nombreCategoria === "Servicios";
+    });
+  }
+
+  ///AGREGAR MEMBRESIA
+>>>>>>> 12def37fbf7e14dbdba349fa009df9b5a11c0083
   openDialog(): void {
     this.membresiaService.optionShow.next(1);
     this.membresiaService.optionShow.subscribe((option) => {});
@@ -277,5 +296,6 @@ export class planAgregarComponent {
       }
     });
   }
+<<<<<<< HEAD
     */
 }

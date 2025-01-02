@@ -34,6 +34,11 @@
                                           El precio es requerido.
                                         </mat-error>
                                         <mat-error *ngIf="isFieldInvalid('preciopv', 'pattern')">
+                                      <input type="number" placeholder="Precio" matInput autocomplete="off" id="PrecioPaquete" formControlName="PrecioPaquete" >
+                                      <mat-error *ngIf="isFieldInvalid('PrecioPaquete', 'required')">
+                                          El precio es requerido.
+                                        </mat-error>
+                                        <mat-error *ngIf="isFieldInvalid('PrecioPaquete', 'pattern')">
                                           Solo se aceptan números.
                                         </mat-error>
                                   </mat-form-field>
@@ -96,6 +101,7 @@
                           </mat-form-field>
                       </div>
                   </div>
+<<<<<<< HEAD
 
                   <!--<div class="row">
                       <div class="col-sm-6">
@@ -111,12 +117,22 @@
                       </div>
                       <div class="col-sm-6">
                           <p *ngIf="plan && plan.length > 0; else noServicios">
+=======
+                  
+                    <div class="row">
+                      <div class="col-sm-6">
+                          <p *ngIf="plan && plan.length > 0; else noServicios ">
+>>>>>>> 12def37fbf7e14dbdba349fa009df9b5a11c0083
                               <label>Membresías:</label>
                               <mat-form-field appearance="outline" style="width: 95%;" required>
                                   <mat-label>Selecciona una membresía</mat-label>
                                   <mat-select [(value)]="selectedMembresia" multiple formControlName="membresias">
                                     <mat-option *ngFor="let membresia of plan" [value]="membresia">
+<<<<<<< HEAD
                                       {{ membresia.titulo }} - {{ membresia.duracion }} días - {{ membresia.nombre_servicio }}
+=======
+                                      {{ membresia.nombreProducto }} - {{ membresia.existencia }} días - {{ membresia.marca }}
+>>>>>>> 12def37fbf7e14dbdba349fa009df9b5a11c0083
                                     </mat-option>
                                   </mat-select>
                                 </mat-form-field>
@@ -133,6 +149,7 @@
 
                       </div>
 
+<<<<<<< HEAD
                   </div>-->
                   <!--<div class="row">
                       <div class="col-sm-6">
@@ -145,6 +162,10 @@
 
                       </div>
                   </div>  -->
+=======
+                  </div>
+
+>>>>>>> 12def37fbf7e14dbdba349fa009df9b5a11c0083
               </div>
           </form>
       </div>

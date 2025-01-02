@@ -68,7 +68,6 @@ export class PromocionService {
     });
   }
 
-
   agregarPlan(datosPlan: membresia): Observable<any> {
     console.log("Datos que se envían a la API:", datosPlan);  // Muestra los datos an
     return this.clienteHttp.post(this.API + "addPromocionPaquete.php", datosPlan).pipe(
@@ -81,11 +80,9 @@ export class PromocionService {
        // this.saveDataToIndexedDBP(datosPlan);
         const resultData = { success: '2' };
         return of(resultData);
-
       })
     );
   }
-
 
 
 /*
