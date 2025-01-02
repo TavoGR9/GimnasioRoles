@@ -1,22 +1,24 @@
+
 <div class="custom-spinner-container" *ngIf="isLoading">
   <div class="custom-spinner">
       <div class="spinner-circle"></div>
       <div class="spinner-text">Cargando...</div>
   </div>
 </div>
+
 <div>
   <div style="margin-top: 60px;">
     <div class="container mt-4">
       <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
         <h2 class="mb-3">INVENTARIO</h2>
-      
+
         <div style="text-align: right; margin-bottom: 20px;">
           <button
               mat-raised-button [disabled]="!habilitarBoton"
               (click)="abrirHistorial()"
               style="background-color: #fd9727; font-size: 16px;">
               <mat-icon>assignment</mat-icon>Historial de inventario global
-            </button> 
+            </button>
         </div>
         <h3>Ingresa el valor de una columna</h3>
         <mat-form-field class="full-width">
@@ -34,18 +36,30 @@
                 <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
                 <td mat-cell *matCellDef="let prod">
                   <ng-container *ngIf="column === 'Código De Barras'">
-                      {{ prod.codigo_de_barra }}
+                      {{ prod.codigoBarras }}
+                    </ng-container>
+                    <ng-container *ngIf="column === 'Producto'">
+                      {{ prod.nombreProducto }}
                     </ng-container>
                     <ng-container *ngIf="column === 'Marca'">
                       {{ prod.marca }}
                     </ng-container>
-                    <ng-container *ngIf="column === 'Nombre'">
-                      {{ prod.nombre }}-{{ prod.detalleCompra }}
+                    <!--
+                    <ng-container *ngIf="column === 'Cantidad Precio'">
+                      {{ prod.precio }}
                     </ng-container>
-                  <ng-container *ngIf="column === 'Cantidad Disponible'">
-                      {{ prod.cantidad_disponible }}
-                    </ng-container>              
+                    -->
+                    <ng-container *ngIf="column === 'Existencia'">
+                      {{ prod.existencia }}
+                    </ng-container>
+                    <ng-container *ngIf="column === 'Categoria'">
+                      {{ prod.nombreCategoria }}
+                    </ng-container>
+                    <ng-container *ngIf="column === 'Bodega'">
+                      {{ prod.nombreBodega}}
+                    </ng-container>
                 </td>
+
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let productofila; columns: displayedColumns"></tr>
