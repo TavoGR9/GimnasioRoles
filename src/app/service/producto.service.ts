@@ -124,6 +124,9 @@ export class ProductoService {
       return this.clienteHttp.post(this.API3+"producto_bod.php?consultarProductoBodegaVenta=",data);
     }
 
+
+
+
     obternerInventario(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };
       return this.clienteHttp.post<any[]>(this.API2 +'getProductosBodega.php',data).pipe(
@@ -168,6 +171,9 @@ export class ProductoService {
         });
       });
     }
+
+
+
     updateProductoStatus(id: number, estado: { estatus: number }): Observable<any> {
       return this.clienteHttp.post(this.API3+"?actualizarEstatus="+id,estado);;
     }

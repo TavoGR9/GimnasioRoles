@@ -76,7 +76,7 @@ export class EntradasComponent implements OnInit {
     private productoService: ProductoService,
     private inventarioService: inventarioService
   ) {
-    this.obtenerFoto();
+    //this.obtenerFoto();
     this.id = this.auth.idGym.getValue();
     this.idUsuario = this.auth.idUser.getValue();
     this.fechaRegistro = this.obtenerFechaActual();
@@ -148,7 +148,7 @@ export class EntradasComponent implements OnInit {
   }
 
   listaTablas() {
-    this.entrada.listaProductos().subscribe({
+    /*this.entrada.listaProductos().subscribe({
       next: (resultData) => {
         // console.log("Resultado de listaProductos:", resultData);
         this.listaProductos = resultData.productos;
@@ -156,7 +156,7 @@ export class EntradasComponent implements OnInit {
       error: (error) => {
         console.error(error);
       },
-    });
+    });*/
   }
 
   buscarProducto() {
@@ -471,7 +471,7 @@ export class EntradasComponent implements OnInit {
 
   cerrarDialogo(): void {}
 
-  obtenerFoto() {
+  /*obtenerFoto() {
     this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
       (respuesta) => {
         if (respuesta && respuesta[0] && respuesta[0].foto) {
@@ -488,7 +488,7 @@ export class EntradasComponent implements OnInit {
         this.fotoUrl = null;
       }
     );
-  }
+  }*/
 
   imprimirResumen() {
     const fechaActual = new Date().toLocaleDateString();
@@ -630,6 +630,7 @@ export class EntradasComponent implements OnInit {
   verCompras(): void {
     this.entrada
       .obtenerEntradas(
+
         this.fechaInicio,
         this.fechaFin,
         this.auth.idGym.getValue()

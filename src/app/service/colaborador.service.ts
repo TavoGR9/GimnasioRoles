@@ -26,7 +26,8 @@ export class ColaboradorService {
     // API: String = '';
 
     //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-    API: string = 'http://localhost/serviciosGimnasio/'
+    //API: string = 'http://localhost/serviciosGimnasio/'
+      API: string = 'http://localhost/serviciosGym/'
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
@@ -58,7 +59,7 @@ export class ColaboradorService {
 
     obtenerPersonalPorNombre(nombre:any):Observable<any>{
 
-      return this.clienteHttp.get(this.API+"empleado.php?personalName="+nombre);
+      return this.clienteHttp.get(this.API+"addEmpleado.php"+nombre);
     }
 
     getPersonal(): Observable<any> {
@@ -78,15 +79,15 @@ export class ColaboradorService {
     }
 
     agregarEmpleadoA(datosEmpleado: any): Observable<any> {
-        return this.clienteHttp.post(this.API + "empleado.php?insertar=1", datosEmpleado).pipe(
-            tap(dataResponse => {
-            }),
-            catchError(error => {
-              this.saveDataToIndexedDB(datosEmpleado);
-              const resultData = { success: '2' };
-              return of(resultData);
-            })
-          );
+      return this.clienteHttp.post(this.API + "empleado.php", datosEmpleado).pipe(
+        tap(dataResponse => {
+        }),
+        catchError(error => {
+          this.saveDataToIndexedDB(datosEmpleado);
+          const resultData = { success: '2' };
+          return of(resultData);
+        })
+      );
     }
 
         private saveDataToIndexedDB(data: any) {

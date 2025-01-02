@@ -34,8 +34,13 @@ export class HomeComponent implements OnInit {
   datosRecientesVentas: any;
   datosClientesActivos: any;
   clientesActivos: any;
+
   homeCard: any;
   homeCard2: any;
+  homeCardVisita: any[] = [];
+  homeCardQuincena: any[] = [];
+
+
   tablaHTML: SafeHtml | null = null;
   tablaHTMLVentas: SafeHtml | null = null;
   isLoading: boolean = true;
@@ -87,8 +92,7 @@ export class HomeComponent implements OnInit {
     group: ScaleType.Ordinal, // representación visual que es especialmente útil cuando tus datos son categóricos o discretos y deseas proporcionar una representación clara y distintiva para cada categoría en tu gráfico.
   };
 
-  homeCardVisita: any[] = [];
-  homeCardQuincena: any[] = [];
+
 
 
   meses = {
