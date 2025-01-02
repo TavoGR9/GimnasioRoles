@@ -63,7 +63,6 @@ export class planEditarComponent {
   }
 
 
-
   //OBTENER LOS DATOS
   ngOnInit(): void {
 

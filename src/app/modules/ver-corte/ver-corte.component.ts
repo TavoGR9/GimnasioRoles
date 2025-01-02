@@ -123,7 +123,7 @@ export class VerCorteComponent implements OnInit  {
 
   listaTablas(){
     // console.log('idGym en la lista: ', this.idGym);
-    this.joinDetalleVentaService.consultarProductosVentasBodega(this.idGym).subscribe(
+    this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
         // console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
