@@ -120,9 +120,7 @@ export class EntradasComponent implements OnInit {
     });
 
     this.buscarProducto();
-    console.log('email: ', this.auth.email.getValue());
     console.log('idUser: ', this.idUsuario);
-    console.log('idGym: ', this.auth.idGym.getValue());
   }
 
   loadData() {
@@ -152,8 +150,7 @@ export class EntradasComponent implements OnInit {
   listaTablas() {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
-        console.log("Resultado de listaProductos:", resultData);
-
+        // console.log("Resultado de listaProductos:", resultData);
         this.listaProductos = resultData.productos;
       },
       error: (error) => {
@@ -166,8 +163,7 @@ export class EntradasComponent implements OnInit {
     const marcaIngresado = this.form.get("idProbob")?.value;
     this.entrada.listaProductos().subscribe({
       next: (respuesta) => {
-        console.log('respuesta: ', respuesta);
-
+        // console.log('respuesta: ', respuesta);
 
         const marcasU = new Set(
           respuesta.productos.map((product: any) => ({
@@ -327,6 +323,7 @@ export class EntradasComponent implements OnInit {
               fechaE: dataToSend[index].fechaE,
               fechaEntrada: dataToSend[index].fechaEntrada,
               accion: "Registro de nuevo producto",
+              mail_actualizador: this.auth.idUser.getValue(),
               //created_by: this.auth.idUser.getValue(),
             });
             hayRegistrosNuevos = true;
@@ -344,13 +341,14 @@ export class EntradasComponent implements OnInit {
             const fechaFormateada: string = `${año}-${mes}-${dia}`;
 
             registrosAc.push({
-              accion: "Edición de nuevo producto",
+              accion: "Edición de producto existente",
               existencias: dataToSend[index].exis,
               p_id_producto: id_Probob,
               precioSucursal: dataToSend[index].precciosucu,
               precioCaja: dataToSend[index].precioCaja,
               p_id_bodega: this.auth.idGym.getValue(),
               ultimo_id: data.idBodPro,
+              mail_actualizador: this.auth.idUser.getValue(),
             });
           }
         });
@@ -700,7 +698,7 @@ todosClientes: any;
 
               "Fecha de compra",
               "Entrada",
-              "Codigp de barras",
+              "Codigo de barras",
 
             ],
             ...this.todosClientes.map((activos: any) => [

@@ -60,7 +60,7 @@ export class InventariosComponent implements OnInit {
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      // console.log('TODAS LAS EXISTENCIAS: ', respuesta);
+      console.log('TODAS LAS EXISTENCIAS: ', respuesta);
 
       this.listInventarioData = respuesta.filter((existencia: any) => existencia.nombreCategoria.toLowerCase() !== 'servicios');
       this.dataSource= new MatTableDataSource(this.listInventarioData);

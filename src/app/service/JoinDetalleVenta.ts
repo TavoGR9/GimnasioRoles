@@ -85,8 +85,8 @@ export class JoinDetalleVentaService {
   }
 
 
-
-  //PARA OBTENER DETALLES DE PEDIDOS PARA LA LISTA
+  //VER-CORTE
+  // llamada HTTP a la API REST, para obtener detalles de pedidos realizados
   consultarProductosVentasBodega(id_bodega_param: number | null): Observable<any> {
     const body = { id_bodega_param };
     const url = `${this.API2}listaPedidosDetalleIdBodega.php?listaPedidosDetalleBodega`;

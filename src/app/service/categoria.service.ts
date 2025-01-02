@@ -151,6 +151,15 @@ export class CategoriaService {
       })
     );
   }
+
+  obtenerMarcasServiciosIdGym2(idGym: string | number): Observable<any> {
+    return this.clienteHttp.get(`${this.API2}listarMarcas.php?idBodega=${idGym}`).pipe(
+      catchError((error) => {
+        console.error('Error al obtener marcas y servicios:', error);
+        return of({ success: 0, message: 'Error al obtener datos del servidor' });
+      })
+    );
+  }
   // crear marca para un gimnasio
   agregarMarcaSer2(datosMarca:any):Observable<any>{
     return this.clienteHttp.post(this.API2+"addMarcaServ.php?insertarMarcaServ=1",datosMarca);

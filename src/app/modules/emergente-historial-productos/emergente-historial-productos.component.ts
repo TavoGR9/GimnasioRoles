@@ -42,6 +42,9 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
 
+  idUsuarioo: number =0;
+  correooo: any;
+
   @ViewChild('paginatorHistorial', { static: true }) paginatorHistorial!: MatPaginator;
 
   constructor(
@@ -58,6 +61,12 @@ export class EmergenteHistorialProductosComponent implements OnInit{
 
   ngOnInit(): void {
     this.updateDateLogs();
+    this.idUsuarioo = this.auth.idUser.getValue();
+    console.log('idUsuario: ', this.idUsuarioo);
+
+    this.correooo = this.auth.email.getValue();
+    console.log('correoo: ', this.correooo);
+
   }
 
   ngDoCheck(): void {
@@ -125,7 +134,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
 
     const datos = [
       [
-        'Sucursal',
+        'idSucursal',
         'Usuario',
         'Producto',
         'Concepto',
@@ -207,7 +216,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     // Añadir filas al PDF con encabezado naranja
     pdf.autoTable({
       head: [[
-        'Sucursal',
+        'idSucursal',
         'Usuario',
         'Producto',
         'Concepto',

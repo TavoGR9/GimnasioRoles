@@ -40,6 +40,9 @@ export class AuthService {
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
+
+
+
   constructor(private router: Router, private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
     const encryptedMail = sessionStorage.getItem(this.USER_KEY);
     if (encryptedMail) {
@@ -48,6 +51,7 @@ export class AuthService {
   }
 
   comprobar(): Observable<any> {
+    console.log("idUser actualizado a:", this.idUser.getValue());
     return this.connectivityService.checkInternetConnectivity().pipe(
       map((isConnected: boolean) => {
         if (isConnected) {
@@ -197,6 +201,11 @@ export class AuthService {
   // dataUser(data: any): Observable<any> {
   //   return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders});
   // }
+
+  getUsuario(correo: string): Observable<any> {
+    const params = { correo };
+    return this.clienteHttp.get<any>(this.API2 +  'getUsuarioActual.php', { params });
+  }
 
   dataUser(data: any): Observable<any> {
     return this.clienteHttp.post<dataLogin>(this.API2 + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(

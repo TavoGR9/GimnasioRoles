@@ -5,6 +5,7 @@ import { AuthService } from "../../service/auth.service";
 import { CategoriaService } from '../../service/categoria.service';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-crear-marca',
@@ -25,7 +26,8 @@ export class CrearMarcaComponent implements OnInit {
     private auth: AuthService,
     private categoriaService: CategoriaService,
     private dialogRef: MatDialogRef<CrearMarcaComponent>,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private toastr: ToastrService
   ) {
     this.serviceForm = this.fb.group({
       id_marcas: [0],
@@ -60,11 +62,17 @@ export class CrearMarcaComponent implements OnInit {
 
       const newMarca = {
         ...this.serviceForm.value,
-        idGimnasio: this.idGym  // Incluye el idGym en el objeto de la nueva marca
+        idGimnasio: this.idGym,  // Incluye el idGym en el objeto de la nueva marca
+        servicio: 1
       };
 
-      this.categoriaService.agregarMarcaSer2(newMarca).subscribe((respuesta) => {
+      console.log('newMarca: ',newMarca);
+
+
+      this.categoriaService.agregarMarca2(newMarca).subscribe((respuesta) => {
         if (respuesta) {
+          console.log('respuesta: ',respuesta);
+
           if (respuesta.success == '1') {
             this.spinner.hide();
             const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
@@ -76,6 +84,7 @@ export class CrearMarcaComponent implements OnInit {
           } else {
             this.spinner.hide();
             this.message = "Hubo un error al agregar la marca.";
+            this.toastr.error('Ya existe esa marca, ingresa otro nombre');
             console.error("Error al agregar marca", respuesta);
           }
         } else {

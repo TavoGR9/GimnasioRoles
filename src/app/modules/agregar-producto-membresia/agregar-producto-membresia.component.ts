@@ -244,12 +244,12 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
   buscarMarca() {
     const marcaIngresado = this.form.get("marcaP")?.value;
-      this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe({
+      this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe({
 
       next: (respuesta) => {
 
         // Filtra las marcas que tienen 'servicio' igual a 1
-        const marcasFiltradas = respuesta.data.filter(
+        const marcasFiltradas = respuesta.Productos.filter(
           (marca: any) => marca.servicio !== null && marca.servicio !==0
         );
 
@@ -398,7 +398,86 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                                   },
                                 });
                             } else {
-                              console.error("Error: marca no encontrada o success no es 1");
+                              console.log('NO EXISTE LA MARCA');
+                              const formMarca = {
+                                marcaP: this.form.value.marcaP,
+                                idGimnasio: this.idGym,
+                                servicio: 1
+                              };
+                              console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                              this.categoriaService
+                                .agregarMarca2(formMarca)
+                                .subscribe((respuestaMarca) => {
+                                  console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                  const formularioP = {
+                                    idProducto:
+                                      subCategoriaExistente.producto
+                                        .id_producto,
+                                    detalleUnidadMedida: "pza",
+                                    precioCompra: this.form.value.precioCompra,
+                                    detalleCompra:
+                                      this.form.value.detalleCompra,
+                                    id_marcaV: respuestaMarca.data.id_marcas,
+                                    descripcion: this.form.value.descripcion,
+                                    codigoBarra: this.form.value.codigoBarra,
+                                    ItemNumber: this.form.value.ItemNumber,
+                                    activo: this.form.value.activo,
+                                    sat: this.form.value.sat,
+                                    ieps: this.form.value.ieps,
+                                    iva: this.form.value.iva,
+                                    factura: this.form.value.factura,
+                                    STYLE_ITEM_ID:
+                                      this.form.value.STYLE_ITEM_ID,
+                                    precioCaja: this.form.value.precioCaja,
+                                    cantidadMayoreo:
+                                      this.form.value.cantidadMayoreo,
+                                      //idUsuario: this.auth.idUser.getValue(),
+                                  };
+
+                                  this.productoService
+                                    .creaProductoMemb(formularioP)
+                                    .subscribe({
+                                      next: (respuesta) => {
+                                        if (respuesta.success) {
+                                          this.spinner.hide();
+                                          this.dialog
+                                            .open(MensajeEmergentesComponent, {
+                                              data: `Producto agregado exitosamente`,
+                                            })
+                                            .afterClosed()
+                                            .subscribe(
+                                              (cerrarDialogo: Boolean) => {
+                                                if (cerrarDialogo) {
+                                                  this.productoSubject.next();
+                                                  this.dialogo.close(true);
+                                                } else {
+                                                  // Puedes agregar lógica adicional aquí si es necesario
+                                                }
+                                              }
+                                            );
+                                        } else {
+                                          this.toastr.error(
+                                            respuesta.message,
+                                            "Error",
+                                            {
+                                              positionClass:
+                                                "toast-bottom-left",
+                                            }
+                                          );
+                                        }
+                                      },
+                                      error: (paramError) => {
+                                        this.toastr.error(
+                                          paramError.error.message,
+                                          "Error",
+                                          {
+                                            positionClass: "toast-bottom-left",
+                                          }
+                                        );
+                                      },
+                                    });
+                                });
                             }
                           });
                       } else {
@@ -415,6 +494,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
         });
     } else {
       this.message = "Por favor, complete todos los campos requeridos.";
+      this.marcarCamposInvalidos(this.form);
     }
   }
 

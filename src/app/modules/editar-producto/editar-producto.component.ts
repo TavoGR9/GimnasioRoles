@@ -44,6 +44,12 @@ export class EditarProductoComponent implements OnInit{
 
   esServicio: boolean = false;
 
+  idUser: any;
+  correooo: any;
+
+  usuario: any; // Almacenar datos del usuario
+  clave: string | undefined; // Clave específica
+
 
   constructor( public dialogo: MatDialogRef<EditarProductoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -62,7 +68,7 @@ export class EditarProductoComponent implements OnInit{
     this.inventarioService.obtenerProductoPorIdYIdBodega(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
         this.editarProd = respuesta;
-        // console.log('editarProd: ', this.editarProd);
+        console.log('editarProd: ', this.editarProd);
 
 
         // Imprimir en consola el nombre de la categoría
@@ -122,30 +128,51 @@ export class EditarProductoComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.currentUser = this.auth.getCurrentUser();
-    if(this.currentUser){
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
+    // this.currentUser = this.auth.getCurrentUser();
+    // if(this.currentUser){
+    //   this.getSSdata(JSON.stringify(this.currentUser));
+    // }
 
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
     });
-  }
 
-  getSSdata(data: any){
-    this.auth.dataUser(data).subscribe({
-      next: (resultData) => {
+    // this.idUser = this.auth.idUser.getValue();
+    // console.log('idUser: ', this.idUser);
 
-        this.auth.loggedIn.next(true);
-          this.auth.role.next(resultData.rolUser);
-          this.auth.idUser.next(resultData.id);
-          this.auth.idGym.next(resultData.idGym);
-          this.auth.nombreGym.next(resultData.nombreGym);
-          this.auth.email.next(resultData.email);
-          this.auth.encryptedMail.next(resultData.encryptedMail);
-      }, error: (error) => { console.log(error); }
+
+    this.correooo = this.auth.email.getValue();
+    console.log('correoo: ', this.correooo);
+
+    this.auth.getUsuario(this.correooo).subscribe({
+      next: (response) => {
+        console.log('response: ', response);
+
+        this.usuario = response[0];
+        this.clave = this.usuario.clave;
+        console.log('Usuario:', this.usuario);
+        console.log('Clave:', this.clave);
+      },
+      error: (err) => {
+        console.error('Error al obtener datos del usuario:', err);
+      }
     });
   }
+
+  // getSSdata(data: any){
+  //   this.auth.dataUser(data).subscribe({
+  //     next: (resultData) => {
+
+  //       this.auth.loggedIn.next(true);
+  //         this.auth.role.next(resultData.rolUser);
+  //         this.auth.idUser.next(resultData.id);
+  //         this.auth.idGym.next(resultData.idGym);
+  //         this.auth.nombreGym.next(resultData.nombreGym);
+  //         this.auth.email.next(resultData.email);
+  //         this.auth.encryptedMail.next(resultData.encryptedMail);
+  //     }, error: (error) => { console.log(error); }
+  //   });
+  // }
 
   obtenerFechaActual(): string {
     const fechaActual = new Date();
@@ -180,13 +207,16 @@ export class EditarProductoComponent implements OnInit{
       fecha_actu: fechaFormateada,
       p_id_producto: this.form.value.idProbob,
       codigoB: this.form.value.codigoBarra,
-      p_id_bodega: this.form.value.id_bodega
+      p_id_bodega: this.form.value.id_bodega,
+      mail_actualizador: this.clave,
     }
 
     const dataArray = [data];
-    // console.log('Datos a enviar: ', dataArray);
+    console.log('Datos a enviar: ', dataArray);
 
     this.entrada.actualizarProductoEInsertarHistorial(dataArray).subscribe({next: (update) =>{
+      console.log('Update: ', update);
+
       if (update.success == 1) {
         // console.log('Update: ', update);
 

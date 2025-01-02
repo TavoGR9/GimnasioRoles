@@ -371,16 +371,18 @@ export class CrearProductoComponent implements OnInit {
                                   },
                                 });
                             } else {
-                              //console.log('NO EXISTE LA MARCA');
+                              console.log('NO EXISTE LA MARCA');
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
+                                idGimnasio: 0,
+                                servicio: 0
                               };
-                              //console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                              console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
                               this.categoriaService
                                 .agregarMarca2(formMarca)
                                 .subscribe((respuestaMarca) => {
-                                  //console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
-                                  //console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                  console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                   const formularioP = {
                                     idProducto:
                                       subCategoriaExistente.producto
@@ -538,6 +540,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -718,6 +722,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -889,6 +895,8 @@ export class CrearProductoComponent implements OnInit {
                                     } else {
                                       const formMarca = {
                                         marcaP: this.form.value.marcaP,
+                                        idGimnasio: 0,
+                                        servicio: 0
                                       };
                                       this.categoriaService
                                         .agregarMarca2(formMarca)
@@ -1067,6 +1075,8 @@ export class CrearProductoComponent implements OnInit {
                             } else {
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
+                                idGimnasio: 0,
+                                servicio: 0
                               };
                               this.categoriaService
                                 .agregarMarca2(formMarca)
@@ -1228,6 +1238,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -1404,6 +1416,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -1576,6 +1590,8 @@ export class CrearProductoComponent implements OnInit {
                                     } else {
                                       const formMarca = {
                                         marcaP: this.form.value.marcaP,
+                                        idGimnasio: 0,
+                                        servicio: 0
                                       };
                                       this.categoriaService
                                         .agregarMarca2(formMarca)
@@ -1764,6 +1780,8 @@ export class CrearProductoComponent implements OnInit {
                         } else {
                           const formMarca = {
                             marcaP: this.form.value.marcaP,
+                            idGimnasio: 0,
+                            servicio: 0
                           };
                           this.categoriaService
                             .agregarMarca2(formMarca)
@@ -1912,6 +1930,8 @@ export class CrearProductoComponent implements OnInit {
                             } else {
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
+                                idGimnasio: 0,
+                                servicio: 0
                               };
                               this.categoriaService
                                 .agregarMarca2(formMarca)
@@ -2070,6 +2090,8 @@ export class CrearProductoComponent implements OnInit {
                             } else {
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
+                                idGimnasio: 0,
+                                servicio: 0
                               };
                               this.categoriaService
                                 .agregarMarca2(formMarca)
@@ -2219,6 +2241,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)

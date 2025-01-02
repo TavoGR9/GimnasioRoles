@@ -104,11 +104,15 @@ export class ServiciosListaComponent implements OnInit{
 
   //REEMPLAZAR POR MARCAS
   listaTablaMarca() {
-    this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe((res) => {
-      if (res.success === 1 && res.data) {
-        console.log(res.data);
+    this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe((res) => {
+      console.log('res: ', res);
+      console.log('resProductos: ', res.Productos);
 
-        this.marcas = res.data.filter((marca: any) => marca.servicio !== null && marca.servicio !== 0 && marca.fk_idGimnasio == this.idGym);
+
+      if (res.Productos) {
+        console.log(res.Productos);
+
+        this.marcas = res.Productos.filter((marca: any) => marca.servicio !== null && marca.servicio !== 0 && marca.fk_idGimnasio == this.idGym);
         this.dataSourceDos = new MatTableDataSource(this.marcas);
       } else {
         this.marcas = [];
