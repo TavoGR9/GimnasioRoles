@@ -18,6 +18,9 @@ import { PromocionService } from "../../service/promocion.service";
 import { ProductoService } from "../../service/producto.service";
 
 import { Inventario } from "../../models/inventario";
+import { AgregarProductoMembresiaComponent } from '../agregar-producto-membresia/agregar-producto-membresia.component';
+import { membresia } from '../../models/membresia';
+
 
 @Component({
   selector: "app-membresias-agregar",
@@ -35,6 +38,8 @@ export class planAgregarComponent {
   noServicios: boolean = false;//saber si hay membresias
   Producto: any[] = [];
 
+  isMultiple: boolean = false;
+
   constructor(
     public dialogo: MatDialogRef<planAgregarComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
@@ -46,7 +51,7 @@ export class planAgregarComponent {
     private auth: AuthService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService,
-    public dialog: MatDialog,
+    public dialog: MatDialog
   ) {
     this.formulariodePlan = this.fb.group(
       {
@@ -60,7 +65,7 @@ export class planAgregarComponent {
         idGym: [this.auth.idGym.getValue(), Validators.required],
 
         membresias: [[], Validators.required],
-        preciopv: [663.20],
+        preciopv: [1],
         plataforma: ["Web"]
 
       },
@@ -87,6 +92,10 @@ export class planAgregarComponent {
   }
 
 
+  onTipoPromocionChange(value: number): void {
+    this.isMultiple = value === 1; // Si selecciona "Paquete", permite múltiples opciones
+  }
+
   cancelar() {
     this.formulariodePlan.reset();
     this.router.navigateByUrl("admin/misMembresias");
@@ -110,6 +119,13 @@ export class planAgregarComponent {
         return;
       }
 
+
+       // Verifica idChoProm y membresias
+      if(formularioData.membresias.length <= 1 && formularioData.idChoProm === 1){
+        this.toastr.error("Eligue más de una opción", "Error");
+        return;
+      }
+
       // Validar que las fechas sean correctas
       const dateValidation = this.dateLessThan('FechaInicio', 'FechaFin')(
       this.formulariodePlan
@@ -119,7 +135,6 @@ export class planAgregarComponent {
         this.toastr.error(dateValidation['dates'], 'Error');
         return; // Evita continuar si hay error en las fechas
       }
-
 
       //mostrar boton de carga
       this.spinner.show();
@@ -199,11 +214,13 @@ export class planAgregarComponent {
     });
   }
 
+
+
   ///AGREGAR MEMBRESIA
   openDialog(): void {
-    this.membresiaService.optionShow.next(1);
-    this.membresiaService.optionShow.subscribe((option) => {});
-    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+    this.promocionService.optionShow.next(1);
+    this.promocionService.optionShow.subscribe((option) => {});
+    const dialogRef = this.dialog.open(AgregarProductoMembresiaComponent, {
       width: "70%",
       height: "90%",
       disableClose: true,

@@ -28,6 +28,7 @@ export class planEditarComponent {
   servicios: any[] = [];//se usa
   membresias: any[] = [];//se usa
   idMem: any;//se usa
+  paquete: any;
 
   constructor(
     public dialogo: MatDialogRef<planEditarComponent>,
@@ -56,13 +57,16 @@ export class planEditarComponent {
         Gimnasio_idGimnasio: [this.auth.idGym.getValue(), Validators.required],
 
         membresias: [[], Validators.required]
-        
+
       }
     );
   }
 
+
+
   //OBTENER LOS DATOS
   ngOnInit(): void {
+
     const idGym = this.auth.idGym.getValue();
     const idPromo = this.idMem;
 
@@ -75,6 +79,12 @@ export class planEditarComponent {
         }
 
         this.servicios = this.filtrarDatos(data, idPromo);
+
+        //Guardamos el id de paquete para usarlo despues
+        this.paquete = Number(this.servicios[0]?.idChoProm || 0);
+        console.log("Estatus inicializado:", this.paquete);
+
+
         return this.productoService.obternerInventario(idGym);
       }),
       catchError((error) => {
@@ -93,7 +103,6 @@ export class planEditarComponent {
       this.selectedMembresias =this.plan.filter((plan) =>
         this.membresias.some((membresia) => membresia.idProbob === plan.idProbob)
       );
-      console.log("DATOS filtrados: ", this.selectedMembresias);
 
 
       //CONFIGURAR FORMULARIO
@@ -104,14 +113,33 @@ export class planEditarComponent {
         existencias: this.servicios[0].existencias,
         precio: this.servicios[0].PrecioPaquete,
 
-        membresias: this.selectedMembresias
+        membresias: this.paquete === 1
+        ? (Array.isArray(this.selectedMembresias) ? this.selectedMembresias : [this.selectedMembresias]) // Múltiple: asegúrate de que sea un array
+        : this.selectedMembresias ? this.selectedMembresias[0] : null // Único: toma el primer elemento
+
       });
         let fechaDate = new Date(this.servicios[0].FechaInicio + ' 0:00:00');
         this.formulariodePlan.controls['fechaInicio'].setValue(fechaDate);
         let fechaDate2 = new Date(this.servicios[0].FechaFin + ' 0:00:00');
         this.formulariodePlan.controls['fechaFin'].setValue(fechaDate2);
+
+        console.log("DATOS EN EL FORMULARIO: ",this.servicios);
+        this.ngOnChanges();
     });
+
   }
+
+    ngOnChanges() {
+    console.log('Modo actual:', this.paquete === 1 ? 'Múltiple' : 'Único');
+    console.log('Valor de membresias:', this.formulariodePlan.value.membresias);
+
+    console.log('Valor de paquete:', this.paquete);
+    console.log('Tipo de membresias:', Array.isArray(this.formulariodePlan.value.membresias) ? 'Array (Múltiple)' : 'Objeto (Único)');
+    console.log('Contenido de membresias:', this.formulariodePlan.value.membresias);
+
+  }
+
+
 
 
 ///ACRUALIZAR LOS PLANES
@@ -126,6 +154,12 @@ actualizar() {
     ) {
       this.toastr.error("Todos los campos son obligatorios, un campo esta vacio", "Error");
       return;
+      }
+
+      // Verifica idChoProm y membresias
+      if(formularioData.membresias.length <= 1 && this.paquete === 1){
+        this.toastr.error("Eligue más de una opción en membresias", "Error");
+        return;
       }
 
       // Validar que las fechas sean correctas
@@ -234,6 +268,8 @@ actualizar() {
       idProbob: servicio.idProbob,
     }))
   }
+
+
 
 
 }

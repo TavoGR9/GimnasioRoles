@@ -81,13 +81,20 @@ export class PromocionService {
 
   //AGREGAR UN NUEVO PLAN
   agregarPlan(datosPlan: Promocion): Observable<any> {
-    // Extraer solo los id_producto de las membresías
-    const membresiaIds = datosPlan.membresias.map(membresia => membresia.idProbob);
 
-    // Crear el objeto con los datos que se van a enviar, reemplazando el arreglo de miembros con solo los ids
+    let membresiaIds: number[];
+
+    // Verifica si 'membresias' es un array y mapea los IDs, si no, solo extrae el ID
+    if (Array.isArray(datosPlan.membresias)) {
+      membresiaIds = datosPlan.membresias.map(membresia => membresia.idProbob);
+    } else {
+      membresiaIds = [datosPlan.membresias.idProbob];
+    }
+
+    // Crear el objeto con los datos que se van a enviar
     const datosAEnviar = {
       ...datosPlan,
-      membresias: membresiaIds  // Solo enviamos los IDs de las membresías
+      membresias: membresiaIds, // Enviar los IDs procesados
     };
 
     console.log("Datos que se envían a la API:", datosAEnviar);
@@ -113,13 +120,19 @@ export class PromocionService {
 
   //EDICION DE PLANES Y MEMBRESIAS
   updatePlanesMem(datosPlan: Promocion): Observable<any> {
-    // Extraer solo los id_producto de las membresías
-    const membresiaIds = datosPlan.membresias.map(membresia => membresia.idProbob);
+    let membresiaIds: number[];
 
-    // Crear el objeto con los datos que se van a enviar, reemplazando el arreglo de miembros con solo los ids
+    // Verifica si 'membresias' es un array y mapea los IDs, si no, solo extrae el ID
+    if (Array.isArray(datosPlan.membresias)) {
+      membresiaIds = datosPlan.membresias.map(membresia => membresia.idProbob);
+    } else {
+      membresiaIds = [datosPlan.membresias.idProbob];
+    }
+
+    // Crear el objeto con los datos que se van a enviar
     const datosAEnviar = {
       ...datosPlan,
-      membresias: membresiaIds  // Solo enviamos los IDs de las membresías
+      membresias: membresiaIds, // Enviar los IDs procesados
     };
 
     console.log("Datos que se envían a la API:", datosAEnviar);

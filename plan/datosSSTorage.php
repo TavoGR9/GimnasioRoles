@@ -9,7 +9,7 @@ if (isset($_GET["datos"])) {
     $data = json_decode(file_get_contents("php://input"));
 
     $username = $data->olympus;
-	
+
     $data = $username; // Aquí colocas el mensaje encriptado a decodificar
 	$iv = 'KingWizardGodCML';
 
@@ -25,12 +25,12 @@ if (isset($_GET["datos"])) {
 	}
 
 
-   $consultaRol = "SELECT empleado.*, empleadoBodega.id_bodega FROM empleado 
-                JOIN empleadoBodega ON empleado.id_empleado = empleadoBodega.id_empleado 
+   $consultaRol = "SELECT empleado.*, empleadoBodega.id_bodega FROM empleado
+                JOIN empleadoBodega ON empleado.id_empleado = empleadoBodega.id_empleado
                 WHERE empleado.correoEmpleado = ?";
 
     $stmt = mysqli_prepare($enlace, $consultaRol);
-	
+
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, "s", $decodificadoFront);
         mysqli_stmt_execute($stmt);
@@ -42,7 +42,7 @@ if (isset($_GET["datos"])) {
             $data = $userData['correoEmpleado'];
             $iv = 'KingWizardGodCML';
 			$encryptedMail = openssl_encrypt($userData['correoEmpleado'], 'aes-256-cbc', 'correoEmp', 0, $iv);
-			
+
 
             echo json_encode(["rolUser" => $userData['puesto'],"idGym" => $userData['id_bodega'],"encryptedMail" => $encryptedMail]);
             exit;

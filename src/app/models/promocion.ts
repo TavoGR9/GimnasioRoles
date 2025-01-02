@@ -1,8 +1,7 @@
-import { membresia } from './membresia';
-// promocion.model.ts
+
 export interface Membresia {
   codigoBarras: string;
-  idProbob: number,
+  idProbob: number;
   existencia: number;
   marca: string;
   nombreBodega: string;
@@ -18,12 +17,9 @@ export interface Promocion {
   FechaInicio: Date;
   FechaFin: Date;
   PrecioPaquete: number;
-  //cantidad: number;
   existencias: number;
   idGym: number;
-  //idProbob: number;
-  membresias: Membresia[];
+  membresias: Membresia | Membresia[]; // Permite tanto un objeto como un arreglo de membresías
   plataforma: string;
-  //precio: number;
   preciopv: number;
 }

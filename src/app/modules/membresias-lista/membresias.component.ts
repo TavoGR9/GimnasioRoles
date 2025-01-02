@@ -71,7 +71,7 @@ export class MembresiasComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       // this.listaTabla();
-      this.listaTablaProd();
+      this.listaTablaProdMem();
     });
   }
 
@@ -97,24 +97,6 @@ export class MembresiasComponent implements OnInit {
       this.dataSourceDos.paginator = this.paginator;
     }, 1000);
   }
-
-  // listaTabla() {
-  //   this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
-  //     (respuesta) => {
-  //       if (Array.isArray(respuesta)) {
-  //         this.plan = respuesta;
-  //         this.dataSource = new MatTableDataSource(this.plan);
-  //         this.loadData();
-  //       }else{
-  //         setTimeout(() => {
-  //           this.isLoading = false;
-  //         }, 1000);
-  //       }
-  //     },
-  //     (error) => {
-  //     }
-  //   );
-  // }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -147,86 +129,85 @@ export class MembresiasComponent implements OnInit {
     );
   }
 
-  // openDialog(): void {
-  //   this.membresiaService.optionShow.next(1);
-  //   this.membresiaService.optionShow.subscribe((option) => {});
-  //   const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-  //     width: "70%",
-  //     disableClose: true,
-  //     data: { name: "¿Para quién es esta membresía?" },
-  //   });
+  openDialog(): void {
+    this.membresiaService.optionShow.next(1);
+    this.membresiaService.optionShow.subscribe((option) => {});
+    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+      width: "70%",
+      disableClose: true,
+      data: { name: "¿Para quién es esta membresía?" },
+    });
 
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
-  //       (respuesta) => {
-  //         if (respuesta) {
-  //           this.plan = respuesta;
-  //           this.dataSource = new MatTableDataSource(this.plan);
-  //           this.dataSource.paginator = this.paginator;
-  //         } else {
-  //         }
-  //       },
-  //       (error) => {
-  //         console.error('Error al obtener los datos del servicio:', error);
-  //       }
-  //     );
-  //   });
-  // }
+    dialogRef.afterClosed().subscribe((result) => {
+      this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
+        (respuesta) => {
+          if (respuesta) {
+            this.plan = respuesta;
+            this.dataSource = new MatTableDataSource(this.plan);
+            this.dataSource.paginator = this.paginator;
+          } else {
+          }
+        },
+        (error) => {
+          console.error('Error al obtener los datos del servicio:', error);
+        }
+      );
+    });
+  }
 
-  // openDialogService(idMem: number, tipo_membresia: number) {
-  //   this.membresiaService.optionShow.next(2);
-  //   this.membresiaService.optionShow.subscribe((option) => {});
-  //   this.membresiaService.setDataToupdate(idMem, tipo_membresia);
-  //   const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-  //     width: "70%",
-  //     disableClose: true,
-  //     data: { name: "Servicios de la membresia" },
-  //   });
-  // }
+  openDialogService(idMem: number, tipo_membresia: number) {
+    this.membresiaService.optionShow.next(2);
+    this.membresiaService.optionShow.subscribe((option) => {});
+    this.membresiaService.setDataToupdate(idMem, tipo_membresia);
+    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+      width: "70%",
+      disableClose: true,
+      data: { name: "Servicios de la membresia" },
+    });
+  }
 
-  // openDialogEdit(idMem: number, tipo_membresia: number) {
-  //   this.membresiaService.optionShow.next(3);
-  //   this.membresiaService.optionShow.subscribe((option) => {});
-  //   this.membresiaService.setDataToupdate(idMem, tipo_membresia);
-  //   const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-  //     width: "70%",
-  //     disableClose: true,
-  //     data: { name: "Editar membresia", id: idMem },
-  //   });
-  //   dialogRef.afterClosed().subscribe((result) => {
-  //     this.membresiaService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
-  //       this.plan = respuesta;
-  //       this.dataSource = new MatTableDataSource(this.plan);
-  //       this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
-  //     });
-  //   });
-  // }
+  openDialogEdit(idMem: number, tipo_membresia: number) {
+    this.membresiaService.optionShow.next(3);
+    this.membresiaService.optionShow.subscribe((option) => {});
+    this.membresiaService.setDataToupdate(idMem, tipo_membresia);
+    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+      width: "70%",
+      disableClose: true,
+      data: { name: "Editar membresia", id: idMem },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.membresiaService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
+        this.plan = respuesta;
+        this.dataSource = new MatTableDataSource(this.plan);
+        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+      });
+    });
+  }
 
-  // openDialogAddServices() {
-  //   this.membresiaService.optionShow.next(4);
-  //   this.membresiaService.optionShow.subscribe((option) => {
-  //     if (option == 4) {
-  //       const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-  //         width: "70%",
-  //         data: { name: "Agregar servicios" },
-  //       });
-  //     }
-  //   });
-  // }
+  openDialogAddServices() {
+    this.membresiaService.optionShow.next(4);
+    this.membresiaService.optionShow.subscribe((option) => {
+      if (option == 4) {
+        const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+          width: "70%",
+          data: { name: "Agregar servicios" },
+        });
+      }
+    });
+  }
 
 
   //Reemplazar por productos
-  listaTablaProd(){
-    this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-      console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
+  listaTablaProdMem(){
+    this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
+      // console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
 
       //this.productos = resultData
-      this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
+      this.productos = resultData.filter((producto: any) => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
       this.dataSourceDos = new MatTableDataSource(this.productos);
-      console.log('Lista de productos: ', this.productos);
-      console.log('Datos de la lista de productos: ', this.dataSourceDos);
-      console.log("ID de Gimnasio:", this.idGym);
-
+      // console.log('Lista de productos: ', this.productos);
+      // console.log('Datos de la lista de productos: ', this.dataSourceDos);
+      // console.log("ID de Gimnasio:", this.idGym);
 
       this.loadData();
     });
@@ -280,13 +261,7 @@ export class MembresiasComponent implements OnInit {
       data: { idProducto: idProducto },
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-
-        this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios');
-        this.dataSourceDos = new MatTableDataSource(this.productos);
-        this.dataSourceDos.paginator = this.paginator; // Asigna el paginador a tu dataSource
-        this.loadData();
-      });
+      this.listaTablaProdMem();
     });
   }
 
@@ -297,15 +272,9 @@ export class MembresiasComponent implements OnInit {
       data: { name: "¿Para quién es esta membresía?" },
     });
 
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-
-    //     this.productos = resultData.filter(producto => producto.nombreCategoria.toLowerCase() === 'servicios');
-    //     this.dataSourceDos = new MatTableDataSource(this.productos);
-    //     this.dataSourceDos.paginator = this.paginator; // Asigna el paginador a tu dataSource
-    //     this.loadData();
-    //   });
-    // });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.listaTablaProdMem();
+    });
 
   }
 

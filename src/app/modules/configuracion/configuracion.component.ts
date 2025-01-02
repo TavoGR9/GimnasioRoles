@@ -11,6 +11,7 @@ import { AuthService } from '../../service/auth.service';
 import { catchError} from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { RoleGuard } from '../../guards/role.guard';
 class Horario {
   constructor(
     public diaSemana: string,
@@ -35,7 +36,7 @@ export class ConfiguracionComponent  implements OnInit{
   formularioSucursales: FormGroup;
   diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
   idGimnasio: any;
-  idUs:any;
+  idUser:any;
 
   constructor(
     private router: Router,
@@ -52,10 +53,10 @@ export class ConfiguracionComponent  implements OnInit{
       console.log("GYM: ",this.idGimnasio);
 
       this.auth.idUser.subscribe((data) => {
-        this.idUs = data;
-        this.listaTabla();
-      });
-      console.log("GYM: ",this.idUs);
+        this.idUser = data;
+      })
+      console.log("GYM: ",this.idUser);
+
 
       this.formularioHorarios = this.formulario.group({
         horarios: this.formulario.array([]),
@@ -71,6 +72,40 @@ export class ConfiguracionComponent  implements OnInit{
       numeroTelefonico:  ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
     });
   }
+
+  ngOnInit(): void {
+
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      //this.listaTabla();
+      this.verHorario();
+    });
+
+
+
+
+
+
+
+    }
+
+    getSSdata(data: any){
+      this.auth.dataUser(data).subscribe({
+        next: (resultData) => {
+          this.auth.loggedIn.next(true);
+            this.auth.role.next(resultData.rolUser);
+            this.auth.idUser.next(resultData.id);
+            this.auth.idGym.next(resultData.idGym);
+            this.auth.nombreGym.next(resultData.nombreGym);
+            this.auth.email.next(resultData.email);
+            this.auth.encryptedMail.next(resultData.encryptedMail);
+        }, error: (error) => { console.log(error); }
+      });
+    }
 
   /*agregarHorarioExistente(diaSemana: string, respuesta: any): void {
     const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
@@ -102,22 +137,7 @@ export class ConfiguracionComponent  implements OnInit{
     }
   }
 
-  ngOnInit(): void {
 
-    this.listaTabla();
-    
-    this.currentUser = this.auth.getCurrentUser();
-    if(this.currentUser){
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      //this.listaTabla();
-      this.verHorario();
-    });
-
-
-    }
 
 
 /*  verHorario(){
@@ -149,7 +169,7 @@ export class ConfiguracionComponent  implements OnInit{
   listaTabla(){
     const dato = {
       idG: this.idGimnasio,
-      id: this.idUs
+      id: this.idUser
     }
     console.log("DATOS LISTA: ",dato);
     this.gimnasioService.consultarPlan(dato).subscribe(
@@ -165,20 +185,7 @@ export class ConfiguracionComponent  implements OnInit{
   }
 
 
-  getSSdata(data: any){
-    this.auth.dataUser(data).subscribe({
-      next: (resultData) => {
-        this.auth.loggedIn.next(true);
-          this.auth.role.next(resultData.rolUser);
-          this.auth.idUser.next(resultData.id);
-          this.auth.idGym.next(resultData.idGym);
-          this.auth.nombreGym.next(resultData.nombreGym);
-          this.auth.email.next(resultData.email);
-          this.auth.encryptedMail.next(resultData.encryptedMail);
-          console.log(resultData);
-      }, error: (error) => { console.log(error); }
-    });
-  }
+
 
   actualizar() {
     const idGym = this.auth.idGym.getValue();

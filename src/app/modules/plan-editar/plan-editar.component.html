@@ -59,6 +59,48 @@
 
                     <div class="row">
                         <div class="col-sm-6">
+
+                          <p *ngIf="plan && plan.length > 0">
+                            <label>Membresías:</label>
+                            <!-- Selector para selección múltiple -->
+                            <mat-form-field *ngIf="paquete === 1" appearance="outline" style="width: 95%;" required>
+                              <mat-label>Selecciona varias membresías</mat-label>
+                              <mat-select [multiple]="true"  formControlName="membresias" >
+                                <mat-option *ngFor="let membresia of plan" [value]="membresia">
+                                  {{ membresia.nombreProducto }} - {{ membresia.nombreCategoria }} - {{ membresia.marca }}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+
+                            <!-- Selector para selección única -->
+                            <mat-form-field *ngIf="paquete !== 1" appearance="outline" style="width: 95%;" required>
+                              <mat-label>Selecciona una membresía</mat-label>
+                              <mat-select [multiple]="false" formControlName="membresias">
+                                <mat-option *ngFor="let membresia of plan" [value]="membresia">
+                                  {{ membresia.nombreProducto }} - {{ membresia.nombreCategoria }} - {{ membresia.marca }}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                          </p>
+<!--
+                          <p>
+                            <label>Tipo de Promoción:</label>
+                            <mat-form-field appearance="outline" style="width: 95%;" required>
+                              <mat-label>Selecciona Tipo de Promoción</mat-label>
+                              <mat-select formControlName="idChoProm" placeholder="Seleccione un tipo" >
+
+                                <mat-option [value]="1">Paquete</mat-option>
+                                <mat-option [value]="2">Individual</mat-option>
+                              </mat-select>
+                              <mat-error *ngIf="isFieldInvalid('idChoProm', 'required')">
+                                Debes seleccionar un tipo de promoción.
+                              </mat-error>
+                            </mat-form-field>
+                          </p>
+-->
+                        </div>
+
+                        <div class="col-sm-6">
                           <p>
                             <label>Existencias:</label>
                             <mat-form-field appearance="outline"  style="width: 95%;" required>
@@ -73,26 +115,12 @@
                             </mat-form-field>
                           </p>
                         </div>
-
-                        <div class="col-sm-6">
-                          <p>
-                            <label>Membresías:</label>
-                            <mat-form-field appearance="outline" style="width: 95%;" required>
-                                <mat-label>Selecciona una membresía</mat-label>
-                                <mat-select multiple formControlName="membresias">
-
-                                    <mat-option *ngFor="let membresia of plan" [value]="membresia" >
-                                    {{ membresia.nombreProducto }} - {{ membresia.nombreCategoria	 }}  - {{ membresia.marca }}
-                                  </mat-option>
-
-                                </mat-select>
-                              </mat-form-field>
-                          </p>
-                        </div>
                     </div>
 
                     <div class="row">
                       <div class="col-sm-6">
+
+
 
                       </div>
                     </div>

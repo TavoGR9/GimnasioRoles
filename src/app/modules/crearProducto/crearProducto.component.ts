@@ -157,10 +157,11 @@ export class CrearProductoComponent implements OnInit {
 
   buscarCategorias() {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
-    this.categoriaService.obtenerCategoria().subscribe({
+    this.categoriaService.obtenerCategoria2().subscribe({
       next: (respuesta) => {
+        console.log('TODAS LAS CATEGORIAS: ', respuesta);
         const categoriasU = new Set(
-          respuesta.categorias.map(
+          respuesta.map(
             (categoria: any) => categoria.nombreCategoria
           )
         );
@@ -172,7 +173,7 @@ export class CrearProductoComponent implements OnInit {
         );
 
         // Obtener el ID de la categoría seleccionada
-        const categoriaSeleccionada = respuesta.categorias.find(
+        const categoriaSeleccionada = respuesta.find(
           (categoria: any) => categoria.nombreCategoria === saborIngresado
         );
         if (categoriaSeleccionada) {
@@ -198,10 +199,11 @@ export class CrearProductoComponent implements OnInit {
   buscarSubCategorias() {
     const idCategoriaGuardada = localStorage.getItem("idCategoriaSeleccionada");
     const subCIngresado = this.form.get("nomsubcate")?.value;
-    this.categoriaService.obtenerSubCategoria(idCategoriaGuardada).subscribe({
+    this.categoriaService.obtenerSubCategoria2(idCategoriaGuardada).subscribe({
       next: (respuesta) => {
+        console.log('TODAS LAS SUBCATEGORIAS: ', respuesta);
         const subCategoriasU = new Set(
-          respuesta.subCategoria.map(
+          respuesta.productos.map(
             (subCategoria: any) => subCategoria.nombreProducto
           )
         );
@@ -218,10 +220,11 @@ export class CrearProductoComponent implements OnInit {
 
   buscarMarca() {
     const marcaIngresado = this.form.get("marcaP")?.value;
-    this.categoriaService.obtenerMarcas().subscribe({
+    this.categoriaService.obtenerMarcas2().subscribe({
       next: (respuesta) => {
+        console.log('TODAS LAS MARCAS: ', respuesta);
         const marcasU = new Set(
-          respuesta.marcas.map((marca: any) => marca.marca)
+          respuesta.map((marca: any) => marca.marca)
         );
         this.marcas = Array.from(marcasU) as string[];
         this.filteredMarcas = this.marcas.filter(
@@ -236,7 +239,7 @@ export class CrearProductoComponent implements OnInit {
   vercodigoBarras() {
     const codigo = this.form.get("codigoBarra")?.value;
     this.productoService
-      .verProductoCodigoBarras(codigo)
+      .verProductoCodigoBarras2(codigo)
       .subscribe((respuesta: any) => {
         if (respuesta.success == 0) {
         } else {
@@ -281,25 +284,29 @@ export class CrearProductoComponent implements OnInit {
       this.spinner.show();
       ///********** Verifica si la categoria ya existe */
       const codigo = this.form.get("codigoBarra")?.value;
+      //console.log('Formulario:', this.form.value);  // Verifica que los valores estén bien
       this.productoService
-        .verProductoCodigoBarras(codigo)
+        .verProductoCodigoBarras2(codigo)
         .subscribe((respuesta: any) => {
           if (respuesta.success == 0) {
             this.categoriaService
-              .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
+              .obtenerCategoriaPorNombre2(this.form.value.nombreCategoriaP)
               .subscribe((categoriaExistente) => {
+                //console.log('CATEGORIA: ', categoriaExistente);
+                //console.log('CATEGORIA ECISTENTE?: ', categoriaExistente.success);
                 if (categoriaExistente.success == 1) {
                   ///********** Verifica si la subcategoria ya existe */
                   this.categoriaService
-                    .obtenerSubCategoriaPorNombre(
+                    .obtenerSubCategoriaPorNombre2(
                       this.form.value.nomsubcate,
                       categoriaExistente.categoria.id_categoria
                     )
                     .subscribe((subCategoriaExistente) => {
+                      //console.log("SUBCATEGORIA EXISTENTE: ", subCategoriaExistente);
                       if (subCategoriaExistente.success == 1) {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
-                          .obtenerMarcaPorNombre(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               const formularioP = {
@@ -309,7 +316,7 @@ export class CrearProductoComponent implements OnInit {
                                 precioCompra: this.form.value.precioCompra,
                                 detalleCompra: this.form.value.detalleCompra,
                                 id_marcaV:
-                                  marcaExistente.marcasproducto.id_marcas,
+                                  marcaExistente.marca.id_marcas,
                                 descripcion: this.form.value.descripcion,
                                 codigoBarra: this.form.value.codigoBarra,
                                 ItemNumber: this.form.value.ItemNumber,
@@ -321,11 +328,11 @@ export class CrearProductoComponent implements OnInit {
                                 STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo:this.form.value.cantidadMayoreo,
-                                idUsuario: this.auth.idUser.getValue(),
+                                //idUsuario: this.auth.idUser.getValue(),
                               };
 
                               this.productoService
-                                .creaProducto(formularioP)
+                                .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -364,12 +371,16 @@ export class CrearProductoComponent implements OnInit {
                                   },
                                 });
                             } else {
+                              //console.log('NO EXISTE LA MARCA');
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
                               };
+                              //console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
                               this.categoriaService
-                                .agregarMarca(formMarca)
+                                .agregarMarca2(formMarca)
                                 .subscribe((respuestaMarca) => {
+                                  //console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  //console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                   const formularioP = {
                                     idProducto:
                                       subCategoriaExistente.producto
@@ -378,7 +389,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCompra: this.form.value.precioCompra,
                                     detalleCompra:
                                       this.form.value.detalleCompra,
-                                    id_marcaV: respuestaMarca.id_marcas,
+                                    id_marcaV: respuestaMarca.data.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -392,11 +403,11 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -446,13 +457,13 @@ export class CrearProductoComponent implements OnInit {
                           idcatte: categoriaExistente.categoria.id_categoria,
                           nomsubcate: this.form.value.nomsubcate,
                         };
-
+                        //console.log('Datos a enviar de la sub: ', formSub);
                         this.categoriaService
-                          .agregarSubCategoria(formSub)
+                          .agregarSubCategoria2(formSub)
                           .subscribe((respuestaSub) => {
                             ///********** Verifica si la marca ya existe */
                             this.categoriaService
-                              .obtenerMarcaPorNombre(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
                               .subscribe((marcaExistente) => {
                                 if (marcaExistente.success == 1) {
                                   this.spinner.hide();
@@ -465,7 +476,7 @@ export class CrearProductoComponent implements OnInit {
                                     detalleCompra:
                                       this.form.value.detalleCompra,
                                     id_marcaV:
-                                      marcaExistente.marcasproducto.id_marcas,
+                                      marcaExistente.marca.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -479,11 +490,11 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -529,8 +540,10 @@ export class CrearProductoComponent implements OnInit {
                                     marcaP: this.form.value.marcaP,
                                   };
                                   this.categoriaService
-                                    .agregarMarca(formMarca)
+                                    .agregarMarca2(formMarca)
                                     .subscribe((respuestaMarca) => {
+                                      //console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                      //console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                       const formularioP = {
                                         idProducto: respuestaSub.id_producto,
                                         detalleUnidadMedida: "pza",
@@ -538,7 +551,7 @@ export class CrearProductoComponent implements OnInit {
                                           this.form.value.precioCompra,
                                         detalleCompra:
                                           this.form.value.detalleCompra,
-                                        id_marcaV: respuestaMarca.id_marcas,
+                                        id_marcaV: respuestaMarca.data.id_marcas,
                                         descripcion:
                                           this.form.value.descripcion,
                                         codigoBarra:
@@ -554,11 +567,11 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
-                                          idUsuario: this.auth.idUser.getValue(),
+                                          //idUsuario: this.auth.idUser.getValue(),
                                       };
 
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -611,20 +624,25 @@ export class CrearProductoComponent implements OnInit {
                       }
                     });
                 } else {
+                  console.log("La categoría no existe, creando nueva...");
                   // Si la categoría no existe, se agrega
                   this.categoriaService
-                    .agregarCategoria(this.form.value)
+                    .agregarCategoria2(this.form.value)
                     .subscribe((respuesta) => {
+                      if (respuesta.success === 1) {
+                      //console.log('TODO EL FORMULARIO: ', this.form.value);
+                      //console.log('Nombre de la nueva categoria: ', this.form.value.nombreCategoriaP)
+                      //console.log('Categoría agregada:', respuesta);  // Verifica la respuesta
                       ///********** Verifica si la subcategoria ya existe */
                       this.categoriaService
-                        .obtenerSubCategoriaPorNombre(
+                        .obtenerSubCategoriaPorNombre2(
                           this.form.value.nomsubcate,
                           respuesta.id_categoria
                         )
                         .subscribe((subCategoriaExistente) => {
                           if (subCategoriaExistente.success == 1) {
                             this.categoriaService
-                              .obtenerMarcaPorNombre(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
                               .subscribe((marcaExistente) => {
                                 if (marcaExistente.success == 1) {
                                   //agregar producto
@@ -638,7 +656,7 @@ export class CrearProductoComponent implements OnInit {
                                     detalleCompra:
                                       this.form.value.detalleCompra,
                                     id_marcaV:
-                                      marcaExistente.marcasproducto.id_marcas,
+                                      marcaExistente.marca.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -652,11 +670,11 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -702,7 +720,7 @@ export class CrearProductoComponent implements OnInit {
                                     marcaP: this.form.value.marcaP,
                                   };
                                   this.categoriaService
-                                    .agregarMarca(formMarca)
+                                    .agregarMarca2(formMarca)
                                     .subscribe((respuestaMarca) => {
                                       const formularioP = {
                                         idProducto:
@@ -713,7 +731,7 @@ export class CrearProductoComponent implements OnInit {
                                           this.form.value.precioCompra,
                                         detalleCompra:
                                           this.form.value.detalleCompra,
-                                        id_marcaV: respuestaMarca.id_marcas,
+                                        id_marcaV: respuestaMarca.data.id_marcas,
                                         descripcion:
                                           this.form.value.descripcion,
                                         codigoBarra:
@@ -729,11 +747,11 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
-                                          idUsuario: this.auth.idUser.getValue(),
+                                          //idUsuario: this.auth.idUser.getValue(),
                                       };
 
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -789,11 +807,11 @@ export class CrearProductoComponent implements OnInit {
                             };
 
                             this.categoriaService
-                              .agregarSubCategoria(formSub)
+                              .agregarSubCategoria2(formSub)
                               .subscribe((respuestaSub) => {
                                 ///********** Verifica si la marca ya existe */
                                 this.categoriaService
-                                  .obtenerMarcaPorNombre(this.form.value.marcaP)
+                                  .obtenerMarcaPorNombre2(this.form.value.marcaP)
                                   .subscribe((marcaExistente) => {
                                     if (marcaExistente.success == 1) {
                                       const formularioP = {
@@ -804,7 +822,7 @@ export class CrearProductoComponent implements OnInit {
                                         detalleCompra:
                                           this.form.value.detalleCompra,
                                         id_marcaV:
-                                          marcaExistente.marcasproducto
+                                          marcaExistente.marca
                                             .id_marcas,
                                         descripcion:
                                           this.form.value.descripcion,
@@ -821,10 +839,10 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
-                                          idUsuario: this.auth.idUser.getValue(),
+                                          //idUsuario: this.auth.idUser.getValue(),
                                       };
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -873,7 +891,7 @@ export class CrearProductoComponent implements OnInit {
                                         marcaP: this.form.value.marcaP,
                                       };
                                       this.categoriaService
-                                        .agregarMarca(formMarca)
+                                        .agregarMarca2(formMarca)
                                         .subscribe((respuestaMarca) => {
                                           const formularioP = {
                                             idProducto:
@@ -883,7 +901,7 @@ export class CrearProductoComponent implements OnInit {
                                               this.form.value.precioCompra,
                                             detalleCompra:
                                               this.form.value.detalleCompra,
-                                            id_marcaV: respuestaMarca.id_marcas,
+                                            id_marcaV: respuestaMarca.data.id_marcas,
                                             descripcion:
                                               this.form.value.descripcion,
                                             codigoBarra:
@@ -901,11 +919,11 @@ export class CrearProductoComponent implements OnInit {
                                               this.form.value.precioCaja,
                                             cantidadMayoreo:
                                               this.form.value.cantidadMayoreo,
-                                              idUsuario: this.auth.idUser.getValue(),
+                                              //idUsuario: this.auth.idUser.getValue(),
                                           };
 
                                           this.productoService
-                                            .creaProducto(formularioP)
+                                            .creaProductoMemb(formularioP)
                                             .subscribe({
                                               next: (respuesta) => {
                                                 if (respuesta.success) {
@@ -960,18 +978,21 @@ export class CrearProductoComponent implements OnInit {
                               });
                           }
                         });
+                      } else {
+                        console.log('Error al agregar la categoría:', respuesta.message);
+                      }
                     });
                 }
               });
           } else {
             this.form.get("nomsubcate")?.enable();
             this.categoriaService
-              .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
+              .obtenerCategoriaPorNombre2(this.form.value.nombreCategoriaP)
               .subscribe((categoriaExistente) => {
                 if (categoriaExistente.success == 1) {
                   ///********** Verifica si la subcategoria ya existe */
                   this.categoriaService
-                    .obtenerSubCategoriaPorNombre(
+                    .obtenerSubCategoriaPorNombre2(
                       this.form.value.nomsubcate,
                       categoriaExistente.categoria.id_categoria
                     )
@@ -979,7 +1000,7 @@ export class CrearProductoComponent implements OnInit {
                       if (subCategoriaExistente.success == 1) {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
-                          .obtenerMarcaPorNombre(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               const formularioP = {
@@ -989,7 +1010,7 @@ export class CrearProductoComponent implements OnInit {
                                 precioCompra: this.form.value.precioCompra,
                                 detalleCompra: this.form.value.detalleCompra,
                                 idMarcaProducto:
-                                  marcaExistente.marcasproducto.id_marcas,
+                                  marcaExistente.marca.id_marcas,
                                 descripcion: this.form.value.descripcion,
                                 codigoBarra: this.form.value.codigoBarra,
                                 ItemNumber: this.form.value.ItemNumber,
@@ -1002,10 +1023,10 @@ export class CrearProductoComponent implements OnInit {
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo:
                                   this.form.value.cantidadMayoreo,
-                                  idUsuario: this.auth.idUser.getValue(),
+                                  //idUsuario: this.auth.idUser.getValue(),
                               };
                               this.productoService
-                                .actualizarProducto(formularioP)
+                                .actualizarProducto2(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1048,7 +1069,7 @@ export class CrearProductoComponent implements OnInit {
                                 marcaP: this.form.value.marcaP,
                               };
                               this.categoriaService
-                                .agregarMarca(formMarca)
+                                .agregarMarca2(formMarca)
                                 .subscribe((respuestaMarca) => {
                                   const formularioP = {
                                     idProducto:
@@ -1058,7 +1079,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCompra: this.form.value.precioCompra,
                                     detalleCompra:
                                       this.form.value.detalleCompra,
-                                    idMarcaProducto: respuestaMarca.id_marcas,
+                                    idMarcaProducto: respuestaMarca.data.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -1072,11 +1093,11 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
-                                    .actualizarProducto(formularioP)
+                                    .actualizarProducto2(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1128,11 +1149,11 @@ export class CrearProductoComponent implements OnInit {
                         };
 
                         this.categoriaService
-                          .agregarSubCategoria(formSub)
+                          .agregarSubCategoria2(formSub)
                           .subscribe((respuestaSub) => {
                             ///********** Verifica si la marca ya existe */
                             this.categoriaService
-                              .obtenerMarcaPorNombre(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
                               .subscribe((marcaExistente) => {
                                 if (marcaExistente.success == 1) {
                                   this.spinner.hide();
@@ -1145,7 +1166,7 @@ export class CrearProductoComponent implements OnInit {
                                     detalleCompra:
                                       this.form.value.detalleCompra,
                                     idMarcaProducto:
-                                      marcaExistente.marcasproducto.id_marcas,
+                                      marcaExistente.marca.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -1159,11 +1180,11 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
-                                    .actualizarProducto(formularioP)
+                                    .actualizarProducto2(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1209,7 +1230,7 @@ export class CrearProductoComponent implements OnInit {
                                     marcaP: this.form.value.marcaP,
                                   };
                                   this.categoriaService
-                                    .agregarMarca(formMarca)
+                                    .agregarMarca2(formMarca)
                                     .subscribe((respuestaMarca) => {
                                       const formularioP = {
                                         idProducto: respuestaSub.id_producto,
@@ -1219,7 +1240,7 @@ export class CrearProductoComponent implements OnInit {
                                         detalleCompra:
                                           this.form.value.detalleCompra,
                                         idMarcaProducto:
-                                          respuestaMarca.id_marcas,
+                                          respuestaMarca.data.id_marcas,
                                         descripcion:
                                           this.form.value.descripcion,
                                         codigoBarra:
@@ -1235,11 +1256,11 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
-                                          idUsuario: this.auth.idUser.getValue(),
+                                          //idUsuario: this.auth.idUser.getValue(),
                                       };
 
                                       this.productoService
-                                        .actualizarProducto(formularioP)
+                                        .actualizarProducto2(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1294,18 +1315,20 @@ export class CrearProductoComponent implements OnInit {
                 } else {
                   // Si la categoría no existe, se agrega
                   this.categoriaService
-                    .agregarCategoria(this.form.value)
+                    .agregarCategoria2(this.form.value)
                     .subscribe((respuesta) => {
+                      if (respuesta.success === 1) {
+
                       ///********** Verifica si la subcategoria ya existe */
                       this.categoriaService
-                        .obtenerSubCategoriaPorNombre(
+                        .obtenerSubCategoriaPorNombre2(
                           this.form.value.nomsubcate,
                           respuesta.id_categoria
                         )
                         .subscribe((subCategoriaExistente) => {
                           if (subCategoriaExistente.success == 1) {
                             this.categoriaService
-                              .obtenerMarcaPorNombre(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
                               .subscribe((marcaExistente) => {
                                 if (marcaExistente.success == 1) {
                                   //agregar producto
@@ -1319,7 +1342,7 @@ export class CrearProductoComponent implements OnInit {
                                     detalleCompra:
                                       this.form.value.detalleCompra,
                                     idMarcaProducto:
-                                      marcaExistente.marcasproducto.id_marcas,
+                                      marcaExistente.marca.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -1333,11 +1356,11 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
 
                                   this.productoService
-                                    .actualizarProducto(formularioP)
+                                    .actualizarProducto2(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1383,7 +1406,7 @@ export class CrearProductoComponent implements OnInit {
                                     marcaP: this.form.value.marcaP,
                                   };
                                   this.categoriaService
-                                    .agregarMarca(formMarca)
+                                    .agregarMarca2(formMarca)
                                     .subscribe((respuestaMarca) => {
                                       const formularioP = {
                                         idProducto:
@@ -1395,7 +1418,7 @@ export class CrearProductoComponent implements OnInit {
                                         detalleCompra:
                                           this.form.value.detalleCompra,
                                         idMarcaProducto:
-                                          respuestaMarca.id_marcas,
+                                          respuestaMarca.data.id_marcas,
                                         descripcion:
                                           this.form.value.descripcion,
                                         codigoBarra:
@@ -1411,11 +1434,11 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
-                                          idUsuario: this.auth.idUser.getValue(),
+                                          //idUsuario: this.auth.idUser.getValue(),
                                       };
 
                                       this.productoService
-                                        .actualizarProducto(formularioP)
+                                        .actualizarProducto2(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1471,11 +1494,11 @@ export class CrearProductoComponent implements OnInit {
                             };
 
                             this.categoriaService
-                              .agregarSubCategoria(formSub)
+                              .agregarSubCategoria2(formSub)
                               .subscribe((respuestaSub) => {
                                 ///********** Verifica si la marca ya existe */
                                 this.categoriaService
-                                  .obtenerMarcaPorNombre(this.form.value.marcaP)
+                                  .obtenerMarcaPorNombre2(this.form.value.marcaP)
                                   .subscribe((marcaExistente) => {
                                     if (marcaExistente.success == 1) {
                                       const formularioP = {
@@ -1486,7 +1509,7 @@ export class CrearProductoComponent implements OnInit {
                                         detalleCompra:
                                           this.form.value.detalleCompra,
                                         idMarcaProducto:
-                                          marcaExistente.marcasproducto
+                                          marcaExistente.marca
                                             .id_marcas,
                                         descripcion:
                                           this.form.value.descripcion,
@@ -1503,10 +1526,10 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
-                                          idUsuario: this.auth.idUser.getValue(),
+                                         // idUsuario: this.auth.idUser.getValue(),
                                       };
                                       this.productoService
-                                        .actualizarProducto(formularioP)
+                                        .actualizarProducto2(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1555,7 +1578,7 @@ export class CrearProductoComponent implements OnInit {
                                         marcaP: this.form.value.marcaP,
                                       };
                                       this.categoriaService
-                                        .agregarMarca(formMarca)
+                                        .agregarMarca2(formMarca)
                                         .subscribe((respuestaMarca) => {
                                           const formularioP = {
                                             idProducto:
@@ -1566,7 +1589,7 @@ export class CrearProductoComponent implements OnInit {
                                             detalleCompra:
                                               this.form.value.detalleCompra,
                                             idMarcaProducto:
-                                              respuestaMarca.id_marcas,
+                                              respuestaMarca.data.id_marcas,
                                             descripcion:
                                               this.form.value.descripcion,
                                             codigoBarra:
@@ -1584,11 +1607,11 @@ export class CrearProductoComponent implements OnInit {
                                               this.form.value.precioCaja,
                                             cantidadMayoreo:
                                               this.form.value.cantidadMayoreo,
-                                              idUsuario: this.auth.idUser.getValue(),
+                                              //idUsuario: this.auth.idUser.getValue(),
                                           };
 
                                           this.productoService
-                                            .actualizarProducto(formularioP)
+                                            .actualizarProducto2(formularioP)
                                             .subscribe({
                                               next: (respuesta) => {
                                                 if (respuesta.success) {
@@ -1643,6 +1666,9 @@ export class CrearProductoComponent implements OnInit {
                               });
                           }
                         });
+                      } else {
+                        console.log('Error al agregar la categoría:', respuesta.message);
+                      }
                     });
                 }
               });
@@ -1659,16 +1685,16 @@ export class CrearProductoComponent implements OnInit {
       this.spinner.show();
     const codigo = this.form.get("codigoBarra")?.value;
     this.productoService
-      .verProductoCodigoBarras(codigo)
+      .verProductoCodigoBarras2(codigo)
       .subscribe((respuesta: any) => {
         if (respuesta.success == 0) {
           this.categoriaService
-          .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
+          .obtenerCategoriaPorNombre2(this.form.value.nombreCategoriaP)
           .subscribe((categoriaExistente) => {
             if (categoriaExistente.success == 1) {
               ///********** Verifica si la subcategoria ya existe */
               this.categoriaService
-                .obtenerSubCategoriaPorNombre(
+                .obtenerSubCategoriaPorNombre2(
                   this.form.value.nomsubcate,
                   categoriaExistente.categoria.id_categoria
                 )
@@ -1676,7 +1702,7 @@ export class CrearProductoComponent implements OnInit {
                   if (subCategoriaExistente.success == 1) {
                     ///********** Verifica si la marca ya existe */
                     this.categoriaService
-                      .obtenerMarcaPorNombre(this.form.value.marcaP)
+                      .obtenerMarcaPorNombre2(this.form.value.marcaP)
                       .subscribe((marcaExistente) => {
                         if (marcaExistente.success == 1) {
                           const formularioP = {
@@ -1685,7 +1711,7 @@ export class CrearProductoComponent implements OnInit {
                             detalleUnidadMedida: "pza",
                             precioCompra: this.form.value.precioCompra,
                             detalleCompra: this.form.value.detalleCompra,
-                            id_marcaV: marcaExistente.marcasproducto.id_marcas,
+                            id_marcaV: marcaExistente.marca.id_marcas,
                             descripcion: this.form.value.descripcion,
                             codigoBarra: this.form.value.codigoBarra,
                             ItemNumber: this.form.value.ItemNumber,
@@ -1697,11 +1723,11 @@ export class CrearProductoComponent implements OnInit {
                             STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                             precioCaja: this.form.value.precioCaja,
                             cantidadMayoreo: this.form.value.cantidadMayoreo,
-                            idUsuario: this.auth.idUser.getValue(),
+                            //idUsuario: this.auth.idUser.getValue(),
                           };
-  
+
                           this.productoService
-                            .creaProducto(formularioP)
+                            .creaProductoMemb(formularioP)
                             .subscribe({
                               next: (respuesta) => {
                                 if (respuesta.success) {
@@ -1740,7 +1766,7 @@ export class CrearProductoComponent implements OnInit {
                             marcaP: this.form.value.marcaP,
                           };
                           this.categoriaService
-                            .agregarMarca(formMarca)
+                            .agregarMarca2(formMarca)
                             .subscribe((respuestaMarca) => {
                               const formularioP = {
                                 idProducto:
@@ -1748,7 +1774,7 @@ export class CrearProductoComponent implements OnInit {
                                 detalleUnidadMedida: "pza",
                                 precioCompra: this.form.value.precioCompra,
                                 detalleCompra: this.form.value.detalleCompra,
-                                id_marcaV: respuestaMarca.id_marcas,
+                                id_marcaV: respuestaMarca.data.id_marcas,
                                 descripcion: this.form.value.descripcion,
                                 codigoBarra: this.form.value.codigoBarra,
                                 ItemNumber: this.form.value.ItemNumber,
@@ -1760,11 +1786,11 @@ export class CrearProductoComponent implements OnInit {
                                 STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
-                                idUsuario: this.auth.idUser.getValue(),
+                                //idUsuario: this.auth.idUser.getValue(),
                               };
-  
+
                               this.productoService
-                                .creaProducto(formularioP)
+                                .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1811,25 +1837,25 @@ export class CrearProductoComponent implements OnInit {
                       idcatte: categoriaExistente.categoria.id_categoria,
                       nomsubcate: this.form.value.nomsubcate,
                     };
-  
+
                     this.categoriaService
-                      .agregarSubCategoria(formSub)
+                      .agregarSubCategoria2(formSub)
                       .subscribe((respuestaSub) => {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
-                          .obtenerMarcaPorNombre(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               this.spinner.hide();
                               //agregar producto
-  
+
                               const formularioP = {
                                 idProducto: respuestaSub.id_producto,
                                 detalleUnidadMedida: "pza",
                                 precioCompra: this.form.value.precioCompra,
                                 detalleCompra: this.form.value.detalleCompra,
                                 id_marcaV:
-                                  marcaExistente.marcasproducto.id_marcas,
+                                  marcaExistente.marca.id_marcas,
                                 descripcion: this.form.value.descripcion,
                                 codigoBarra: this.form.value.codigoBarra,
                                 ItemNumber: this.form.value.ItemNumber,
@@ -1841,11 +1867,11 @@ export class CrearProductoComponent implements OnInit {
                                 STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
-                                idUsuario: this.auth.idUser.getValue(),
+                                //idUsuario: this.auth.idUser.getValue(),
                               };
-  
+
                               this.productoService
-                                .creaProducto(formularioP)
+                                .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1888,14 +1914,14 @@ export class CrearProductoComponent implements OnInit {
                                 marcaP: this.form.value.marcaP,
                               };
                               this.categoriaService
-                                .agregarMarca(formMarca)
+                                .agregarMarca2(formMarca)
                                 .subscribe((respuestaMarca) => {
                                   const formularioP = {
                                     idProducto: respuestaSub.id_producto,
                                     detalleUnidadMedida: "pza",
                                     precioCompra: this.form.value.precioCompra,
                                     detalleCompra: this.form.value.detalleCompra,
-                                    id_marcaV: respuestaMarca.id_marcas,
+                                    id_marcaV: respuestaMarca.data.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -1908,11 +1934,11 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
-  
+
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1962,22 +1988,24 @@ export class CrearProductoComponent implements OnInit {
             } else {
               // Si la categoría no existe, se agrega
               this.categoriaService
-                .agregarCategoria(this.form.value)
+                .agregarCategoria2(this.form.value)
                 .subscribe((respuesta) => {
+                  if (respuesta.success === 1) {
+
                   ///********** Verifica si la subcategoria ya existe */
                   this.categoriaService
-                    .obtenerSubCategoriaPorNombre(
+                    .obtenerSubCategoriaPorNombre2(
                       this.form.value.nomsubcate,
                       respuesta.id_categoria
                     )
                     .subscribe((subCategoriaExistente) => {
                       if (subCategoriaExistente.success == 1) {
                         this.categoriaService
-                          .obtenerMarcaPorNombre(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               //agregar producto
-  
+
                               const formularioP = {
                                 idProducto:
                                   subCategoriaExistente.producto.id_producto,
@@ -1985,7 +2013,7 @@ export class CrearProductoComponent implements OnInit {
                                 precioCompra: this.form.value.precioCompra,
                                 detalleCompra: this.form.value.detalleCompra,
                                 id_marcaV:
-                                  marcaExistente.marcasproducto.id_marcas,
+                                  marcaExistente.marca.id_marcas,
                                 descripcion: this.form.value.descripcion,
                                 codigoBarra: this.form.value.codigoBarra,
                                 ItemNumber: this.form.value.ItemNumber,
@@ -1997,11 +2025,11 @@ export class CrearProductoComponent implements OnInit {
                                 STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
                                 precioCaja: this.form.value.precioCaja,
                                 cantidadMayoreo: this.form.value.cantidadMayoreo,
-                                idUsuario: this.auth.idUser.getValue(),
+                                //idUsuario: this.auth.idUser.getValue(),
                               };
-  
+
                               this.productoService
-                                .creaProducto(formularioP)
+                                .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -2044,7 +2072,7 @@ export class CrearProductoComponent implements OnInit {
                                 marcaP: this.form.value.marcaP,
                               };
                               this.categoriaService
-                                .agregarMarca(formMarca)
+                                .agregarMarca2(formMarca)
                                 .subscribe((respuestaMarca) => {
                                   const formularioP = {
                                     idProducto:
@@ -2052,7 +2080,7 @@ export class CrearProductoComponent implements OnInit {
                                     detalleUnidadMedida: "pza",
                                     precioCompra: this.form.value.precioCompra,
                                     detalleCompra: this.form.value.detalleCompra,
-                                    id_marcaV: respuestaMarca.id_marcas,
+                                    id_marcaV: respuestaMarca.data.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -2065,11 +2093,11 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
-  
+
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -2118,13 +2146,13 @@ export class CrearProductoComponent implements OnInit {
                           idcatte: respuesta.id_categoria,
                           nomsubcate: this.form.value.nomsubcate,
                         };
-  
+
                         this.categoriaService
-                          .agregarSubCategoria(formSub)
+                          .agregarSubCategoria2(formSub)
                           .subscribe((respuestaSub) => {
                             ///********** Verifica si la marca ya existe */
                             this.categoriaService
-                              .obtenerMarcaPorNombre(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
                               .subscribe((marcaExistente) => {
                                 if (marcaExistente.success == 1) {
                                   const formularioP = {
@@ -2133,7 +2161,7 @@ export class CrearProductoComponent implements OnInit {
                                     precioCompra: this.form.value.precioCompra,
                                     detalleCompra: this.form.value.detalleCompra,
                                     id_marcaV:
-                                      marcaExistente.marcasproducto.id_marcas,
+                                      marcaExistente.marca.id_marcas,
                                     descripcion: this.form.value.descripcion,
                                     codigoBarra: this.form.value.codigoBarra,
                                     ItemNumber: this.form.value.ItemNumber,
@@ -2146,10 +2174,10 @@ export class CrearProductoComponent implements OnInit {
                                     precioCaja: this.form.value.precioCaja,
                                     cantidadMayoreo:
                                       this.form.value.cantidadMayoreo,
-                                      idUsuario: this.auth.idUser.getValue(),
+                                      //idUsuario: this.auth.idUser.getValue(),
                                   };
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -2193,7 +2221,7 @@ export class CrearProductoComponent implements OnInit {
                                     marcaP: this.form.value.marcaP,
                                   };
                                   this.categoriaService
-                                    .agregarMarca(formMarca)
+                                    .agregarMarca2(formMarca)
                                     .subscribe((respuestaMarca) => {
                                       const formularioP = {
                                         idProducto: respuestaSub.id_producto,
@@ -2202,7 +2230,7 @@ export class CrearProductoComponent implements OnInit {
                                           this.form.value.precioCompra,
                                         detalleCompra:
                                           this.form.value.detalleCompra,
-                                        id_marcaV: respuestaMarca.id_marcas,
+                                        id_marcaV: respuestaMarca.data.id_marcas,
                                         descripcion: this.form.value.descripcion,
                                         codigoBarra: this.form.value.codigoBarra,
                                         ItemNumber: this.form.value.ItemNumber,
@@ -2216,11 +2244,11 @@ export class CrearProductoComponent implements OnInit {
                                         precioCaja: this.form.value.precioCaja,
                                         cantidadMayoreo:
                                           this.form.value.cantidadMayoreo,
-                                          idUsuario: this.auth.idUser.getValue(),
+                                          //idUsuario: this.auth.idUser.getValue(),
                                       };
-  
+
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -2271,6 +2299,9 @@ export class CrearProductoComponent implements OnInit {
                           });
                       }
                     });
+                  } else {
+                    console.log('Error al agregar la categoría:', respuesta.message);
+                  }
                 });
             }
           });
@@ -2281,7 +2312,7 @@ export class CrearProductoComponent implements OnInit {
         this.spinner.hide();
       }
       });
-      
+
     } else {
       this.message = "Por favor, complete todos los campos requeridos.";
       this.marcarCamposInvalidos(this.form);

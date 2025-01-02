@@ -253,10 +253,10 @@ export class planComponent implements OnInit, AfterViewInit  {
 
       tap((respuesta) => {
         if (respuesta.success === 1) {
-          this.actualizaLista(respuesta, false);
+          this.actualizaLista(respuesta, true);
           this.toastr.success("El plan se a eliminado corretamente.", "Éxito");
         } else {
-          this.actualizaLista(respuesta, true);
+          this.actualizaLista(respuesta, false);
           this.toastr.warning("No se encontraron planes para actualizar.", "Advertencia");
         }
       }),

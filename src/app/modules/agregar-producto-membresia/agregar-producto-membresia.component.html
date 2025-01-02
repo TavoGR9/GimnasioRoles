@@ -19,7 +19,7 @@
                              <mat-label>Codigo de barra</mat-label>
                              <input
                                 matInput
-                                type="text"
+                                type="number"
                                 placeholder="Escribelo o escanealo"
                                 id="codigoBarra"
                                 formControlName="codigoBarra"
@@ -36,7 +36,7 @@
                              <mat-label>Codigo de barra</mat-label>
                              <input
                                 matInput
-                                type="text"
+                                type="number"
                                 placeholder="Escribelo o escanealo"
                                 id="codigoBarra"
                                 formControlName="codigoBarra"
@@ -146,9 +146,6 @@
         </div>
      </div>
      <div style="display: flex; justify-content: center;" mat-dialog-actions>
-        <!-- <button *ngIf="isAdmin()" mat-raised-button (click)="registrarProd()"  class="aceptar">Aceptar</button>
-        <button *ngIf="isRecep()" mat-raised-button (click)="registrarP()"  class="aceptar">Aceptar</button>
-        <button mat-raised-button  (click)="cerrarDialogo()" class="cancelar">Cancelar</button> -->
         <button *ngIf="isAdmin()" mat-raised-button (click)="registrarProd()"  class="aceptar">Aceptar</button>
         <button mat-raised-button  (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
      </div>

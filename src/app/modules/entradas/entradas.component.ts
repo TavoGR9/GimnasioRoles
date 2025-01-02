@@ -14,6 +14,8 @@ import { MatPaginator } from "@angular/material/paginator";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { ProductoService } from "../../service/producto.service";
+import { inventarioService } from "../../service/inventario.service";
+
 interface Producto {
   idProbob: number;
   descripcion: string;
@@ -71,7 +73,8 @@ export class EntradasComponent implements OnInit {
     private dialog: MatDialog,
     private spinner: NgxSpinnerService,
     private GimnasioService: GimnasioService,
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private inventarioService: inventarioService
   ) {
     this.obtenerFoto();
     this.id = this.auth.idGym.getValue();
@@ -117,6 +120,9 @@ export class EntradasComponent implements OnInit {
     });
 
     this.buscarProducto();
+    console.log('email: ', this.auth.email.getValue());
+    console.log('idUser: ', this.idUsuario);
+    console.log('idGym: ', this.auth.idGym.getValue());
   }
 
   loadData() {
@@ -146,6 +152,8 @@ export class EntradasComponent implements OnInit {
   listaTablas() {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
+        console.log("Resultado de listaProductos:", resultData);
+
         this.listaProductos = resultData.productos;
       },
       error: (error) => {
@@ -158,6 +166,9 @@ export class EntradasComponent implements OnInit {
     const marcaIngresado = this.form.get("idProbob")?.value;
     this.entrada.listaProductos().subscribe({
       next: (respuesta) => {
+        console.log('respuesta: ', respuesta);
+
+
         const marcasU = new Set(
           respuesta.productos.map((product: any) => ({
             idProd: product.idProbob,
@@ -165,11 +176,15 @@ export class EntradasComponent implements OnInit {
           }))
         );
         this.productoss = Array.from(marcasU);
+        // console.log('Array productos: ', this.productoss);
+
         this.filteredProducto = this.productoss.filter(
           (product) =>
             !marcaIngresado ||
             product.nombre.toLowerCase().includes(marcaIngresado.toLowerCase())
         );
+        // console.log('filteredProducto: ', this.filteredProducto);
+
       },
     });
   }
@@ -184,13 +199,16 @@ export class EntradasComponent implements OnInit {
       idProbob: product,
     });
 
-    this.productoService.consultarProductosJ(product.idProd, this.auth.idGym.getValue()).subscribe(respuesta => {
+    this.productoService.consultarProductosId(product.idProd, this.auth.idGym.getValue()).subscribe(respuesta => {
       this.resultadoData = respuesta;
-      if (respuesta.length > 0) {
+      // console.log('resultData: ', respuesta);
+
+      if (respuesta.length > 0 ) {
         // patchValue: Actualiza solo los campos necesarios
         this.form.patchValue({
           precioCaja: this.resultadoData[0].precioCaja,
           precciosucu: this.resultadoData[0].precioSucursal
+
         });
       } else {
         this.form.patchValue({
@@ -283,6 +301,8 @@ export class EntradasComponent implements OnInit {
         )
       );
       forkJoin(verificaciones).subscribe((results) => {
+        // console.log('forkjoin: ',results);
+
         results.forEach((data, index) => {
           const id_Probob = dataToSend[index].id_Probob;
           if (data.success === 0) {
@@ -307,7 +327,7 @@ export class EntradasComponent implements OnInit {
               fechaE: dataToSend[index].fechaE,
               fechaEntrada: dataToSend[index].fechaEntrada,
               accion: "Registro de nuevo producto",
-              created_by: this.auth.idUser.getValue(),
+              //created_by: this.auth.idUser.getValue(),
             });
             hayRegistrosNuevos = true;
           } else if (data.success === 1) {
@@ -367,13 +387,15 @@ export class EntradasComponent implements OnInit {
                 this.form.reset();
                 this.tablaDatos = [];
                 this.entrada
-                .obtenerCompras(
+                .obtenerEntradas(
                   this.fechaInicio,
                   this.fechaFin,
                   this.auth.idGym.getValue()
                 )
                 .subscribe((respuesta) => {
                   this.compras = respuesta.data;
+                  // console.log('compras registradas: ', this.compras);
+
                   this.dataSource = new MatTableDataSource(this.compras);
                   this.dataSource.paginator = this.paginator;
                 });
@@ -402,7 +424,7 @@ export class EntradasComponent implements OnInit {
           this.spinner.hide();
           this.dialog
             .open(MensajeEmergentesComponent, {
-              data: `Entrada agregada exitosamente`,
+              data: `Entrada actualizada exitosamente`,
             })
             .afterClosed()
             .subscribe((cerrarDialogo: Boolean) => {
@@ -411,13 +433,15 @@ export class EntradasComponent implements OnInit {
                 this.form.reset();
                 this.tablaDatos = [];
                 this.entrada
-                .obtenerCompras(
+                .obtenerEntradas(
                   this.fechaInicio,
                   this.fechaFin,
                   this.auth.idGym.getValue()
                 )
                 .subscribe((respuesta) => {
                   this.compras = respuesta.data;
+                  // console.log('compras actualizdas: ', this.compras);
+
                   this.dataSource = new MatTableDataSource(this.compras);
                   this.dataSource.paginator = this.paginator;
                 });
@@ -482,11 +506,6 @@ export class EntradasComponent implements OnInit {
       ventanaImpresion.document.write(`
         <html>
           <head>
-          ${
-            this.fotoUrl
-              ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">`
-              : ""
-          }
             <style>
             body {
               font-family: 'Arial', sans-serif;
@@ -612,13 +631,15 @@ export class EntradasComponent implements OnInit {
 
   verCompras(): void {
     this.entrada
-      .obtenerCompras(
+      .obtenerEntradas(
         this.fechaInicio,
         this.fechaFin,
         this.auth.idGym.getValue()
       )
       .subscribe((respuesta) => {
         this.compras = respuesta.data;
+        // console.log('compras ver: ', this.compras);
+
         this.dataSource = new MatTableDataSource(this.compras);
         this.loadData();
 
@@ -639,7 +660,7 @@ todosClientes: any;
       return;
     }
     this.entrada
-      .obtenerCompras(
+      .obtenerEntradas(
         this.fechaInicio,
         this.fechaFin,
         this.auth.idGym.getValue()
@@ -671,7 +692,7 @@ todosClientes: any;
             [`Con fechas: ${fechaInicioFormateada} - ${fechaFinFormateada}`], // Fechas
             [], // Fila vacía para separar
             [
-              "Nombre",
+              "Nombre Producto",
               "Detalle de compra",
               "Marca",
               "Precio compra",
