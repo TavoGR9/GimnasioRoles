@@ -13,6 +13,7 @@ import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { combineLatest } from "rxjs";
 import { Color, ScaleType } from "@swimlane/ngx-charts";
+import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 
 @Component({
   selector: "app-home",
@@ -120,16 +121,18 @@ export class HomeComponent implements OnInit {
     private indexedDBService: IndexedDBService,
     private http: ColaboradorService,
     public membresiaService: MembresiaService,
-    private servicio: serviciosService
+    private servicio: serviciosService,
+    private pagoService: PagoMembresiaEfectivoService
   ) {}
 
   fechaFormateada: string = "";
   ngOnInit(): void {
+    this.consultarMembresia()
 
     console.log(this.isLoading)
     // this.auth.comprobar();
     // this.homeService.comprobar();
-
+/*
     const today = new Date();
     const year = today.getFullYear();
     let month = '' + (today.getMonth() + 1);
@@ -148,6 +151,7 @@ export class HomeComponent implements OnInit {
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
+      
     }
 
     combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
@@ -169,6 +173,7 @@ export class HomeComponent implements OnInit {
         }
       }
     );
+    */
   }
 
   /**LOCAL */
@@ -604,6 +609,65 @@ export class HomeComponent implements OnInit {
 
 consultarMembresia(){ 
 //this.homeService.ConsultarPedidosMembresias(this)
+this.pagoService.getPedidosMembresias(4).subscribe(
+  (response) => {
+    if (response.success === 1) {
+      const pedidos = response.data; // Almacenamos los datos de la respuesta
+      const pedidosAgrupados = this.agruparPorPedido(pedidos);
+      console.log(pedidos)
+      console.log(pedidosAgrupados)
+    } else {
+      const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+      console.log(errorMessage)
+    }
+   
+  },
+  (error) => {
+    
+    let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+    console.error(error); // También lo mostramos en la consola
+  }
+);
+}
+
+
+ agruparPorPedido(clientes: any[]): any[] {
+  // Creamos un objeto para almacenar los resultados agrupados por id_pedido.
+  const agrupadosPorPedido: { [key: string]: any } = {};
+
+  clientes.forEach(cliente => {
+    const idPedido = cliente.id_pedido;
+
+    if (!agrupadosPorPedido[idPedido]) {
+      // Si no existe este `id_pedido` en el objeto agrupador, lo inicializamos.
+      agrupadosPorPedido[idPedido] = {
+        id_pedido: cliente.id_pedido,
+        fecha_hora_pedido: cliente.fecha_hora_pedido,
+        id_bodega: cliente.id_bodega,
+        id_promocion: cliente.id_promocion,
+        nombrePromocion: cliente.nombrePromocion,
+        membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
+        productos: [] // Inicializamos un array vacío para los productos.
+      };
+    }
+
+    // Agregamos la información del producto al array `productos` correspondiente.
+    agrupadosPorPedido[idPedido].productos.push({
+      id_producto: cliente.id_producto,
+      marca: cliente.marca,
+      nombreProducto: cliente.nombreProducto,
+      idBodPro: cliente.idBodPro, // Ajustamos el campo a `idBodPro`.
+      nombreCategoria: cliente.nombreCategoria // Agregamos el campo `nombreCategoria`.
+    });
+  });
+
+  // Convertimos el objeto agrupado en un array.
+  return Object.values(agrupadosPorPedido);
+}
+
 
 }
-}
+
+
+
+

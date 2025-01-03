@@ -302,6 +302,20 @@ console.log("datos emnviado en servico",data);
 
 
 
+  // Método para obtener los pedidos de membresías por bodega
+  getPedidosMembresias(bodega: number): Observable<any> {
+    // Configuramos los parámetros para la solicitud GET
+    const params = new HttpParams().set('bodega', bodega.toString());
 
+    // Construimos la URL completa para el archivo PHP
+    const url = `${this.API}test_pedidos_membresias.php`;
+
+    return this.clienteHttp.get(url, { params }).pipe(
+      catchError((error) => {
+        console.error('Error al obtener los pedidos de membresías:', error.message);
+        return throwError(() => new Error('Error al procesar la solicitud'));
+      })
+    );
+  }
   
 }
