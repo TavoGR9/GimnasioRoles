@@ -283,25 +283,35 @@ export class FormPagoEmergenteComponent implements OnInit {
                 response => {
                   console.log('Respuesta de la API de promociones:', response);
 
-                  // agregar un if
-
-                  this.imprimirResumen3();
-                },
-                error => {
-                  console.error('Error al consultar la API de promociones:', error);
+                // Si la compra es exitosa
+                if (response[0]?.payment === "1")  { // Asumiendo que 'success' es el campo que indica una compra exitosa
+                  // Mostrar mensaje de compra exitosa
+                  this.dialog.open(MensajeEmergenteComponent, {
+                    data: `Pago exitoso, el cambio es de: $${this.dineroDevuelto}`, // Ajusta el mensaje con el precio calculado
+                    disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
+                  }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
+                    if (cerrarDialogo) {
+                      this.imprimirResumen3(); // Imprimir el resumen si el diálogo se cierra
+                    } else {
+                      // Aquí puedes agregar cualquier otra lógica si lo necesitas
+                    }
+                  });
+                } else {
+                  // Si no es exitoso, mostrar mensaje de error
                   this.spinner.hide();
-                  this.toastr.error(
-                    "Cantidad insuficiente para cubrir el costo de esta membresía.",
-                    "¡Error!"
-                  );
+                  this.toastr.error("Hubo un error al procesar tu pago. Intenta nuevamente.", "¡Error!");
                 }
-              );
-              // si es exitpsa 
-                // imprimir datos
-            // si no
-              // mensaje emergente algo fallo
-              
-            
+              },
+              error => {
+                // Si hay un error en la llamada a la API
+                console.error('Error al consultar la API de promociones:', error);
+                this.spinner.hide();
+                this.toastr.error(
+                  "Cantidad insuficiente para cubrir el costo de esta membresía.",
+                  "¡Error!"
+                );
+              }
+            );
           }
           this.spinner.hide(); // Se oculta el spinner después de la operación
         });
