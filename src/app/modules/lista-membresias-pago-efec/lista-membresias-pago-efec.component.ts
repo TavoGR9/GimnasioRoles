@@ -59,7 +59,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   //@ViewChild("paginatorReenovacionMem", { static: true })
   paginatorReenovacion!: MatPaginator;
   displayedColumnsActivos: string[] = [
-    "Clave",
+    "Estafeta",
     "Nombre",
     "Membresia",
     "Precio",
@@ -274,8 +274,8 @@ verificarCambios(): void {
     data.sort((a, b) => {
       const isAsc = this.sortDirection === "asc";
       switch (column) {
-        case "Clave":
-          return this.compare(Number(a.clave || 0), Number(b.clave || 0), isAsc);
+        case "Estafeta":
+          return this.compare(Number(a.estafeta || 0), Number(b.estafeta || 0), isAsc);
           case "Nombre":
             return this.compare(
               (a.nombreCompleto || "").trim(),

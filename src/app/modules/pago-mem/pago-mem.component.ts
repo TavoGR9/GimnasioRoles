@@ -382,7 +382,7 @@ descargarExcel(): void {
       [`Con fechas: ${fechaInicioFormateada} - ${fechaFinFormateada}`],
       [],
       [
-          "Clave",
+          "Estafeta",
           "Nombre completo",
           "Sucursal",
           "Membresía",
@@ -396,7 +396,7 @@ descargarExcel(): void {
       ...datosTabla.map((cliente: any) => {
           console.log("Procesando cliente:", cliente);
           return [
-              cliente.clave || "N/A",
+              cliente.estafeta || "N/A",
               cliente.nombreCompleto || "N/A",
               cliente.id_bodega || "N/A",
               cliente.membresia || "N/A",
