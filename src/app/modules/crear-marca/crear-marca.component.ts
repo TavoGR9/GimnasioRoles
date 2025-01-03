@@ -62,17 +62,11 @@ export class CrearMarcaComponent implements OnInit {
 
       const newMarca = {
         ...this.serviceForm.value,
-        idGimnasio: this.idGym,  // Incluye el idGym en el objeto de la nueva marca
-        servicio: 1
+        idGimnasio: this.idGym  // Incluye el idGym en el objeto de la nueva marca
       };
 
-      console.log('newMarca: ',newMarca);
-
-
-      this.categoriaService.agregarMarca2(newMarca).subscribe((respuesta) => {
+      this.categoriaService.agregarMarcaSer2(newMarca).subscribe((respuesta) => {
         if (respuesta) {
-          console.log('respuesta: ',respuesta);
-
           if (respuesta.success == '1') {
             this.spinner.hide();
             const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
@@ -84,7 +78,7 @@ export class CrearMarcaComponent implements OnInit {
           } else {
             this.spinner.hide();
             this.message = "Hubo un error al agregar la marca.";
-            this.toastr.error('Ya existe esa marca, ingresa otro nombre');
+            this.toastr.error('Ya existe esa marca, ingresa otro nombre');
             console.error("Error al agregar marca", respuesta);
           }
         } else {

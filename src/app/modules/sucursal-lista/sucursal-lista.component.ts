@@ -190,7 +190,9 @@ export class SucursalListaComponent implements OnInit {
   }
 
   editarSucursal(idGimnasio: number) {
+    console.log("Id del gym: ",idGimnasio);
     this.gimnasioService.gimnasioSeleccionado.next(idGimnasio);
+    //const id = idGimnasio;
     this.gimnasioService.optionSelected.next(3);
 
     this.gimnasioService.optionSelected.subscribe((data) => {
@@ -214,11 +216,10 @@ export class SucursalListaComponent implements OnInit {
       // Llamar al servicio para obtener la bodega por id
       this.gimnasioService.obtenerBodegaById(idGimnasio).subscribe((data) => {
         if (data) {
-          // Aquí puedes trabajar con los datos de la bodega
-          console.log('Datos de la bodega:', data);
-          this.gimnasio = data;
-          this.dataSource = new MatTableDataSource([this.gimnasio]);
-          this.dataSource.paginator = this.paginator;
+          console.log('Datos obtenidos del servicio:', data);
+           this.gimnasio = Array.isArray(data) ? data : data?.data || [];
+        this.dataSource = new MatTableDataSource(this.gimnasio);
+        this.dataSource.paginator = this.paginator;
         } else {
           console.error('No se encontró la bodega.');
         }

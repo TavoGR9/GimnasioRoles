@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { gimnasio } from '../models/gimnasio';
-import { listaSucursal } from '../models/listaSucursal';
 import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { tap } from 'rxjs/operators';
@@ -9,6 +8,7 @@ import { IndexedDBService } from './indexed-db.service';
 import { forkJoin,of  } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -111,7 +111,7 @@ getDataFromIndexedDB() {
   }
 
   agregarSucursal(datosGym: gimnasio):Observable<any>{
-    return this.clienteHttp.post(this.API+"addBodega.php", datosGym);
+    return this.clienteHttp.post(this.API+"bodega.php?insertar", datosGym);
   }
 
   consultarArchivos(id: any):Observable<any>{
@@ -119,7 +119,7 @@ getDataFromIndexedDB() {
   }
 
   actualizarSucursal(datosGym: any):Observable<any>{
-    return this.clienteHttp.post(this.API+"getBodegaById", datosGym);
+    return this.clienteHttp.post(this.API+"bodega.php?actualizar", datosGym);
   }
 
   actualizarEstatus(idGimnasio: any, estatus: any): Observable<any> {
@@ -207,5 +207,3 @@ consultarFoto(id:any):Observable<any>{
 
 
 }
-
-

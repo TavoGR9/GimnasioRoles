@@ -15,8 +15,8 @@ export class inventarioService {
   // API: String = '';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string = 'http://localhost/serviciosGimnasio/';
-  API2: string ='http://localhost/serviciosGym/';
+  // API: string = 'http://localhost/serviciosGimnasio/';
+  API: string ='http://localhost/serviciosGym/';
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
@@ -48,8 +48,10 @@ export class inventarioService {
     return this.clienteHttp.get<any>(this.API+"producto_bod.php", { params });
   }
 
+
+  //Lista Historial
   HistorialInventario(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
-    const url = `${this.API2}verHistorialPedido.php`;
+    const url = `${this.API}verHistorialPedido.php`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
     console.log("DATOS ENVIADOS AL API: ",body);
     return this.clienteHttp.post(url, body).pipe(
@@ -68,7 +70,7 @@ export class inventarioService {
 
   //Lista del Historial para la nueva BD
   HistorialInventarioLista(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
-    const url = `${this.API2}obtenerHistorialExistencias.php?listaHistorialExistencia`;
+    const url = `${this.API}obtenerHistorialExistencias.php?listaHistorialExistencia`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
     return this.clienteHttp.post(url,body);
   }
@@ -77,7 +79,7 @@ export class inventarioService {
   //OBTENER PRODUCTO PARA EDICION Y PARA PUNTO DE VENTA POR IDPROBOB Y IDBODEGA
   obtenerProductoPorIdYIdBodega(id: any, idGimnasio: any): Observable<any> {
     let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
-    return this.clienteHttp.get(this.API2+"obtenerProductoIdYBodega.php", { params: params });
+    return this.clienteHttp.get(this.API+"obtenerProductoIdYBodega.php", { params: params });
   }
 
   //OBTENER PRODUCTO PARA PUNTO DE VENTA POR NOMBRE Y IDBODEGA
@@ -85,7 +87,6 @@ export class inventarioService {
     const params = new HttpParams()
       .set('idGym', idGym);
 
-    return this.clienteHttp.get<any>(this.API2+"obtenerProductoNombre.php", { params });
+    return this.clienteHttp.get<any>(this.API+"obtenerProductoNombre.php", { params });
   }
-
 }

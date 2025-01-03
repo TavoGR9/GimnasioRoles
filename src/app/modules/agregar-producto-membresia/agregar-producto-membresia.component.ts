@@ -315,7 +315,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
       ///********** Verifica si la categoria ya existe */
       const codigo = this.form.get("codigoBarra")?.value;
       this.productoService
-        .verProductoCodigoBarras2(codigo)
+        .verProductoCodigoBarras(codigo)
         .subscribe((respuesta: any) => {
           if (respuesta.success == 0) {
             this.categoriaService

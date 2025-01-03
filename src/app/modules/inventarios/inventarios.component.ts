@@ -65,7 +65,6 @@ export class InventariosComponent implements OnInit {
     return productos.filter((producto) => {
       return producto.nombreCategoria !== "Servicios";
     });
-
   }
 
   listaTablas(){

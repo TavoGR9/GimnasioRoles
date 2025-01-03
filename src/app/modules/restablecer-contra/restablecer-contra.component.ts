@@ -40,7 +40,7 @@ export class RestablecerContraComponent {
       console.error("ID del empleado no está disponible en los datos:", this.data);
     }
   }
-  
+
   passwordMatchValidator(formGroup: FormGroup): void {
     const password = formGroup.get("newPassword")?.value;
     const confirmPassword = formGroup.get("confirmPassword")?.value;
@@ -66,14 +66,24 @@ export class RestablecerContraComponent {
         console.error("ID del empleado no está disponible en los datos proporcionados al modal.");
         return;
       }
-  
+
       const contrasenia = this.resetPasswordForm.value.confirmPassword;
-      console.log("ID del empleado:", idempleado);
-      //console.log("Nueva contraseña:", contrasenia);
-  
+      //console.log("ID del empleado:", idempleado);
+
       this.http.ActualizarContrasenia(idempleado, contrasenia).subscribe({
         next: (resultDataUpdate) => {
-          console.log("Respuesta del servidor:", resultDataUpdate);
+          //console.log("Respuesta del servidor:", resultDataUpdate);
+
+          // Mostrar mensaje emergente de confirmación
+          this.dialog
+            .open(MensajeEmergentesComponent, {
+              data: 'CONTRASEÑA actualizada correctamente.',
+            })
+            .afterClosed()
+            .subscribe(() => {
+              // Cerrar el modal principal después del mensaje emergente
+              this.cerrarDialogo();
+            });
         },
         error: (error) => {
           console.error("Error al comunicarse con el servidor:", error);
@@ -83,7 +93,6 @@ export class RestablecerContraComponent {
       console.error("Formulario inválido.");
     }
   }
-  
 
 
 

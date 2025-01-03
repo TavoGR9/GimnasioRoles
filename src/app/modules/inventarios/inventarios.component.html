@@ -50,7 +50,6 @@
                     <ng-container *ngIf="column === 'Categoria'">
                       {{ prod.nombreCategoria }}
                     </ng-container>
-
                 </td>
 
               </ng-container>
@@ -58,7 +57,7 @@
               <tr mat-row *matRowDef="let productofila; columns: displayedColumns"></tr>
             </table>
           </div>
-            <mat-paginator #paginatorActivos [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+            <mat-paginator #paginatorActivos [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
         <br />
         <br />
         <br />

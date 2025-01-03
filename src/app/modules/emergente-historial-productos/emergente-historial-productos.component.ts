@@ -131,24 +131,15 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     }
 
     const datos = [
-      [
-        'idSucursal',
-        'Usuario',
-        'Producto',
-        'Concepto',
-        'Fecha Movimiento',
-        // 'Stock Actual',
-        // 'Stock Movimiento',
-        'Stock'
-      ],
+      ['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Actual', 'Stock Movimiento', 'Stock Nuevo'],
       ...this.dataSource.filteredData.map((listaHist: Historial) => [
         listaHist.Sucursal,
         listaHist.Usuario,
         listaHist.Producto,
         listaHist.Concepto,
         listaHist.FechaMovimiento,
-        // listaHist.StockActual,
-        // listaHist.StockMovimiento,
+        listaHist.StockActual,
+        listaHist.StockMovimiento,
         listaHist.NuevoStock
       ])
     ];
@@ -207,21 +198,13 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       listaHist.Producto,
       listaHist.Concepto,
       listaHist.FechaMovimiento,
-      // listaHist.StockActual,
-      // listaHist.StockMovimiento,
+      listaHist.StockActual,
+      listaHist.StockMovimiento,
       listaHist.NuevoStock
     ]);
     // Añadir filas al PDF con encabezado naranja
     pdf.autoTable({
-      head: [[
-        'idSucursal',
-        'Usuario',
-        'Producto',
-        'Concepto',
-        'Fecha Movimiento',
-        // 'Stock Actual',
-        // 'Stock Movimiento',
-        'Stock']],
+      head: [['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Actual', 'Stock Movimiento', 'Stock Nuevo']],
       body: datos,
       startY: 20,  // Ajusta la posición inicial del contenido
       headStyles: {

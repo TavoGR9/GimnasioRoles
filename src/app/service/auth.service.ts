@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
 import { tap,map } from 'rxjs/operators';
 import { of  } from 'rxjs';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
@@ -37,9 +37,9 @@ export class AuthService {
   //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string = 'http://localhost/serviciosGimnasio/'
+  // API: string = 'http://localhost/serviciosGimnasio/'
 
-  API2: string = 'http://localhost/serviciosGym/'
+  API: string = 'http://localhost/serviciosGym/'
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -55,7 +55,6 @@ export class AuthService {
   }
 
   comprobar(): Observable<any> {
-    console.log("idUser actualizado a:", this.idUser.getValue());
     return this.connectivityService.checkInternetConnectivity().pipe(
       map((isConnected: boolean) => {
         if (isConnected) {
@@ -73,7 +72,7 @@ export class AuthService {
   }
 
   loginBS(data: User): Observable<any> {
-  const url = `${this.API2}login.php?email=${data.email}&pass=${data.pass}`;
+  const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;
   return this.clienteHttp.request('GET', url, {responseType:'json'})
       .pipe(
         catchError((err: any) => {
@@ -220,11 +219,11 @@ export class AuthService {
 
   getUsuario(correo: string): Observable<any> {
     const params = { correo };
-    return this.clienteHttp.get<any>(this.API2 +  'getUsuarioActual.php', { params });
+    return this.clienteHttp.get<any>(this.API +  'getUsuarioActual.php', { params });
   }
 
   dataUser(data: any): Observable<any> {
-    return this.clienteHttp.post<dataLogin>(this.API2 + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
+    return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
       tap(dataResponse => {
         //console.log("DATOS: ",dataResponse);
         this.saveDataToIndexedDB(dataResponse);

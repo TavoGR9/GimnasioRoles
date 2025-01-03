@@ -21,7 +21,7 @@ export class ProductoService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API2: string ='http://localhost/serviciosGym/';
+  API: string ='http://localhost/serviciosGym/';
   API3: string = 'http://localhost/serviciosGimnasio/';
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
@@ -129,7 +129,7 @@ export class ProductoService {
 
     obternerInventario(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };
-      return this.clienteHttp.post<any[]>(this.API2 +'getProductosBodega.php',data).pipe(
+      return this.clienteHttp.post<any[]>(this.API +'getProductosBodega.php',data).pipe(
         tap((dataResponse: any[])=> {
           this.saveDataToIndexedDB3(dataResponse);
         }),
@@ -140,7 +140,7 @@ export class ProductoService {
     }
 
     // listaProductos(): Observable<any> {
-    //   return this.clienteHttp.get<any>(this.API2+'getProBod.php?getProBodPre');
+    //   return this.clienteHttp.get<any>(this.API+'getProBod.php?getProBodPre');
     // }
 
 
@@ -252,12 +252,12 @@ export class ProductoService {
     // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
     // lista de productos(membresias) y productos de un gimnasio
     consultarAllProductoB(id: string | number): Observable<any> {
-      return this.clienteHttp.get(this.API2 + "getProductosMembBodega.php?id_bodega="+id);
+      return this.clienteHttp.get(this.API + "getProductosMembBodega.php?id_bodega="+id);
     }
 
     // crear producto(membresia) y poducto
     creaProductoMemb(datosFormulario: any): Observable<any> {
-      return this.clienteHttp.post(this.API2 + 'insertarProductoMemb.php?insertarProductoMemb', datosFormulario).pipe(
+      return this.clienteHttp.post(this.API + 'insertarProductoMemb.php?insertarProductoMemb', datosFormulario).pipe(
         catchError(error => {
           console.error('Error al enviar la solicitud:', error);
           return throwError(error);
@@ -267,7 +267,7 @@ export class ProductoService {
 
     // actualiza el producto en caso de ser necesario en el componente crearProducto
     actualizarProducto2(datosP: any): Observable<any> {
-      const url = `${this.API2}updateProbod.php?actualizarP`;
+      const url = `${this.API}updateProbod.php?actualizarP`;
       return this.clienteHttp.post(url, datosP).pipe(
         tap(dataResponse => {
         }),
@@ -281,14 +281,14 @@ export class ProductoService {
     // ver producto por codigo de barras
     verProductoCodigoBarras2(codigo: any) {
       const data = { codigo: codigo };
-      return this.clienteHttp.post<any[]>(this.API2 + "getProductoCodigoBarras.php?consultarProductoPorCodigo", data);
+      return this.clienteHttp.post<any[]>(this.API + "getProductoCodigoBarras.php?consultarProductoPorCodigo", data);
 
     }
 
     //EXISTENCIAS (LISTA INVENTARIO)
     // obtenerInventarioLista(id:any): Observable<any[]> {
     //   const data = { id_bodega_param: id };
-    //   return this.clienteHttp.post<any[]>(this.API2 +'obtenerExistencias.php?listaExistencia=',data).pipe(
+    //   return this.clienteHttp.post<any[]>(this.API +'obtenerExistencias.php?listaExistencia=',data).pipe(
     //     tap((dataResponse: any[])=> {
     //       this.saveDataToIndexedDB3(dataResponse);
     //     }),
@@ -301,13 +301,14 @@ export class ProductoService {
     //PARA PEDIDOS (obtener los productos de la bodega)
     obternerProductosV2(id:any):Observable<any>{
       const data = { id_bodega_param: id };
-      return this.clienteHttp.post(this.API2+"obtenerProductoPuntoVenta.php?consultarProductoBodegaVenta=",data);
+      return this.clienteHttp.post(this.API+"obtenerProductoPuntoVenta.php?consultarProductoBodegaVenta=",data);
     }
 
     //ENTRADAS
     // llamada HTTP a la API REST, para obtener los productos por idProbob y id_bodega
     consultarProductosId(idProducto: number | null, idBodega: number | null): Observable<any[]> {
-      const url = `${this.API2}obtenerProductosPorId.php?consultarProductoId`;
+      const url = `${this.API}obtenerProductosPorId.php?consultarProductoId`;
       return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto, id_bodega: idBodega });
     }
+
 }
