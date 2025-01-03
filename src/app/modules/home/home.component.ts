@@ -15,6 +15,24 @@ import { combineLatest } from "rxjs";
 import { Color, ScaleType } from "@swimlane/ngx-charts";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 
+interface Producto {
+  id_producto: string;
+  marca: string;
+  nombreProducto: string;
+  idBodPro: string;
+  nombreCategoria: string;
+}
+
+interface Cliente {
+  id_pedido: string;
+  fecha_hora_pedido: string;
+  id_bodega: string;
+  id_promocion: string | null;
+  nombrePromocion: string;
+  membresia: string;
+  productos: Producto[];
+}
+
 @Component({
   selector: "app-home",
   templateUrl: "./home.component.html",
@@ -614,8 +632,10 @@ this.pagoService.getPedidosMembresias(4).subscribe(
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
       const pedidosAgrupados = this.agruparPorPedido(pedidos);
+      const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
       console.log(pedidos)
       console.log(pedidosAgrupados)
+      console.log(pedidosConteoDia)
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
       console.log(errorMessage)
@@ -666,8 +686,76 @@ this.pagoService.getPedidosMembresias(4).subscribe(
 }
 
 
+contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } {
+  const conteos: { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } = {};
+
+  clientes.forEach(cliente => {
+    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0]; 
+
+    if (!conteos[fecha]) {
+      conteos[fecha] = {
+        conteoProductos: {},
+        conteoBodegas: {},
+        conteoPromociones: {}
+      };
+    }
+
+    // Conteo de productos (ahora incluye nombreProducto)
+    cliente.productos.forEach((producto) => {
+      if (producto.id_producto) {
+        const idProducto = producto.id_producto;
+        const nombreProducto = producto.nombreProducto;
+
+        // Verificamos si el producto ya ha sido contado
+        if (!conteos[fecha].conteoProductos[idProducto]) {
+          conteos[fecha].conteoProductos[idProducto] = {
+            nombreProducto: nombreProducto,
+            cantidad: 0
+          };
+        }
+
+        // Incrementamos la cantidad del producto
+        conteos[fecha].conteoProductos[idProducto].cantidad += 1;
+      }
+    });
+
+    // Conteo de bodegas (agregamos la cadena de marca y nombreProducto)
+    cliente.productos.forEach((producto) => {
+      if (producto.idBodPro) {
+        const idBodPro = producto.idBodPro;
+        const marcaYProducto = `${producto.marca} - ${producto.nombreProducto}`;
+
+        // Verificamos si la bodega ya ha sido contada
+        if (!conteos[fecha].conteoBodegas[idBodPro]) {
+          conteos[fecha].conteoBodegas[idBodPro] = {
+            marcaYProducto: marcaYProducto,
+            cantidad: 0
+          };
+        }
+
+        // Incrementamos la cantidad de esa bodega
+        conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
+      }
+    });
+
+    // Conteo de promociones (ahora incluye nombrePromocion)
+    if (cliente.id_promocion && cliente.nombrePromocion) {
+      if (!conteos[fecha].conteoPromociones[cliente.id_promocion]) {
+        conteos[fecha].conteoPromociones[cliente.id_promocion] = {
+          nombrePromocion: cliente.nombrePromocion,
+          cantidad: 0
+        };
+      }
+
+      // Incrementamos el contador de esa promoción
+      conteos[fecha].conteoPromociones[cliente.id_promocion].cantidad += 1;
+    }
+  });
+
+  return conteos;
 }
 
+}
 
 
 
