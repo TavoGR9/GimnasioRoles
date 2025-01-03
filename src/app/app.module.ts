@@ -75,7 +75,7 @@ import { Paginator } from './service/Paginator';
       useClass: Paginator
     }
   ],
-  
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -43,7 +43,6 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   private fechaFinAnterior: Date | null = null;
 
   idUsuarioo: number =0;
-  correooo: any;
 
   @ViewChild('paginatorHistorial', { static: true }) paginatorHistorial!: MatPaginator;
 
@@ -64,9 +63,6 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     this.idUsuarioo = this.auth.idUser.getValue();
     console.log('idUsuario: ', this.idUsuarioo);
 
-    this.correooo = this.auth.email.getValue();
-    console.log('correoo: ', this.correooo);
-
   }
 
   ngDoCheck(): void {
@@ -74,6 +70,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       this.updateDateLogs();
     }
   }
+
 
   onFechaInicioChange(event: any): void {
   }
@@ -104,6 +101,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
 
         } else if(response){
           this.dataHistorial = response;
+          //console.log("RESULTADOS DE API: ",response);
           this.dataSource = new MatTableDataSource(this.dataHistorial);
           this.dataSource.paginator = this.paginatorHistorial;
           this.toastr.success('Datos encontrados.', 'Success!!!');

@@ -51,6 +51,7 @@ export class inventarioService {
   HistorialInventario(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
     const url = `${this.API2}verHistorialPedido.php`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
+    console.log("DATOS ENVIADOS AL API: ",body);
     return this.clienteHttp.post(url, body).pipe(
       tap(dataResponse => {
         console.log('RESPUESTA DE LA API: ', dataResponse);
@@ -69,7 +70,7 @@ export class inventarioService {
   HistorialInventarioLista(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
     const url = `${this.API2}obtenerHistorialExistencias.php?listaHistorialExistencia`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
-    return this.clienteHttp.post(url, body);
+    return this.clienteHttp.post(url,body);
   }
 
 

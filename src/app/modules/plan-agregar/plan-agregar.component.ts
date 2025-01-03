@@ -5,7 +5,7 @@ import {
   Validators,
   AbstractControl,
 } from "@angular/forms";
-//import { MembresiaService } from "../../service/membresia.service";
+import { MembresiaService } from "../../service/membresia.service";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -15,6 +15,9 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from "ngx-toastr";
 import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
 import { PromocionService } from "../../service/promocion.service";
+import { ProductoService } from "../../service/producto.service";
+
+import { Inventario } from "../../models/inventario";
 
 @Component({
   selector: "app-membresias-agregar",
@@ -23,54 +26,44 @@ import { PromocionService } from "../../service/promocion.service";
 })
 export class planAgregarComponent {
   formulariodePlan: FormGroup;
-  private enviando = false;
+
   message: string = "";
   hide = true;
-  gimnasio: any;
   selectedMembresia: any;
   idGym: number = 0;
   plan: any[] = [];
-  noServicios: boolean = false;
+  noServicios: boolean = false;//saber si hay membresias
+  Producto: any[] = [];
 
   constructor(
     public dialogo: MatDialogRef<planAgregarComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
     private fb: FormBuilder,
     private router: Router,
-   // private membresiaService: MembresiaService,
+    private membresiaService: MembresiaService,
     private promocionService: PromocionService,
+    private productoService: ProductoService,
     private auth: AuthService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {
     this.formulariodePlan = this.fb.group(
       {
         idChoProm: ["", Validators.required],
-        estatus: ["Activo"],
+        estatus: [0],
         nombrePromocion: ["", Validators.required],
         FechaInicio: ["", Validators.required],
         FechaFin: ["", Validators.required],
-        PrecioPaquete: [660.50],
+        PrecioPaquete: ["", Validators.required],
         existencias: ["", Validators.required],
         idGym: [this.auth.idGym.getValue(), Validators.required],
 
-        //detalles: [""],
-        //duracion: ["1", Validators.required],
-        //tipo_membresia: [3],
-       // Gimnasio_idGimnasio: [this.auth.idGym.getValue(), Validators.required],
-
-        //membresias: ["", Validators.required],
-
-        //created_by: [this.auth.idUser.getValue(), Validators.required],
-        idProbob: [5],
-        cantidad: [100],
-        precio: [123.90],
-        preciopv: ["", Validators.required],
+        membresias: [[], Validators.required],
+        preciopv: [663.20],
         plataforma: ["Web"]
 
       },
-      //{ validators: this.dateLessThan("FechaInicio", "FechaFin") }
     );
   }
 
@@ -80,22 +73,16 @@ export class planAgregarComponent {
       if (id) {
         this.idGym = id;
       }
-/*
-      this.membresiaService
-        .consultarPlanIdMem(this.idGym)
+
+      //se optinene las membresias
+      this.productoService.obternerInventario(this.idGym)
         .subscribe((respuesta) => {
-          this.plan = respuesta;
+          if (respuesta )
+          this.plan = this.aplicarFiltro(respuesta);
         });
-        */
+
 
     });
-
-
-/*
-    this.formulariodePlan.get("membresias")?.valueChanges.subscribe(() => {
-      this.setDuration();
-    });
-*/
 
   }
 
@@ -107,15 +94,11 @@ export class planAgregarComponent {
 
 
   enviar(): any {
-    console.log("hola");
-    if (this.enviando) return; // Evitar envíos duplicados
-    this.enviando = true;
 
-
-    if (this.formulariodePlan.valid) {
-      
+    if(this.formulariodePlan.valid) {
       const formularioData = this.formulariodePlan.value;
-      // Validar que no existan campos vacíos críticos
+
+      //filtro para los datos
       if (
         !formularioData.idChoProm ||
         !formularioData.nombrePromocion?.trim() ||
@@ -124,76 +107,51 @@ export class planAgregarComponent {
         !formularioData.FechaFin
       ) {
         this.toastr.error("Todos los campos son obligatorios, un campo esta vacio", "Error");
-        this.enviando = false;
         return;
       }
 
-      this.spinner.show();//metodo muestra de indicador de carga
-
-      this.promocionService.agregarPlan(formularioData).subscribe(
-        (respuesta) => {
-
-          //this.enviando = false; // Restablecer bandera
-          this.spinner.hide();
-
-          if (respuesta.success === "1") {
-            // Registro exitoso en la base de datos
-            const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
-              data: `Plan agregado exitosamente`,
-            });
-
-            dialogRef.afterClosed().subscribe((cerrarDialogo: boolean) => {
-              if (cerrarDialogo) {
-                this.dialogo.close(true); // Cierra el modal del formulario
-              }
-            });
-          } else if (respuesta.success === "2") {
-            // Registro en la base de datos local
-            const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
-              data: `Registro agregado a base de datos local`,
-            });
-
-            dialogRef.afterClosed().subscribe((cerrarDialogo: boolean) => {
-              if (cerrarDialogo) {
-                this.dialogo.close(true);
-              }
-            });
-          } else {
-            // Manejar otras respuestas del servidor
-            this.toastr.error("No se pudo agregar el plan.", "Error");
-          }
-        },
-        (error) => {
-          this.enviando = false; // Restablecer bandera en caso de error
-          this.spinner.hide();//metodo oculta de indicador de carga
-          this.toastr.error("Error al agregar el plan. Inténtelo de nuevo.", "Error");
-          console.error("Error en agregarPlan:", error);
-        }
+      // Validar que las fechas sean correctas
+      const dateValidation = this.dateLessThan('FechaInicio', 'FechaFin')(
+      this.formulariodePlan
       );
+
+      if (dateValidation && dateValidation['dates']) {
+        this.toastr.error(dateValidation['dates'], 'Error');
+        return; // Evita continuar si hay error en las fechas
+      }
+
+
+      //mostrar boton de carga
+      this.spinner.show();
+
+      this.promocionService.agregarPlan(formularioData).subscribe((respuesta) => {
+        this.spinner.hide();
+
+        if(respuesta.success == 1) {
+          //ABRIMOS DIALOGO
+          const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
+            data: `Registro agregado a la base de datos local`,
+          });
+
+          //CERRAMOS DIALOGO
+          dialogRef.afterClosed().subscribe((cerrarDialogo: boolean) => {
+            if (cerrarDialogo) {
+              this.dialogo.close(true);
+            }
+          })
+        } else {
+          console.log("la respuesta que trae API: " +respuesta);
+          this.toastr.error(
+            'El plan ya existe, por favor elige otro nombre',
+            'Error');
+        }
+      })
     } else {
-      // Manejo de errores en caso de formulario inválido
-      this.enviando = false;
       this.marcarCamposInvalidos(this.formulariodePlan);
-      this.toastr.error("Por favor, llena correctamente todos los campos obligatorios.", "Error");
+
+      this.toastr.error("Por favor, llena correctamente todos los campos.", "Error");
     }
   }
-
-
-
-/*
-  private validarErroresFormulario(): void {
-    if (!this.formulariodePlan.value.PrecioPaquete) {
-      this.toastr.error("El campo 'Precio del Paquete' es obligatorio", "Error");
-    }
-    if (!this.formulariodePlan.value.FechaInicio || !this.formulariodePlan.value.FechaFin) {
-      this.toastr.error("Ambas fechas (inicio y fin) son obligatorias", "Error");
-    }
-    if (!this.formulariodePlan.value.nombrePromocion) {
-      this.toastr.error("El campo 'Nombre de la Promoción' es obligatorio", "Error");
-    }
-    this.marcarCamposInvalidos(this.formulariodePlan);
-  }
-*/
 
 //MANEJAR ERRORES DEL LADO DEL COMPONENTE
   marcarCamposInvalidos(formGroup: FormGroup) {
@@ -220,43 +178,28 @@ export class planAgregarComponent {
     return control?.errors?.[error] && (control?.touched ?? false);
   }
 
-/*
-  setDuration() {
-    /* if (this.formulariodePlan.get("membresias")?.value.length > 0) {
-      let duracion = this.formulariodePlan
-        .get("membresias")
-        ?.value.reduce((acc: number, item: any) => {
-          return acc + Number(item.duracion);
-        }, 0);
-      this.formulariodePlan.get("duracion")?.setValue(duracion);
-    } else {
-      this.formulariodePlan.get("duracion")?.setValue(0);
-    }
-  }
-*/
-/*
-  requireMinItems(min: number) {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const length = control.value ? control.value.length : 0;
-      return length >= min ? null : { minItems: { value: control.value } };
-    };
-  }
-
-
+  //VALIDAR LAS FECHAS
   dateLessThan(from: string, to: string) {
     return (group: FormGroup): { [key: string]: any } => {
       let f = group.controls[from];
       let t = group.controls[to];
       if (f.value > t.value) {
         return {
-          dates: "La fecha de inicio debe ser anterior a la fecha de fin",
+          dates: `La fecha de inicio debe ser anterior a la fecha de fin`,
         };
       }
       return {};
     };
   }
-    */
-/*
+
+   //FILTRO DE LAS MEMBRESIAS A MOSTRAR
+   aplicarFiltro(productos: Inventario[]): Inventario[] {
+    return productos.filter((producto) => {
+      return producto.nombreCategoria === "Servicios";
+    });
+  }
+
+  ///AGREGAR MEMBRESIA
   openDialog(): void {
     this.membresiaService.optionShow.next(1);
     this.membresiaService.optionShow.subscribe((option) => {});
@@ -277,5 +220,5 @@ export class planAgregarComponent {
       }
     });
   }
-    */
+
 }

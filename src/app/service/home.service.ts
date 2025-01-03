@@ -21,6 +21,7 @@ export class HomeService {
   API2: string ='http://localhost/serviciosGym/';
   API3: string = 'http://localhost/serviciosGimnasio/';
 
+
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService ) {
   }
 

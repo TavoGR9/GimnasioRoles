@@ -11,5 +11,5 @@ export class plan{
     gymAcc!:string;
     status!:number;
     Gimnasio_idGimnasio !:number;
-    
+
 }

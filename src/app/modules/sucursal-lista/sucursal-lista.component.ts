@@ -27,7 +27,7 @@ export class SucursalListaComponent implements OnInit {
   optionToShow: number = 0;
   currentUser: string = "";
   dataSource = new MatTableDataSource<listaSucursal>();
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   habilitarBoton: boolean = false;
 
@@ -54,7 +54,7 @@ export class SucursalListaComponent implements OnInit {
     // this.auth.comprobar();
     // this.colaborador.comprobar();
     // this.postalCodeService.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
 
@@ -62,11 +62,10 @@ export class SucursalListaComponent implements OnInit {
       if (this.currentUser) {
         this.getSSdata(JSON.stringify(this.currentUser));
       }
-    this.gimnasioService.obtenerPlan().subscribe(
-      (response) => {
-        console.log('Datos de sucursales:', response.data);  // Verifica que `data` existe
-        this.dataSource.data = response.data;  // Asigna la propiedad `data` a `dataSource`
-        this.isLoading = false;
+    this.gimnasioService.obternerPlan().subscribe(
+      (data) => {
+        this.gimnasio = data;  // Asigna la propiedad `data` a `dataSource`
+        this.dataSource = new MatTableDataSource(this.gimnasio);
         this.loadData();
       },
       (error) => {
@@ -181,9 +180,9 @@ export class SucursalListaComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((data) => {
-      this.gimnasioService.obtenerPlan().subscribe((data) => {
-        console.log('Datos obtenidos del servicio:', data); 
-        this.gimnasio = Array.isArray(data) ? data : data?.data || [];
+      this.gimnasioService.obternerPlan().subscribe((data) => {
+        console.log('Datos obtenidos del servicio:', data);
+        this.gimnasio = data;
         this.dataSource = new MatTableDataSource(this.gimnasio);
         this.dataSource.paginator = this.paginator;
       });
@@ -193,25 +192,25 @@ export class SucursalListaComponent implements OnInit {
   editarSucursal(idGimnasio: number) {
     this.gimnasioService.gimnasioSeleccionado.next(idGimnasio);
     this.gimnasioService.optionSelected.next(3);
-  
+
     this.gimnasioService.optionSelected.subscribe((data) => {
-  
+
       if (data) {
         this.optionToShow = data;
         if (this.optionToShow === 3) {
         }
       }
     });
-  
+
     const dialogRef = this.dialog.open(HorariosVistaComponent, {
       width: "70%",
       height: "60%",
       data: { idGimnasio: this.idGimnasio },
       disableClose: true, // Bloquea el cierre del diálogo haciendo clic fuera de él
     });
-  
+
     dialogRef.afterClosed().subscribe(() => {
-  
+
       // Llamar al servicio para obtener la bodega por id
       this.gimnasioService.obtenerBodegaById(idGimnasio).subscribe((data) => {
         if (data) {
@@ -226,7 +225,7 @@ export class SucursalListaComponent implements OnInit {
       });
     });
   }
-  
+
 
   agregarHorario(idGimnasio: string): void {
     const dialogRef = this.dialog.open(HorariosComponent, {

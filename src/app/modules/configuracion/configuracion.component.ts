@@ -22,7 +22,7 @@ class Horario {
 @Component({
   selector: 'app-configuracion',
   templateUrl: './configuracion.component.html',
-  styleUrls: ['./configuracion.component.css'] 
+  styleUrls: ['./configuracion.component.css']
 })
 export class ConfiguracionComponent  implements OnInit{
   elID: any;
@@ -35,7 +35,8 @@ export class ConfiguracionComponent  implements OnInit{
   formularioSucursales: FormGroup;
   diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
   idGimnasio: any;
-  
+  idUs:any;
+
   constructor(
     private router: Router,
     public dialog: MatDialog,
@@ -44,16 +45,26 @@ export class ConfiguracionComponent  implements OnInit{
     private activeRoute: ActivatedRoute,
     public formularioHorario: FormBuilder,
     private HorarioService: HorarioService,
-    private gimnasioService: GimnasioService, 
+    private gimnasioService: GimnasioService,
   ) {
     {
       this.idGimnasio = this.auth.idGym.getValue(); // Accede a idGimnasio desde los datos
+      console.log("GYM: ",this.idGimnasio);
+
+      this.auth.idUser.subscribe((data) => {
+        this.idUs = data;
+        this.listaTabla();
+      });
+      console.log("GYM: ",this.idUs);
+
       this.formularioHorarios = this.formulario.group({
         horarios: this.formulario.array([]),
       });
      // this.formularioHorarios = this.formularioHorario.group({ horarios: this.formularioHorario.array([])});
     }
+
     this.elID = this.activeRoute.snapshot.paramMap.get('id');
+
     this.formularioSucursales = this.formulario.group({
       nombreBodega: [""],
       direccion: ["", Validators.required],
@@ -90,18 +101,24 @@ export class ConfiguracionComponent  implements OnInit{
       horariosArray.push(horarioFormGroup);
     }
   }
-  
+
   ngOnInit(): void {
+
+    this.listaTabla();
+    
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      this.listaTabla();
+      //this.listaTabla();
       this.verHorario();
-    }); 
-  }
+    });
+
+
+    }
+
 
 /*  verHorario(){
     this.HorarioService.consultarHorario(this.idGym).subscribe(
@@ -128,18 +145,25 @@ export class ConfiguracionComponent  implements OnInit{
     );
   }
 
+
   listaTabla(){
-    this.gimnasioService.consultarPlan(this.idGym).subscribe(
+    const dato = {
+      idG: this.idGimnasio,
+      id: this.idUs
+    }
+    console.log("DATOS LISTA: ",dato);
+    this.gimnasioService.consultarPlan(dato).subscribe(
       (respuesta) => {
         this.formularioSucursales.setValue({
           nombreBodega: respuesta[0]['nombreBodega'],
           direccion: respuesta[0]['direccion'],
           numeroTelefonico: respuesta[0]['numeroTelefonico'],
          // estatus: respuesta[0]['estatus'],
-        }); 
+        });
       }
     );
   }
+
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
@@ -151,6 +175,7 @@ export class ConfiguracionComponent  implements OnInit{
           this.auth.nombreGym.next(resultData.nombreGym);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
+          console.log(resultData);
       }, error: (error) => { console.log(error); }
     });
   }
@@ -162,8 +187,8 @@ export class ConfiguracionComponent  implements OnInit{
       direcc: this.formularioSucursales.value.direccion,
       numero: this.formularioSucursales.value.numeroTelefonico,
       id_bod: idGym
-    };  
-    
+    };
+
 
    // const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
    // const horariosActualizados = horariosArray.controls.map(horarioControl => horarioControl.value);
@@ -186,7 +211,7 @@ export class ConfiguracionComponent  implements OnInit{
         return throwError('Error al actualizar el plan');
       })
     );
-  
+
     const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData).pipe(
       tap(respuesta => {
         if (respuesta.success === 1) {
@@ -208,7 +233,7 @@ export class ConfiguracionComponent  implements OnInit{
       }
     });
   }
-  
+
   private mostrarMensajeYRedireccionar() {
     this.dialog.open(MensajeEmergentesComponent, {
       data: 'Gimnasio actualizado exitosamente',
@@ -218,13 +243,13 @@ export class ConfiguracionComponent  implements OnInit{
       }
     });
   }
-  
+
   private mostrarMensajeDeError() {
     this.dialog.open(MensajeEmergentesComponent, {
       data: 'Error durante la actualización del gimnasio',
     });
   }
-  
+
   getHorariosControls(): AbstractControl[]{
     const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
     return horariosArray.controls;
