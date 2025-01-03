@@ -27,7 +27,7 @@ export class SucursalListaComponent implements OnInit {
   optionToShow: number = 0;
   currentUser: string = "";
   dataSource = new MatTableDataSource<listaSucursal>();
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   habilitarBoton: boolean = false;
 
@@ -54,7 +54,7 @@ export class SucursalListaComponent implements OnInit {
     // this.auth.comprobar();
     // this.colaborador.comprobar();
     // this.postalCodeService.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
 
@@ -182,7 +182,7 @@ export class SucursalListaComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((data) => {
       this.gimnasioService.obtenerPlan().subscribe((data) => {
-        console.log('Datos obtenidos del servicio:', data); 
+        console.log('Datos obtenidos del servicio:', data);
         this.gimnasio = Array.isArray(data) ? data : data?.data || [];
         this.dataSource = new MatTableDataSource(this.gimnasio);
         this.dataSource.paginator = this.paginator;
@@ -191,42 +191,41 @@ export class SucursalListaComponent implements OnInit {
   }
 
   editarSucursal(idGimnasio: number) {
+    console.log("Id del gym: ",idGimnasio);
     this.gimnasioService.gimnasioSeleccionado.next(idGimnasio);
+    //const id = idGimnasio;
     this.gimnasioService.optionSelected.next(3);
-  
+
     this.gimnasioService.optionSelected.subscribe((data) => {
-  
+
       if (data) {
         this.optionToShow = data;
         if (this.optionToShow === 3) {
         }
       }
     });
-  
     const dialogRef = this.dialog.open(HorariosVistaComponent, {
       width: "70%",
       height: "60%",
       data: { idGimnasio: this.idGimnasio },
       disableClose: true, // Bloquea el cierre del diálogo haciendo clic fuera de él
     });
-  
+
     dialogRef.afterClosed().subscribe(() => {
-  
-      // Llamar al servicio para obtener la bodega por id
-      this.gimnasioService.obtenerBodegaById(idGimnasio).subscribe((data) => {
+      this.gimnasioService.obtenerPlan().subscribe((data) => {
+        console.log("DATOS RESPUESTA: ",data);
         if (data) {
-          // Aquí puedes trabajar con los datos de la bodega
-          console.log('Datos de la bodega:', data);
-          this.gimnasio = data;
-          this.dataSource = new MatTableDataSource([this.gimnasio]);
-          this.dataSource.paginator = this.paginator;
+          console.log('Datos obtenidos del servicio:', data);
+           this.gimnasio = Array.isArray(data) ? data : data?.data || [];
+        this.dataSource = new MatTableDataSource(this.gimnasio);
+        this.dataSource.paginator = this.paginator;
         } else {
           console.error('No se encontró la bodega.');
         }
       });
     });
   }
-  
+
 
   agregarHorario(idGimnasio: string): void {
     const dialogRef = this.dialog.open(HorariosComponent, {

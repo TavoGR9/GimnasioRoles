@@ -239,7 +239,7 @@ export class CrearProductoComponent implements OnInit {
   vercodigoBarras() {
     const codigo = this.form.get("codigoBarra")?.value;
     this.productoService
-      .verProductoCodigoBarras2(codigo)
+      .verProductoCodigoBarras(codigo)
       .subscribe((respuesta: any) => {
         if (respuesta.success == 0) {
         } else {
@@ -286,7 +286,7 @@ export class CrearProductoComponent implements OnInit {
       const codigo = this.form.get("codigoBarra")?.value;
       //console.log('Formulario:', this.form.value);  // Verifica que los valores estén bien
       this.productoService
-        .verProductoCodigoBarras2(codigo)
+        .verProductoCodigoBarras(codigo)
         .subscribe((respuesta: any) => {
           if (respuesta.success == 0) {
             this.categoriaService
@@ -332,7 +332,7 @@ export class CrearProductoComponent implements OnInit {
                               };
 
                               this.productoService
-                                .creaProductoMemb(formularioP)
+                                .creaProducto(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -371,16 +371,18 @@ export class CrearProductoComponent implements OnInit {
                                   },
                                 });
                             } else {
-                              //console.log('NO EXISTE LA MARCA');
+                              console.log('NO EXISTE LA MARCA');
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
+                                idGimnasio: 0,
+                                servicio: 0
                               };
-                              //console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                              console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
                               this.categoriaService
                                 .agregarMarca2(formMarca)
                                 .subscribe((respuestaMarca) => {
-                                  //console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
-                                  //console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                  console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                   const formularioP = {
                                     idProducto:
                                       subCategoriaExistente.producto
@@ -407,7 +409,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProductoMemb(formularioP)
+                                    .creaProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -494,7 +496,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProductoMemb(formularioP)
+                                    .creaProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -538,6 +540,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -571,7 +575,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .creaProductoMemb(formularioP)
+                                        .creaProducto(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -674,7 +678,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProductoMemb(formularioP)
+                                    .creaProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -718,6 +722,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -751,7 +757,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .creaProductoMemb(formularioP)
+                                        .creaProducto(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -842,7 +848,7 @@ export class CrearProductoComponent implements OnInit {
                                           //idUsuario: this.auth.idUser.getValue(),
                                       };
                                       this.productoService
-                                        .creaProductoMemb(formularioP)
+                                        .creaProducto(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -889,6 +895,8 @@ export class CrearProductoComponent implements OnInit {
                                     } else {
                                       const formMarca = {
                                         marcaP: this.form.value.marcaP,
+                                        idGimnasio: 0,
+                                        servicio: 0
                                       };
                                       this.categoriaService
                                         .agregarMarca2(formMarca)
@@ -923,7 +931,7 @@ export class CrearProductoComponent implements OnInit {
                                           };
 
                                           this.productoService
-                                            .creaProductoMemb(formularioP)
+                                            .creaProducto(formularioP)
                                             .subscribe({
                                               next: (respuesta) => {
                                                 if (respuesta.success) {
@@ -1026,7 +1034,7 @@ export class CrearProductoComponent implements OnInit {
                                   //idUsuario: this.auth.idUser.getValue(),
                               };
                               this.productoService
-                                .actualizarProducto2(formularioP)
+                                .creaProducto(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1067,6 +1075,8 @@ export class CrearProductoComponent implements OnInit {
                             } else {
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
+                                idGimnasio: 0,
+                                servicio: 0
                               };
                               this.categoriaService
                                 .agregarMarca2(formMarca)
@@ -1097,7 +1107,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .actualizarProducto2(formularioP)
+                                    .creaProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1184,7 +1194,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .actualizarProducto2(formularioP)
+                                    .creaProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1228,6 +1238,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -1260,7 +1272,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .actualizarProducto2(formularioP)
+                                        .creaProducto(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1360,7 +1372,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .actualizarProducto2(formularioP)
+                                    .actualizarProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1404,6 +1416,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -1438,7 +1452,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .actualizarProducto2(formularioP)
+                                        .actualizarProducto(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1529,7 +1543,7 @@ export class CrearProductoComponent implements OnInit {
                                          // idUsuario: this.auth.idUser.getValue(),
                                       };
                                       this.productoService
-                                        .actualizarProducto2(formularioP)
+                                        .actualizarProducto(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1576,6 +1590,8 @@ export class CrearProductoComponent implements OnInit {
                                     } else {
                                       const formMarca = {
                                         marcaP: this.form.value.marcaP,
+                                        idGimnasio: 0,
+                                        servicio: 0
                                       };
                                       this.categoriaService
                                         .agregarMarca2(formMarca)
@@ -1611,7 +1627,7 @@ export class CrearProductoComponent implements OnInit {
                                           };
 
                                           this.productoService
-                                            .actualizarProducto2(formularioP)
+                                            .actualizarProducto(formularioP)
                                             .subscribe({
                                               next: (respuesta) => {
                                                 if (respuesta.success) {
@@ -1685,7 +1701,7 @@ export class CrearProductoComponent implements OnInit {
       this.spinner.show();
     const codigo = this.form.get("codigoBarra")?.value;
     this.productoService
-      .verProductoCodigoBarras2(codigo)
+      .verProductoCodigoBarras(codigo)
       .subscribe((respuesta: any) => {
         if (respuesta.success == 0) {
           this.categoriaService
@@ -1727,7 +1743,7 @@ export class CrearProductoComponent implements OnInit {
                           };
 
                           this.productoService
-                            .creaProductoMemb(formularioP)
+                            .creaProducto(formularioP)
                             .subscribe({
                               next: (respuesta) => {
                                 if (respuesta.success) {
@@ -1764,6 +1780,8 @@ export class CrearProductoComponent implements OnInit {
                         } else {
                           const formMarca = {
                             marcaP: this.form.value.marcaP,
+                            idGimnasio: 0,
+                            servicio: 0
                           };
                           this.categoriaService
                             .agregarMarca2(formMarca)
@@ -1790,7 +1808,7 @@ export class CrearProductoComponent implements OnInit {
                               };
 
                               this.productoService
-                                .creaProductoMemb(formularioP)
+                                .creaProducto(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1871,7 +1889,7 @@ export class CrearProductoComponent implements OnInit {
                               };
 
                               this.productoService
-                                .creaProductoMemb(formularioP)
+                                .creaProducto(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1912,6 +1930,8 @@ export class CrearProductoComponent implements OnInit {
                             } else {
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
+                                idGimnasio: 0,
+                                servicio: 0
                               };
                               this.categoriaService
                                 .agregarMarca2(formMarca)
@@ -1938,7 +1958,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProductoMemb(formularioP)
+                                    .creaProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -2029,7 +2049,7 @@ export class CrearProductoComponent implements OnInit {
                               };
 
                               this.productoService
-                                .creaProductoMemb(formularioP)
+                                .creaProducto(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -2070,6 +2090,8 @@ export class CrearProductoComponent implements OnInit {
                             } else {
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
+                                idGimnasio: 0,
+                                servicio: 0
                               };
                               this.categoriaService
                                 .agregarMarca2(formMarca)
@@ -2097,7 +2119,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProductoMemb(formularioP)
+                                    .creaProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -2177,7 +2199,7 @@ export class CrearProductoComponent implements OnInit {
                                       //idUsuario: this.auth.idUser.getValue(),
                                   };
                                   this.productoService
-                                    .creaProductoMemb(formularioP)
+                                    .creaProducto(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -2219,6 +2241,8 @@ export class CrearProductoComponent implements OnInit {
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
                                   };
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
@@ -2248,7 +2272,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .creaProductoMemb(formularioP)
+                                        .creaProducto(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {

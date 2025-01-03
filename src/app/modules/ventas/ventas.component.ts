@@ -138,7 +138,7 @@ export class VentasComponent implements OnInit {
     // });
 
     //Obtener productos de la bodega
-    this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
+    this.productoService.obternerProductosV(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
       // console.log('ProductosV: ', this.productData);
 
@@ -163,7 +163,7 @@ export class VentasComponent implements OnInit {
 
 
   validarYAgregarProducto(producto: any) {
-    this.InventarioService.obtenerProductoPorIdYIdBodega(producto.idProbob, this.auth.idGym.getValue()).subscribe(
+    this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
       (data) => {
         const productoObtenido = data[0];
         // console.log('PRODUCTO OBTENIDO: ', productoObtenido);
@@ -345,7 +345,7 @@ export class VentasComponent implements OnInit {
 
   buscarPorPro(){
     const productoIngresado = this.form.get("producto")?.value;
-      this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
+      this.InventarioService.buscarProductoPorNombre(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
           // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
 
@@ -415,7 +415,7 @@ export class VentasComponent implements OnInit {
                 lng: 0,
               };
 
-              this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
+              this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
                 const lastInsertId = response.id_pedido;
                 // console.log('idlast: ', lastInsertId);
 
@@ -428,10 +428,11 @@ export class VentasComponent implements OnInit {
                     cantidad: producto.cantidad,
                     total: producto.precioSucursal,
                     total_cantidad: producto.cantidad * producto.precioSucursal,
+                    idPromocion: ''
                   };
                 });
                 console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
-                this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe(
+                this.DetalleVenta.agregarVentaDetalle(detallesVentas).subscribe(
                   (response) => {
                     console.log('Detalle Pedido insertado correctamente:', response);
                     if (response.success === 1) {
@@ -442,7 +443,7 @@ export class VentasComponent implements OnInit {
                           cantidad: producto.cantidad
                         }
                       });
-                      this.DetalleVenta.updateExistenciasPedido(existencias).subscribe((data) => {
+                      this.DetalleVenta.updateExistencias(existencias).subscribe((data) => {
 
                       });
                       this.spinner.hide();

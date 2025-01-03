@@ -115,8 +115,7 @@ export class VerCorteComponent implements OnInit  {
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
-          console.log('DATAUSER: ', resultData);
-
+          // console.log('DATAUSER: ', resultData);
       }, error: (error) => { console.log(error); }
     });
   }
@@ -126,7 +125,7 @@ export class VerCorteComponent implements OnInit  {
     this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
-        // console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
+        console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.loadData();
         this.dataSource.data = this.detallesCaja;
@@ -164,15 +163,10 @@ export class VerCorteComponent implements OnInit  {
     const fechaInicioIso = fechaInicioFiltrar.toISOString().slice(0, 10);
     const fechaFinIso = fechaFinFiltrar.toISOString().slice(0, 10);
 
-    // console.log("Fecha Inicio (ISO):", fechaInicioIso);
-    // console.log("Fecha Fin (ISO):", fechaFinIso);
-
     this.dataSource.filterPredicate = (data: any, filter: string) => {
       const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' a tu propiedad de fecha
       fechaItem.setHours(0, 0, 0, 0);
       const fechaItemIso = fechaItem.toISOString().slice(0, 10);
-
-      // console.log("Fecha Item (ISO): ", fechaItemIso);
 
       return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
     };
@@ -274,6 +268,8 @@ export class VerCorteComponent implements OnInit  {
 
     // Copiar los datos filtrados
     const datosFiltrados = [...this.dataSource.filteredData];
+    console.log('datosFiltrados: ', datosFiltrados);
+
 
     // Agregar una fila al final con el total
     datosFiltrados.push({
@@ -285,7 +281,7 @@ export class VerCorteComponent implements OnInit  {
       cantidad: 'Cantidad',
       total: 'Precio unitario',
       fecha_hora_pedido: 'Fecha de venta',
-      // VendidoPor: 'Vendido por',
+      VendidoPor: 'Vendido por',
       'Total Ventas': 'Total de ventas'
     };
 
@@ -296,7 +292,7 @@ export class VerCorteComponent implements OnInit  {
         'Cantidad': elemento.cantidad,
         'Precio unitario': elemento.total,
         'Fecha de venta': elemento.fecha_hora_pedido,
-        // 'Vendido por': elemento.VendidoPor, // Asegúrate de que esto coincida con la estructura de tus datos
+        'Vendido por': elemento.nombreCompleto, // Asegúrate de que esto coincida con la estructura de tus datos
         'Total de ventas': elemento['Total Ventas']
       };
     });

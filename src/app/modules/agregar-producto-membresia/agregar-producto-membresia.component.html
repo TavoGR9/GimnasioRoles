@@ -50,10 +50,10 @@
                        <div class="col-sm-12">
                           <p>
                              <mat-form-field style="width: 100%;" required appearance="outline">
-                                <mat-label>Nombre</mat-label>
+                                <mat-label>Nombre de la membresia</mat-label>
                                 <input
                                    matInput
-                                   placeholder="Nombre del producto"
+                                   placeholder="Nombre de la membresia"
                                    type="text"
                                    id="descripcion"
                                    autocomplete="off"
@@ -86,11 +86,11 @@
                        <div class="col-sm-6">
                           <p >
                              <mat-form-field appearance="outline" style="width: 100%;">
-                                <mat-label>Subcategoria</mat-label>
+                                <mat-label>Tipo de Membresia</mat-label>
                                 <input
                                   matInput
                                   formControlName="nomsubcate"
-                                  placeholder="Escribe una subcategoria"
+                                  placeholder="Tipo de Membresia"
                                   [matAutocomplete]="autoSubcategoria"
                                   (input)="buscarSubCategorias()"
                                 />
@@ -108,11 +108,11 @@
                        <div class="col-sm-6">
                           <p>
                              <mat-form-field appearance="outline" style="width: 100%;">
-                                <mat-label>Marca</mat-label>
+                                <mat-label>Servicio</mat-label>
                                 <input
                                   matInput
                                   formControlName="marcaP"
-                                  placeholder="Escribe una marca"
+                                  placeholder="Escribe un servicio"
                                   [matAutocomplete]="autoMarca"
                                   (input)="buscarMarca()"
                                 />
@@ -127,14 +127,14 @@
                        <div class="col-sm-6">
                           <p>
                              <mat-form-field appearance="outline"  style="width: 100%;" required>
-                                <mat-label>Detalle del producto</mat-label>
+                                <mat-label>Detalle de la membresia</mat-label>
                                 <input
                                    id="detalleCompra"
                                    formControlName="detalleCompra"
                                    type="text"
                                    matInput
                                    autocomplete="off"
-                                   placeholder="Detalle del producto"
+                                   placeholder="Detalle de la membresia"
                                    />
                              </mat-form-field>
                           </p>

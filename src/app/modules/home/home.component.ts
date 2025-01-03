@@ -37,7 +37,6 @@ export class HomeComponent implements OnInit {
 
   homeCard: any;
   homeCard2: any;
-  homeCard21: any[] = [];
   homeCardVisita: any[] = [];
   homeCardQuincena: any[] = [];
 
@@ -50,6 +49,11 @@ export class HomeComponent implements OnInit {
   dataSource: any;
   displayedColumns: string[] = ["title", "details", "price", "rol"];
 
+  dataSourceProductos: any;
+  displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
+  masVendidos: any;
+
+  homeCard21: any[] = [];
 
   /**graficas**/
   mensualidades: any[] = [];
@@ -192,6 +196,7 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSource.paginator = this.paginator;
+      this.dataSourceProductos.paginador = this.paginator;
     }, 1000);
   }
 
@@ -419,20 +424,24 @@ export class HomeComponent implements OnInit {
 
   /**LISTA PRODUCTOS */
   listaTablas() {
+    // Total de ventas del día $
     this.homeService.consultarHome(this.idGym).subscribe((respuesta) => {
       this.homeCard = respuesta;
-      console.log('homeCard: ', this.homeCard);
-
     });
 
     this.homeService.consultarHome2(this.idGym).subscribe((respuesta) => {
       this.homeCard2 = respuesta;
     });
 
+    // Tabla de los productos más vendidos de la bodega
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(
-        `<table class="mi-tabla">${data.tablaHTML}</table>`
-      );
+      // this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(
+      //   `<table class="mi-tabla">${data.tablaHTML}</table>`
+      // );
+
+      this.masVendidos = data;
+      this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
+      this.loadData();
     });
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(

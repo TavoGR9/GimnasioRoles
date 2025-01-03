@@ -113,8 +113,8 @@ export class planEditarComponent {
         precio: this.servicios[0].PrecioPaquete,
 
         membresias: this.paquete === 1
-        ? (Array.isArray(this.selectedMembresias) ? this.selectedMembresias : [this.selectedMembresias]) // Múltiple: asegúrate de que sea un array
-        : this.selectedMembresias ? this.selectedMembresias[0] : null // Único: toma el primer elemento
+        ? (Array.isArray(this.selectedMembresias) ? this.selectedMembresias : [this.selectedMembresias]) // muchos
+        : this.selectedMembresias ? this.selectedMembresias[0] : null // unicos
 
       });
         let fechaDate = new Date(this.servicios[0].FechaInicio + ' 0:00:00');

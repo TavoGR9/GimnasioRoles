@@ -170,7 +170,7 @@ export class ProductosComponent implements OnInit {
           (respuesta) => {
             this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
               //this.productos = resultData
-              this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
+              //this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
               this.dataSource = new MatTableDataSource(this.productos);
               this.loadData();
             });
