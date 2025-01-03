@@ -125,6 +125,8 @@ export class HomeComponent implements OnInit {
 
   fechaFormateada: string = "";
   ngOnInit(): void {
+
+    console.log(this.isLoading)
     // this.auth.comprobar();
     // this.homeService.comprobar();
 

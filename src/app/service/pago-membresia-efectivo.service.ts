@@ -226,6 +226,21 @@ deleteMembresia(id: any): Observable<any> {
     );
   }
 
+  actualizaDatosCliente2(data: any): Observable<any> {
+    const url = `${this.API}test_update.php`; // Asegúrate de que this.API esté correctamente configurado
+    return this.clienteHttp.post<msgResult>(url, data, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json', // Ajusta según lo que espere tu backend
+      }),
+    }).pipe(
+      catchError(error => {
+        console.error('Error en la actualización de cliente:', error); // Muestra el error completo en consola
+        return throwError(() => new Error('Hubo un problema al actualizar los datos del cliente.'));
+      })
+    );
+  }
+  
+
   deleteService(datos: any): Observable<any>{
     return this.clienteHttp.post(this.API+"Usuario.php?eliminarServicio", datos);
   }
@@ -285,4 +300,8 @@ console.log("datos emnviado en servico",data);
     return this.clienteHttp.post<any>(this.API+"test_membresia.php", JSON.stringify(data), { headers });
   }
 
+
+
+
+  
 }

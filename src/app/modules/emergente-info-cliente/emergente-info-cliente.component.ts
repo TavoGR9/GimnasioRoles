@@ -25,6 +25,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
   photo: any;
   huella: any;
   img = 'https://';
+
+  imgBase= 'https://';
   dataSource: any;
   displayedColumns: string[] = [
     'ID',
@@ -61,7 +63,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
         estafeta: [sanitizeValue(this.data.estafeta), Validators.required],
         nombre: [sanitizeValue(this.data.nombre), Validators.required],
         telefono: [sanitizeValue(this.data.telefono)], 
-        correo: [sanitizeValue(this.data.email)] 
+        correo: [sanitizeValue(this.data.email)] ,
+        password:[]
       });
     }
    
@@ -72,7 +75,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
   ngOnInit() {
     this.duracion = this.data.duracion + ' ' + 'días';
-    this.photo = this.img+this.data.foto;
+    this.photo = this.formatUrl(this.data.foto);
     this.huella = this.data.huella;
     this.productos = JSON.parse(this.data.productos);
     /*this.pagoService.histoClienteMemb(this.data.idCliente).subscribe((respuesta) => {
@@ -187,9 +190,10 @@ export class EmergenteInfoClienteComponent implements OnInit{
   } 
 
     actualizarCliente(): void {
+      console.log(this.form.value);
       this.spinner.show();
       
-      console.log(this.form.value);
+    
       if (!this.form.valid) {
         console.log("Formulario no válido");
         return;
@@ -455,6 +459,115 @@ UserHIstorial(clave: string) {
 
 
 
+  
 
 
+  actualizarCliente2(): void {
+   
+    this.spinner.show();
+  
+    if (!this.form.valid) {
+      console.log("Formulario no válido");
+      this.toastr.error("El formulario contiene errores. Por favor, revísalo.");
+      this.spinner.hide(); // Asegúrate de ocultar el spinner en este caso
+      return;
+    }
+    this.generarContraseña(9);
+    
+    console.log(this.form.value);
+  
+    const clienteData = {
+      id_cliente: this.form.value.id_cliente,
+      estafeta: this.form.value.estafeta,
+      id_bodega: this.form.value.id_bodega,
+      correo: this.form.value.correo || null,
+      telefono: this.form.value.telefono || null,
+      nombre: this.form.value.nombre || null,
+      password: this.form.value.password || null
+    };
+  
+    this.pagoService.actualizaDatosCliente2(clienteData).subscribe({
+      next: (resultData) => {
+        console.log(resultData);
+  
+        if (resultData?.Estado === 1) {
+          console.log("Actualización exitosa");
+
+          if (resultData.Mensaje === 'Actualización de datos exitosa\nContraseña actualizada correctamente.') {
+            console.log("Enviando WhatsApp");
+          }
+  
+          this.spinner.hide();
+          this.cerrarDialogo();
+          this.dialog.open(MensajeEmergenteComponent, {
+            data: resultData.Mensaje || 'Datos actualizados satisfactoriamente'
+          }).afterClosed()
+            .subscribe(() => {
+              // Aquí puedes agregar lógica si es necesario
+            });
+  
+        } else {
+          this.spinner.hide();
+          this.toastr.error(resultData.Mensaje || 'Hubo un error al actualizar los datos.');
+          console.log("Error: " + resultData.Mensaje);
+        }
+      },
+      error: (error) => {
+        this.spinner.hide();
+        console.error(error);
+  
+        this.toastr.error('Ocurrió un error al procesar la solicitud. Por favor, intenta nuevamente.');
+      },
+    });
+  }
+
+
+// Método para verificar si los campos no son nulos ni cadenas vacías
+private verificarCamposNoNulosYDiferentesDeVacio(): boolean {
+  const esCampoValido = (campo: string | undefined): boolean => !!campo && campo.trim() !== '';
+
+  const telefonoEsValido = esCampoValido(this.form.value.telefono);
+  const correoEsValido = esCampoValido(this.form.value.correo);
+
+  // Retornar true solo si ambos campos son válidos
+  return telefonoEsValido && correoEsValido;
 }
+
+// Método para generar una contraseña
+generarContraseña(longitud: number): void {
+  if (this.verificarCamposNoNulosYDiferentesDeVacio()) {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    const contraseña = Array.from({ length: longitud }, () => caracteres.charAt(Math.floor(Math.random() * caracteres.length))).join('');
+
+    // Actualizar el valor del campo `password` en el formulario
+    this.form.patchValue({ password: contraseña });
+  } else {
+    // Si no se cumple la condición, asegurar que el campo `password` esté vacío
+    this.form.patchValue({ password: '' });
+  }
+}
+
+
+
+  
+  enviarMensajeWhatsApp(telefono: string, correo: string, password: string) {
+    if(telefono && correo){
+      const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
+      const url = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    }  
+  }
+
+
+    // Método para formatear la cadena
+    formatUrl(foto: string): string {
+      // Verifica si la cadena es una URL completa
+      if (foto && (foto.startsWith('http') || foto.startsWith('https'))) {
+        return foto; // Si es una URL completa, devuelve tal cual
+      } else {
+        // Si no es una URL completa, concatenarla con la base
+        return this.imgBase + foto;
+      }
+    }
+  }
+

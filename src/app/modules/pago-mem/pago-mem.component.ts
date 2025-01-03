@@ -398,7 +398,7 @@ descargarExcel(): void {
           return [
               cliente.clave || "N/A",
               cliente.nombreCompleto || "N/A",
-              cliente.nombreBodega || "N/A",
+              cliente.id_bodega || "N/A",
               cliente.membresia || "N/A",
               cliente.total || 0,
               cliente.fecha_inicio ? this.datePipe.transform(cliente.fecha_inicio, "dd/MM/yyyy") : "Sin fecha",

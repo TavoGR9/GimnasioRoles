@@ -13,6 +13,8 @@ import { FormPagoEmergenteComponent } from "../form-pago-emergente/form-pago-eme
 
 import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergente-info-cliente.component";
 
+import { ChangeDetectorRef } from "@angular/core";
+
 interface ClientesActivos {
   Clave: number;
   nombreCompleto: string;
@@ -35,8 +37,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   clienteActivo: ClientesActivos[] = [];
   dataSourceActivos: MatTableDataSource<any>;
   dataSourceReenovacion: any;
-  fechaInicio: Date = new Date();
-  fechaFin: Date = new Date();
+
   id: any;
   dineroRecibido: number = 0;
   moneyRecibido: number = 0;
@@ -51,9 +52,11 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   todosClientes: any;
   sortField: string = "";
   sortDirection: string = "asc";
-  @ViewChild("paginatorPagoOnline", { static: true }) paginator!: MatPaginator;
+  // @ViewChild("paginatorPagoOnline", { static: true }) paginator!: MatPaginator;
   @ViewChild("paginatorActivos") paginatorActivos!: MatPaginator;
-  @ViewChild("paginatorReenovacionMem", { static: true })
+  @ViewChild('paginatorActivos', { static: true }) paginator!: MatPaginator;
+  
+  //@ViewChild("paginatorReenovacionMem", { static: true })
   paginatorReenovacion!: MatPaginator;
   displayedColumnsActivos: string[] = [
     "Clave",
@@ -71,6 +74,12 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ];
   dataUser: any;
 
+  //fechaInicio: Date = new Date();
+  //fechaFin: Date = new Date();
+  fechaInicio: Date | null = null;
+  fechaFin: Date | null = null;
+
+
   constructor(
     private pagoService: PagoMembresiaEfectivoService,
     public dialog: MatDialog,
@@ -78,12 +87,13 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private datePipe: DatePipe,
-    private auth: AuthService
+    private auth: AuthService,
+    private cdr: ChangeDetectorRef
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-    this.fechaInicio.setHours(0, 0, 0, 0);
-    this.fechaFin.setHours(23, 59, 0, 0);
+    //this.fechaInicio.setHours(0, 0, 0, 0);
+    //this.fechaFin.setHours(23, 59, 0, 0);
 
     this.form = this.fb.group({
       idUsuario: [""],
@@ -162,11 +172,17 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   loadData() {
+ 
     setTimeout(() => {
-      this.dataSourceActivos.paginator = this.paginatorActivos;
+     
       this.isLoading = false;
+ 
+      
    
     }, 1000);
+
+    this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+    this.dataSourceActivos.paginator = this.paginatorActivos;
   }
 
  
@@ -210,7 +226,7 @@ verificarCambios(): void {
   formatDate(date: Date): string {
     return this.datePipe.transform(date, "yyyy-MM-dd") || "";
   }
-
+/*
   updateDateLogs(): void {
    // this.fechaInicioAnterior = this.fechaInicio;
     // this.fechaFinAnterior = this.fechaFin;
@@ -244,7 +260,7 @@ verificarCambios(): void {
       );
      
   }
-
+*/
   sortData(column: string): void {
     const data = this.dataSourceActivos.data;
   
@@ -504,11 +520,47 @@ verificarCambios(): void {
 
         console.log('const', fechaInicio, fechaFin);
 
+
+
+
+
         // Filtramos los clientes dentro del rango de fechas.
         const filtradosPorFecha = Clientes.filter((cliente: any) => {
           const fechaRegistro = new Date(cliente.fechaRegistro);
           return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
         });
+
+        console.log('filtradosPorFecha',filtradosPorFecha)
+
+
+const pedidosAgrupados = this.agruparPorPedido(filtradosPorFecha);
+console.log('pedidosAgrupados',pedidosAgrupados)
+
+        // probar
+// Agrupar pedidos únicos por el identificador del usuario y evitar duplicados por id_pedido
+const pedidosPorUsuario: Record<string, any[]> =pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
+  const identificador = item.clave; // Usa el identificador del usuario
+  const idPedido = item.id_pedido; // Identificador único del pedido
+
+  if (!acc[identificador]) acc[identificador] = []; // Inicializa si no existe
+
+  // Verifica si ya se agregó este id_pedido al grupo del usuario
+  const existePedido = acc[identificador].some((pedido) => pedido.id_pedido === idPedido);
+  if (!existePedido) {
+    acc[identificador].push(item);
+  }
+
+  return acc;
+}, {});
+
+console.log(pedidosPorUsuario)
+// Filtrar usuarios con un único pedido y estatus "0"
+const filtrados2 = Object.values(pedidosPorUsuario)
+  .filter((pedidos: any[]) => pedidos.length === 1 && pedidos[0].estatus === "0" && pedidos[0].id_pedido !=null) // Filtrar usuarios con un único pedido y estatus "0"
+  .flat(); // Aplana el array para obtener un solo nivel de datos
+
+console.log(filtrados2);
+
 
         // Aplicamos el filtro inicial: usuarios con conteoPedidos = "1" y estatus = "1", o conteoPedidos === null.
         const filtrados = filtradosPorFecha.filter((item: any) =>
@@ -529,7 +581,7 @@ verificarCambios(): void {
         }));
 
         // Combinamos ambos resultados (con pedidos y sin pedidos).
-        const clientesFinales = [...agrupadosConPedidos, ...procesadosSinPedidos];
+        const clientesFinales = [...agrupadosConPedidos, ...procesadosSinPedidos,...filtrados2 ];
 
         // Ahora ordenamos el arreglo final por `fechaRegistro` antes de asignarlo a `clienteActivo`.
         this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
@@ -541,8 +593,12 @@ verificarCambios(): void {
         console.log("clienteActivo final (agrupados y sin pedidos):", this.clienteActivo);
 
         // Actualizamos el DataSource de la tabla.
+        
         this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
         this.dataSourceActivos.paginator = this.paginatorActivos;
+        
+      
+        
       },
       (error: any) => {
         console.error("Error al obtener activos:", error);
