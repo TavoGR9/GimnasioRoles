@@ -70,7 +70,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     "Pago",
     "Info Cliente",
     "Huella",
-    "Rol",
+    "Usuario",
   ];
   dataUser: any;
 
@@ -107,7 +107,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.loadData()
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      this.listaClientesData();
+    
    
     });
 
@@ -176,7 +176,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     setTimeout(() => {
      
       this.isLoading = false;
- 
+      this.listaClientesData();
       
    
     }, 1000);
