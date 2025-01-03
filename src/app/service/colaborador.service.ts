@@ -29,6 +29,7 @@ export class ColaboradorService {
     //API: string = 'http://localhost/serviciosGimnasio/'
       API: string = 'http://localhost/serviciosGym/'
 
+
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
     }
@@ -52,22 +53,22 @@ export class ColaboradorService {
         return this.clienteHttp.get(this.API+"empleado.php?nameGym="+gimName);
     }
 
-    agregarPersonal(datos: any): Observable<any> {
+   agregarPersonal(datos: any): Observable<any> {
       const data ={nombre: datos}
-      return this.clienteHttp.post(this.API + "empleado.php?insertarPersonal=1", data);
+      return this.clienteHttp.post(this.API + "empleado.php", data);
     }
 
     obtenerPersonalPorNombre(nombre:any):Observable<any>{
 
-      return this.clienteHttp.get(this.API+"addEmpleado.php"+nombre);
+      return this.clienteHttp.get(this.API+"empleado.php"+nombre);
     }
 
     getPersonal(): Observable<any> {
-      return this.clienteHttp.get(this.API + "empleado.php?consultarPersonal");
+      return this.clienteHttp.get(this.API + "empleado.php");
     }
 
-    agregarEmpleado(datosEmpleado: any): Observable<any> {
-        return this.clienteHttp.post(this.API + "empleado.php?insertarRep=1", datosEmpleado).pipe(
+   agregarEmpleado(datosEmpleado: any): Observable<any> {
+        return this.clienteHttp.post(this.API + "empleado.php", datosEmpleado).pipe(
             tap(dataResponse => {
             }),
             catchError(error => {
@@ -132,7 +133,7 @@ export class ColaboradorService {
     }
 
     listaColaboradores():Observable<any[]>{
-        return this.clienteHttp.get<any[]>(this.API+"empleado.php?tEmp");
+        return this.clienteHttp.get<any[]>(this.API+"ser_mostrar_Recepcionistas.php");
     }
 
     getCategoriasSubject() {
@@ -164,16 +165,14 @@ export class ColaboradorService {
 
 
 
-    // MostrarRecepcionistas(idGym: any) {
-    //     let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-    //     let params = 'idGym=' + idGym;
-    //     return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
-    //   }
-    MostrarRecepcionistas(idGym: any) {
-        let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
+    MostrarRecepcionistas(idGym: any): Observable<any> {
+       // let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'idGym=' + idGym;
-        return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers }).pipe(
+        return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php',idGym).pipe(
              tap(dataResponse => {
+              //console.log('++++', idGym);
+
                 this.saveDataToIndexedDB1(dataResponse);
             }),
             catchError(error => {
@@ -215,16 +214,34 @@ export class ColaboradorService {
     InfoIdEmpleado(idEmp: any) {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'idEmp=' + idEmp;
-        return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
+        return this.clienteHttp.post(this.API + 'ActualizarDatos.php', params, { headers });
       }
 
-      ActualizarColaborador(pid_bodega: number, pnombreCompleto: String, pCorreoEmpleado: String, ptelefono: String, pidEmp: String) {
+      /*ActualizarColaborador(pid_bodega: number, pnombreCompleto: String, pCorreoEmpleado: String, ptelefono: String, pidEmp: String) {
         let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'pid_bodega=' + pid_bodega + '&pnombreCompleto=' + pnombreCompleto + '&pCorreoEmpleado=' + pCorreoEmpleado + '&ptelefono=' + ptelefono + '&pidEmp=' + pidEmp;
-        return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params, { headers });
-      }
+        return this.clienteHttp.post(this.API + 'updateEmpleado.php', params, { headers });
+      }*/
+        ActualizarColaborador(
+          pid_bodega: number,
+          pnombreCompleto: string,
+          pCorreoEmpleado: string,
+          ptelefono: string,
+          pidEmp: string
+        ) {
+          const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+          const body = {
+            pid_bodega,
+            pnombreCompleto,
+            pCorreoEmpleado,
+            ptelefono,
+            pidEmp
+          };
+          return this.clienteHttp.post(this.API + 'updateEmpleado.php', body, { headers });
+        }
 
-      ActualizarContrasenia(p_idUsuario: number, p_contrasenia: string) {
+
+     /* ActualizarContrasenia(p_idUsuario: number, p_contrasenia: string) {
         // Define headers and params for the request
         const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         const params = new HttpParams()
@@ -232,18 +249,38 @@ export class ColaboradorService {
             .set('p_contrasenia', p_contrasenia);
 
         // Perform the POST request
-        return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php', params.toString(), { headers });
+        return this.clienteHttp.post(this.API + 'updateContrasenia.php', params.toString(), { headers });
+    }*/
+        ActualizarContrasenia(idempleado: number, contrasenia: string) {
+          const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+          const body = { idempleado, contrasenia };
+          return this.clienteHttp.post(this.API + 'updateContrasenia.php', body, { headers });
+      }
+
+
+
+    actualizarEstatus(idEmpleado: number, statuss: number, correoParametro: string): Observable<any> {
+      const body = {
+        idEmpleado: idEmpleado, // Nombre del campo debe coincidir con PHP
+        statuss: statuss,
+        correoParametro: correoParametro,
+      };
+
+      const options = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json', // Cabecera para enviar JSON
+        }),
+      };
+
+      console.log('Datos enviados desde Angular al backend (body):', body);
+
+      // Incluimos `options` en la llamada
+      return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php', JSON.stringify(body), options);
     }
 
-      actualizarEstatus(idGimnasio: any, estatus: any, correo:any): Observable<any> {
-        let body = new URLSearchParams();
-        body.set('idEmpleado', idGimnasio);
-        body.set('correo', correo);
-        body.set('estatus', estatus.toString());
-        body.set('actualizarEstatus', '1');
-        let options = {
-          headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-        };
-        return this.clienteHttp.post(this.API+"empleado.php?actualizaEstatus", body.toString(), options);
-      }
+
+
+
+
+
   }

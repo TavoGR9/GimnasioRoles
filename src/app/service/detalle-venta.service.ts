@@ -19,6 +19,7 @@ export class DetalleVentaService {
   API: string = 'http://localhost/serviciosGimnasio/';
   API2: string ='http://localhost/serviciosGym/';
 
+
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
 
