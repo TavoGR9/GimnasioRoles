@@ -21,6 +21,7 @@ export class EntradasService {
   API3: string = 'http://localhost/serviciosGimnasio/';
 
 
+
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {}
 
   // comprobar(){

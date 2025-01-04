@@ -21,6 +21,7 @@ export class HomeService {
   API: string ='http://localhost/serviciosGym/';
   API3: string = 'http://localhost/serviciosGimnasio/';
 
+
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService ) {
   }
 
@@ -222,5 +223,9 @@ export class HomeService {
         }
     });
   }
+
+ConsultarPedidosMembresias(id_bodega: any ){
+  return  this.clienteHttp.get(this.API+'pedidosMembresias.php?id_bodega='+ id_bodega)
+}
 
 }

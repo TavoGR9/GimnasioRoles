@@ -13,7 +13,10 @@
 				<div style="display: flex; justify-content: flex-end;">
 					<mat-form-field appearance="outline">
 						<mat-label>Fecha Registro</mat-label>
-						<input matInput [matDatepicker]="pickerInicio" [(ngModel)]="fechaInicio" readonly>
+						<input matInput [matDatepicker]="pickerInicio"
+						 [(ngModel)]="fechaInicio"
+						 (ngModelChange)="verificarCambios()"
+						  readonly>
 						<mat-hint>MM/DD/YYYY</mat-hint>
 						<mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
 						<mat-datepicker #pickerInicio></mat-datepicker>
@@ -23,7 +26,10 @@
 				<div style="display: flex; justify-content: flex-start;">
 					<mat-form-field appearance="outline">
 						<mat-label>Fecha Registro</mat-label>
-						<input matInput [matDatepicker]="pickerFin" [(ngModel)]="fechaFin" readonly>
+						<input matInput [matDatepicker]="pickerFin"
+						[(ngModel)]="fechaFin"
+						(ngModelChange)="verificarCambios()"
+						 readonly>
 						<mat-hint>MM/DD/YYYY</mat-hint>
 						<mat-datepicker-toggle matIconSuffix [for]="pickerFin"></mat-datepicker-toggle>
 						<mat-datepicker #pickerFin></mat-datepicker>
@@ -50,30 +56,30 @@
 							</div>
 						</th>
 						<td mat-cell *matCellDef="let prod">
-							<ng-container *ngIf="column === 'Clave'">
+							<ng-container *ngIf="column === 'Estafeta'">
 								{{ prod.estafeta }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Nombre'">
-								{{ prod.Nombre ? prod.Nombre : prod.nombre }}
+								{{ prod.nombreCompleto }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Membresia'">
-								{{ prod.Membresia }}-{{ prod.servicio }}
+								{{ prod.membresia}}
 							</ng-container>
 							<ng-container *ngIf="column === 'Precio'">
-								{{ prod.Precio }}
+								{{ prod.total | currency  }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Fecha Inicio'">
-								{{ prod.Fecha_Inicio }}
+								{{ prod.fecha_inicio | date:'dd/MM/yyyy, HH:mm' }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Fecha Fin'">
-								{{ prod.Fecha_Fin }}
+								{{ prod.fecha_caducidad | date:'dd/MM/yyyy, HH:mm' }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Fecha Registro'">
-								{{ prod.fechaRegistro }}
+								{{ prod.fechaRegistro| date:'dd/MM/yyyy' }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Estatus'">
-								<div [ngClass]="{'estatus-activo': prod.Status_Num === '1', 'estatus-inactivo': prod.Status_Num !== '1'}">
-									{{ prod.Status }}
+								<div [ngClass]="{'estatus-activo': prod.estatus === '1', 'estatus-inactivo': prod.estatus !== '1'}">
+									{{ prod.estatus}}
 								</div>
 							</ng-container>
 							<ng-container *ngIf="column === 'Pago'">
@@ -99,103 +105,12 @@
 									</div>
 								</ng-template>
 							</ng-container>
-							<ng-container *ngIf="column === 'Rol'">
+							<ng-container *ngIf="column === 'Usuario'">
 								<span *ngIf="prod.rol === 'Cliente'; else notCliente">
                   <mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
                 </span>
 								<ng-template #notCliente>
-									<mat-icon *ngIf="isAdmin()" (click)="eliminarUs(prod)">delete</mat-icon>
-								</ng-template>
-							</ng-container>
-						</td>
-					</ng-container>
-					<tr mat-header-row *matHeaderRowDef="displayedColumnsActivos"></tr>
-					<tr mat-row *matRowDef="let productofila; columns: displayedColumnsActivos"></tr>
-				</table>
-			</div>
-			<mat-paginator #paginatorActivos [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
-		</div>
-	</div>
-</div>
-
-
-<!-- PARA VER PEDIDOS Y NO MEMBRESIAS-->
-<div *ngIf="!isLoading">
-	<div style="margin-top: 60px;">
-		<div class="container mt-4">
-
-      <h2>LISTA DE CLIENTES Y PAGO DE MEMBRESÍA EN EFECTIVO</h2>
-
-      <br> <br> <br> <br>
-
-			<div class="table-container">
-				<table mat-table [dataSource]="dataSourcePedidosActivos" class="mat-elevation-z8">
-					<ng-container [matColumnDef]="column" *ngFor="let column of displayedColumnsActivos; let i = index">
-						<th mat-header-cell *matHeaderCellDef (click)="i < 7 ? sortData(column) : null" style="cursor: pointer;">
-							<div style="display: flex; align-items: center;">
-								{{ column }}
-								<mat-icon class="custom-icon" *ngIf="i < 7 && sortField !== column">unfold_more</mat-icon>
-								<mat-icon class="custom-icon" *ngIf="i < 7 && sortField === column">
-									{{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-								</mat-icon>
-							</div>
-						</th>
-						<td mat-cell *matCellDef="let prod">
-							<ng-container *ngIf="column === 'Clave'">
-								{{ prod.idCliente }}
-							</ng-container>
-							<ng-container *ngIf="column === 'Nombre'">
-								{{ prod.Nombre ? prod.Nombre : prod.nombre }}
-							</ng-container>
-							<ng-container *ngIf="column === 'Membresia'">
-								{{ prod.membresiaProdSeleccionada }}
-							</ng-container>
-							<ng-container *ngIf="column === 'Precio'">
-								{{ prod.precio }}
-							</ng-container>
-							<ng-container *ngIf="column === 'Fecha Inicio'">
-								{{ prod.fechaInicio }}
-							</ng-container>
-							<ng-container *ngIf="column === 'Fecha Fin'">
-								{{ prod.fechaFin }}
-							</ng-container>
-							<ng-container *ngIf="column === 'Fecha Registro'">
-								{{ prod.creation_date }}
-							</ng-container>
-							<ng-container *ngIf="column === 'Estatus'">
-								<div [ngClass]="{'estatus-activo': prod.Status_Num === '1', 'estatus-inactivo': prod.Status_Num !== '1'}">
-									{{ prod.Status }}
-								</div>
-							</ng-container>
-							<ng-container *ngIf="column === 'Pago'">
-								<button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirEmergente(prod)" color="primary">
-                  <mat-icon class="icon-size">edit</mat-icon>
-                </button>
-							</ng-container>
-							<ng-container *ngIf="column === 'Info Cliente'">
-								<button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirInfoCliente(prod)" color="{{ prod.foto ? 'primary' : 'warn' }}">
-                  <mat-icon class="icon-size">info</mat-icon>
-                </button>
-							</ng-container>
-							<ng-container *ngIf="column === 'Huella'">
-								<div *ngIf="prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0'; else noHuella">
-									<label class="estatus-activo">
-                    <mat-icon>fingerprint</mat-icon>
-                    Registrada
-                  </label>
-								</div>
-								<ng-template #noHuella>
-									<div style="width: 100%;">
-										<label class="estatus-inactivo">Huella no registrada</label>
-									</div>
-								</ng-template>
-							</ng-container>
-							<ng-container *ngIf="column === 'Rol'">
-								<span *ngIf="prod.rol === 'Cliente'; else notCliente">
-                  <mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
-                </span>
-								<ng-template #notCliente>
-									<mat-icon *ngIf="isAdmin()" (click)="eliminarUs(prod)">delete</mat-icon>
+									<mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
 								</ng-template>
 							</ng-container>
 						</td>

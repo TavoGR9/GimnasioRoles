@@ -2,8 +2,7 @@
     <p style="color: white" > Cargando... </p>
  </ngx-spinner>
 <h1 mat-dialog-title class="title">PAGAR MEMBRESIA</h1>
-
-<!--<div mat-dialog-content>
+<div mat-dialog-content>
     <form>
         <br>
         <div class="row">
@@ -15,18 +14,32 @@
                     </mat-form-field>
                 </div>
             </div>
+
             <div class="col-sm-6">
                 <div>
-                    <mat-form-field appearance="outline" style="width: 100%;">
-                      <mat-label for="membresiaSelect">Membresía</mat-label>
-                      <mat-select id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaSeleccionada" (ngModelChange)="onMembresiaChange()">
-                        <mat-option *ngFor="let membresia of membresias" [value]="membresia.IDmembresia">
-                          {{ membresia.Membresia }} -{{ membresia.nombre_servicio}}
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                  </div>
-            </div>
+                  <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label for="membresiaSelect">Membresía</mat-label>
+                    <mat-select
+                      id="membresiaSelect"
+                      name="membresiaSelect"
+                      [(ngModel)]="membresiaSeleccionada"
+                      (ngModelChange)="onMembresiaChange()"
+                    >
+                      <mat-option
+                        *ngFor="let membresia of membresias"
+                        [value]="{
+                          id: membresia.promocionPaquete === '1' ? membresia.id_promocion : membresia.idProbob,
+                          esPromocion: membresia.promocionPaquete === '1'
+                        }"
+                      >
+                        {{ membresia.nombre_producto }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+
         </div>
         <div class="row">
             <div class="col-sm-6">
@@ -42,8 +55,6 @@
                 </mat-form-field>
             </div>
         </div>
-        -->
-        <!--
        <!---- <div class="row">
             <div class="col-sm-6">
                 <mat-form-field appearance="outline" style="width: 100%;" required>
@@ -62,8 +73,6 @@
                 </mat-form-field>
             </div>
         </div>-->
-      -->
-      <!--
        <br>
         <div class="row">
             <div class="col-sm-3">
@@ -78,87 +87,7 @@
         </div>
       </form>
       <div style="display: flex; justify-content: center;" mat-dialog-actions>
-        <button mat-stroked-button (click)="successDialog()"style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 30%; margin-right: 90px;"><mat-icon>attach_money</mat-icon>Pagar</button>
+        <button mat-stroked-button (click)="succesDialog2()"style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 30%; margin-right: 90px;"><mat-icon>attach_money</mat-icon>Pagar</button>
         <button mat-stroked-button (click)="cancelDialogo()" style="background-color: #000000; font-size: 20px;  height: 40px;width: 30%; color: white;"><mat-icon>cancel</mat-icon>Cancelar</button>
      </div>
-</div>
--->
-
-
-<!-- REEMPLAZAR MEMBRESIAS POR PRODUCTOS -->
-
-<div mat-dialog-content>
-  <form [formGroup]="serviceForm">
-      <br>
-      <div class="row">
-          <div class="col-sm-6">
-              <div>
-                  <mat-form-field appearance="outline" style="width: 100%;" class="disabled-input" >
-                      <mat-label>Nombre del cliente:</mat-label>
-                      <input matInput [value]="data.nombre" >
-                  </mat-form-field>
-              </div>
-          </div>
-          <div class="col-sm-6">
-              <div>
-                  <mat-form-field appearance="outline" style="width: 100%;">
-                    <mat-label for="membresiaSelect">Membresía</mat-label>
-                    <mat-select formControlName="membresiaProdSeleccionada" id="membresiaSelect" name="membresiaSelect" [(ngModel)]="membresiaProdSeleccionada" (ngModelChange)="onMembresiaProdChange()">
-                      <mat-option *ngFor="let producto of productosFiltrados" [value]="producto.idProbob">
-                        {{ producto.nombreProducto }} - {{ producto.marca}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-          </div>
-      </div>
-      <div class="row">
-          <div class="col-sm-6">
-              <mat-form-field appearance="outline" style="width: 100%;">
-                  <mat-label>Precio</mat-label>
-                  <input matInput [value]="this.precioSucursal">
-              </mat-form-field>
-          </div>
-          <div class="col-sm-6">
-              <mat-form-field appearance="outline" style="width: 100%;">
-                  <mat-label>Duración</mat-label>
-                  <input matInput [value]="duracionMem">
-              </mat-form-field>
-          </div>
-      </div>
-     <!---- <div class="row">
-          <div class="col-sm-6">
-              <mat-form-field appearance="outline" style="width: 100%;" required>
-                <mat-label>Fecha inicio:</mat-label>
-                <input matInput [(ngModel)]="fechaDeInicio" name="fechaDeInicio" placeholder="Selecciona una fecha inicio" [matDatepicker]="picker1">
-                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                <mat-datepicker #picker1></mat-datepicker>
-              </mat-form-field>
-            </div>
-          <div class="col-sm-6">
-              <mat-form-field appearance="outline" style="width: 100%;" required>
-                  <mat-label>Fecha fin:</mat-label>
-                  <input matInput [(ngModel)]="fechaDeFin" name="fechaDeFin" placeholder="Selecciona una fecha fin" [matDatepicker]="picker2">
-                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                  <mat-datepicker #picker2></mat-datepicker>
-              </mat-form-field>
-          </div>
-      </div>-->
-     <br>
-      <div class="row">
-          <div class="col-sm-3">
-              <label>Pago de la membresia:</label>
-          </div>
-          <div class="col-sm-9" >
-              <mat-form-field appearance="outline" style="width: 100%;">
-                  <mat-label>Dinero recibido</mat-label>
-                  <input matInput [(ngModel)]="this.moneyRecibidoProd" [ngModelOptions]="{standalone: true}" type="number" min="0" placeholder="0">
-              </mat-form-field>
-          </div>
-      </div>
-    </form>
-    <div style="display: flex; justify-content: center;" mat-dialog-actions>
-      <button mat-stroked-button (click)="validarFormulario()"style="background-color: #fd9727; font-size: 20px;  height: 40px; width: 30%; margin-right: 90px;"><mat-icon>attach_money</mat-icon>Pagar</button>
-      <button mat-stroked-button (click)="cancelDialogo()" style="background-color: #000000; font-size: 20px;  height: 40px;width: 30%; color: white;"><mat-icon>cancel</mat-icon>Cancelar</button>
-   </div>
 </div>

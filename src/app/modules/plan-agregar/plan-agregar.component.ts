@@ -21,7 +21,6 @@ import { Inventario } from "../../models/inventario";
 import { AgregarProductoMembresiaComponent } from '../agregar-producto-membresia/agregar-producto-membresia.component';
 import { membresia } from '../../models/membresia';
 
-
 @Component({
   selector: "app-membresias-agregar",
   templateUrl: "./plan-agregar.component.html",
@@ -95,6 +94,7 @@ export class planAgregarComponent {
   onTipoPromocionChange(value: number): void {
     this.isMultiple = value === 1; // Si selecciona "Paquete", permite múltiples opciones
   }
+
 
   cancelar() {
     this.formulariodePlan.reset();
