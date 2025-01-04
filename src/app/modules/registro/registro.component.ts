@@ -313,7 +313,7 @@ export class RegistroComponent implements OnInit {
           } else if (resultData.success == '1') {
             this.dialogo.close(true)
             this.spinner.hide();
-           // this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
+            this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
            console.log('va a home');
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
               if (cerrarDialogo) {

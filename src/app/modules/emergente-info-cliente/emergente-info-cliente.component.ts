@@ -392,6 +392,8 @@ UserHIstorial(clave: string) {
   
         // Agrupamos los registros por id_pedido directamente (sin aplicar el filtro de conteoPedidos y estatus)
         const agrupadosPorPedido = this.agruparPorPedido(registrosConPedido);
+
+        
   
         // Asignamos los resultados a la variable de la tabla
         this.membresiaHisto = agrupadosPorPedido;
@@ -495,6 +497,7 @@ UserHIstorial(clave: string) {
 
           if (resultData.Mensaje === 'Actualización de datos exitosa\nContraseña actualizada correctamente.') {
             console.log("Enviando WhatsApp");
+            this.enviarMensajeWhatsApp(this.form.value.telefono, this.form.value.correo, this.form.value.password);
           }
   
           this.spinner.hide();
