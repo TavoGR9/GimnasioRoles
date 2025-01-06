@@ -161,19 +161,14 @@ export class ProductosComponent implements OnInit {
 
   deleteProducto(id: any) {
     this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar este servicio?`,
+      data: `¿Desea eliminar este producto?`,
     })
     .afterClosed()
     .subscribe((confirmado: boolean) => {
       if (confirmado) {
         this.productoService.deleteProd(id).subscribe(
           (respuesta) => {
-            this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
-              //this.productos = resultData
-              //this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
-              this.dataSource = new MatTableDataSource(this.productos);
-              this.loadData();
-            });
+            this.listaTabla();
           },
           (error) => {
           }

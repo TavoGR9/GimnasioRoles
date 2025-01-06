@@ -311,4 +311,11 @@ export class ProductoService {
       return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto, id_bodega: idBodega });
     }
 
+
+  //   //Agregar entradas desde la creacion de membresias
+  //    // Método para guardar los registros adicionales
+  //    enviarDatosRegistro(datos: any): Observable<any> {
+  //   return this.clienteHttp.post<any>(`${this.API}guardarRegistros.php`, datos);
+  // }
+
 }
