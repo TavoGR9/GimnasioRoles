@@ -108,9 +108,10 @@ getDataFromIndexedDB() {
     return this.clienteHttp.post(this.API+"addBodega.php", datosGym);
   }
 
-  consultarArchivos(id: any):Observable<any>{
-    return this.clienteHttp.get(this.API+"bodega.php?consultarArchivos="+id);
-  }
+  consultarArchivos(id: any): Observable<any> {
+    return this.clienteHttp.get(this.API + "getArchivos.php?id_bodega=" + id);
+}
+
 
   actualizarSucursal(datosGym: any):Observable<any>{
     return this.clienteHttp.post(this.API+"getBodegaById", datosGym);
