@@ -12,6 +12,7 @@ import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emerge
 import { ProductoService } from "../../service/producto.service";
 import { Subject } from "rxjs";
 import { NgxSpinnerService } from "ngx-spinner";
+import { EntradasService } from "../../service/entradas.service";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -54,6 +55,9 @@ export class AgregarProductoMembresiaComponent implements OnInit {
   filteredMarcas: string[] = [];
   private productoSubject = new Subject<void>();
 
+  idProbob: string = '';
+  preciosucu: string = '';
+
   constructor(
     public dialogo: MatDialogRef<AgregarProductoMembresiaComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
@@ -64,7 +68,8 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     private auth: AuthService,
     private productoService: ProductoService,
     public dialog: MatDialog,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private entradas: EntradasService
   ) {
     this.fechaCreacion = this.obtenerFechaActual();
     this.form = this.fb.group({
@@ -85,6 +90,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
       precioCaja: ["0"],
       cantidadMayoreo: ["0"],
       descripcion: ["", Validators.required],
+      precciosucu: ["", Validators.required],
     });
 
     this.form.get("nombreCategoriaP")?.valueChanges.subscribe((value) => {
@@ -362,6 +368,15 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                                 .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
+                                    console.log('RESPUESTA: ', respuesta);
+
+                                    //se obtiene el ultimo idProbob
+                                    this.idProbob = respuesta.idProbob;
+                                    console.log("IDProbob Obtenido: ", this.idProbob);
+
+                                    // Después de obtener el idProbob, llamamos a enviarRegistros para guardar los demás datos
+                                    this.enviarRegistros();
+
                                     if (respuesta.success) {
                                       this.spinner.hide();
                                       this.dialog
@@ -495,6 +510,46 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     } else {
       this.message = "Por favor, complete todos los campos requeridos.";
       this.marcarCamposInvalidos(this.form);
+    }
+  }
+
+  enviarRegistros(): void {
+    const fechaActual: Date = new Date();
+    const dia: string = fechaActual.getDate().toString().padStart(2, '0');
+    const mes: string = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
+    const año: string = fechaActual.getFullYear().toString();
+    const fechaFormateada: string = `${año}-${mes}-${dia}`;
+    // Asegúrate de que el idProbob ya está disponible antes de enviar el registro
+    if (this.idProbob) {
+      const datosRegistro = [{
+        id_Probob: this.idProbob,
+        precciosucu: this.form.get('precciosucu')?.value,
+        // Puedes agregar otros campos aquí si los necesitas
+        exis: 1,
+        precioCaja: 0.00,
+        preccio: 0.00,
+        valor: this.auth.idGym.getValue(),
+        fechaE: fechaFormateada,
+        accion: "Registro de nuevo producto",
+        mail_actualizador: this.auth.idUser.getValue(), // Puedes obtener este valor dinámicamente si es necesario
+      }];
+      console.log(datosRegistro); // Verifica que precciosucu esté presente
+
+
+      // Llamamos a un servicio para enviar los datos del registro
+      this.entradas.agregarEntradaProducto(datosRegistro).subscribe({
+        next: (respuesta) => {
+        console.log('LOG DE ENTRADAS: ', respuesta);
+
+        if (respuesta.success === 1) {
+          console.log('Datos adicionales guardados exitosamente');
+        } else {
+          console.error('Error al guardar los datos adicionales');
+        }
+      },
+      });
+    } else {
+      console.error('No se ha obtenido un idProbob válido');
     }
   }
 
