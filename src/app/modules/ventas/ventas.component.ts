@@ -399,20 +399,20 @@ export class VentasComponent implements OnInit {
               // Enviar datos de ventas
               const datosVentas = {
                 correoCliente: "correo@cliente.com",
-                telefono: "1234567890",
+                // telefono: "1234567890",
                 id_empleado: this.auth.idUser.getValue(),
                 id_bodega: this.auth.idGym.getValue(),
-                direccionPedido: "Calle1",
-                fecha_hora_entrega: "12:00 - 14: 00",
-                DetalledireccionPedido: "NA",
-                codigoConfirmacion: "ABC123",
-                codigoPostal: "90000",
+                // direccionPedido: "Calle1",
+                // fecha_hora_entrega: "12:00 - 14: 00",
+                // DetalledireccionPedido: "NA",
+                // codigoConfirmacion: "ABC123",
+                // codigoPostal: "90000",
                 total: totalAPagar,
-                pago: 0,
+                pago: totalAPagar,
                 MetodoPag: "Efectivo",
-                express: 0,
-                lat: 0,
-                lng: 0,
+                // express: 0,
+                // lat: 0,
+                // lng: 0,
               };
 
               this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
