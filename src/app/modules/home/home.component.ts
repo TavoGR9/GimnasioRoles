@@ -155,7 +155,7 @@ export class HomeComponent implements OnInit {
     console.log(this.isLoading)
     // this.auth.comprobar();
     // this.homeService.comprobar();
-/*
+
     const today = new Date();
     const year = today.getFullYear();
     let month = '' + (today.getMonth() + 1);
@@ -196,7 +196,7 @@ export class HomeComponent implements OnInit {
         }
       }
     );
-    */
+
   }
 
   /**LOCAL */
@@ -466,6 +466,8 @@ export class HomeComponent implements OnInit {
       // );
 
       this.masVendidos = data;
+      console.log('MasVendidos: ', this.masVendidos);
+
       this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
       this.loadData();
     });
