@@ -48,14 +48,16 @@ export class ArchivosComponent implements OnInit{
 
    ngOnInit(): void {
     this.gimnasio.consultarArchivos(this.id_bodega).subscribe(
-      (archivos) => {
-        this.archivos = archivos;
+      (response) => {
+        console.log('Archivos recibidos:', response);
+        this.archivos = response.archivos;  // Asegúrate de que estés asignando el arreglo correctamente
       },
       (error) => {
         console.error('Error al consultar archivos:', error);
       }
     );
   }
+  
   
   openURL(url: string): void {
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
@@ -109,58 +111,66 @@ export class ArchivosComponent implements OnInit{
 
   subirArchivo = async () => {
     this.spinner.show();
+  
     if (this.archivosSeleccionados.length > 0) {
       try {
         const formData = new FormData();
         const zip = new JSZip();
+  
         // Comprimir cada archivo antes de agregarlo al ZIP
         await Promise.all(this.archivosSeleccionados.map(async (archivo) => {
           const arrayBuffer = await this.leerArchivoComoArrayBuffer(archivo);
-          const compressedArchivo = pako.gzip(new Uint8Array(arrayBuffer));
-  
-          // Agregar el archivo comprimido al ZIP
-          zip.file(archivo.name, compressedArchivo);
+          zip.file(archivo.name, arrayBuffer); // Agrega el archivo sin compresión extra (deja que JSZip maneje la compresión).
         }));
   
         // Generar el archivo ZIP
         const zipBlob = await zip.generateAsync({ type: 'blob' });
   
-        // Agregar el archivo ZIP al FormData
-        formData.append('archivos', zipBlob, 'archivos.zip');
-
+        // Generar nombre único del ZIP basado en la fecha y bodega
         const fechaActual = new Date();
-        // Formatea la fecha como YYYY-MM-DD
-        const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1).toString().padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;
-        const nombreArchivo = this.nombreBodega + '_' + fechaFormateada + '_archivos.zip';
+        const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1)
+          .toString()
+          .padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;
+        const nombreArchivo = `${this.nombreBodega}_${fechaFormateada}_archivos.zip`;
   
-        // Agregar tipoArchivo y Gimnasio_idGimnasio al FormData
+        // Agregar el archivo ZIP al FormData
+        formData.append('archivos', zipBlob, nombreArchivo);
+  
+        // Agregar otros campos al FormData
         formData.append('nombreArchivo', nombreArchivo);
-        formData.append('tipoArchivo', 'application/zip'); 
-        formData.append('Gimnasio_idGimnasio', this.id_bodega); 
+        formData.append('tipoArchivo', 'application/zip');
+        formData.append('id_bodega', this.id_bodega); 
+        formData.forEach((value, key) => console.log(`${key}: ${value}`));
   
+        // Enviar el formulario al servicio
         this.archivoService.guardarArchivos(formData).subscribe(
           (respuesta) => {
             this.spinner.hide();
             const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
               data: `Documentos guardados exitosamente`,
             });
-            dialogRefConfirm.afterClosed().subscribe((result) => {
+            dialogRefConfirm.afterClosed().subscribe(() => {
               this.dialogo.close();
-            
             });
           },
           (error) => {
             console.error('Error al guardar archivo comprimido:', error);
+            this.spinner.hide();
           }
         );
+  
         // Limpiar la lista de archivos seleccionados
         this.archivosSeleccionados = [];
       } catch (error) {
         console.error('Error al comprimir archivos:', error);
-        // Maneja el error, si es necesario
+        this.spinner.hide();
       }
+    } else {
+      console.error('No hay archivos seleccionados para subir.');
+      this.spinner.hide();
     }
-  }
+  };
+  
   
   cancelar(): void {
     this.dialogo.close();

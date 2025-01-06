@@ -48,18 +48,15 @@ export class GimnasioService {
   }
 
 
-  obternerPlan(){
-    return this.clienteHttp.get<any[]>(this.API+"getBodega.php").pipe(
-      tap(dataResponse => {
-        console.log("Respuesta de la API: ",dataResponse);
-          this.saveDataToIndexedDB1(dataResponse);
-      }),
-      catchError(error => {
-          // Intenta obtener los datos de IndexedDB en caso de error
-          console.error("DATOS NO OBTENIDOS: ",error);
-          return this.getDataFromIndexedDB();
+  obtenerPlan(): Observable<any> {
+    const url = `${this.API}getbodegass`;
+    console.log('URL para obtener bodegas:', url);  // Verificar URL
+    return this.clienteHttp.get<any>(url).pipe(
+      catchError((error) => {
+        console.error('Error al obtener los datos de las sucursales:', error);
+        return throwError(() => new Error('Error al obtener los datos'));
       })
-  );
+    );
   }
 
   private saveDataToIndexedDB1(data: any) {
@@ -114,23 +111,63 @@ getDataFromIndexedDB() {
     return this.clienteHttp.post(this.API+"bodega.php?insertar", datosGym);
   }
 
-  consultarArchivos(id: any):Observable<any>{
-    return this.clienteHttp.get(this.API+"bodega.php?consultarArchivos="+id);
-  }
+  consultarArchivos(id: any): Observable<any> {
+    return this.clienteHttp.get(this.API + "getArchivos.php?id_bodega=" + id);
+}
+
+
+  // actualizarSucursal(datosGym: any):Observable<any>{
+  //   return this.clienteHttp.post(this.API+"bodega.php?actualizar", datosGym);
+  // }
+
+  // actualizarEstatus(idGimnasio: any, estatus: any): Observable<any> {
+  //   let body = new URLSearchParams();
+  //   body.set('idBodega', idGimnasio);
+  //   body.set('estatus', estatus.toString());
+  //   body.set('actualizarEstatus', '1');
+  //   let options = {
+  //     headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+  //   };
+  //   return this.clienteHttp.post(this.API+"bodega.php?actualizaEstatus", body.toString(), options);
+  // }
 
   actualizarSucursal(datosGym: any):Observable<any>{
-    return this.clienteHttp.post(this.API+"bodega.php?actualizar", datosGym);
+    return this.clienteHttp.post(`${this.API}updateBodega.php?insertar`, datosGym).pipe(
+      tap(dataResponse => {
+        console.log("DATOS ENVIADOS DESDE LA API: ",dataResponse);
+      }),
+      catchError(error => {
+        console.error("ERROR DE LA API: ",error)
+        return error;
+      })
+    );
   }
 
+
+
   actualizarEstatus(idGimnasio: any, estatus: any): Observable<any> {
-    let body = new URLSearchParams();
-    body.set('idBodega', idGimnasio);
-    body.set('estatus', estatus.toString());
-    body.set('actualizarEstatus', '1');
-    let options = {
-      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json' // Especifica el tipo de contenido como JSON
+      })
     };
-    return this.clienteHttp.post(this.API+"bodega.php?actualizaEstatus", body.toString(), options);
+
+    const body = {
+      idGim: idGimnasio,
+      status: estatus
+    };
+
+    console.log("DATOS A ENVIAR, ESTATUS: ",body);
+
+    return this.clienteHttp.post<any>(`${this.API}updateBodega.php?estatus`,body, httpOptions).pipe(
+      tap(dataResponse => {
+        console.log("DATOS ENVIADOS DESDE LA API: ",dataResponse);
+      }),
+      catchError(error => {
+        console.error("ERROR DE LA API: ",error)
+        return error;
+      })
+    );
   }
 
   getAllServices(): Observable<any> {
