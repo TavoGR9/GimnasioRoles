@@ -163,7 +163,7 @@ export class EntradasComponent implements OnInit {
     const marcaIngresado = this.form.get("idProbob")?.value;
     this.entrada.listaProductos().subscribe({
       next: (respuesta) => {
-        // console.log('respuesta: ', respuesta);
+        console.log('respuesta: ', respuesta);
 
         const marcasU = new Set(
           respuesta.productos.map((product: any) => ({
@@ -172,7 +172,7 @@ export class EntradasComponent implements OnInit {
           }))
         );
         this.productoss = Array.from(marcasU);
-        // console.log('Array productos: ', this.productoss);
+        console.log('Array productos: ', this.productoss);
 
         this.filteredProducto = this.productoss.filter(
           (product) =>

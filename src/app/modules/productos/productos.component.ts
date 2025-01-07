@@ -75,9 +75,9 @@ export class ProductosComponent implements OnInit {
   listaTabla(){
     this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
-      // console.log('Resultados: ', resultData);
+      console.log('Resultados: ', resultData);
 
-      this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
+      this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios' && producto.activo == 1);
 
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData();
@@ -139,7 +139,7 @@ export class ProductosComponent implements OnInit {
       width: '70%',
       disableClose: true,
     });
-    // console.log('idProducto: ', idProducto);
+    console.log('idProducto: ', idProducto);
 
     dialogRef.afterClosed().subscribe(() => {
       this.listaTabla();
@@ -160,6 +160,7 @@ export class ProductosComponent implements OnInit {
   }
 
   deleteProducto(id: any) {
+    console.log('IDProbob: ', id);
     this.dialog.open(MensajeEliminarComponent,{
       data: `¿Desea eliminar este producto?`,
     })
@@ -168,9 +169,11 @@ export class ProductosComponent implements OnInit {
       if (confirmado) {
         this.productoService.deleteProd(id).subscribe(
           (respuesta) => {
+            console.log('respuesta: ', respuesta);
             this.listaTabla();
           },
           (error) => {
+            console.error('Error en la solicitud: ', error);
           }
         );
       } else {

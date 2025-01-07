@@ -347,7 +347,7 @@ export class VentasComponent implements OnInit {
     const productoIngresado = this.form.get("producto")?.value;
       this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
-          // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
+          console.log('PRODUCTOS POR NOMBRE: ', respuesta);
 
           const prod = new Set(
             respuesta.nombreproducto.map(

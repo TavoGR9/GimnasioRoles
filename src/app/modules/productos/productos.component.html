@@ -76,11 +76,11 @@
                      </button>
                    </ng-container>
 
-                   <!-- <ng-container *ngIf="isAdmin() && producto.existencia; else iconoNoIdBodega">
+                   <ng-container *ngIf="isAdmin() && producto.existencia; else iconoNoIdBodega">
                     <button mat-icon-button color="warn" (click)="deleteProducto(producto.idProbob)">
                       <mat-icon>delete</mat-icon>
                     </button>
-                   </ng-container> -->
+                   </ng-container>
 
                    <!-- <ng-container *ngIf="isAdmin() && producto.existencia === null">
                     <button mat-icon-button color="primary" (click)="deleteProducto(producto.idProbob)" [disabled]="!habilitarBoton">

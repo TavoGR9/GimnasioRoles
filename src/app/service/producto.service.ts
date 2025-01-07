@@ -229,8 +229,8 @@ export class ProductoService {
 
 
     deleteProd(idP: any): Observable<any> {
-      const data ={id: idP}
-      return this.clienteHttp.post(this.API3+"producto_bod.php?eliminarProBodPre", data);
+      const data ={id_producto: idP}
+      return this.clienteHttp.post(this.API+"deleteProducto.php", data);
     }
 
 
