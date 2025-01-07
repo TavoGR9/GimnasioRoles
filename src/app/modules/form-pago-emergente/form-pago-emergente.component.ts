@@ -278,13 +278,14 @@ export class FormPagoEmergenteComponent implements OnInit {
               
 
               console.log("data",this.data);
-              console.log (dataPromo);
+              console.log ('dataPromo',dataPromo);
+
               this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
                 response => {
                   console.log('Respuesta de la API de promociones:', response);
 
                 // Si la compra es exitosa
-                if (response[0]?.payment === "1")  { // Asumiendo que 'success' es el campo que indica una compra exitosa
+                if (response.payment ==1)  { // Asumiendo que 'success' es el campo que indica una compra exitosa
                   // Mostrar mensaje de compra exitosa
                   this.dialog.open(MensajeEmergenteComponent, {
                     data: `Pago exitoso, el cambio es de: $${this.dineroDevuelto}`, // Ajusta el mensaje con el precio calculado
@@ -307,8 +308,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                 console.error('Error al consultar la API de promociones:', error);
                 this.spinner.hide();
                 this.toastr.error(
-                  "Cantidad insuficiente para cubrir el costo de esta membresía.",
-                  "¡Error!"
+                  "Hubo un error al procesar tu pago. Intenta nuevamente."
                 );
               }
             );

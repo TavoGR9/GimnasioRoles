@@ -755,6 +755,28 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
   return conteos;
 }
 
+getDatosGraficaPorProducto(data: any, idProducto: string): any[] {
+  // Resultado final: [{ name: '2024-12-04', value: 4 }, ...]
+  const resultado: any[] = [];
+
+  // Recorrer cada fecha en el objeto original
+  Object.keys(data).forEach((fecha) => {
+    // Obtener los productos de esa fecha
+    const productos = data[fecha]?.conteoProductos || {};
+
+    // Verificar si el producto con el ID dado existe en esa fecha
+    if (productos[idProducto]) {
+      // Agregar al resultado el nombre de la fecha y el conteo
+      resultado.push({
+        name: fecha, // La fecha como categoría
+        value: productos[idProducto].cantidad, // Cantidad del producto
+      });
+    }
+  });
+
+  return resultado; // Arreglo listo para la gráfica
+}
+
 }
 
 

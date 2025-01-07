@@ -404,6 +404,7 @@ verificarCambios(): void {
 
     dialogRef.afterClosed().subscribe((cancelDialog: boolean) => {
       if (cancelDialog) {
+        this.listaClientesData();
       } else {
       }
     });

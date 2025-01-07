@@ -297,7 +297,7 @@ deleteMembresia(id: any): Observable<any> {
       'Content-Type': 'application/json'
     });
 console.log("datos emnviado en servico",data);
-    return this.clienteHttp.post<any>(this.API+"test_membresia.php", JSON.stringify(data), { headers });
+    return this.clienteHttp.post<any>(this.API+"Pago_Membresias_Efectivo.php", JSON.stringify(data), { headers });
   }
 
 
