@@ -52,7 +52,7 @@
     <div class="row">
       <div class="col-sm-12">
         <div style="display: flex; justify-content: center;">
-          <button mat-raised-button (click)="actualizar()" style="background-color: #fd9727; font-size: 15px;  height: 40px;">Actualizar información</button>
+          <button mat-raised-button (click)="actualizarCliente2()" style="background-color: #fd9727; font-size: 15px;  height: 40px;">Actualizar información</button>
        </div>
       </div>
     </div>
@@ -72,15 +72,22 @@
 
     </div>
 
-    <div class="column">
-      <ng-container >
-        <h3 style="font-weight: bold;">Duración:</h3> {{ this.duracion }}
+    <div class="column" >
+      <ng-container  *ngIf="duracionCalculo(data.fecha_caducidad)" >
+        <h3 style="font-weight: bold;">Duración:</h3>  {{ duracionCalculo(data.fecha_caducidad) || null }}
       </ng-container>
     </div>
 
+  
+    
     <div class="column">
       <ng-container>
-        <h3 style="font-weight: bold;">Información de la membresia:</h3> {{ data.infoMembresia }}
+        <h3 style="font-weight: bold;">Información de la membresia:</h3>
+        <ul>
+          <li *ngFor="let producto of productos">
+            {{ producto.marca }} -  {{ producto.nombreProducto }}
+          </li>
+        </ul>
       </ng-container>
       <ng-template #notActive>
         <h3 style="font-weight: bold;">Información de la membresia:</h3> N/A
@@ -92,31 +99,38 @@
 
   <h3 style="font-weight: bold;">Historial de membresias adquiridas:</h3>
 
+
+
+
   <div class="table-container">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
         <th mat-header-cell *matHeaderCellDef style="text-align: center;">{{ column }}</th>
         <td mat-cell *matCellDef="let memCli" style="text-align: center;">
           <ng-container *ngIf="column === 'ID'">
-            {{ memCli.ID }}
+            {{ memCli.clave }}
           </ng-container>
           <ng-container *ngIf="column === 'Nombre'">
-            {{ memCli.Nombre }}
+            {{ memCli.nombreCompleto }}
           </ng-container>
           <ng-container *ngIf="column === 'Membresía'">
-            {{ memCli.Membresia }}
+            {{ memCli.membresia}}
           </ng-container>
           <ng-container *ngIf="column === 'Precio'">
-            ${{ memCli.Precio }}
+            {{ memCli.total | currency }}
           </ng-container>
           <ng-container *ngIf="column === 'Duración'">
-            {{ memCli.Duracion }} días
+            <div *ngIf="duracionCalculo(memCli.fecha_caducidad)">
+              <!-- Aquí puedes mostrar el resultado de la evaluación -->
+                {{ duracionCalculo(memCli.fecha_caducidad) || null }}
+            </div>
+            
           </ng-container>
           <ng-container *ngIf="column === 'Fecha Inicio'">
-            {{ memCli.Fecha_Inicio }}
+            {{ memCli.fecha_inicio | date:'dd/MM/yyyy' || null  }}
           </ng-container>
           <ng-container *ngIf="column === 'Fecha Fin'">
-            {{ memCli.Fecha_Fin }}
+            {{ memCli.fecha_caducidad | date:'dd/MM/yyyy' || null  }}
           </ng-container>
 
           
@@ -124,24 +138,23 @@
           <!--<ng-container *ngIf="column === 'Status'">
                 {{ memCli.Status }}
               </ng-container>-->
-          <ng-container *ngIf="column === 'Status'">
-            <p>{{ memCli.Status }}</p>
-            <ng-container *ngIf="estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
-              <mat-icon style="color:green">timer</mat-icon>
-            </ng-container>
-            <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status === 'Activo'">
-              <mat-icon style="color:green">timer</mat-icon>
-            </ng-container>
-            <ng-container *ngIf="estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status !== 'Activo'">
-              <mat-icon style="color:red">timer_off</mat-icon>
-            </ng-container>
-            <ng-container *ngIf="!estaEnRango(memCli.Fecha_Inicio, memCli.Fecha_Fin) && memCli.Status !== 'Activo'">
-              <mat-icon style="color:red">timer_off</mat-icon>
-            </ng-container>
-          </ng-container>
+              <ng-container *ngIf="column === 'Status'">
+                <!-- Mostrar el texto del estatus con estilos condicionales -->
+                <p [ngClass]="{'estatus-activo': memCli.estatus === '1', 'estatus-inactivo': memCli.estatus !== '1'}">
+                  {{ memCli.estatus === '1' ? 'Activo' : 'Inactivo' }}
+                </p>
+                
+                <!-- Mostrar íconos según el estatus -->
+                <ng-container *ngIf="memCli.estatus === '1'">
+                  <mat-icon style="color:green">timer</mat-icon>
+                </ng-container>
+                <ng-container *ngIf="memCli.estatus !== '1'">
+                  <mat-icon style="color:red">timer_off</mat-icon>
+                </ng-container>
+              </ng-container>
 
           <ng-container *ngIf="column === 'Eliminar'">
-            <button *ngIf="isAdmin()" mat-icon-button color="warn"  (click)="borrarSucursal(memCli.idDetMem)">
+            <button *ngIf="isAdmin()" mat-icon-button color="warn"  (click)="borrarSucursal(memCli.id_pedido)">
               <mat-icon>delete</mat-icon>
             </button>
             <button *ngIf="isRecep()" mat-icon-button color="warn" >
@@ -153,6 +166,8 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let productofila; columns: displayedColumns"></tr>
     </table>
+
+
   </div>
   <mat-paginator #paginatorHistorialMembre [pageSizeOptions]="[5, 10, 25, 50, 100]"
     showFirstLastButtons></mat-paginator>

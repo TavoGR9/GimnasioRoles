@@ -203,6 +203,11 @@ consultarFoto(id:any):Observable<any>{
   return this.clienteHttp.get(this.API+"bodega.php?consultarFoto="+id);
 }
 
+getInfoBodega(id_bodega: any): Observable<any> {
+  const url = `${this.API}/getInfoBodega.php?id_bodega=${id_bodega}`;  // Concatenamos la URL base con el endpoint
+  return this.clienteHttp.get(url);
+}
+
 
 
 }

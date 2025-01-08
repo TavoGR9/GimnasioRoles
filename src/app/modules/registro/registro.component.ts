@@ -11,6 +11,7 @@ import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
 import { ColaboradorService } from "../../service/colaborador.service";
+import { PostalCodeService } from "../../service/cp.service";
 interface Food {
   value: string;
   viewValue: string;
@@ -89,6 +90,9 @@ export class RegistroComponent implements OnInit {
   private nextWebcam: Subject<boolean | string> = new Subject<boolean | string>();
   public deviceId: string = "";
 
+
+  asentamientosUnicos: Set<string> = new Set<string>();
+
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
   }
@@ -108,7 +112,8 @@ export class RegistroComponent implements OnInit {
     private planService: MembresiaService,
     private auth: AuthService,
     private spinner: NgxSpinnerService,
-    public dialogo: MatDialogRef<RegistroComponent>
+    public dialogo: MatDialogRef<RegistroComponent>,
+    private postalCodeService: PostalCodeService
   ) {
     this.form = this.fb.group({
       nombreU: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
@@ -136,7 +141,7 @@ export class RegistroComponent implements OnInit {
       destino:["Cliente"],
       direccion:[''],
       codigoPromotor:[0],
-      Genero:[''],
+      genero:[''],
       idUser:[this.auth.idUser.getValue()],
     })
 
@@ -281,7 +286,7 @@ export class RegistroComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true; 
     dialogConfig.data = 'Registro agregado correctamente.'; 
-    this.spinner.show();
+    //this.spinner.show();
     this.password = this.generarContraseña(9);
     const direccionCompleta = `${this.form.get("calle")?.value} ${this.form.get("numExterno")?.value ? "Ext. " + this.form.get("numExterno")?.value: ""}, ${this.form.get("numInter")?.value ? "Int. " + this.form.get("numInter")?.value : ""}, ${this.form.get("colonia")?.value}, ${this.form.get("ciudad")?.value}, ${this.form.get("estado")?.value}, CP ${this.form.get("codigoPostal")?.value}`;
     const nombreCompleto = `${this.form.get("nombreU")?.value} ${this.form.get("apPaterno")?.value} ${this.form.get("apMaterno")?.value}`;
@@ -294,32 +299,45 @@ export class RegistroComponent implements OnInit {
     });
   
     if (this.form.valid) {
-      this.usuario.agregarUsuario(this.form.value).subscribe({
+    console.log(this.form.value)
+      
+   this.usuario.agregarUsuario(this.form.value).subscribe({
         next: (resultData) => {
-          if (resultData.message === 'MailExists') {
-            this.toastr.error('Correo o clave ya existente', 'Error!!!');
+          
+          console.log('Enviando peticion');
+
+
+          if (resultData.success == 0) {
+            this.toastr.error(resultData.message, 'Error!!!');
             this.spinner.hide();
           } else if (resultData.success == '1') {
-            this.dialogo.close(true);
+            this.dialogo.close(true)
             this.spinner.hide();
             this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
+           console.log('va a home');
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
               if (cerrarDialogo) {
-                this.router.navigateByUrl(`/home`);
+               this.router.navigateByUrl(`/home`);
+              
               }
-            });
+            }); 
           } else if (resultData.success == '2') {
+            
             this.dialogo.close(true);
             this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
+             
               if (cerrarDialogo) {
-                this.router.navigateByUrl(`/home`);
+               this.router.navigateByUrl(`/home`);
+              
               } 
             });
+          
+            console.log('va a home con erro de conexion');
           } 
         },
         error: (error) => {
-          this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
+          this.toastr.error('Ocurrió un error al intentar agregar el cliente.', 'Error!!!');
         }
       });
     } else {
@@ -344,4 +362,43 @@ export class RegistroComponent implements OnInit {
     });
   }
   
+
+
+
+  consultarCodigoPostal(): void {
+    const codigoPostal = this.form.get("codigoPostal")?.value;
+    // Reiniciar el conjunto antes de agregar nuevos asentamientos
+    this.asentamientosUnicos.clear();
+
+    this.postalCodeService.consultarCodigoPostal(codigoPostal).subscribe(
+      (response: any[]) => {
+        if (response && response.length > 0) {
+          response.forEach((resultado: any) => {
+            this.asentamientosUnicos.add(resultado.asentamiento);
+            console.log(response)
+          });
+        } else {
+        }
+
+        if (response.length > 0) {
+          // Mostrar solo el primer resultado
+          const primerResultado = response[0];
+          this.form
+            .get("estado")
+            ?.setValue(primerResultado.estado);
+          this.form
+            .get("ciudad")
+            ?.setValue(primerResultado.municipio);
+        } else {
+        }
+      },
+      (error) => {
+        console.error(error);
+        // Manejar errores si es necesario
+      }
+    );
+  }
+
+
+
 }
