@@ -105,12 +105,12 @@ export class ServiciosListaComponent implements OnInit{
   //REEMPLAZAR POR MARCAS
   listaTablaMarca() {
     this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe((res) => {
-      console.log('res: ', res);
-      console.log('resProductos: ', res.Productos);
+      // console.log('res: ', res);
+      // console.log('resProductos: ', res.Productos);
 
 
       if (res.Productos) {
-        console.log(res.Productos);
+        // console.log(res.Productos);
 
         this.marcas = res.Productos.filter((marca: any) => marca.servicio !== null && marca.servicio !== 0 && marca.fk_idGimnasio == this.idGym);
         this.dataSourceDos = new MatTableDataSource(this.marcas);

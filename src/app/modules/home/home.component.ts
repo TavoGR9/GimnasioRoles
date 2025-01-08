@@ -455,22 +455,21 @@ export class HomeComponent implements OnInit {
       this.homeCard = respuesta;
     });
 
+    // Card entradas del día
     this.homeService.consultarHome2(this.idGym).subscribe((respuesta) => {
       this.homeCard2 = respuesta;
     });
 
     // Tabla de los productos más vendidos de la bodega
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      // this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(
-      //   `<table class="mi-tabla">${data.tablaHTML}</table>`
-      // );
-
       this.masVendidos = data;
-      console.log('MasVendidos: ', this.masVendidos);
+      //console.log('MasVendidos: ', this.masVendidos);
 
       this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
       this.loadData();
     });
+
+    // Tabla de ventas recientes
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
         `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`

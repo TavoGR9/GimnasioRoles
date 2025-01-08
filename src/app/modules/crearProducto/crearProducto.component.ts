@@ -159,7 +159,7 @@ export class CrearProductoComponent implements OnInit {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria2().subscribe({
       next: (respuesta) => {
-        console.log('TODAS LAS CATEGORIAS: ', respuesta);
+        // console.log('TODAS LAS CATEGORIAS: ', respuesta);
         const categoriasU = new Set(
           respuesta.map(
             (categoria: any) => categoria.nombreCategoria
@@ -201,7 +201,7 @@ export class CrearProductoComponent implements OnInit {
     const subCIngresado = this.form.get("nomsubcate")?.value;
     this.categoriaService.obtenerSubCategoria2(idCategoriaGuardada).subscribe({
       next: (respuesta) => {
-        console.log('TODAS LAS SUBCATEGORIAS: ', respuesta);
+        // console.log('TODAS LAS SUBCATEGORIAS: ', respuesta);
         const subCategoriasU = new Set(
           respuesta.productos.map(
             (subCategoria: any) => subCategoria.nombreProducto
@@ -222,7 +222,7 @@ export class CrearProductoComponent implements OnInit {
     const marcaIngresado = this.form.get("marcaP")?.value;
     this.categoriaService.obtenerMarcas2().subscribe({
       next: (respuesta) => {
-        console.log('TODAS LAS MARCAS: ', respuesta);
+        // console.log('TODAS LAS MARCAS: ', respuesta);
         const marcasU = new Set(
           respuesta.map((marca: any) => marca.marca)
         );
@@ -238,9 +238,11 @@ export class CrearProductoComponent implements OnInit {
 
   vercodigoBarras() {
     const codigo = this.form.get("codigoBarra")?.value;
+    console.log('codigoBarra: ', codigo);
     this.productoService
       .verProductoCodigoBarras2(codigo)
       .subscribe((respuesta: any) => {
+        console.log('respuesta: ', respuesta);
         if (respuesta.success == 0) {
         } else {
           this.form.setValue({
@@ -377,12 +379,12 @@ export class CrearProductoComponent implements OnInit {
                                 idGimnasio: 0,
                                 servicio: 0
                               };
-                              console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                              // console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
                               this.categoriaService
                                 .agregarMarca2(formMarca)
                                 .subscribe((respuestaMarca) => {
-                                  console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
-                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                  // console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  // console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                   const formularioP = {
                                     idProducto:
                                       subCategoriaExistente.producto

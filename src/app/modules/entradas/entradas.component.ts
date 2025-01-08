@@ -76,7 +76,7 @@ export class EntradasComponent implements OnInit {
     private productoService: ProductoService,
     private inventarioService: inventarioService
   ) {
-    this.obtenerFoto();
+    // this.obtenerFoto();
     this.id = this.auth.idGym.getValue();
     this.idUsuario = this.auth.idUser.getValue();
     this.fechaRegistro = this.obtenerFechaActual();
@@ -120,7 +120,7 @@ export class EntradasComponent implements OnInit {
     });
 
     this.buscarProducto();
-    console.log('idUser: ', this.idUsuario);
+    // console.log('idUser: ', this.idUsuario);
   }
 
   loadData() {
@@ -163,7 +163,7 @@ export class EntradasComponent implements OnInit {
     const marcaIngresado = this.form.get("idProbob")?.value;
     this.entrada.listaProductos().subscribe({
       next: (respuesta) => {
-        console.log('respuesta: ', respuesta);
+        // console.log('respuesta: ', respuesta);
 
         const marcasU = new Set(
           respuesta.productos.map((product: any) => ({
@@ -172,7 +172,7 @@ export class EntradasComponent implements OnInit {
           }))
         );
         this.productoss = Array.from(marcasU);
-        console.log('Array productos: ', this.productoss);
+        // console.log('Array productos: ', this.productoss);
 
         this.filteredProducto = this.productoss.filter(
           (product) =>

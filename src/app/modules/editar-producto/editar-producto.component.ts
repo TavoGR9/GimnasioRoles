@@ -68,7 +68,7 @@ export class EditarProductoComponent implements OnInit{
     this.inventarioService.obtenerProductoPorIdYIdBodega(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
         this.editarProd = respuesta;
-        console.log('editarProd: ', this.editarProd);
+        // console.log('editarProd: ', this.editarProd);
 
 
         // Imprimir en consola el nombre de la categoría
@@ -142,16 +142,16 @@ export class EditarProductoComponent implements OnInit{
 
 
     this.correooo = this.auth.email.getValue();
-    console.log('correoo: ', this.correooo);
+    // console.log('correoo: ', this.correooo);
 
     this.auth.getUsuario(this.correooo).subscribe({
       next: (response) => {
-        console.log('response: ', response);
+        // console.log('response: ', response);
 
         this.usuario = response[0];
         this.clave = this.usuario.clave;
-        console.log('Usuario:', this.usuario);
-        console.log('Clave:', this.clave);
+        // console.log('Usuario:', this.usuario);
+        // console.log('Clave:', this.clave);
       },
       error: (err) => {
         console.error('Error al obtener datos del usuario:', err);
@@ -212,10 +212,10 @@ export class EditarProductoComponent implements OnInit{
     }
 
     const dataArray = [data];
-    console.log('Datos a enviar: ', dataArray);
+    // console.log('Datos a enviar: ', dataArray);
 
     this.entrada.actualizarProductoEInsertarHistorial(dataArray).subscribe({next: (update) =>{
-      console.log('Update: ', update);
+      // console.log('Update: ', update);
 
       if (update.success == 1) {
         // console.log('Update: ', update);

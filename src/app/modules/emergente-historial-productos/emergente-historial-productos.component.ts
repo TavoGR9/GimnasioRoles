@@ -91,7 +91,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       this.auth.idGym.getValue()
     ).subscribe(
       response => {
-        console.log('RESULTADOS DEL HISTORIAL: ', response);
+        // console.log('RESULTADOS DEL HISTORIAL: ', response);
 
         if (response.length === 0) {
           this.dataHistorial = [];

@@ -1,5 +1,5 @@
 <mat-sidenav-container class="sidenav-container">
-  
+
     <mat-sidenav #sidenav  [mode]="modoBarraLateral" [opened]="mostrarBarraLateral">
         <br>
             <div class="logo-container">
@@ -8,117 +8,116 @@
         <mat-nav-list >
             <p *ngIf="isAdmin() || isRecep()" style="margin-top: 4%;text-align: left;padding-left: 30px;color: #CCCCCC; font-size: 12px; display: flex; align-items: center;">
                 <mat-icon style="margin-top: 4%;color: #CCCCCC; margin-right: 25px; font-size: 16px;">place</mat-icon>
-                {{ nombreGym }} 
-            </p> 
+                {{ nombreGym }}
+            </p>
         <hr>
 
         <button *ngIf="isAdmin() || isRecep()" routerLink="./home" class="hover-orange transparent-button" [class.active]="isRouteActive('/home')">
-            <mat-icon>home</mat-icon> 
-            Inicio 
-        </button>
-        
-        <button *ngIf="isSupadmin()" routerLink="./listaSucursales" class="hover-orange transparent-button" [class.active]="isRouteActive('/listaSucursales')"> 
-            <mat-icon>location_on</mat-icon> 
-            Sucursales 
-        </button>
-        
-      <!-- <button *ngIf="isSupadmin()" routerLink="./lista-productoLinea" class="hover-orange transparent-button"> 
-            <mat-icon>store</mat-icon> 
-            Productos en línea 
-        </button>--> 
-        
-        <button *ngIf="isSupadmin()" routerLink="./estadisticas" class="hover-orange transparent-button" [class.active]="isRouteActive('/estadisticas')">  
-            <mat-icon>bar_chart</mat-icon> 
-            Reportes 
-        </button>
-        
-        <button  *ngIf="isAdmin()" routerLink="./misServicios" class="hover-orange transparent-button" [class.active]="isRouteActive('/misServicios')"> 
-            <mat-icon>settings</mat-icon> 
-            Servicios 
-        </button>
-        
-        <button  *ngIf="isAdmin()" routerLink="./misMembresias" class="hover-orange transparent-button" [class.active]="isRouteActive('/misMembresias')"> 
-            <mat-icon>people</mat-icon> 
-            Membresías 
-        </button>
-        
-        <button *ngIf="isAdmin()" routerLink="./plan" class="hover-orange transparent-button" [class.active]="isRouteActive('/plan')"> 
-            <mat-icon>date_range</mat-icon> 
-            Planes 
-        </button>
-        
-        <button *ngIf="isAdmin() || isRecep()" routerLink="./productos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productos')"> 
-            <mat-icon>shopping_cart</mat-icon> 
-            Productos 
-        </button>
-        
-        <button *ngIf="isAdmin()" routerLink="./entradas" class="hover-orange transparent-button" [class.active]="isRouteActive('/entradas')"> 
-            <mat-icon>shopping_basket</mat-icon> 
-            Compras 
-        </button>
-        
-        <button *ngIf="isAdmin() || isRecep()" routerLink="./verCorte" class="hover-orange transparent-button" [class.active]="isRouteActive('/verCorte')"> 
-            <mat-icon>attach_money</mat-icon> 
-            Ventas producto
-        </button>
-        
-        <button *ngIf="isAdmin()" routerLink="./colaboradores" class="hover-orange transparent-button" [class.active]="isRouteActive('/colaboradores')"> 
-            <mat-icon>group</mat-icon> 
-            Colaborador 
-        </button>
-        
-       <!-- <button *ngIf="isAdmin()" routerLink="./productosVendidos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productosVendidos')"> 
-            <mat-icon>local_grocery_store</mat-icon> 
-            Productos vendidos 
-        </button>-->
-        
-        <button *ngIf="isAdmin() || isRecep()" routerLink="./inventarios" class="hover-orange transparent-button" [class.active]="isRouteActive('/inventarios')"> 
-            <mat-icon>storage</mat-icon> 
-            Inventario 
+            <mat-icon>home</mat-icon>
+            Inicio
         </button>
 
-        <button *ngIf="isAdmin() || isRecep()" routerLink="./pagoMem" class="hover-orange transparent-button" [class.active]="isRouteActive('/pagoMem')"> 
+        <button *ngIf="isSupadmin()" routerLink="./listaSucursales" class="hover-orange transparent-button" [class.active]="isRouteActive('/listaSucursales')">
+            <mat-icon>location_on</mat-icon>
+            Sucursales
+        </button>
+
+      <!-- <button *ngIf="isSupadmin()" routerLink="./lista-productoLinea" class="hover-orange transparent-button">
+            <mat-icon>store</mat-icon>
+            Productos en línea
+        </button>-->
+
+        <button *ngIf="isSupadmin()" routerLink="./estadisticas" class="hover-orange transparent-button" [class.active]="isRouteActive('/estadisticas')">
+            <mat-icon>bar_chart</mat-icon>
+            Reportes
+        </button>
+
+        <button  *ngIf="isAdmin()" routerLink="./misServicios" class="hover-orange transparent-button" [class.active]="isRouteActive('/misServicios')">
+            <mat-icon>settings</mat-icon>
+            Servicios
+        </button>
+
+        <button  *ngIf="isAdmin()" routerLink="./misMembresias" class="hover-orange transparent-button" [class.active]="isRouteActive('/misMembresias')">
+            <mat-icon>people</mat-icon>
+            Membresías
+        </button>
+
+        <button *ngIf="isAdmin()" routerLink="./plan" class="hover-orange transparent-button" [class.active]="isRouteActive('/plan')">
+            <mat-icon>date_range</mat-icon>
+            Planes
+        </button>
+
+        <button *ngIf="isAdmin() || isRecep()" routerLink="./productos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productos')">
+            <mat-icon>shopping_cart</mat-icon>
+            Productos
+        </button>
+
+        <button *ngIf="isAdmin()" routerLink="./entradas" class="hover-orange transparent-button" [class.active]="isRouteActive('/entradas')">
+            <mat-icon>shopping_basket</mat-icon>
+            Entradas
+        </button>
+
+        <button *ngIf="isAdmin() || isRecep()" routerLink="./verCorte" class="hover-orange transparent-button" [class.active]="isRouteActive('/verCorte')">
+            <mat-icon>attach_money</mat-icon>
+            Ventas producto
+        </button>
+
+        <button *ngIf="isAdmin()" routerLink="./colaboradores" class="hover-orange transparent-button" [class.active]="isRouteActive('/colaboradores')">
+            <mat-icon>group</mat-icon>
+            Colaborador
+        </button>
+
+       <!-- <button *ngIf="isAdmin()" routerLink="./productosVendidos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productosVendidos')">
+            <mat-icon>local_grocery_store</mat-icon>
+            Productos vendidos
+        </button>-->
+
+        <button *ngIf="isAdmin() || isRecep()" routerLink="./inventarios" class="hover-orange transparent-button" [class.active]="isRouteActive('/inventarios')">
+            <mat-icon>storage</mat-icon>
+            Inventario
+        </button>
+
+        <button *ngIf="isAdmin() || isRecep()" routerLink="./pagoMem" class="hover-orange transparent-button" [class.active]="isRouteActive('/pagoMem')">
             <mat-icon>person</mat-icon>
             Pagos membresia
         </button>
-        
-        <button *ngIf="isAdmin() || isRecep()" routerLink="./listaMembresias" class="hover-orange transparent-button" [class.active]="isRouteActive('/listaMembresias')"> 
-            <mat-icon>person</mat-icon> 
-            Socios 
+
+        <button *ngIf="isAdmin() || isRecep()" routerLink="./listaMembresias" class="hover-orange transparent-button" [class.active]="isRouteActive('/listaMembresias')">
+            <mat-icon>person</mat-icon>
+            Socios
         </button>
 
-        <button *ngIf="isAdmin() || isRecep()" (click)="AbrirRegistro()" class="hover-orange transparent-button"> 
-            <mat-icon>person</mat-icon> 
-            Registro 
+        <button *ngIf="isAdmin() || isRecep()" (click)="AbrirRegistro()" class="hover-orange transparent-button">
+            <mat-icon>person</mat-icon>
+            Registro
         </button>
 
         <a href="{{url}}">
-        <button *ngIf="isAdmin() || isRecep()"  class="hover-orange transparent-button"> 
+        <button *ngIf="isAdmin() || isRecep()"  class="hover-orange transparent-button">
 
-            <mat-icon>person</mat-icon> 
+            <mat-icon>person</mat-icon>
             Acceso manual
             <!--<a href="{{url}}"></a>-->
         </button>
         </a>
-        
-        <button (click)="logoutBS()" class="hover-orange transparent-button" [class.active]="isRouteActive('/plan')">  
-            <mat-icon>power_settings_new</mat-icon> 
-            Cerrar sesión 
+
+        <button (click)="logoutBS()" class="hover-orange transparent-button" [class.active]="isRouteActive('/plan')">
+            <mat-icon>power_settings_new</mat-icon>
+            Cerrar sesión
         </button>
 
-       
+
 
         <!--<button (click)="openSerialPage()">
             PruebaSerial
         </button> -->
     </mat-nav-list>
-    
+
     </mat-sidenav>
 
-  
+
     <mat-sidenav-content>
         <app-header></app-header>
         <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
-  
