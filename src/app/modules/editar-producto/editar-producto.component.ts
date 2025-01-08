@@ -60,7 +60,7 @@ export class EditarProductoComponent implements OnInit{
 
     this.idProducto = data.idProducto;
 
-    this.inventarioService.obtenerProductoPorIdYIdBodega(this.idProducto, this.auth.idGym.getValue()).subscribe(
+    this.inventarioService.obtenerProductoPorId(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
         this.editarProd = respuesta;
         // console.log('editarProd: ', this.editarProd);
@@ -192,7 +192,7 @@ export class EditarProductoComponent implements OnInit{
     const dataArray = [data];
      console.log('Datos a enviar: ', dataArray);
 
-    this.entrada.actualizarProductoEInsertarHistorial(dataArray).subscribe({next: (update) =>{
+    this.entrada.actualizarProductoVDos(dataArray).subscribe({next: (update) =>{
       if (update.success == 1) {
         // console.log('Update: ', update);
 

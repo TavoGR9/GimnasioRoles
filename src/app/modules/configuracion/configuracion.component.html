@@ -3,7 +3,7 @@
  </div>
  <div class="container">
 	<div class="gym-details">
-	   <h1 style="color: #ff8400">DETALLES DE TÚ GIMNASIO</h1>
+	   <h1 style="color: #ff8400">DETALLES - GIMNASIO</h1>
 	   <div style="display: flex; justify-content: flex-end;">
 		  <button mat-raised-button type="submit" (click)="actualizar()" style="background-color: #fd9727; font-size: 20px; height: 40px; width: 190px; color: black;margin-right: 20px;">
 			 <mat-icon>edit</mat-icon>
@@ -23,7 +23,7 @@
 				   <li>
 					  <img src="../../../../../assets/img/gym.png" width="60px" alt="Icono gym" style="margin-right: 10px;margin-left: 10px; ">
 					  <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 9px;" required>
-						 <mat-label>Nombre</mat-label>
+						 <mat-label>Gimnasio</mat-label>
 						 <input type="text" matInput placeholder="Nombre" autocomplete="off" id="nombreGym" formControlName="nombreBodega" />
 					  </mat-form-field>
 				   </li>
@@ -32,8 +32,8 @@
 				   <li>
 					  <img src="../../../../../assets/img/telefono.png" width="60px" alt="Icono teléfono" style="margin-right: 10px;margin-left: 10px; " >
 					  <mat-form-field appearance="outline" class="inputs_properties" style="margin-left: 9px;" required>
-						 <mat-label>Telefono</mat-label>
-						 <input type="text" placeholder="telefono" matInput autocomplete="off" id="numeroTelefonico" formControlName="numeroTelefonico" />
+						 <mat-label>Teléfono</mat-label>
+						 <input type="number" placeholder="Telefono" matInput autocomplete="off" id="numeroTelefonico" formControlName="numeroTelefonico" />
 						 <mat-error *ngIf="formularioSucursales.get('numeroTelefonico')?.hasError('pattern') && !formularioSucursales.get('numeroTelefonico')?.hasError('required')">
 							<strong class="txt_msg">** Formato no válido...</strong>
 						 </mat-error>
@@ -44,8 +44,8 @@
 				   <li>
 					  <img src="../../../../../assets/img/ubicacion.png" width="60px" alt="Icono direccion" style="margin-right: 20px;margin-left: 10px; ">
 					  <mat-form-field appearance="outline" class="inputs_properties"  required>
-						 <mat-label>Direccion</mat-label>
-						 <input type="text" placeholder="Direccion" matInput autocomplete="off" id="direccion" formControlName="direccion" />
+						 <mat-label>Dirección</mat-label>
+						 <input type="text" placeholder="Dirección" matInput autocomplete="off" id="direccion" formControlName="direccion" />
 					  </mat-form-field>
 				   </li>
 				</div>
@@ -61,9 +61,9 @@
 					  <table>
 						 <thead>
 							<tr>
-							   <th>Día de la Semana</th>
-							   <th>Hora de Entrada</th>
-							   <th>Hora de Salida</th>
+							   <th>Día de la semana</th>
+							   <th>Hora de entrada</th>
+							   <th>Hora de salida</th>
 							</tr>
 						 </thead>
 						 <tbody formArrayName="horarios">

@@ -168,7 +168,7 @@ export class ProductosComponent implements OnInit {
       if (confirmado) {
         this.productoService.deleteProd(id).subscribe(
           (respuesta) => {
-            this.productoService.consultarAllProductoB(this.idGym).subscribe((resultData) => {
+            this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
               //this.productos = resultData
               //this.productos = resultData.data.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios');
               this.dataSource = new MatTableDataSource(this.productos);

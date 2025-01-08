@@ -307,6 +307,7 @@ export class HorariosVistaComponent implements OnInit {
       numero: this.formularioSucursales.value.numeroTelefonico,
       id_bod: this.idGimnasio,
     };
+    console.log('Datos enviados a actualizarSucursal:', datosAc);
 
     this.gimnasioService.actualizarSucursal(datosAc).subscribe((respuesta) => {
       if (respuesta) {

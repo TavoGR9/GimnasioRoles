@@ -20,7 +20,7 @@ export class CategoriaService {
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
   API: string = 'http://localhost/serviciosGym/'
-  
+
   public confirmButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public idMarca: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -122,8 +122,8 @@ export class CategoriaService {
     );
   }
 
-  getMarcaService(id: number, idGimnasio: number): Observable<any> {
-    return this.clienteHttp.get(`${this.API}categoria.php?getMarcaServicio=${id}&idGimnasio=${idGimnasio}`);
+  getMarcaService(id: number): Observable<any> {
+    return this.clienteHttp.get(`${this.API}categoria.php?getMarcaServicio=${id}`);
 }
 
 

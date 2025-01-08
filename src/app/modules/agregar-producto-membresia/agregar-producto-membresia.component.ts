@@ -110,7 +110,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     this.form.get('nombreCategoriaP')?.setValue('Servicios');
 
     // Obtener dinámicamente el ID de la categoría "Servicios"
-    this.categoriaService.obtenerCategoria2().subscribe({
+    this.categoriaService.obtenerCategoria().subscribe({
       next: (respuesta) => {
         // Busca la categoría con el nombre "Servicios"
         const categoriaServicios = respuesta.find(
@@ -175,7 +175,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
   buscarCategorias() {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
-    this.categoriaService.obtenerCategoria2().subscribe({
+    this.categoriaService.obtenerCategoria().subscribe({
       next: (respuesta) => {
 
         const categoriasU = new Set(
@@ -224,7 +224,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
   buscarSubCategorias() {
     const idCategoriaGuardada = localStorage.getItem("idCategoriaSeleccionada");
     const subCIngresado = this.form.get("nomsubcate")?.value;
-    this.categoriaService.obtenerSubCategoria2(idCategoriaGuardada).subscribe({
+    this.categoriaService.obtenerSubCategoria(idCategoriaGuardada).subscribe({
       next: (respuesta) => {
         const subCategoriasU = new Set(
           respuesta.productos.map(
@@ -244,7 +244,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
   buscarMarca() {
     const marcaIngresado = this.form.get("marcaP")?.value;
-      this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe({
+      this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe({
 
       next: (respuesta) => {
 
@@ -319,13 +319,13 @@ export class AgregarProductoMembresiaComponent implements OnInit {
         .subscribe((respuesta: any) => {
           if (respuesta.success == 0) {
             this.categoriaService
-              .obtenerCategoriaPorNombre2(this.form.value.nombreCategoriaP)
+              .obtenerCategoriaPorNombre(this.form.value.nombreCategoriaP)
               .subscribe((categoriaExistente) => {
                 const idCategoria = categoriaExistente.categoria.id_categoria;
                 if (categoriaExistente.success == 1) {
                   ///********** Verifica si la subcategoria ya existe */
                   this.categoriaService
-                    .obtenerSubCategoriaPorNombre2(
+                    .obtenerSubCategoriaPorNombre(
                       this.form.value.nomsubcate,
                       idCategoria
                     )
@@ -333,7 +333,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                       if (subCategoriaExistente.success == 1) {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
-                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre(this.form.value.marcaP)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               const formularioP = {
@@ -406,7 +406,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                               };
                               console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
                               this.categoriaService
-                                .agregarMarca2(formMarca)
+                                .agregarMarca(formMarca)
                                 .subscribe((respuestaMarca) => {
                                   console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
                                   console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);

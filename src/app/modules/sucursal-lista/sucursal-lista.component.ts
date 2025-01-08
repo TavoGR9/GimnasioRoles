@@ -90,28 +90,30 @@ export class SucursalListaComponent implements OnInit {
     }
   }*/
 
-  onToggle(event: Event, idGimnasio: any) {
-    let gimnasio = this.gimnasio.find(
-      (g: { id_bodega: any }) => g.id_bodega == idGimnasio
-    );
-    let mensaje =
-      gimnasio.estatus == 1
-        ? "¿Deseas desactivar esta sucursal?"
-        : "¿Deseas activar esta sucursal?";
+  onToggle(event: Event, idGimnasio: any, estatus: any) {
+    console.log("Id Gym: ",idGimnasio);
+    const nuevoEstatus = estatus == 1 ? 0 : 1;
+    const mensaje =
+      nuevoEstatus == 1
+        ? "¿Deseas activar esta sucursal?"
+        : "¿Deseas desactivar esta sucursal?";
+
     const dialogRef = this.dialog.open(MensajeDesactivarComponent, {
       data: { mensaje: mensaje, idGimnasio: idGimnasio },
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Invertir el valor del estatus
-        const nuevoEstatus = gimnasio.estatus == 1 ? 0 : 1;
-        // Actualizar la base de datos y refrescar los datos
         this.gimnasioService
           .actualizarEstatus(idGimnasio, nuevoEstatus)
           .subscribe(
             (response) => {
               if (response && response.success === 1) {
-                gimnasio.estatus = nuevoEstatus;
+                this.gimnasioService.obtenerPlan().subscribe((data) => {
+                  console.log('Datos obtenidos del servicio:', data);
+                  this.gimnasio = Array.isArray(data) ? data : data?.data || [];
+                  this.dataSource = new MatTableDataSource(this.gimnasio);
+                  this.dataSource.paginator = this.paginator;
+                });
               } else if (response) {
                 console.error(
                   "Error al actualizar el estatus: ",
@@ -128,6 +130,7 @@ export class SucursalListaComponent implements OnInit {
       } else {
       }
     });
+
   }
 
   getSSdata(data: any) {
@@ -216,9 +219,9 @@ export class SucursalListaComponent implements OnInit {
         console.log("DATOS RESPUESTA: ",data);
         if (data) {
           console.log('Datos obtenidos del servicio:', data);
-           this.gimnasio = Array.isArray(data) ? data : data?.data || [];
-        this.dataSource = new MatTableDataSource(this.gimnasio);
-        this.dataSource.paginator = this.paginator;
+          this.gimnasio = Array.isArray(data) ? data : data?.data || [];
+          this.dataSource = new MatTableDataSource(this.gimnasio);
+          this.dataSource.paginator = this.paginator;
         } else {
           console.error('No se encontró la bodega.');
         }

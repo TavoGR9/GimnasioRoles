@@ -104,7 +104,7 @@ export class ServiciosListaComponent implements OnInit{
 
   //REEMPLAZAR POR MARCAS
   listaTablaMarca() {
-    this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe((res) => {
+    this.categoriaService.obtenerMarcasServiciosIdGym(this.idGym).subscribe((res) => {
       console.log('res: ', res);
       console.log('resProductos: ', res.Productos);
 
@@ -163,7 +163,7 @@ export class ServiciosListaComponent implements OnInit{
     .afterClosed()
     .subscribe((confirmado: boolean) => {
       if (confirmado) {
-        this.categoriaService.deleteMarcaServ(id_marcas).subscribe(
+        this.categoriaService.updateMarcaService(id_marcas).subscribe(
           (respuesta) => {
             this.listaTablaMarca();
             this.toastr.success('Registro eliminado exitosamente', 'Exitó', {

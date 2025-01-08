@@ -50,7 +50,7 @@ export class EditarMarcaComponent {
     this.getIdGym();
 
     if (this.idMarca) {
-      this.categoriaService.getMarcaService2(this.idMarca).subscribe((res) => {
+      this.categoriaService.getMarcaService(this.idMarca).subscribe((res) => {
         if (res.success === 1 && res.data) {
           this.marca = res.data[0];
           // console.log('Datos de la marca recibidos:', this.marca);
@@ -83,7 +83,7 @@ export class EditarMarcaComponent {
     this.spinner.show();
     // console.log('Datos a enviar: ', this.serviceForm.value);
 
-    this.categoriaService.updateMarcaService2(this.serviceForm.value).subscribe((res) => {
+    this.categoriaService.updateMarcaService(this.serviceForm.value).subscribe((res) => {
       this.spinner.hide();
       if (res && res.success) {
         const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, { data: `¡Servicio actualizado con éxito!` });
