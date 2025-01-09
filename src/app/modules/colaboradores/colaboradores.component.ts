@@ -9,7 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desactivar.component";
 import { IndexedDBService } from './../../service/indexed-db.service';
 import { RestablecerContraComponent } from '../restablecer-contra/restablecer-contra.component';
-
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-colaboradores',
@@ -201,52 +201,53 @@ export class ColaboradoresComponent {
   }
 
   onToggle(event: Event, idEmpleado: number, correoParametro: string) {
-    let colab = this.empleados.find((e: { id_empleado: number }) => e.id_empleado === idEmpleado);
-  
+    const colab = this.empleados.find((e: { id_empleado: number }) => e.id_empleado === idEmpleado);
+
     if (!colab) {
       console.error('Colaborador no encontrado');
       return;
     }
-  
-    const nuevoStatuss = colab.estatus === 1 ? 0 : 1;
-  
-    const mensaje =
-      colab.estatus === 1
-        ? '¿Deseas desactivar este colaborador?'
-        : '¿Deseas activar este colaborador?';
-  
+
+    const nuevoStatuss = colab.estatus === 1 ? 0 : 1; // Alterna entre 0 y 1
+    console.log('Estatus actual:', colab.estatus);
+    console.log('Nuevo estatus que se asignará:', nuevoStatuss);
+
+    const mensaje = nuevoStatuss === 0 
+      ? '¿Deseas desactivar este colaborador?' 
+      : '¿Deseas activar este colaborador?'; // Cambia el mensaje según el nuevo estatus
+    
+    console.log('Mensaje del diálogo:', mensaje);
+
     const dialogRef = this.dialog.open(MensajeDesactivarComponent, {
       data: { mensaje: mensaje, idEmpleado: colab },
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Confirmamos los valores antes de enviar al servicio
-        console.log('Enviando parámetros al backend:', {
-          correoParametro,
-          idEmpleado,
-          statuss: nuevoStatuss,
-        });
-  
-        // Llamada al servicio
-        this.http.actualizarEstatus(idEmpleado, nuevoStatuss, correoParametro).subscribe(
-          (response) => {
+        console.log('Actualizando estatus...', { idEmpleado, nuevoStatuss, correoParametro });
+
+        this.isLoading = true;
+
+        this.http.actualizarEstatus(idEmpleado, nuevoStatuss, correoParametro).subscribe({
+          next: (response) => {
+            console.log('Respuesta del servidor:', response);
             if (response && response.success === 1) {
               colab.estatus = nuevoStatuss;
-              console.log('Estatus actualizado correctamente');
+              this.listaTabla();
             } else {
-              console.error('Error al actualizar el estatus: ', response?.error || 'Sin respuesta del servidor');
+              console.error('Error al actualizar el estatus:', response?.error || 'Sin respuesta del servidor');
             }
+            this.isLoading = false;
           },
-          (error) => {
-            console.error('Error en la petición: ', error);
-          }
-        );
+          error: (error) => {
+            console.error('Error en la petición:', error);
+            this.isLoading = false;
+          },
+        });
       }
     });
-  }
-  
-  
+}
+
   
   
 

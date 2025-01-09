@@ -256,29 +256,24 @@ export class ColaboradorService {
       }
       
 
-
-    actualizarEstatus(idEmpleado: number, statuss: number, correoParametro: string): Observable<any> {
-      const body = {
-        idEmpleado: idEmpleado, // Nombre del campo debe coincidir con PHP
-        statuss: statuss,
-        correoParametro: correoParametro,
-      };
-    
-      const options = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json', // Cabecera para enviar JSON
-        }),
-      };
-    
-      console.log('Datos enviados desde Angular al backend (body):', body);
-    
-      // Incluimos `options` en la llamada
-      return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php', JSON.stringify(body), options);
-    }
-    
-    
-    
-
-    
+      actualizarEstatus(idEmpleado: number, statuss: number, correoParametro: string): Observable<any> {
+        const body = { idEmpleado, statuss, correoParametro };
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+      
+        // Agregar un console log para verificar los datos que se envían
+        console.log('Datos enviados desde Angular al backend:', body);
+        console.log('Valor de statuss:', statuss); // Verifica el valor específico de statuss
+      
+        return this.clienteHttp.post(`${this.API}/Status_Bodega_Empleado.php`, body, { headers }).pipe(
+          catchError((error) => {
+            console.error('Error en la petición al backend:', error);
+            return throwError(() => new Error('Error al actualizar el estatus en el backend'));
+          })
+        );
+      }
+      
+      
+         
+        
     
   }
