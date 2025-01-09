@@ -1,4 +1,12 @@
-<div *ngIf="isLoading">
+
+<div class="custom-spinner-container" *ngIf="isLoading">
+   <div class="custom-spinner">
+      <div class="spinner-circle"></div>
+      <div class="spinner-text">Cargando...</div>
+   </div>
+</div>
+<div *ngIf="!isLoading">
+>>>>>>> 57351507250c62f54b424bbf08ebe9f520ef8e82
    <div style="margin-top: 60px;">
       <mat-card *ngIf="isAdmin() || isRecep()">
          <mat-card-content>

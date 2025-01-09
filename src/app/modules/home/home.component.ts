@@ -72,8 +72,8 @@ export class HomeComponent implements OnInit {
   dataSourceProductos: any;
   displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
   masVendidos: any;
-
   //homeCard21: any[] = [];
+
 
   /**graficas**/
   mensualidades: any[] = [];
@@ -155,7 +155,7 @@ export class HomeComponent implements OnInit {
     console.log(this.isLoading)
     // this.auth.comprobar();
     // this.homeService.comprobar();
-/*
+
     const today = new Date();
     const year = today.getFullYear();
     let month = '' + (today.getMonth() + 1);
@@ -196,7 +196,7 @@ export class HomeComponent implements OnInit {
         }
       }
     );
-    */
+
   }
 
   /**LOCAL */
@@ -455,20 +455,21 @@ export class HomeComponent implements OnInit {
       this.homeCard = respuesta;
     });
 
+    // Card entradas del día
     this.homeService.consultarHome2(this.idGym).subscribe((respuesta) => {
       this.homeCard2 = respuesta;
     });
 
     // Tabla de los productos más vendidos de la bodega
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      // this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(
-      //   `<table class="mi-tabla">${data.tablaHTML}</table>`
-      // );
-
       this.masVendidos = data;
+      //console.log('MasVendidos: ', this.masVendidos);
+
       this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
       this.loadData();
     });
+
+    // Tabla de ventas recientes
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
         `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`

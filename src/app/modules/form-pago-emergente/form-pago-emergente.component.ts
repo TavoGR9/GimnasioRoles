@@ -1,5 +1,9 @@
 import { Component, OnInit, Inject, EventEmitter, Output } from "@angular/core";
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialog,
+} from "@angular/material/dialog";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 import { MensajeEmergenteComponent } from "../mensaje-emergente/mensaje-emergente.component";
 import { ToastrService } from "ngx-toastr";
@@ -11,9 +15,7 @@ import { MatDialogConfig } from "@angular/material/dialog";
 
 // PARA LLAMAR PRODUCTOS EN LUGAR DE MEMBRESIAS
 import { ProductoService } from "../../service/producto.service";
-import { tap } from 'rxjs/operators';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-
+import { addDays } from 'date-fns'; //Calcular duración
 
 @Component({
   selector: "app-form-pago-emergente",
@@ -54,7 +56,6 @@ export class FormPagoEmergenteComponent implements OnInit {
     public data: any,
     private membresiaService: PagoMembresiaEfectivoService,
     public dialogo: MatDialogRef<FormPagoEmergenteComponent>
-
   ) {
     this.obtenerFoto();
   }
@@ -319,20 +320,21 @@ export class FormPagoEmergenteComponent implements OnInit {
     }
   }
 
+
   successDialog() {
     if (this.moneyRecibido >= this.precio) {
-     this.spinner.show();
-     this.onMembresiaChange();
-     setTimeout(() => {
-       const dialogConfig = new MatDialogConfig();
-       dialogConfig.width = "30%"; // Ajusta el ancho del diálogo
-       dialogConfig.height = "auto"; // Ajusta la altura del diálogo, 'auto' para ajustar según el contenido
-       dialogConfig.disableClose = true; // Opcional: Deshabilita el cierre del diálogo al hacer clic fuera de él
-       dialogConfig.data = {
-         mensaje: `¿Está seguro/a de que desea pagar la membresía seleccionada?`,
-         cliente: this.data.nombre,
-         membresia: this.nombreMembresia,
-       };
+    this.spinner.show();
+    this.onMembresiaChange();
+    setTimeout(() => {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.width = "30%"; // Ajusta el ancho del diálogo
+      dialogConfig.height = "auto"; // Ajusta la altura del diálogo, 'auto' para ajustar según el contenido
+      dialogConfig.disableClose = true; // Opcional: Deshabilita el cierre del diálogo al hacer clic fuera de él
+      dialogConfig.data = {
+        mensaje: `¿Está seguro/a de que desea pagar la membresía seleccionada?`,
+        cliente: this.data.nombre,
+        membresia: this.nombreMembresia,
+      };
 
       this.dialog
         .open(MensajeAceptarComponent, dialogConfig)
@@ -353,84 +355,84 @@ export class FormPagoEmergenteComponent implements OnInit {
                     this.fechaDeInicio.getDate()
                   ).padStart(2, "0");
                   const fechaFormateada1 = `${añoInicio}-${mesInicio}-${díaInicio}`;
+                  const añoFin = this.fechaDeInicio.getFullYear();
+                  const mesFin = String(
+                    this.fechaDeInicio.getMonth() + 1
+                  ).padStart(2, "0");
+                  const díaFin = String(this.fechaDeInicio.getDate()).padStart(
+                    2,
+                    "0"
+                  );
+                  const fechaFormateada2 = `${añoFin}-${mesFin}-${díaFin}`;
+                  this.membresiaService
+                    .actualizacionMemebresia(
+                      this.data.idCliente,
+                      this.membresiaSeleccionada,
+                      fechaFormateada1,
+                      this.data.detMemID,
+                      this.precio,
+                      fechaFormateada2,
+                      this.auth.idUser.getValue()
+                    )
+                    .subscribe((dataResponse: any) => {
+                      this.spinner.hide();
+                      this.actualizarTablas.emit(true);
+                      this.dialogo.close(true);
+                      this.dialog
+                        .open(MensajeEmergenteComponent, {
+                          data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
+                          disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
+                        })
+                        .afterClosed()
+                        .subscribe((cerrarDialogo: Boolean) => {
+                          if (cerrarDialogo) {
+                            this.imprimirResumen();
+                          } else {
+                          }
+                        });
+                    });
+                } else {
+                  const fechaActual: Date = new Date();
+                  const year = fechaActual.getFullYear();
+                  const month = String(fechaActual.getMonth() + 1).padStart(
+                    2,
+                    "0"
+                  );
+                  const day = String(fechaActual.getDate()).padStart(2, "0");
+                  const fechaFormateada = `${year}-${month}-${day}`;
+                  let fechaFin: Date = new Date(fechaActual);
+                  if (this.duracion == 1) {
+                  } else if (this.duracion == 30) {
+                    fechaFin.setMonth(fechaFin.getMonth() + 1);
+                    if (fechaFin.getMonth() == 0) {
+                      fechaFin.setFullYear(fechaFin.getFullYear() + 1);
+                    }
+                    fechaFin.setDate(fechaFin.getDate() - 1);
+                  } else {
+                    this.duracion = Number(this.duracion);
+                    fechaFin.setDate(fechaFin.getDate() + this.duracion - 1);
+                  }
 
-                 const añoFin = this.fechaDeInicio.getFullYear();
-                   const mesFin = String(
-                     this.fechaDeInicio.getMonth() + 1
-                   ).padStart(2, "0");
-                   const díaFin = String(this.fechaDeInicio.getDate()).padStart(
-                     2,
-                     "0"
-                   );
-                   const fechaFormateada2 = `${añoFin}-${mesFin}-${díaFin}`;
-                   this.membresiaService
-                     .actualizacionMemebresia(
-                       this.data.idCliente,
-                       this.membresiaSeleccionada,
-                       fechaFormateada1,
-                       this.data.detMemID,
-                       this.precio,
-                       fechaFormateada2,
-                       this.auth.idUser.getValue()
-                     )
-                     .subscribe((dataResponse: any) => {
-                       this.spinner.hide();
-                       this.actualizarTablas.emit(true);
-                       this.dialogo.close(true);
-                       this.dialog
-                         .open(MensajeEmergenteComponent, {
-                           data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
-                           disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
-                         })
-                         .afterClosed()
-                         .subscribe((cerrarDialogo: Boolean) => {
-                           if (cerrarDialogo) {
-                             this.imprimirResumen();
-                           } else {
-                           }
-                         });
-                     });
-                 } else {
-                   const fechaActual: Date = new Date();
-                   const year = fechaActual.getFullYear();
-                   const month = String(fechaActual.getMonth() + 1).padStart(
-                     2,
-                     "0"
-                   );
-                   const day = String(fechaActual.getDate()).padStart(2, "0");
-                   const fechaFormateada = `${year}-${month}-${day}`;
-                   let fechaFin: Date = new Date(fechaActual);
-                   if (this.duracion == 1) {
-                   } else if (this.duracion == 30) {
-                     fechaFin.setMonth(fechaFin.getMonth() + 1);
-                     if (fechaFin.getMonth() == 0) {
-                       fechaFin.setFullYear(fechaFin.getFullYear() + 1);
-                     }
-                     fechaFin.setDate(fechaFin.getDate() - 1);
-                   } else {
-                     this.duracion = Number(this.duracion);
-                     fechaFin.setDate(fechaFin.getDate() + this.duracion - 1);
-                   }
+                  const fechaFormateadaFin: string = fechaFin
+                    .toISOString()
+                    .split("T")[0];
 
-                   const fechaFormateadaFin: string = fechaFin
-                     .toISOString()
-                     .split("T")[0];
+                  this.membresiaService
+                    .actualizacionMemebresia(
+                      this.data.idCliente,
+                      this.membresiaSeleccionada,
+                      fechaFormateada,
+                      this.data.detMemID,
+                      this.precio,
+                      fechaFormateadaFin,
+                      this.auth.idUser.getValue()
+                    )
+                    .subscribe((dataResponse: any) => {
+                      this.spinner.hide();
+                      this.actualizarTablas.emit(true);
 
-                   this.membresiaService
-                     .actualizacionMemebresia(
-                       this.data.idCliente,
-                       this.membresiaSeleccionada,
-                       fechaFormateada,
-                       this.data.detMemID,
-                       this.precio,
-                       fechaFormateadaFin,
-                       this.auth.idUser.getValue()
-                     )
-                     .subscribe((dataResponse: any) => {
-                       this.spinner.hide();
-                       this.actualizarTablas.emit(true);
+                      this.dialogo.close(true);
 
-                       this.dialogo.close(true);
                       this.dialog
                         .open(MensajeEmergenteComponent, {
                           data: `Pago exitoso, el cambio es de: $${PrecioCalcular}`,
@@ -725,29 +727,7 @@ imprimirResumen2() {
     this.toastr.error("Ingresa el pago");
   }
 }
-/*
 
-        const fechaDInicio = this.fechaDeInicio || new Date();
-        const fechaDFin = this.fechaDeFin || this.calcularFechaFin(this.nombreMembresiaProd, fechaDInicio);
-        const fechaDInicioFormateada = this.formatDate(fechaDInicio);
-        const fechaDFinFormateada = this.formatDate(fechaDFin);
-
-        this.data.precio = this.precioSucursal;
-        this.data.duracion = this.duracionMem;
-        this.data.membresia = this.nombreMembresiaProd;
-        this.data.dateStart = fechaDInicioFormateada;
-        this.data.dateEnd = fechaDFinFormateada;
-        this.data.idMem = this.idProductobod;
-
-        console.log('Datos del cliente antes de confirmar: ', this.data);
-        // console.log('Fecha Fin: ', this.data.dateEnd);
-        // console.log('Fecha Inicio: ', this.data.dateStart);
-        // console.log('Id detalle membresia: ', this.data.detMemID);
-        // console.log('Duracion: ', this.data.duracion);
-        // console.log('Id del cliente: ', this.data.idCliente);
-        // console.log('Membresia: ', this.data.membresia);
-        // console.log('Precio: ', this.data.precio);
-        // console.log('Id Creador: ', this.auth.idUser.getValue());
 
   /*
 
@@ -892,7 +872,6 @@ imprimirResumen2() {
     );
   }
   }
-
   imprimirResumen() {
     if (this.precio <= this.moneyRecibido) {
       const PrecioCalcular = this.moneyRecibido - this.precio;

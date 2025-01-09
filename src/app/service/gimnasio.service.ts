@@ -8,6 +8,7 @@ import { IndexedDBService } from './indexed-db.service';
 import { throwError  } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -47,20 +48,6 @@ export class GimnasioService {
     );
   }
 
-
-  obternerPlan(){
-    return this.clienteHttp.get<any[]>(this.API+"getBodega.php").pipe(
-      tap(dataResponse => {
-       // console.log("Respuesta de la API: ",dataResponse);
-          this.saveDataToIndexedDB1(dataResponse);
-      }),
-      catchError(error => {
-          // Intenta obtener los datos de IndexedDB en caso de error
-          //console.error("DATOS NO OBTENIDOS: ",error);
-          return this.getDataFromIndexedDB();
-      })
-  );
-  }
 
   private saveDataToIndexedDB1(data: any) {
     // Guarda los datos en IndexedDB
@@ -124,9 +111,25 @@ getDataFromIndexedDB() {
     return this.clienteHttp.post(this.API+"addBodega.php", datosGym);
   }
 
-  consultarArchivos(id: any):Observable<any>{
-    return this.clienteHttp.get(this.API+"bodega.php?consultarArchivos="+id);
-  }
+  consultarArchivos(id: any): Observable<any> {
+    return this.clienteHttp.get(this.API + "getArchivos.php?id_bodega=" + id);
+}
+
+
+  // actualizarSucursal(datosGym: any):Observable<any>{
+  //   return this.clienteHttp.post(this.API+"bodega.php?actualizar", datosGym);
+  // }
+
+  // actualizarEstatus(idGimnasio: any, estatus: any): Observable<any> {
+  //   let body = new URLSearchParams();
+  //   body.set('idBodega', idGimnasio);
+  //   body.set('estatus', estatus.toString());
+  //   body.set('actualizarEstatus', '1');
+  //   let options = {
+  //     headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+  //   };
+  //   return this.clienteHttp.post(this.API+"bodega.php?actualizaEstatus", body.toString(), options);
+  // }
 
   actualizarSucursal(datosGym: any):Observable<any>{
     return this.clienteHttp.post(`${this.API}updateBodega.php?insertar`, datosGym).pipe(

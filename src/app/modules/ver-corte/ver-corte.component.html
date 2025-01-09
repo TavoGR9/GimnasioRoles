@@ -63,7 +63,7 @@
                <tr mat-header-row *matHeaderRowDef="columnas; sticky: true"></tr>
                <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
             </table>
-            <mat-paginator #paginatorHistorial [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+            <mat-paginator #paginatorHistorial [pageSizeOptions]="[10, 25]" showFirstLastButtons></mat-paginator>
             <br><br><br>
          </div>
       </div>

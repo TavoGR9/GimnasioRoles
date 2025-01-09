@@ -277,9 +277,9 @@ deleteMembresia(id: any): Observable<any> {
 
 
   // Actualización del estado del cliente de su membresia (producto)
-  agregarPedido(datos: any):Observable<any>{
-    return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedidoMem=1", datos);
-  }
+  // agregarPedido(datos: any):Observable<any>{
+  //   return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedidoMem=1", datos);
+  // }
 
   obtenerPedidosActivos(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"UsuarioProds.php?obtenerVista="+id);
@@ -307,4 +307,38 @@ deleteMembresia(id: any): Observable<any> {
     return this.clienteHttp.get(this.API+"UsuarioProds.php", { params });
   }
 
+  agregarPedido(datos: any):Observable<any>{
+    return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedido", datos).pipe(
+      catchError(error => {
+        console.error('Error al enviar la solicitud: ', error)
+        return throwError(error);
+      })
+    );
+  }
+
+  checkPromoPaquete(data: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+console.log("datos emnviado en servico",data);
+    return this.clienteHttp.post<any>(this.API+"test_membresia.php", JSON.stringify(data), { headers });
+  }
+
+
+
+  // Método para obtener los pedidos de membresías por bodega
+  getPedidosMembresias(bodega: number): Observable<any> {
+    // Configuramos los parámetros para la solicitud GET
+    const params = new HttpParams().set('bodega', bodega.toString());
+
+    // Construimos la URL completa para el archivo PHP
+    const url = `${this.API}test_pedidos_membresias.php`;
+
+    return this.clienteHttp.get(url, { params }).pipe(
+      catchError((error) => {
+        console.error('Error al obtener los pedidos de membresías:', error.message);
+        return throwError(() => new Error('Error al procesar la solicitud'));
+      })
+    );
+  }
 }

@@ -37,7 +37,6 @@ export class AuthService {
   //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  //API: string = 'http://localhost/serviciosGimnasio/'
 
   API: string = 'http://localhost/serviciosGym/'
 
@@ -216,6 +215,11 @@ export class AuthService {
   // dataUser(data: any): Observable<any> {
   //   return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders});
   // }
+
+  getUsuario(correo: string): Observable<any> {
+    const params = { correo };
+    return this.clienteHttp.get<any>(this.API +  'getUsuarioActual.php', { params });
+  }
 
   dataUser(data: any): Observable<any> {
     return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(

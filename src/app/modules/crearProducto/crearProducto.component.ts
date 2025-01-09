@@ -159,7 +159,7 @@ export class CrearProductoComponent implements OnInit {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria().subscribe({
       next: (respuesta) => {
-        console.log('TODAS LAS CATEGORIAS: ', respuesta);
+        // console.log('TODAS LAS CATEGORIAS: ', respuesta);
         const categoriasU = new Set(
           respuesta.map(
             (categoria: any) => categoria.nombreCategoria
@@ -201,7 +201,7 @@ export class CrearProductoComponent implements OnInit {
     const subCIngresado = this.form.get("nomsubcate")?.value;
     this.categoriaService.obtenerSubCategoria(idCategoriaGuardada).subscribe({
       next: (respuesta) => {
-        console.log('TODAS LAS SUBCATEGORIAS: ', respuesta);
+        // console.log('TODAS LAS SUBCATEGORIAS: ', respuesta);
         const subCategoriasU = new Set(
           respuesta.productos.map(
             (subCategoria: any) => subCategoria.nombreProducto
@@ -222,7 +222,7 @@ export class CrearProductoComponent implements OnInit {
     const marcaIngresado = this.form.get("marcaP")?.value;
     this.categoriaService.obtenerMarcas().subscribe({
       next: (respuesta) => {
-        console.log('TODAS LAS MARCAS: ', respuesta);
+        // console.log('TODAS LAS MARCAS: ', respuesta);
         const marcasU = new Set(
           respuesta.map((marca: any) => marca.marca)
         );
@@ -238,9 +238,11 @@ export class CrearProductoComponent implements OnInit {
 
   vercodigoBarras() {
     const codigo = this.form.get("codigoBarra")?.value;
+    console.log('codigoBarra: ', codigo);
     this.productoService
-      .verProductoCodigoBarras(codigo)
+      .verProductoCodigoBarras2(codigo)
       .subscribe((respuesta: any) => {
+        console.log('respuesta: ', respuesta);
         if (respuesta.success == 0) {
         } else {
           this.form.setValue({
@@ -286,7 +288,7 @@ export class CrearProductoComponent implements OnInit {
       const codigo = this.form.get("codigoBarra")?.value;
       //console.log('Formulario:', this.form.value);  // Verifica que los valores estén bien
       this.productoService
-        .verProductoCodigoBarras(codigo)
+        .verProductoCodigoBarras2(codigo)
         .subscribe((respuesta: any) => {
           if (respuesta.success == 0) {
             this.categoriaService
@@ -332,7 +334,7 @@ export class CrearProductoComponent implements OnInit {
                               };
 
                               this.productoService
-                                .creaProducto(formularioP)
+                                .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -377,12 +379,12 @@ export class CrearProductoComponent implements OnInit {
                                 idGimnasio: 0,
                                 servicio: 0
                               };
-                              console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                              // console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
                               this.categoriaService
                                 .agregarMarca(formMarca)
                                 .subscribe((respuestaMarca) => {
-                                  console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
-                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                  // console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  // console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                   const formularioP = {
                                     idProducto:
                                       subCategoriaExistente.producto
@@ -409,7 +411,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -496,7 +498,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -575,7 +577,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -678,7 +680,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -757,7 +759,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -848,7 +850,7 @@ export class CrearProductoComponent implements OnInit {
                                           //idUsuario: this.auth.idUser.getValue(),
                                       };
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -931,7 +933,7 @@ export class CrearProductoComponent implements OnInit {
                                           };
 
                                           this.productoService
-                                            .creaProducto(formularioP)
+                                            .creaProductoMemb(formularioP)
                                             .subscribe({
                                               next: (respuesta) => {
                                                 if (respuesta.success) {
@@ -1034,7 +1036,7 @@ export class CrearProductoComponent implements OnInit {
                                   //idUsuario: this.auth.idUser.getValue(),
                               };
                               this.productoService
-                                .creaProducto(formularioP)
+                                .actualizarProducto2(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1107,7 +1109,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .actualizarProducto2(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1194,7 +1196,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .actualizarProducto2(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1272,7 +1274,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .actualizarProducto2(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1372,7 +1374,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .actualizarProducto(formularioP)
+                                    .actualizarProducto2(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -1452,7 +1454,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .actualizarProducto(formularioP)
+                                        .actualizarProducto2(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1543,7 +1545,7 @@ export class CrearProductoComponent implements OnInit {
                                          // idUsuario: this.auth.idUser.getValue(),
                                       };
                                       this.productoService
-                                        .actualizarProducto(formularioP)
+                                        .actualizarProducto2(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {
@@ -1627,7 +1629,7 @@ export class CrearProductoComponent implements OnInit {
                                           };
 
                                           this.productoService
-                                            .actualizarProducto(formularioP)
+                                            .actualizarProducto2(formularioP)
                                             .subscribe({
                                               next: (respuesta) => {
                                                 if (respuesta.success) {
@@ -1701,7 +1703,7 @@ export class CrearProductoComponent implements OnInit {
       this.spinner.show();
     const codigo = this.form.get("codigoBarra")?.value;
     this.productoService
-      .verProductoCodigoBarras(codigo)
+      .verProductoCodigoBarras2(codigo)
       .subscribe((respuesta: any) => {
         if (respuesta.success == 0) {
           this.categoriaService
@@ -1743,7 +1745,7 @@ export class CrearProductoComponent implements OnInit {
                           };
 
                           this.productoService
-                            .creaProducto(formularioP)
+                            .creaProductoMemb(formularioP)
                             .subscribe({
                               next: (respuesta) => {
                                 if (respuesta.success) {
@@ -1808,7 +1810,7 @@ export class CrearProductoComponent implements OnInit {
                               };
 
                               this.productoService
-                                .creaProducto(formularioP)
+                                .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1889,7 +1891,7 @@ export class CrearProductoComponent implements OnInit {
                               };
 
                               this.productoService
-                                .creaProducto(formularioP)
+                                .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -1958,7 +1960,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -2049,7 +2051,7 @@ export class CrearProductoComponent implements OnInit {
                               };
 
                               this.productoService
-                                .creaProducto(formularioP)
+                                .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
                                     if (respuesta.success) {
@@ -2119,7 +2121,7 @@ export class CrearProductoComponent implements OnInit {
                                   };
 
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -2199,7 +2201,7 @@ export class CrearProductoComponent implements OnInit {
                                       //idUsuario: this.auth.idUser.getValue(),
                                   };
                                   this.productoService
-                                    .creaProducto(formularioP)
+                                    .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
                                         if (respuesta.success) {
@@ -2272,7 +2274,7 @@ export class CrearProductoComponent implements OnInit {
                                       };
 
                                       this.productoService
-                                        .creaProducto(formularioP)
+                                        .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
                                             if (respuesta.success) {

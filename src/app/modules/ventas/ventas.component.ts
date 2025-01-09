@@ -138,7 +138,7 @@ export class VentasComponent implements OnInit {
     // });
 
     //Obtener productos de la bodega
-    this.productoService.obternerProductosV(this.auth.idGym.getValue()).subscribe((respuesta) => {
+    this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
       // console.log('ProductosV: ', this.productData);
 
@@ -163,7 +163,7 @@ export class VentasComponent implements OnInit {
 
 
   validarYAgregarProducto(producto: any) {
-    this.InventarioService.obtenerProductoPorId(producto.idProbob, this.auth.idGym.getValue()).subscribe(
+    this.InventarioService.obtenerProductoPorIdYIdBodega(producto.idProbob, this.auth.idGym.getValue()).subscribe(
       (data) => {
         const productoObtenido = data[0];
         // console.log('PRODUCTO OBTENIDO: ', productoObtenido);
@@ -345,7 +345,7 @@ export class VentasComponent implements OnInit {
 
   buscarPorPro(){
     const productoIngresado = this.form.get("producto")?.value;
-      this.InventarioService.buscarProductoPorNombre(this.auth.idGym.getValue()).subscribe({
+      this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
           // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
 
@@ -399,23 +399,23 @@ export class VentasComponent implements OnInit {
               // Enviar datos de ventas
               const datosVentas = {
                 correoCliente: "correo@cliente.com",
-                telefono: "1234567890",
+                // telefono: "1234567890",
                 id_empleado: this.auth.idUser.getValue(),
                 id_bodega: this.auth.idGym.getValue(),
-                direccionPedido: "Calle1",
-                fecha_hora_entrega: "12:00 - 14: 00",
-                DetalledireccionPedido: "NA",
-                codigoConfirmacion: "ABC123",
-                codigoPostal: "90000",
+                // direccionPedido: "Calle1",
+                // fecha_hora_entrega: "12:00 - 14: 00",
+                // DetalledireccionPedido: "NA",
+                // codigoConfirmacion: "ABC123",
+                // codigoPostal: "90000",
                 total: totalAPagar,
-                pago: 0,
+                pago: totalAPagar,
                 MetodoPag: "Efectivo",
-                express: 0,
-                lat: 0,
-                lng: 0,
+                // express: 0,
+                // lat: 0,
+                // lng: 0,
               };
 
-              this.ventasService.agregarVentas(datosVentas).subscribe((response) => {
+              this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
                 const lastInsertId = response.id_pedido;
                 // console.log('idlast: ', lastInsertId);
 
@@ -432,7 +432,7 @@ export class VentasComponent implements OnInit {
                   };
                 });
                 console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
-                this.DetalleVenta.agregarVentaDetalle(detallesVentas).subscribe(
+                this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe(
                   (response) => {
                     console.log('Detalle Pedido insertado correctamente:', response);
                     if (response.success === 1) {
@@ -443,7 +443,7 @@ export class VentasComponent implements OnInit {
                           cantidad: producto.cantidad
                         }
                       });
-                      this.DetalleVenta.updateExistencias(existencias).subscribe((data) => {
+                      this.DetalleVenta.updateExistenciasPedido(existencias).subscribe((data) => {
 
                       });
                       this.spinner.hide();

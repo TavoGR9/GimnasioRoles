@@ -25,16 +25,6 @@ interface ClientesActivos {
   fechaFin: string;
   estatus: string;
 }
-
-interface ClientesPedidoActivos {
-  id_pedidos: number;
-  precio: string;
-  fechaInicio: string;
-  fechaFin: string;
-  membresiaProdSeleccionada: string;
-  creation_date: string;
-  idCliente: number;
-}
 @Component({
   selector: "app-lista-membresias-pago-efec",
   templateUrl: "./lista-membresias-pago-efec.component.html",
@@ -90,9 +80,6 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   fechaFin: Date | null = null;
 
 
-  dataSourcePedidosActivos: MatTableDataSource<any>;
-  clientePedidoActivo: ClientesPedidoActivos[] = [];
-
   constructor(
     private pagoService: PagoMembresiaEfectivoService,
     public dialog: MatDialog,
@@ -120,8 +107,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.loadData()
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      this.listaClientesData();
-      //this.listaPedidos();
+      //this.listaClientesData();
     });
 
     this.auth.comprobar().subscribe((respuesta) => {
@@ -189,8 +175,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     setTimeout(() => {
 
       this.isLoading = false;
-      this.dataSourcePedidosActivos.paginator = this.paginatorActivos;
+      //this.dataSourcePedidosActivos.paginator = this.paginatorActivos;
       //this.listaClientesData();
+      this.listaClientesData();
     }, 1000);
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);

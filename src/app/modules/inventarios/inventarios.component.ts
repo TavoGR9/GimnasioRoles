@@ -19,9 +19,8 @@ export class InventariosComponent implements OnInit {
     'Código De Barras',
     'Producto',
     'Marca',
-    //'Precio',
     'Existencia',
-    'Categoria',
+    'Categoria'
   ];
 
   listInventarioData: any[] = [];
@@ -70,10 +69,12 @@ export class InventariosComponent implements OnInit {
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
+      // console.log('TODAS LAS EXISTENCIAS: ', respuesta);
+
       this.listInventarioData = this.aplicarFiltro(respuesta);
       //this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);
-      console.log("DATOs: " +this.listInventarioData);
+      //console.log("DATOs: " ,this.listInventarioData);
       this.loadData();
     });
   }
@@ -85,7 +86,7 @@ export class InventariosComponent implements OnInit {
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
-          console.log("Este es el ID: " +this.idGym);
+          // console.log("Este es el ID: " +this.idGym);
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);

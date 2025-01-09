@@ -17,8 +17,8 @@ export interface Historial {
   Producto: number;
   Concepto: string;
   FechaMovimiento: string;
-  ActualStock: string;
-  MovimientoStock: string;
+  // StockActual: string;
+  // StockMovimiento: string;
   NuevoStock: string;
 }
 @Component({
@@ -42,6 +42,8 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
 
+  idUsuarioo: number =0;
+
   @ViewChild('paginatorHistorial', { static: true }) paginatorHistorial!: MatPaginator;
 
   constructor(
@@ -58,6 +60,9 @@ export class EmergenteHistorialProductosComponent implements OnInit{
 
   ngOnInit(): void {
     this.updateDateLogs();
+    this.idUsuarioo = this.auth.idUser.getValue();
+    console.log('idUsuario: ', this.idUsuarioo);
+
   }
 
   ngDoCheck(): void {
@@ -86,8 +91,9 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       this.auth.idGym.getValue()
     ).subscribe(
       response => {
+        // console.log('RESULTADOS DEL HISTORIAL: ', response);
 
-        if (response.msg == 'No hay resultados') {
+        if (response.length === 0) {
           this.dataHistorial = [];
           this.dataSource = new MatTableDataSource(this.dataHistorial);
           this.dataSource.paginator = this.paginatorHistorial;
@@ -125,15 +131,15 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     }
 
     const datos = [
-      ['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Actual', 'Stock Movimiento', 'Stock Nuevo'],
+      ['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Nuevo'],
       ...this.dataSource.filteredData.map((listaHist: Historial) => [
         listaHist.Sucursal,
         listaHist.Usuario,
         listaHist.Producto,
         listaHist.Concepto,
         listaHist.FechaMovimiento,
-        listaHist.ActualStock,
-        listaHist.MovimientoStock,
+        // listaHist.StockActual,
+        // listaHist.StockMovimiento,
         listaHist.NuevoStock
       ])
     ];
@@ -192,13 +198,13 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       listaHist.Producto,
       listaHist.Concepto,
       listaHist.FechaMovimiento,
-      listaHist.ActualStock,
-      listaHist.MovimientoStock,
+      // listaHist.StockActual,
+      // listaHist.StockMovimiento,
       listaHist.NuevoStock
     ]);
     // Añadir filas al PDF con encabezado naranja
     pdf.autoTable({
-      head: [['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Actual', 'Stock Movimiento', 'Stock Nuevo']],
+      head: [['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Nuevo']],
       body: datos,
       startY: 20,  // Ajusta la posición inicial del contenido
       headStyles: {

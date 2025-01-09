@@ -15,14 +15,12 @@ import { HttpParams } from '@angular/common/http';
 })
 
 export class ColaboradorService {
-  isConnected: boolean = true;
 
-  //Servicio para la manipulacion de datos de un colaborador.
+    isConnected: boolean = true;
 
-  private categoriasSubject = new BehaviorSubject<any[]>([]);
-  // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  // APIv3: string = 'http://localhost/olimpusGym/conf/';
-  // API: String = '';
+    //Servicio para la manipulacion de datos de un colaborador.
+
+    private categoriasSubject = new BehaviorSubject<any[]>([]);
     // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
     // APIv3: string = 'http://localhost/olimpusGym/conf/';
     // API: String = '';
@@ -30,6 +28,7 @@ export class ColaboradorService {
     //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
     //API: string = 'http://localhost/serviciosGimnasio/'
       API: string = 'http://localhost/serviciosGym/'
+
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
     }
@@ -107,7 +106,23 @@ export class ColaboradorService {
         this.indexedDBService.saveAgregarRegistroData('AgregarRegistro', data);
     }
 
+    agregarUsuario(datosEmpleado: any): Observable<any> {
+      console.log("Enviando solicitud HTTP...");
 
+        return this.clienteHttp.post(this.API + "registrarUsuarioCliente2.php", datosEmpleado).pipe(
+
+            tap(dataResponse => {
+           console.log(dataResponse)
+            }),
+            catchError(error => {
+              //this.saveDataToIndexedDBC(datosEmpleado);
+              console.error('Error en la solicitud HTTP:', error);
+              console.error(datosEmpleado);
+              const resultData = { success: '2' };
+              return of(resultData);
+            })
+          );
+    }
 
     agregarUsuarioBodega(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuarioBodega", datosEmpleado);
@@ -247,45 +262,25 @@ export class ColaboradorService {
       }
 
 
-      actualizarEstatus(idEmpleado: number, statuss: number, correoParametro: string): Observable<any> {
-        const body = { idEmpleado, statuss, correoParametro };
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-        // Agregar un console log para verificar los datos que se envían
-        console.log('Datos enviados desde Angular al backend:', body);
-        console.log('Valor de statuss:', statuss); // Verifica el valor específico de statuss
+    actualizarEstatus(idEmpleado: number, estatus: number): Observable<any> {
+      const body = {
+        idEm: idEmpleado, // Nombre del campo debe coincidir con PHP
+        estatus: estatus
+      };
 
-        return this.clienteHttp.post(`${this.API}/Status_Bodega_Empleado.php`, body, { headers }).pipe(
-          catchError((error) => {
-            console.error('Error en la petición al backend:', error);
-            return throwError(() => new Error('Error al actualizar el estatus en el backend'));
-          })
-        );
-      }
+      const options = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json', // Cabecera para enviar JSON
+        }),
+      };
 
+      console.log('Datos enviados desde Angular al backend (body):', body);
 
-
-
-
+      // Incluimos `options` en la llamada
+      return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php',body, options);
+    }
 
 
-  agregarUsuario(datosEmpleado: any): Observable<any> {
-    console.log("Enviando solicitud HTTP...");
 
-      return this.clienteHttp.post(this.API + "registrarUsuarioCliente2.php", datosEmpleado).pipe(
-
-          tap(dataResponse => {
-         console.log(dataResponse)
-          }),
-          catchError(error => {
-            //this.saveDataToIndexedDBC(datosEmpleado);
-            console.error('Error en la solicitud HTTP:', error);
-            console.error(datosEmpleado);
-            const resultData = { success: '2' };
-            return of(resultData);
-          })
-        );
   }
-
-
-}

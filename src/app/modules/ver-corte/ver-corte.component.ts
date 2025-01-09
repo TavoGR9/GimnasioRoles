@@ -122,10 +122,10 @@ export class VerCorteComponent implements OnInit  {
 
   listaTablas(){
     // console.log('idGym en la lista: ', this.idGym);
-    this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
+    this.joinDetalleVentaService.consultarProductosVentasBodega(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
-        console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
+        // console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.loadData();
         this.dataSource.data = this.detallesCaja;

@@ -50,24 +50,24 @@ export class EmergenteInfoClienteComponent implements OnInit{
     private toastr: ToastrService,
     private auth: AuthService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
+    @Inject(MAT_DIALOG_DATA) public data: any) {
 
       const sanitizeValue = (value: any): string => {
         return (value === null || value === 'null') ? '' : value;
       };
-  
+
       // Inicializar el formulario
       this.form = this.fb.group({
         id_cliente: [sanitizeValue(this.data.idCliente), Validators.required],
         id_bodega:[this.data.idSucursal],
         estafeta: [sanitizeValue(this.data.estafeta), Validators.required],
         nombre: [sanitizeValue(this.data.nombre), Validators.required],
-        telefono: [sanitizeValue(this.data.telefono)], 
+        telefono: [sanitizeValue(this.data.telefono)],
         correo: [sanitizeValue(this.data.email)] ,
         password:[]
       });
     }
-   
+
 
   cerrarDialogo(): void {
     this.dialogo.close(true);
@@ -108,8 +108,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
     // Si la diferencia es menor a 0, devolver 0
     return diferenciaDias < 0 ? 0 : diferenciaDias;
-  
-    
+
+
   }
 
 
@@ -127,7 +127,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
       data: {
         clienteID: `${data.idCliente}`
       },
-      disableClose: true 
+      disableClose: true
     })
     .afterClosed()
     .subscribe((cerrarDialogo: Boolean) => {
@@ -162,8 +162,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
       }
     });
   }
- 
-  
+
+
   actualizar(): void {
     if(!this.form.valid){
       return;
@@ -182,35 +182,35 @@ export class EmergenteInfoClienteComponent implements OnInit{
           if (cerrarDialogo) {
 
           } else {
-    
-          } 
+
+          }
         });
       }, error: (error) => { console.log(error); }
     });
-  } 
+  }
 
     actualizarCliente(): void {
       console.log(this.form.value);
       this.spinner.show();
-      
-    
+
+
       if (!this.form.valid) {
         console.log("Formulario no válido");
         return;
       }
-    
+
       // Mostrar spinner mientras se procesa la solicitud
-    
-    
+
+
       // Capturar los valores del formulario
-   
-    
+
+
       // Llamar al servicio para actualizar los datos del cliente
       this.pagoService.actualizaDatosCliente(this.form.value).subscribe({
         next: (resultData) => {
-         
+
           console.log(resultData);
-    
+
           // Verificar el estado de la respuesta del servidor
           if (resultData?.success === 1) {
             console.log(1)
@@ -220,7 +220,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
             //});
 
             // this.cerrarDialogo();
-          
+
 
             const estado = resultData.data?.Estado;
 
@@ -234,10 +234,10 @@ export class EmergenteInfoClienteComponent implements OnInit{
               .afterClosed()
               .subscribe((cerrarDialogo: Boolean) => {
                 if (cerrarDialogo) {
-      
+
                 } else {
-          
-                } 
+
+                }
               });
 
 
@@ -251,7 +251,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
               console.log("Clave existente o sin cambios");
             }
-        
+
           } else {
 
             console.log('error')
@@ -265,7 +265,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
           // Ocultar el spinner y manejar errores de conexión
           this.spinner.hide();
           console.error(error);
-    
+
           // Mostrar mensaje de error genérico
          this.dialog.open(MensajeEmergenteComponent, {
            data: `Ocurrió un error al procesar la solicitud. Por favor, intenta nuevamente.`,
@@ -273,7 +273,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
         },
       });
     }
-    
+
 
 // no hace nada (borrar) (hacer)
 
@@ -295,11 +295,11 @@ export class EmergenteInfoClienteComponent implements OnInit{
       if (confirmado) {
         this.pagoService.deleteMembresia(id).subscribe(
           (respuesta) => {
-            
+
             if (respuesta === 1) { // Validar si la respuesta es 1
               this.toastr.success('Registro eliminado exitosamente', 'Éxito', {
                 positionClass: 'toast-bottom-left',
-               
+
               });
               this.UserHIstorial(this.data.idCliente);
             } else { // Respuesta no exitosa
@@ -317,13 +317,13 @@ export class EmergenteInfoClienteComponent implements OnInit{
       }
     });
   }
-  
+
 
 
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
-  
+
   isSupadmin(): boolean {
     return this.auth.isSupadmin();
   }
@@ -335,13 +335,13 @@ export class EmergenteInfoClienteComponent implements OnInit{
   UserHIstorial(clave: string) {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (respuesta: any) => {
-    
+
           const datosFiltrados = respuesta.data.filter((item: any) => item.clave === clave);
           this.membresiaHisto = datosFiltrados;
           console.log("Datos filtrados:", this.membresiaHisto);
-    
-  
-       
+
+
+
         this.dataSource = new MatTableDataSource(this.membresiaHisto);
         this.dataSource.paginator = this.paginator;
       },
@@ -350,8 +350,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
       }
     );
   }
-  
-  
+
+
 
 
 
@@ -366,7 +366,7 @@ UserHIstorial(clave: string) {
       this.membresiaHisto = datosFiltrados;
 
 
-      
+
 
       // Si necesitas usar MatTableDataSource, puedes descomentar las líneas
       // this.dataSource = new MatTableDataSource(this.membresiaHisto);
@@ -389,16 +389,16 @@ UserHIstorial(clave: string) {
 
          // Filtramos solo los registros donde id_pedido esté presente (no sea null ni undefined)
          const registrosConPedido = datosFiltrados.filter((item: any) => item.id_pedido);
-  
+
         // Agrupamos los registros por id_pedido directamente (sin aplicar el filtro de conteoPedidos y estatus)
         const agrupadosPorPedido = this.agruparPorPedido(registrosConPedido);
 
-        
-  
+
+
         // Asignamos los resultados a la variable de la tabla
         this.membresiaHisto = agrupadosPorPedido;
         console.log("membresiaHisto final (agrupados por pedido):", this.membresiaHisto);
-  
+
         // Actualizamos el DataSource de la tabla
         this.dataSource = new MatTableDataSource(this.membresiaHisto);
         this.dataSource.paginator = this.paginator;
@@ -409,14 +409,14 @@ UserHIstorial(clave: string) {
     );
     console.log('executed');
   }
-  
+
   // Función para agrupar por pedido
   private agruparPorPedido(clientes: any[]): any[] {
     const agrupadosPorPedido: { [key: string]: any } = {};
-  
+
     clientes.forEach(cliente => {
       const idPedido = cliente.id_pedido;
-  
+
       if (!agrupadosPorPedido[idPedido]) {
         agrupadosPorPedido[idPedido] = {
           clave: cliente.clave,
@@ -444,7 +444,7 @@ UserHIstorial(clave: string) {
           productos: [] // Inicializamos un array vacío para los productos
         };
       }
-  
+
       // Agregamos la información del producto al array `productos` correspondiente
       agrupadosPorPedido[idPedido].productos.push({
         id_producto: cliente.id_producto,
@@ -453,21 +453,21 @@ UserHIstorial(clave: string) {
         idProbob: cliente.idProbob
       });
     });
-  
+
     // Convertimos el objeto agrupado en un array
     return Object.values(agrupadosPorPedido);
   }
-  
 
 
 
-  
+
+
 
 
   actualizarCliente2(): void {
-   
+
     this.spinner.show();
-  
+
     if (!this.form.valid) {
       console.log("Formulario no válido");
       this.toastr.error("El formulario contiene errores. Por favor, revísalo.");
@@ -475,9 +475,9 @@ UserHIstorial(clave: string) {
       return;
     }
     this.generarContraseña(9);
-    
+
     console.log(this.form.value);
-  
+
     const clienteData = {
       id_cliente: this.form.value.id_cliente,
       estafeta: this.form.value.estafeta,
@@ -487,11 +487,11 @@ UserHIstorial(clave: string) {
       nombre: this.form.value.nombre || null,
       password: this.form.value.password || null
     };
-  
+
     this.pagoService.actualizaDatosCliente2(clienteData).subscribe({
       next: (resultData) => {
         console.log(resultData);
-  
+
         if (resultData?.Estado === 1) {
           console.log("Actualización exitosa");
 
@@ -499,7 +499,7 @@ UserHIstorial(clave: string) {
             console.log("Enviando WhatsApp");
             this.enviarMensajeWhatsApp(this.form.value.telefono, this.form.value.correo, this.form.value.password);
           }
-  
+
           this.spinner.hide();
           this.cerrarDialogo();
           this.dialog.open(MensajeEmergenteComponent, {
@@ -508,7 +508,7 @@ UserHIstorial(clave: string) {
             .subscribe(() => {
               // Aquí puedes agregar lógica si es necesario
             });
-  
+
         } else {
           this.spinner.hide();
           this.toastr.error(resultData.Mensaje || 'Hubo un error al actualizar los datos.');
@@ -518,7 +518,7 @@ UserHIstorial(clave: string) {
       error: (error) => {
         this.spinner.hide();
         console.error(error);
-  
+
         this.toastr.error('Ocurrió un error al procesar la solicitud. Por favor, intenta nuevamente.');
       },
     });
@@ -552,13 +552,13 @@ generarContraseña(longitud: number): void {
 
 
 
-  
+
   enviarMensajeWhatsApp(telefono: string, correo: string, password: string) {
     if(telefono && correo){
       const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
       const url = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
       window.open(url, '_blank');
-    }  
+    }
   }
 
 

@@ -17,8 +17,9 @@ export class EntradasService {
   // API: String = '';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  //API: string = 'http://localhost/serviciosGimnasio/';
-    API: string = 'http://localhost/serviciosGym/';
+  API: string ='http://localhost/serviciosGym/';
+
+
 
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {}
 
@@ -33,8 +34,10 @@ export class EntradasService {
   //   });
   // }
 
+   //ENTRADAS
+  // llamada HTTP a la API REST, para insertar una entrada e insertar al historial
   agregarEntradaProducto(entradaProductos:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaProHisto",entradaProductos);
+    return this.clienteHttp.post(this.API+"insertarBodegaProHisto.php?insertarBodegaProHisto",entradaProductos);
   }
 
   obtenerCompras(inicioDate: any, finDate: any, idGym: any): Observable<any> {
@@ -46,16 +49,29 @@ export class EntradasService {
     return this.clienteHttp.get(this.API + 'producto_bod.php?', { params });
   }
 
+  //ENTRADAS
+  // llamada HTTP a la API REST, para obtener las entradas por idGym y rango de fechas
+  obtenerEntradas(inicioDate: any, finDate: any, idGym: any): Observable<any>{
+    const params = {
+      GYMid: idGym,
+      fechaInicio: inicioDate,
+      fechaFin: finDate
+    };
+    return this.clienteHttp.get(this.API+'obtenerEntradas.php', { params });
+  }
+
  /* agregarEntradaProducto(entradaProductos:any):Observable<any>{
     return this.clienteHttp.post(this.API+"producto_bod.php?insertarBodegaPro",entradaProductos);
   }*/
 
+  //ENTRADAS
+  // llamada HTTP a la API REST, para verificar un producto
   verficarProducto(id_bodega: any, id_producto:any):Observable<any>{
     const data = {
       p_id_bodega: id_bodega,
       p_id_producto: id_producto
     }
-    return this.clienteHttp.post(this.API+"producto_bod.php?ObtenerProductoPorBodegaYID",data);
+    return this.clienteHttp.post(this.API+"ObtenerProductoPorBodegaYID.php?ObtenerProductoPorBodegaYID",data);
   }
 
   existencias(id_bodega: any,id_producto: any):Observable<any>{
@@ -66,8 +82,10 @@ export class EntradasService {
     return this.clienteHttp.post(this.API+"producto_bod.php?existencias",data);
   }
 
+  //ENTRADAS
+  // llamada HTTP a la API REST, para actualizar una entrada e insertar al historial
   actualizarProducto(data:any):Observable<any>{
-    return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1Histo",data);
+    return this.clienteHttp.post(this.API+"updateBodegaProducto1Histo.php?updateBodegaProducto1Histo",data);
   }
 
   actualizarProductoVDos(data:any):Observable<any>{
@@ -79,8 +97,11 @@ export class EntradasService {
     return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1",data);
   }*/
 
+
+  //ENTRADAS
+  // llamada HTTP a la API REST, para obtener todos los productos
   listaProductos(): Observable<any> {
-    return this.clienteHttp.get<any>(this.API+'producto_bod.php?getProBodPre').pipe(
+    return this.clienteHttp.get<any>(this.API+'getProBod.php?getProBodPre').pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
 
@@ -122,6 +143,12 @@ export class EntradasService {
 
   insertarHistorial(data:any): Observable<any>{
     return this.clienteHttp.post<any>(this.API+'producto_bod.php?addHistorialInventario',data);
+  }
+
+
+  // Actualización de Producto (membresia) y inserción a Historial nueva BD
+  actualizarProductoEInsertarHistorial(data:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"updateBodegaProbodAddHistorial.php?updateBodegaProductoHistorial",data);
   }
 
 }

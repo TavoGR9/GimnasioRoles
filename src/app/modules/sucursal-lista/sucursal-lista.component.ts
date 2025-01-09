@@ -186,7 +186,7 @@ export class SucursalListaComponent implements OnInit {
     dialogRef.afterClosed().subscribe((data) => {
       this.gimnasioService.obtenerPlan().subscribe((data) => {
         console.log('Datos obtenidos del servicio:', data);
-        this.gimnasio = Array.isArray(data) ? data : data?.data || [];
+        this.gimnasio = data;
         this.dataSource = new MatTableDataSource(this.gimnasio);
         this.dataSource.paginator = this.paginator;
       });
