@@ -219,4 +219,8 @@ consultasFechaQuincena(idGim: any, fecha: any) {
   });
 }
 
+ConsultarPedidosMembresias(id_bodega: any ){
+  return  this.clienteHttp.get(this.API+'pedidosMembresias.php?id_bodega='+ id_bodega)
+}
+
 }

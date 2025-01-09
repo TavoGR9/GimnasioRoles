@@ -35,8 +35,12 @@ export class RestablecerContraComponent {
   }
 
   ngOnInit(): void {
+    //console.log("Datos recibidos en el modal:", this.data);
+    if (!this.data?.id_empleado) {
+      console.error("ID del empleado no está disponible en los datos:", this.data);
+    }
   }
-
+  
   passwordMatchValidator(formGroup: FormGroup): void {
     const password = formGroup.get("newPassword")?.value;
     const confirmPassword = formGroup.get("confirmPassword")?.value;
@@ -57,37 +61,40 @@ export class RestablecerContraComponent {
 
   onSubmit(): void {
     if (this.resetPasswordForm.valid) {
-      this.spinner.show();
-      this.http.ActualizarContrasenia(this.data.clave,this.resetPasswordForm.value.confirmPassword) .subscribe({
-        next: (resultDataUpdate: any) => {
-          if (resultDataUpdate.respuesta) {
-            if (resultDataUpdate.respuesta == 2) {
-              this.toastr.error("Contraseña no actualizada", "Error!!!");
+      const idempleado = this.data?.id_empleado; // Verifica que id_empleado esté disponible
+      if (!idempleado) {
+        console.error("ID del empleado no está disponible en los datos proporcionados al modal.");
+        return;
+      }
+  
+      const contrasenia = this.resetPasswordForm.value.confirmPassword;
+      //console.log("ID del empleado:", idempleado);
+  
+      this.http.ActualizarContrasenia(idempleado, contrasenia).subscribe({
+        next: (resultDataUpdate) => {
+          //console.log("Respuesta del servidor:", resultDataUpdate);
+  
+          // Mostrar mensaje emergente de confirmación
+          this.dialog
+            .open(MensajeEmergentesComponent, {
+              data: 'CONTRASEÑA actualizada correctamente.',
+            })
+            .afterClosed()
+            .subscribe(() => {
+              // Cerrar el modal principal después del mensaje emergente
               this.cerrarDialogo();
-            } else if (resultDataUpdate.respuesta == 1) {
-              this.spinner.hide();
-              this.cerrarDialogo();
-              this.dialog.open(MensajeEmergentesComponent, { data: "Registro actualizado correctamente."})
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-              if (cerrarDialogo) {}
-              });
-
-              this.resetPasswordForm.reset();
-              this.dialogRef.close(true);
-            } 
-          }}, error: (error) => {
-            this.toastr.error(
-              "Ocurrió un error en la comunicación con el servidor.",
-              "Error!!!"
-            );
-          },
-        });
+            });
+        },
+        error: (error) => {
+          console.error("Error al comunicarse con el servidor:", error);
+        },
+      });
     } else {
-      this.toastr.error( "Verifique los campos antes de guardar.", "Error!!!");
+      console.error("Formulario inválido.");
     }
   }
-
+  
+  
   onCancel(): void {
     this.dialogRef.close();
   }

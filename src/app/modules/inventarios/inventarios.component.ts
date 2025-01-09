@@ -22,7 +22,6 @@ export class InventariosComponent implements OnInit {
     //'Precio',
     'Existencia',
     'Categoria',
-    //'Bodega'
   ];
 
   listInventarioData: any[] = [];
@@ -74,7 +73,7 @@ export class InventariosComponent implements OnInit {
       this.listInventarioData = this.aplicarFiltro(respuesta);
       //this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);
-      //console.log("DATOs: " ,this.listInventarioData);
+      console.log("DATOs: " +this.listInventarioData);
       this.loadData();
     });
   }

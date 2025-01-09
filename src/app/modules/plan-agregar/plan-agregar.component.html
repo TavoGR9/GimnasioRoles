@@ -48,6 +48,7 @@
                             <mat-form-field appearance="outline" style="width: 95%;" required>
                               <mat-label>Selecciona Tipo de Promoción</mat-label>
                               <mat-select formControlName="idChoProm" placeholder="Seleccione un tipo" (selectionChange)="onTipoPromocionChange($event.value)">
+
                                 <!-- Opciones del select -->
                                 <mat-option [value]="1">Paquete</mat-option>
                                 <mat-option [value]="2">Individual</mat-option>
@@ -124,6 +125,7 @@
                                   </mat-option>
                                 </mat-select>
                             </mat-form-field>
+
                           </p>
                         </div>
 
@@ -138,6 +140,7 @@
                       </div>
 
                   </div>
+
 
               </div>
           </form>

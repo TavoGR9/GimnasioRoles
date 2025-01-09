@@ -7,6 +7,7 @@ import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
 import { Promocion } from '../models/promocion';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -76,7 +77,6 @@ export class PromocionService {
       });
     });
   }
-
 
 
   //AGREGAR UN NUEVO PLAN
@@ -177,8 +177,6 @@ export class PromocionService {
       })
     );
   }
-
-
 
 
   //ELIMINACION DE PLAN

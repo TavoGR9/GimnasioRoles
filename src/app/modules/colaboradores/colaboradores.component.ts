@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desactivar.component";
 import { IndexedDBService } from './../../service/indexed-db.service';
 import { RestablecerContraComponent } from '../restablecer-contra/restablecer-contra.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-colaboradores',
@@ -22,13 +23,16 @@ export class ColaboradoresComponent {
   colaborador: any;
   currentUser: string = '';
   idGym: number = 0;
+  parametro: any;
   dataSource: any;
   colaboradores: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   isLoading: boolean = true; 
   habilitarBoton: boolean = false;
   
-  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private indexedDBService: IndexedDBService){}
+  constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private indexedDBService: IndexedDBService){
+    
+  }
 
   ngOnInit():void{
     this.auth.comprobar().subscribe((respuesta)=>{ 
@@ -40,7 +44,19 @@ export class ColaboradoresComponent {
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
+      //console.log('Dato', this.idGym);
       this.listaTabla();
+
+ 
+    
+      const datos = {
+        idGym: this.auth.idGym.getValue()
+      };
+      
+      const jsonData: string = JSON.stringify(datos);
+      this.parametro = jsonData
+      /*console.log('que paso', this.parametro)*/
+
     }); 
   }
 
@@ -51,25 +67,43 @@ export class ColaboradoresComponent {
     }, 1000); 
   }
 
-  listaTabla(){
-    if (this.isSupadmin()){
-      this.http.listaColaboradores().subscribe({
-        next: (resultData) => {
-         
-          this.empleados = resultData;
-        }
-      });
+
+
+  listaTabla() {
+    if (this.isSupadmin()) {
+        this.http.listaColaboradores().subscribe({
+            next: (resultData) => {
+                //console.log('Datos obtenidos para Supadmin:', this.empleados); 
+                this.empleados = resultData;
+                this.dataSource = new MatTableDataSource(this.empleados); 
+                this.loadData();
+                
+            },
+            error: (error) => {
+                //console.error('Error al obtener colaboradores:', error); 
+            }
+        });
     } 
-    if (this.isAdmin()){
-      this.http.MostrarRecepcionistas(this.idGym).subscribe({
-        next: (dataResponse) => {
-          this.empleados = dataResponse;
-          this.dataSource = new MatTableDataSource(this.empleados);
-          this.loadData(); 
-        }
-      })
+
+    if (this.isAdmin()) {
+        this.http.MostrarRecepcionistas(this.parametro).subscribe({
+            next: (dataResponse) => {
+               // console.log('Datos obtenidos para Admin:', dataResponse); 
+                this.empleados = dataResponse;
+                //console.log('///////',  this.empleados); 
+
+                this.dataSource = new MatTableDataSource(this.empleados); 
+                this.loadData();
+            },
+            error: (error) => {
+                //console.error('Error al obtener recepcionistas:', error); 
+            }
+        });
+        //console.log('Datos idGYm:', this.auth.idGym.getValue()); 
     }
-  }
+}
+
+
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
@@ -113,7 +147,7 @@ export class ColaboradoresComponent {
       });
   }
 
-  OpenRestablecer(empleados: any) {
+  /*OpenRestablecer(empleados: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '70%';
     dialogConfig.disableClose = true; // Evita que el diálogo se cierre haciendo clic fuera de él
@@ -127,7 +161,26 @@ export class ColaboradoresComponent {
         } else {
         }
       });
-  }
+  }*/
+      OpenRestablecer(empleados: any) {
+        if (!empleados || !empleados.id_empleado) {
+          console.error("El objeto empleados no contiene id_empleado:", empleados);
+          return;
+        }
+      
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.width = '70%';
+        dialogConfig.disableClose = true;
+        dialogConfig.data = empleados;
+        this.dialog.open(RestablecerContraComponent, dialogConfig)
+          .afterClosed()
+          .subscribe((cerrarDialogo: Boolean) => {
+            if (cerrarDialogo) {
+              this.listaTabla();
+            }
+          });
+      }
+      
   
   OpenEditar(empleados: any) {
     const dialogConfig = new MatDialogConfig();
@@ -147,44 +200,56 @@ export class ColaboradoresComponent {
       });
   }
 
-  onToggle(event: Event, idEmpleado: any, correo:any) {
-    let colab = this.empleados.find(
-      (e: { id_empleado: any }) => e.id_empleado == idEmpleado
-    );
-    let mensaje =
-    colab.estatus == 1
-        ? "¿Deseas desactivar esta sucursal?"
-        : "¿Deseas activar esta sucursal?";
+  onToggle(event: Event, idEmpleado: number, correoParametro: string) {
+    const colab = this.empleados.find((e: { id_empleado: number }) => e.id_empleado === idEmpleado);
+
+    if (!colab) {
+      console.error('Colaborador no encontrado');
+      return;
+    }
+
+    const nuevoStatuss = colab.estatus === 1 ? 0 : 1; // Alterna entre 0 y 1
+    console.log('Estatus actual:', colab.estatus);
+    console.log('Nuevo estatus que se asignará:', nuevoStatuss);
+
+    const mensaje = nuevoStatuss === 0 
+      ? '¿Deseas desactivar este colaborador?' 
+      : '¿Deseas activar este colaborador?'; // Cambia el mensaje según el nuevo estatus
+    
+    console.log('Mensaje del diálogo:', mensaje);
+
     const dialogRef = this.dialog.open(MensajeDesactivarComponent, {
       data: { mensaje: mensaje, idEmpleado: colab },
     });
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const nuevoEstatus = colab.estatus == 1 ? 0 : 1;
-        // Actualizar la base de datos y refrescar los datos
-        this.http
-          .actualizarEstatus(idEmpleado, nuevoEstatus, correo)
-          .subscribe(
-            (response) => {
-              if (response && response.success === 1) {
-                colab.estatus = nuevoEstatus;
-              } else if (response) {
-                console.error(
-                  "Error al actualizar el estatus: ",
-                  response.error
-                );
-              } else {
-                console.error("Error: la respuesta es null");
-              }
-            },
-            (error) => {
-              console.error("Error en la petición: ", error);
+        console.log('Actualizando estatus...', { idEmpleado, nuevoStatuss, correoParametro });
+
+        this.isLoading = true;
+
+        this.http.actualizarEstatus(idEmpleado, nuevoStatuss, correoParametro).subscribe({
+          next: (response) => {
+            console.log('Respuesta del servidor:', response);
+            if (response && response.success === 1) {
+              colab.estatus = nuevoStatuss;
+              this.listaTabla();
+            } else {
+              console.error('Error al actualizar el estatus:', response?.error || 'Sin respuesta del servidor');
             }
-          );
-      } else {
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('Error en la petición:', error);
+            this.isLoading = false;
+          },
+        });
       }
     });
-  }
+}
+
+  
+  
 
   Sincronizar() {
       this.indexedDBService.getAgregarEmpleadoData('AgregarEmpleado').then(data => {
