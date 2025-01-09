@@ -15,18 +15,17 @@ import { HttpParams } from '@angular/common/http';
 })
 
 export class ColaboradorService {
+  isConnected: boolean = true;
 
-    isConnected: boolean = true;
+  //Servicio para la manipulacion de datos de un colaborador.
 
-    //Servicio para la manipulacion de datos de un colaborador.
+  private categoriasSubject = new BehaviorSubject<any[]>([]);
+  // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  // APIv3: string = 'http://localhost/olimpusGym/conf/';
+  // API: String = '';
 
-    private categoriasSubject = new BehaviorSubject<any[]>([]);
-    // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-    // APIv3: string = 'http://localhost/olimpusGym/conf/';
-    // API: String = '';
-
-    //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-    API: string = 'http://localhost/serviciosGym/'
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/serviciosGym/';
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
@@ -105,18 +104,7 @@ export class ColaboradorService {
         this.indexedDBService.saveAgregarRegistroData('AgregarRegistro', data);
     }
 
-    agregarUsuario(datosEmpleado: any): Observable<any> {
 
-        return this.clienteHttp.post(this.API + "empleado.php?insertarUsuario", datosEmpleado).pipe(
-            tap(dataResponse => {
-            }),
-            catchError(error => {
-              this.saveDataToIndexedDBC(datosEmpleado);
-              const resultData = { success: '2' };
-              return of(resultData);
-            })
-          );
-    }
 
     agregarUsuarioBodega(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuarioBodega", datosEmpleado);
@@ -276,4 +264,25 @@ export class ColaboradorService {
          
         
     
+
+
+  agregarUsuario(datosEmpleado: any): Observable<any> {
+    console.log("Enviando solicitud HTTP...");
+
+      return this.clienteHttp.post(this.API + "registrarUsuarioCliente2.php", datosEmpleado).pipe(
+     
+          tap(dataResponse => {
+         console.log(dataResponse)
+          }),
+          catchError(error => {
+            //this.saveDataToIndexedDBC(datosEmpleado);
+            console.error('Error en la solicitud HTTP:', error);
+            console.error(datosEmpleado);
+            const resultData = { success: '2' };
+            return of(resultData);
+          })
+        );
   }
+
+
+}
