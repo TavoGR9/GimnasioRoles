@@ -8,6 +8,7 @@ import { HorarioService } from '../../service/horario.service';
 import { NgxSpinnerService } from "ngx-spinner";
 
 import { ToastrService } from "ngx-toastr";
+import { Router } from '@angular/router';
 
 class Horario {
   constructor(
@@ -37,7 +38,8 @@ export class HorariosComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public dialog: MatDialog,
 
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router,
 
 
   ) {
@@ -128,7 +130,7 @@ export class HorariosComponent implements OnInit {
   }
 
     if (Array.isArray(horarios)) {
-      console.log("Datos de horario: ", this.formularioHorarios.value);
+      //console.log("Datos de horario: ", this.formularioHorarios.value);
 
       if (this.formularioHorarios.valid) {
         this.spinner.show();
@@ -140,7 +142,7 @@ export class HorariosComponent implements OnInit {
           .afterClosed()
           .subscribe((cerrarDialogo: Boolean) => {
             if (cerrarDialogo) {
-              this.dialogo.close();
+                this.dialogo.close();
             }
           });
         });
@@ -155,4 +157,5 @@ export class HorariosComponent implements OnInit {
   cancelar() {
     this.dialogo.close();
   }
+
 }

@@ -33,8 +33,9 @@ export class GimnasioService {
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {}
 
   ///CONSULTAR DATOS DE LA BODEGA
-  consultarPlan(email: string):Observable<any>{
-    const url = `${this.API}getUsuarioActual.php?email=${email}`;
+  consultarPlan(correo: string):Observable<any>{
+    const url = `${this.API}getUsuarioActual.php?correo=${correo}`;
+    //console.log("Dato: ",url)
     return this.clienteHttp.get<any>(url).pipe(
       tap((dataResponse: any) => {
         //console.log("Respuesta de la API: ",dataResponse);

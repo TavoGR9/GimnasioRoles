@@ -19,7 +19,7 @@ export class VerConfiguracionComponent implements OnInit{
   gimnasio: any;
   idGimnasio: any;
   idUs: number = 0;
-  email: string = "";
+  correo: string = "";
 
   idGym: number = 0;
   message: string = "";
@@ -41,7 +41,7 @@ export class VerConfiguracionComponent implements OnInit{
 
 
     this.auth.email.subscribe((data) => {
-      this.email = data;
+      this.correo = data;
       //console.log("Email: ",data);
       this.consultarGym();
     });
@@ -55,9 +55,9 @@ export class VerConfiguracionComponent implements OnInit{
   }
 
   consultarGym(){
-    this.gimnasioService.consultarPlan(this.email).subscribe(respuesta => {
-      this.gimnasio = respuesta.data;
-      //console.log("RESPUESTA DEL API: ",respuesta.data);
+    this.gimnasioService.consultarPlan(this.correo).subscribe(respuesta => {
+      this.gimnasio = respuesta;
+      //console.log("RESPUESTA DEL API: ",respuesta);
     });
   }
 
@@ -99,8 +99,8 @@ export class VerConfiguracionComponent implements OnInit{
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.gimnasioService.consultarPlan(this.email).subscribe(respuesta => {
-        this.gimnasio = respuesta.data;
+      this.gimnasioService.consultarPlan(this.correo).subscribe(respuesta => {
+        this.gimnasio = respuesta;
       });
       this.HorarioService.consultarHorario(this.idGym).subscribe(
         (data) => {

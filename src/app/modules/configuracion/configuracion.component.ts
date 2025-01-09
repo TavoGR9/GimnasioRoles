@@ -30,7 +30,7 @@ export class ConfiguracionComponent  implements OnInit{
   formularioSucursales: FormGroup;
   diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
   idGimnasio: any;
-  email: string = "";
+  correo: string = "";
 
   constructor(
     private router: Router,
@@ -68,7 +68,7 @@ export class ConfiguracionComponent  implements OnInit{
       this.getSSdata(JSON.stringify(this.currentUser));
     }
     this.auth.email.subscribe((data) => {
-      this.email = data;
+      this.correo = data;
       //console.log("datai emil: ",this.email);
       this.listaTabla();
     });
@@ -113,7 +113,7 @@ export class ConfiguracionComponent  implements OnInit{
   verHorario() {
     this.HorarioService.consultarHorario(this.idGym).subscribe(
       respuesta => {
-        //console.log("datos: ",respuesta);
+        //console.log("datos verHorario: ",respuesta);
         const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
         horariosArray.clear(); // Limpiar el FormArray antes de añadir nuevos elementos
 
@@ -127,17 +127,15 @@ export class ConfiguracionComponent  implements OnInit{
 
   listaTabla(){
     //console.log("DATOS LISTA: ",this.email);
-    this.gimnasioService.consultarPlan(this.email).subscribe(
+    this.gimnasioService.consultarPlan(this.correo).subscribe(
       (respuesta) => {
-        if(respuesta.success === 1){
-          if(respuesta.data && Array.isArray(respuesta.data)){
             this.formularioSucursales.patchValue({
-              nombreBodega: respuesta.data[0]['nombreBodega'],
-              direccion:  respuesta.data[0]['direccion'],
-              numeroTelefonico:  respuesta.data[0]['numeroTelefonico'],
+              nombreBodega: respuesta[0]['nombreBodega'],
+              direccion:  respuesta[0]['direccion'],
+              numeroTelefonico:  respuesta[0]['numeroTelefonico'],
         });
-          }
-        }
+
+
 
       }
     );
