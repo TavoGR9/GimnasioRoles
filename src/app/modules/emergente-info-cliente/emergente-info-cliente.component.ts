@@ -112,6 +112,30 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
   }
 
+  duracionCalculo2(fechaInicio: string, fechaFin: string) {
+    const fechaInicial = new Date(fechaInicio); // Fecha de inicio proporcionada
+    const fechaFinal = new Date(fechaFin);     // Fecha de fin proporcionada
+    const hoy = new Date();                    // Fecha actual
+
+    // Ajustar las horas a 00:00 para evitar que las horas afecten el cálculo
+    fechaInicial.setHours(0, 0, 0, 0);
+    fechaFinal.setHours(0, 0, 0, 0);
+    hoy.setHours(0, 0, 0, 0);
+
+    // Comparar fechaInicio con la fecha actual
+    const fechaBase = fechaInicial >= hoy ? fechaInicial : hoy;
+
+    // Calcular la diferencia de tiempo entre fechaFinal y fechaBase
+    const diferenciaTiempo = fechaFinal.getTime() - fechaBase.getTime();
+
+    // Convertir la diferencia de milisegundos a días completos
+    const diferenciaDias = Math.floor(diferenciaTiempo / (1000 * 3600 * 24));
+
+    // Si la diferencia es menor a 0, devolver 0
+    return diferenciaDias < 0 ? 0 : diferenciaDias;
+}
+
+
 
 
   //En desuhso

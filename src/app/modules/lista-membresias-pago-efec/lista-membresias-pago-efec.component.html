@@ -8,7 +8,14 @@
 	<div style="margin-top: 60px;">
 		<div class="container mt-4">
 			<h2>LISTA DE CLIENTES Y PAGO DE MEMBRESÍA EN EFECTIVO</h2>
+			<div style="display: flex; justify-content: flex-end;">
+			<button *ngIf="isAdmin() || isRecep()" (click)="AbrirRegistro()" class="mat-button"> 
+				<mat-icon>person</mat-icon> 
+				Registro 
+			</button>
+		</div>
 			<br>
+
 			<div class="grid-input-date">
 				<div style="display: flex; justify-content: flex-end;">
 					<mat-form-field appearance="outline">
@@ -66,7 +73,7 @@
 								{{ prod.membresia}}
 							</ng-container>
 							<ng-container *ngIf="column === 'Precio'">
-								{{ prod.total | currency  }}
+								{{ prod.precioPedido | currency  }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Fecha Inicio'">
 								{{ prod.fecha_inicio | date:'dd/MM/yyyy, HH:mm' }}
@@ -88,7 +95,7 @@
                 </button>
 							</ng-container>
 							<ng-container *ngIf="column === 'Info Cliente'">
-								<button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirInfoCliente(prod)" color="{{ prod.foto ? 'primary' : 'warn' }}">
+								<button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirInfoCliente(prod)" color="{{ prod.fotoUrl ? 'primary' : 'warn' }}">
                   <mat-icon class="icon-size">info</mat-icon>
                 </button>
 							</ng-container>
