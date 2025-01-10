@@ -29,7 +29,6 @@ export class ColaboradorService {
     //API: string = 'http://localhost/serviciosGimnasio/'
       API: string = 'http://localhost/serviciosGym/'
 
-
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
     }
@@ -264,11 +263,10 @@ export class ColaboradorService {
 
 
 
-    actualizarEstatus(idEmpleado: number, statuss: number, correoParametro: string): Observable<any> {
+    actualizarEstatus(idEmpleado: number, estatus: number): Observable<any> {
       const body = {
-        idEmpleado: idEmpleado, // Nombre del campo debe coincidir con PHP
-        statuss: statuss,
-        correoParametro: correoParametro,
+        idEm: idEmpleado, // Nombre del campo debe coincidir con PHP
+        estatus: estatus
       };
 
       const options = {
@@ -280,11 +278,8 @@ export class ColaboradorService {
       console.log('Datos enviados desde Angular al backend (body):', body);
 
       // Incluimos `options` en la llamada
-      return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php', JSON.stringify(body), options);
+      return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php',body, options);
     }
-
-
-
 
 
 

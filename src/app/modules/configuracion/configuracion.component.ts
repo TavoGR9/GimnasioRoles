@@ -114,7 +114,7 @@ export class ConfiguracionComponent  implements OnInit{
   verHorario() {
     this.HorarioService.consultarHorario(this.idGym).subscribe(
       respuesta => {
-        //console.log("datos: ",respuesta);
+        //console.log("datos verHorario: ",respuesta);
         const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
         horariosArray.clear(); // Limpiar el FormArray antes de añadir nuevos elementos
 
@@ -135,6 +135,8 @@ export class ConfiguracionComponent  implements OnInit{
               direccion:  respuesta[0]['direccion'],
               numeroTelefonico:  respuesta[0]['numeroTelefonico'],
         });
+
+
 
       }
     );

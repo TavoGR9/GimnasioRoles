@@ -18,7 +18,6 @@ export class EntradasService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string ='http://localhost/serviciosGym/';
-  API3: string = 'http://localhost/serviciosGimnasio/';
 
 
 
@@ -47,7 +46,7 @@ export class EntradasService {
       fechaInicio: inicioDate,
       fechaFin: finDate
     };
-    return this.clienteHttp.get(this.API3 + 'producto_bod.php?', { params });
+    return this.clienteHttp.get(this.API + 'producto_bod.php?', { params });
   }
 
   //ENTRADAS
@@ -80,7 +79,7 @@ export class EntradasService {
       p_id_bodega: id_bodega,
       p_id_producto: id_producto
     }
-    return this.clienteHttp.post(this.API3+"producto_bod.php?existencias",data);
+    return this.clienteHttp.post(this.API+"producto_bod.php?existencias",data);
   }
 
   //ENTRADAS
@@ -90,7 +89,7 @@ export class EntradasService {
   }
 
   actualizarProductoVDos(data:any):Observable<any>{
-    return this.clienteHttp.post(this.API3+"producto_bod.php?updateBodegaProducto1HistoDialog",data);
+    return this.clienteHttp.post(this.API+"producto_bod.php?updateBodegaProducto1HistoDialog",data);
   }
 
 
@@ -143,7 +142,7 @@ export class EntradasService {
 
 
   insertarHistorial(data:any): Observable<any>{
-    return this.clienteHttp.post<any>(this.API3+'producto_bod.php?addHistorialInventario',data);
+    return this.clienteHttp.post<any>(this.API+'producto_bod.php?addHistorialInventario',data);
   }
 
 

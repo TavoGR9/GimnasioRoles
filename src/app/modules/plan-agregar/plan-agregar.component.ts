@@ -3,9 +3,7 @@ import {
   FormGroup,
   FormBuilder,
   Validators,
-  AbstractControl,
 } from "@angular/forms";
-import { MembresiaService } from "../../service/membresia.service";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
@@ -13,13 +11,11 @@ import { AuthService } from "../../service/auth.service";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from "ngx-toastr";
-import { DialogSelectMembershipComponent } from "../dialog-select-membership/dialog-select-membership.component";
 import { PromocionService } from "../../service/promocion.service";
 import { ProductoService } from "../../service/producto.service";
 
 import { Inventario } from "../../models/inventario";
 import { AgregarProductoMembresiaComponent } from '../agregar-producto-membresia/agregar-producto-membresia.component';
-import { membresia } from '../../models/membresia';
 
 @Component({
   selector: "app-membresias-agregar",
@@ -44,7 +40,6 @@ export class planAgregarComponent {
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
     private fb: FormBuilder,
     private router: Router,
-    private membresiaService: MembresiaService,
     private promocionService: PromocionService,
     private productoService: ProductoService,
     private auth: AuthService,
@@ -77,15 +72,12 @@ export class planAgregarComponent {
       if (id) {
         this.idGym = id;
       }
-
       //se optinene las membresias
       this.productoService.obternerInventario(this.idGym)
         .subscribe((respuesta) => {
           if (respuesta )
           this.plan = this.aplicarFiltro(respuesta);
         });
-
-
     });
 
   }
@@ -103,7 +95,6 @@ export class planAgregarComponent {
 
 
   enviar(): any {
-
     if(this.formulariodePlan.valid) {
       const formularioData = this.formulariodePlan.value;
 
@@ -167,7 +158,6 @@ export class planAgregarComponent {
       this.toastr.error("Por favor, llena correctamente todos los campos.", "Error");
     }
   }
-
 //MANEJAR ERRORES DEL LADO DEL COMPONENTE
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
@@ -206,7 +196,6 @@ export class planAgregarComponent {
       return {};
     };
   }
-
    //FILTRO DE LAS MEMBRESIAS A MOSTRAR
    aplicarFiltro(productos: Inventario[]): Inventario[] {
     return productos.filter((producto) => {
@@ -214,9 +203,6 @@ export class planAgregarComponent {
     });
   }
 
-
-
-  ///AGREGAR MEMBRESIA
   openDialog(): void {
     this.promocionService.optionShow.next(1);
     this.promocionService.optionShow.subscribe((option) => {});
@@ -237,5 +223,4 @@ export class planAgregarComponent {
       }
     });
   }
-
 }

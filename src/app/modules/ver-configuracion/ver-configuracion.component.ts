@@ -42,7 +42,7 @@ export class VerConfiguracionComponent implements OnInit{
 
     this.auth.email.subscribe((data) => {
       this.correo = data;
-      console.log("Email: ",data);
+      //console.log("Email: ",data);
       this.consultarGym();
     });
 
@@ -57,7 +57,7 @@ export class VerConfiguracionComponent implements OnInit{
   consultarGym(){
     this.gimnasioService.consultarPlan(this.correo).subscribe(respuesta => {
       this.gimnasio = respuesta;
-      // console.log("RESPUESTA DEL API: ",respuesta);
+      //console.log("RESPUESTA DEL API: ",respuesta);
     });
   }
 

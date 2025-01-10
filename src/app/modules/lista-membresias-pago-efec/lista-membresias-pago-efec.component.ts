@@ -107,8 +107,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.loadData()
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-
-
+      //this.listaClientesData();
     });
 
     this.auth.comprobar().subscribe((respuesta) => {
@@ -176,9 +175,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     setTimeout(() => {
 
       this.isLoading = false;
+      //this.dataSourcePedidosActivos.paginator = this.paginatorActivos;
+      //this.listaClientesData();
       this.listaClientesData();
-
-
     }, 1000);
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -404,6 +403,7 @@ verificarCambios(): void {
 
     dialogRef.afterClosed().subscribe((cancelDialog: boolean) => {
       if (cancelDialog) {
+        this.listaClientesData();
       } else {
       }
     });
@@ -658,6 +658,5 @@ console.log(filtrados2);
     // Convertimos el objeto agrupado en un array.
     return Object.values(agrupadosPorPedido);
   }
-
 
 }

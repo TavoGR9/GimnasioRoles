@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { membresia } from '../models/membresia';
 import { tap } from 'rxjs/operators';
 import { catchError, of, BehaviorSubject, Observable} from 'rxjs';
@@ -226,4 +226,13 @@ export class MembresiaService {
   deletePlan(id: any):Observable<any>{
     return this.clienteHttp.get(this.API+"membresias.php?borrar="+id);
   }
+
+  checkPromoPaquete(data: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+console.log("datos emnviado en servico",data);
+    return this.clienteHttp.post<any>(this.API+"Pago_Membresias_Efectivo.php", JSON.stringify(data), {headers});
+  }
+
 }

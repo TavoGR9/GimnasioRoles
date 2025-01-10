@@ -371,6 +371,8 @@ export class HomeComponent implements OnInit {
   graficasFechaVisita(fecha: any): void {
     this.homeService.consultasFechaVisita(this.idGym, fecha).subscribe(
       (respuesta: any) => {
+        console.log('VISITA',respuesta);
+
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCardVisita = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
         } else {
@@ -640,7 +642,7 @@ export class HomeComponent implements OnInit {
 
 consultarMembresia(){
 //this.homeService.ConsultarPedidosMembresias(this)
-this.pagoService.getPedidosMembresias(4).subscribe(
+this.pagoService.obtenerPedidosActivos(4).subscribe(
   (response) => {
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
@@ -766,6 +768,28 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
   });
 
   return conteos;
+}
+
+getDatosGraficaPorProducto(data: any, idProducto: string): any[] {
+  // Resultado final: [{ name: '2024-12-04', value: 4 }, ...]
+  const resultado: any[] = [];
+
+  // Recorrer cada fecha en el objeto original
+  Object.keys(data).forEach((fecha) => {
+    // Obtener los productos de esa fecha
+    const productos = data[fecha]?.conteoProductos || {};
+
+    // Verificar si el producto con el ID dado existe en esa fecha
+    if (productos[idProducto]) {
+      // Agregar al resultado el nombre de la fecha y el conteo
+      resultado.push({
+        name: fecha, // La fecha como categoría
+        value: productos[idProducto].cantidad, // Cantidad del producto
+      });
+    }
+  });
+
+  return resultado; // Arreglo listo para la gráfica
 }
 
 }

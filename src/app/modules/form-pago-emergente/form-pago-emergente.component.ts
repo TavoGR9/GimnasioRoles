@@ -46,8 +46,6 @@ export class FormPagoEmergenteComponent implements OnInit {
   nombreCliente: any;
   nombreCompleto: any;
 
-
-
   constructor(
     private toastr: ToastrService,
     private auth: AuthService,
@@ -193,9 +191,6 @@ export class FormPagoEmergenteComponent implements OnInit {
     );
   }
 
-
-
-
   succesDialog2() {
     if (this.moneyRecibido >= this.precio) {
       // Si el dinero recibido es suficiente, muestra el spinner y realiza la acción
@@ -278,13 +273,14 @@ export class FormPagoEmergenteComponent implements OnInit {
 
 
               console.log("data",this.data);
-              console.log (dataPromo);
+              console.log ('dataPromo',dataPromo);
+
               this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
                 response => {
                   console.log('Respuesta de la API de promociones:', response);
 
                 // Si la compra es exitosa
-                if (response[0]?.payment === "1")  { // Asumiendo que 'success' es el campo que indica una compra exitosa
+                if (response.payment ==1)  { // Asumiendo que 'success' es el campo que indica una compra exitosa
                   // Mostrar mensaje de compra exitosa
                   this.dialog.open(MensajeEmergenteComponent, {
                     data: `Pago exitoso, el cambio es de: $${this.dineroDevuelto}`, // Ajusta el mensaje con el precio calculado
@@ -307,8 +303,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                 console.error('Error al consultar la API de promociones:', error);
                 this.spinner.hide();
                 this.toastr.error(
-                  "Cantidad insuficiente para cubrir el costo de esta membresía.",
-                  "¡Error!"
+                  "Hubo un error al procesar tu pago. Intenta nuevamente."
                 );
               }
             );
@@ -348,8 +343,8 @@ export class FormPagoEmergenteComponent implements OnInit {
           if (confirmado) {
             if (this.membresiaSeleccionada != undefined) {
                 const PrecioCalcular = this.moneyRecibido - this.precio;
-                console.log('PrecioCalcular',PrecioCalcular);
-                console.log('previo',this.fechaDeInicio,this.fechaDeFin);
+                //console.log('PrecioCalcular',PrecioCalcular);
+                //console.log('previo',this.fechaDeInicio,this.fechaDeFin);
                 if (this.fechaDeInicio && this.fechaDeFin) {
                   console.log(this.fechaDeInicio,this.fechaDeFin)
                   const añoInicio = this.fechaDeInicio.getFullYear();
@@ -360,7 +355,6 @@ export class FormPagoEmergenteComponent implements OnInit {
                     this.fechaDeInicio.getDate()
                   ).padStart(2, "0");
                   const fechaFormateada1 = `${añoInicio}-${mesInicio}-${díaInicio}`;
-
                   const añoFin = this.fechaDeInicio.getFullYear();
                   const mesFin = String(
                     this.fechaDeInicio.getMonth() + 1
@@ -522,7 +516,6 @@ calcularFecha(duracion: string, fechaInicial?: string): string {
   const [datePart, timePart] = fechaFinal.split("T");
   return `${datePart} ${timePart.split(".")[0]}`; // Formato 'YYYY-MM-DD HH:mm:ss'
 }
-
 
 imprimirResumen2() {
 
@@ -879,9 +872,6 @@ imprimirResumen2() {
     );
   }
   }
-
-
-
   imprimirResumen() {
     if (this.precio <= this.moneyRecibido) {
       const PrecioCalcular = this.moneyRecibido - this.precio;
@@ -984,7 +974,7 @@ imprimirResumen2() {
                 <div class="ticket">
                 ${
                   this.fotoUrl
-                    ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">`
+                     `<img class="logo" src="${this.fotoUrl}" alt="Logo">`
                     : ""
                 }
                 <p class="direccion">${this.auth.nombreGym.getValue()}</p>

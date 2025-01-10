@@ -5,8 +5,8 @@ import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { tap } from 'rxjs/operators';
 import { IndexedDBService } from './indexed-db.service';
+import { throwError  } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 
 
 @Injectable({
@@ -36,6 +36,7 @@ export class GimnasioService {
   ///CONSULTAR DATOS DE LA BODEGA
   consultarPlan(correo: string):Observable<any>{
     const url = `${this.API}getUsuarioActual.php?correo=${correo}`;
+    //console.log("Dato: ",url)
     return this.clienteHttp.get<any>(url).pipe(
       tap((dataResponse: any) => {
         //console.log("Respuesta de la API: ",dataResponse);

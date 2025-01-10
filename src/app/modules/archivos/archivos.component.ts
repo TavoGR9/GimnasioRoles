@@ -49,7 +49,7 @@ export class ArchivosComponent implements OnInit{
    ngOnInit(): void {
     this.gimnasio.consultarArchivos(this.id_bodega).subscribe(
       (response) => {
-        console.log('Archivos recibidos:', response);
+        // console.log('Archivos recibidos:', response);
         this.archivos = response.archivos;  // Asegúrate de que estés asignando el arreglo correctamente
       },
       (error) => {
@@ -61,37 +61,25 @@ export class ArchivosComponent implements OnInit{
 
   openURL(url: string): void {
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'http://' + url;
+
+      const urlBase = 'http://localhost/archivos/';
+
+      // Eliminar la parte local de la ruta (por ejemplo, 'C:/wamp64/www/archivos/')
+      const rutaRelativa = url.replace('C:/wamp64/www/archivos/', '');  // O usando substring si prefieres
+
+      // Generar la URL completa
+      const urlFinal = urlBase + rutaRelativa;
+
+      url = urlFinal;
     }
+    // console.log('url: ', url);
+
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
   descargarArchivo(url: string, nombreArchivo: string): void {
     const enlaceTemporal = document.createElement('a');
     enlaceTemporal.href = url;
-  }
-
-
-  // Función para descargar el archivo
-  descargarArchivo2(archivo: string) {
-    console.log('archiv a descargar: ', archivo);
-
-    this.archivoService.descargarArchivo(archivo).subscribe(
-      (data) => {
-        console.log(data);
-
-        const blob = new Blob([data], { type: 'application/zip' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = archivo;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      (error) => {
-        console.error('Error al descargar archivo', error);
-      }
-    );
   }
 
   seleccionarArchivo(event: any) {
@@ -151,9 +139,23 @@ export class ArchivosComponent implements OnInit{
 
         // Generar nombre único del ZIP basado en la fecha y bodega
         const fechaActual = new Date();
+        console.log('fechaActual: ', fechaActual);
+
+        // const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1)
+        //   .toString()
+        //   .padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;
+
+        // Formatear la fecha en el formato 'YYYY-MM-DD HH:mm:ss'
         const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1)
           .toString()
-          .padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;
+          .padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')} ${fechaActual
+          .getHours()
+          .toString()
+          .padStart(2, '0')}:${fechaActual.getMinutes().toString().padStart(2, '0')}:${fechaActual
+          .getSeconds()
+          .toString()
+          .padStart(2, '0')}`;
+
         const nombreArchivo = `${this.nombreBodega}_${fechaFormateada}_archivos.zip`;
 
         // Agregar el archivo ZIP al FormData

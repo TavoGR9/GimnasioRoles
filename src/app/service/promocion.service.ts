@@ -78,7 +78,6 @@ export class PromocionService {
   }
 
 
-
   //AGREGAR UN NUEVO PLAN
   agregarPlan(datosPlan: Promocion): Observable<any> {
 
@@ -177,8 +176,6 @@ export class PromocionService {
       })
     );
   }
-
-
 
 
   //ELIMINACION DE PLAN

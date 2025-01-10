@@ -19,7 +19,7 @@ export class HomeService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string ='http://localhost/serviciosGym/';
-  API3: string = 'http://localhost/serviciosGimnasio/';
+  API2: string ='http://localhost/serviciosGimnasio/';
 
 
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService ) {
@@ -50,7 +50,7 @@ export class HomeService {
   }
 
   consultarHome2(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API3+"ConsultasHome.php?consultasHomeDos="+id);
+    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHomeDos="+id);
       /*tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
       }),
@@ -130,7 +130,7 @@ export class HomeService {
   }
 
   getARecientesVentas(sucursalId: any): Observable<any> {
-    return this.clienteHttp.get(this.API3+"ConsultasHome.php?consultarVentasVendidas="+sucursalId).pipe(
+    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultarVentasVendidas="+sucursalId).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB3(dataResponse);
       }),
@@ -170,35 +170,35 @@ export class HomeService {
 
   consultarAsistencias(idGim:any){
     const data ={ idGim: idGim }
-    return this.clienteHttp.post(this.API3+"ConsultasHome.php?consultarAsistenciasFechaActual",data);
+    return this.clienteHttp.post(this.API+"ConsultasHome.php?consultarAsistenciasFechaActual",data);
   }
 
   graficas(idGim:any){
-    return this.clienteHttp.get(this.API3+"ConsultaGraficas.php?mes1="+idGim);
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1="+idGim);
   }
 
   graficas2(idGim:any){
-    return this.clienteHttp.get(this.API3+"ConsultaGraficas.php?mes2="+idGim);
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2="+idGim);
   }
 
   graficas1Visita(idGim:any){
-    return this.clienteHttp.get(this.API3+"ConsultaGraficas.php?mes1Visita="+idGim);
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1Visita="+idGim);
   }
 
   graficas2Visita(idGim:any){
-    return this.clienteHttp.get(this.API3+"ConsultaGraficas.php?mes2Visita="+idGim);
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2Visita="+idGim);
   }
 
   graficas1Quincena(idGim:any){
-    return this.clienteHttp.get(this.API3+"ConsultaGraficas.php?mes1Quincena="+idGim);
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1Quincena="+idGim);
   }
 
   graficas2Quincena(idGim:any){
-    return this.clienteHttp.get(this.API3+"ConsultaGraficas.php?mes2Quincena="+idGim);
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2Quincena="+idGim);
   }
 
   consultasFechaMensualidad(idGim: any, fecha: any) {
-    return this.clienteHttp.get(this.API3 + "ConsultasHome.php", {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
         params: {
             idGim: idGim,
             fecha: fecha
@@ -207,7 +207,7 @@ export class HomeService {
   }
 
   consultasFechaVisita(idGim: any, fecha: any) {
-    return this.clienteHttp.get(this.API3 + "ConsultasHome.php", {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
         params: {
           idGimVisita: idGim,
           fechaVisita: fecha
@@ -216,7 +216,7 @@ export class HomeService {
   }
 
   consultasFechaQuincena(idGim: any, fecha: any) {
-    return this.clienteHttp.get(this.API3 + "ConsultasHome.php", {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
         params: {
             idGimQuincena: idGim,
             fechaQuincena: fecha

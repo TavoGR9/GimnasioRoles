@@ -22,7 +22,6 @@ export class ProductoService {
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string ='http://localhost/serviciosGym/';
-  API3: string = 'http://localhost/serviciosGimnasio/';
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
     }
@@ -41,7 +40,7 @@ export class ProductoService {
     // }
 
     creaProducto(datosFormulario: any): Observable<any> {
-      return this.clienteHttp.post(this.API3 + 'producto_bod.php?insertar', datosFormulario).pipe(
+      return this.clienteHttp.post(this.API + 'producto_bod.php?insertar', datosFormulario).pipe(
         catchError(error => {
           console.error('Error al enviar la solicitud:', error);
           return throwError(error);
@@ -51,13 +50,13 @@ export class ProductoService {
 
     verProductoCodigoBarras(codigo: any) {
       const data = { codigo: codigo };
-      return this.clienteHttp.post<any[]>(this.API3 + "producto_bod.php?consultarProductoPorCodigo", data);
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?consultarProductoPorCodigo", data);
 
     }
 
     consultarProductoId(id: any): Observable<any[]> {
       const data = { id_bodega_param: id }; // Crear el objeto de datos a enviar
-      return this.clienteHttp.post<any[]>(this.API3 + "producto_bod.php?consultarProductoBodega", data)
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?consultarProductoBodega", data)
         .pipe(
           tap((nuevosProductos: any[]) => {
             this.productoSubject.next(nuevosProductos);
@@ -95,7 +94,7 @@ export class ProductoService {
     }
 
     actualizarProducto(datosP: any): Observable<any> {
-      const url = `${this.API3}producto_bod.php?actualizarP`;
+      const url = `${this.API}producto_bod.php?actualizarP`;
       return this.clienteHttp.post(url, datosP).pipe(
         tap(dataResponse => {
         }),
@@ -116,12 +115,12 @@ export class ProductoService {
     // Aqui obtengo el id de la bodega en un json
     obternerProductos(id:any):Observable<any>{
       const data = { id_bodega_param: id };
-      return this.clienteHttp.post(this.API3+"producto_bod.php?consultarProductoIDBodega=",data);
+      return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoIDBodega=",data);
     }
 
     obternerProductosV(id:any):Observable<any>{
       const data = { id_bodega_param: id };
-      return this.clienteHttp.post(this.API3+"producto_bod.php?consultarProductoBodegaVenta=",data);
+      return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodegaVenta=",data);
     }
 
 
@@ -175,18 +174,18 @@ export class ProductoService {
 
 
     updateProductoStatus(id: number, estado: { estatus: number }): Observable<any> {
-      return this.clienteHttp.post(this.API3+"?actualizarEstatus="+id,estado);;
+      return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
     }
 
     consultarProductosJ(idProducto: number | null, idBodega: number | null): Observable<any[]> {
-      const url = `${this.API3}producto_bod.php?consultarProductoId`;
+      const url = `${this.API}producto_bod.php?consultarProductoId`;
       return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto, id_bodega: idBodega });
     }
 
 
 
     obtenerListaProduct(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
-      const url = `${this.API3}producto_bod.php?consultarVentasPorFecha`;
+      const url = `${this.API}producto_bod.php?consultarVentasPorFecha`;
       const body = { gimnasioId: idGym, fechaInicioParam: dateInicio, fechaFinParam: dateFin };
       return this.clienteHttp.post(url, body).pipe(
         tap(dataResponse => {
@@ -237,7 +236,7 @@ export class ProductoService {
     //Metodo utilizado para consultar productos(membresias) de un gimnasio
     consultarAllProducto(id: any): Observable<any[]> {
       const data = { id_pro_param: id };
-      return this.clienteHttp.post<any[]>(this.API3 + "producto_bod.php?getAllProductosMemb", data)
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?getAllProductosMemb", data)
         .pipe(
           tap((nuevosProductos: any[]) => {
             this.productoSubject.next(nuevosProductos);
