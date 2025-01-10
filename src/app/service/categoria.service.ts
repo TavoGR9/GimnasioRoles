@@ -122,8 +122,8 @@ export class CategoriaService {
     );
   }
 
-  getMarcaService(id: number, idGimnasio: number): Observable<any> {
-    return this.clienteHttp.get(`${this.API}categoria.php?getMarcaServicio=${id}&idGimnasio=${idGimnasio}`);
+  getMarcaService(id: number): Observable<any> {
+    return this.clienteHttp.get(`${this.API}categoria.php?getMarcaServicio=${id}`);
 }
 
 

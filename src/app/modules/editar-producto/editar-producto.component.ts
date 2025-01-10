@@ -209,6 +209,7 @@ export class EditarProductoComponent implements OnInit{
       codigoB: this.form.value.codigoBarra,
       p_id_bodega: this.form.value.id_bodega,
       mail_actualizador: this.clave,
+      // descripcion:this.form.value.descripcion
     }
 
     const dataArray = [data];

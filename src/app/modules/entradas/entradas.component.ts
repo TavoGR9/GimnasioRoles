@@ -195,7 +195,7 @@ export class EntradasComponent implements OnInit {
       idProbob: product,
     });
 
-    this.productoService.consultarProductosId(product.idProd, this.auth.idGym.getValue()).subscribe(respuesta => {
+    this.productoService.consultarProductoId(product.idProd).subscribe(respuesta => {
       this.resultadoData = respuesta;
       // console.log('resultData: ', respuesta);
 
@@ -385,7 +385,7 @@ export class EntradasComponent implements OnInit {
                 this.form.reset();
                 this.tablaDatos = [];
                 this.entrada
-                .obtenerEntradas(
+                .obtenerCompras(
                   this.fechaInicio,
                   this.fechaFin,
                   this.auth.idGym.getValue()
@@ -431,7 +431,7 @@ export class EntradasComponent implements OnInit {
                 this.form.reset();
                 this.tablaDatos = [];
                 this.entrada
-                .obtenerEntradas(
+                .obtenerCompras(
                   this.fechaInicio,
                   this.fechaFin,
                   this.auth.idGym.getValue()
@@ -629,7 +629,7 @@ export class EntradasComponent implements OnInit {
 
   verCompras(): void {
     this.entrada
-      .obtenerEntradas(
+      .obtenerCompras(
         this.fechaInicio,
         this.fechaFin,
         this.auth.idGym.getValue()
@@ -658,7 +658,7 @@ todosClientes: any;
       return;
     }
     this.entrada
-      .obtenerEntradas(
+      .obtenerCompras(
         this.fechaInicio,
         this.fechaFin,
         this.auth.idGym.getValue()

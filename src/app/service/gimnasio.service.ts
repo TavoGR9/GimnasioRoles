@@ -5,7 +5,6 @@ import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { tap } from 'rxjs/operators';
 import { IndexedDBService } from './indexed-db.service';
-import { forkJoin,of  } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
@@ -35,26 +34,30 @@ export class GimnasioService {
   constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {}
 
   ///CONSULTAR DATOS DE LA BODEGA
-  consultarPlan(datos:{idG: number, id:number}):Observable<any>{
-    const url = `${this.API}getBodegaEmpleado.php`;
-    return this.clienteHttp.post<any>(url, datos).pipe(
+  consultarPlan(correo: string):Observable<any>{
+    const url = `${this.API}getUsuarioActual.php?correo=${correo}`;
+    return this.clienteHttp.get<any>(url).pipe(
       tap((dataResponse: any) => {
-        console.log("Respuesta de la API: ",dataResponse);
+        //console.log("Respuesta de la API: ",dataResponse);
       }),
       catchError(error => {
-          return error;
+        console.error("Error en la API: ", error);
+        return throwError(() => error);
       })
     );
   }
 
 
-  obtenerPlan(): Observable<any> {
-    const url = `${this.API}getbodegass`;
-    console.log('URL para obtener bodegas:', url);  // Verificar URL
-    return this.clienteHttp.get<any>(url).pipe(
-      catchError((error) => {
-        console.error('Error al obtener los datos de las sucursales:', error);
-        return throwError(() => new Error('Error al obtener los datos'));
+  obternerPlan(){
+    return this.clienteHttp.get<any[]>(this.API+"getBodega.php").pipe(
+      tap(dataResponse => {
+       // console.log("Respuesta de la API: ",dataResponse);
+          this.saveDataToIndexedDB1(dataResponse);
+      }),
+      catchError(error => {
+          // Intenta obtener los datos de IndexedDB en caso de error
+          //console.error("DATOS NO OBTENIDOS: ",error);
+          return this.getDataFromIndexedDB();
       })
     );
   }
@@ -88,14 +91,24 @@ getDataFromIndexedDB() {
       });
   }
 
-  obtenerBodegaById(idBodega: number): Observable<any> {
-    console.log('aqui');
-
-    const url = `${this.API}getBodegaById.php?id_bodega=${idBodega}`;
-    console.log('URL para obtener bodega por ID:', url);  // Verificar URL
+  obtenerPlan(): Observable<any> {
+    const url = `${this.API}getbodegass`;
+    //console.log('URL para obtener bodegas:', url);  // Verificar URL
     return this.clienteHttp.get<any>(url).pipe(
       catchError((error) => {
-        console.error('Error al obtener la bodega:', error);
+        //console.error('Error al obtener los datos de las sucursales:', error);
+        return throwError(() => new Error('Error al obtener los datos'));
+      })
+    );
+  }
+
+  obtenerBodegaById(idBodega: number): Observable<any> {
+    const url = `${this.API}getBodegaById.php?id_bodega=${idBodega}`;
+   // console.log('URL para obtener bodega por ID:', url);  // Verificar URL
+    return this.clienteHttp.get<any>(url).pipe(
+
+      catchError((error) => {
+       // console.error('Error al obtener la bodega:', error);
         return throwError(() => new Error('Error al obtener la bodega'));
       })
     );
@@ -108,7 +121,7 @@ getDataFromIndexedDB() {
   }
 
   agregarSucursal(datosGym: gimnasio):Observable<any>{
-    return this.clienteHttp.post(this.API+"bodega.php?insertar", datosGym);
+    return this.clienteHttp.post(this.API+"addBodega.php", datosGym);
   }
 
   consultarArchivos(id: any): Observable<any> {
@@ -134,10 +147,10 @@ getDataFromIndexedDB() {
   actualizarSucursal(datosGym: any):Observable<any>{
     return this.clienteHttp.post(`${this.API}updateBodega.php?insertar`, datosGym).pipe(
       tap(dataResponse => {
-        console.log("DATOS ENVIADOS DESDE LA API: ",dataResponse);
+        //console.log("DATOS ENVIADOS DESDE LA API: ",dataResponse);
       }),
       catchError(error => {
-        console.error("ERROR DE LA API: ",error)
+       // console.error("ERROR DE LA API: ",error)
         return error;
       })
     );
@@ -161,10 +174,10 @@ getDataFromIndexedDB() {
 
     return this.clienteHttp.post<any>(`${this.API}updateBodega.php?estatus`,body, httpOptions).pipe(
       tap(dataResponse => {
-        console.log("DATOS ENVIADOS DESDE LA API: ",dataResponse);
+        //console.log("DATOS ENVIADOS DESDE LA API: ",dataResponse);
       }),
       catchError(error => {
-        console.error("ERROR DE LA API: ",error)
+        //console.error("ERROR DE LA API: ",error)
         return error;
       })
     );

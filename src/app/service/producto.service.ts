@@ -268,8 +268,11 @@ export class ProductoService {
     // actualiza el producto en caso de ser necesario en el componente crearProducto
     actualizarProducto2(datosP: any): Observable<any> {
       const url = `${this.API}updateProbod.php?actualizarP`;
+      console.log('datos: ', datosP);
+
       return this.clienteHttp.post(url, datosP).pipe(
         tap(dataResponse => {
+          console.log('que manda: ', dataResponse);
         }),
         catchError(error => {
           console.log(error);
