@@ -22,6 +22,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AddPasswordComponent } from './components/add-password/reset-password.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { Paginator } from './service/Paginator';
+
 
 @NgModule({
   declarations: [
@@ -57,6 +61,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     FormsModule,
     ModulesModule,
     RouterModule,
+    MatPaginatorModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
@@ -64,7 +69,13 @@ import { ServiceWorkerModule } from '@angular/service-worker';
       registrationStrategy: 'registerWhenStable:30000'
     })
   ],
-  providers: [],
+  providers: [
+    {
+      provide: MatPaginatorIntl,
+      useClass: Paginator
+    }
+  ],
+  
   bootstrap: [AppComponent]
 })
 export class AppModule { }

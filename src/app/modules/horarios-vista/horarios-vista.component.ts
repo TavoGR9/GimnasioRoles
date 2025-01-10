@@ -247,6 +247,7 @@ export class HorariosVistaComponent implements OnInit {
         if (response && response.length > 0) {
           response.forEach((resultado: any) => {
             this.asentamientosUnicos.add(resultado.asentamiento);
+            console.log(response)
           });
         } else {
         }
@@ -269,7 +270,6 @@ export class HorariosVistaComponent implements OnInit {
       }
     );
   }
-
   cancelar() {
     this.dialogo.close();
   }
@@ -425,14 +425,22 @@ export class HorariosVistaComponent implements OnInit {
               if (respuestaSucursal && respuestaSucursal.success === 1) {
 
                 datosFormulario.idGym = respuestaSucursal.id_bodega;
-
+                datosFormulario.email = datosFormulario.correoEmp; 
+                delete datosFormulario.correoEmp;
+                datosFormulario.idGym = Number(datosFormulario.idGym); 
+                datosFormulario.foto = datosFormulario.foto || null; 
+                console.log("Datos del formulario antes de enviar:", datosFormulario);
+                
                 this.http.agregarEmpleadoA(datosFormulario).subscribe(
                   (respuestaEmpleado) => {
-                     if (respuestaEmpleado.success == "1") {
+                    console.log("Respuesta del servidor (empleado):", respuestaEmpleado);
+                
+                    // Verificar si la respuesta tiene 'ok: true'
+                    if (respuestaEmpleado && respuestaEmpleado.ok === true) {
                       this.enviarMensajeWhatsApp();
                       this.dialog
                         .open(MensajeEmergentesComponent, {
-                          data: `Empleado agregado exitosamente`,
+                          data: `El registro se ha completado exitosamente`,
                           disableClose: true,
                         })
                         .afterClosed()
@@ -443,32 +451,24 @@ export class HorariosVistaComponent implements OnInit {
                           }
                         });
                     } else {
-                      if (respuestaEmpleado) {
-                        console.error(
-                          "Error al agregar empleado:",
-                          respuestaEmpleado.error
-                        );
+                      if (respuestaEmpleado && respuestaEmpleado.error) {
+                        console.error("Error al agregar empleado:", respuestaEmpleado.error);
                       } else {
-                        console.error(
-                          "Error al agregar empleado: respuesta vacía"
-                        );
+                        console.error("Error al agregar empleado: Respuesta inválida o vacía.");
                       }
                     }
                   },
                   (error) => {
-                    // Manejo de errores en la solicitud al servidor para agregarEmpleado
-                    console.error(
-                      "Error en la solicitud al servidor para agregarEmpleado:",
-                      error
-                    );
-                    // Aquí puedes mostrar un mensaje de error o ejecutar alguna otra acción
+                    console.error("Error en la solicitud al servidor para agregarEmpleado:", error);
+                    this.toastr.error('Error al agregar empleado. Inténtalo de nuevo.', 'Error');
                   }
                 );
+                
               } else {
               }
             },
             (error) => {
-              console.log("Error al agregar la sucirsal: ", error)
+              console.log("Error al agregar la sucursal: ", error)
               this.toastr.error('Error al agregar sucursal, intentelo más tarde....', 'Error', {
                 positionClass: 'toast-bottom-left',
               });

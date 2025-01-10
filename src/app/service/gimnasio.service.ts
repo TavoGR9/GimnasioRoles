@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { gimnasio } from '../models/gimnasio';
+import { listaSucursal } from '../models/listaSucursal';
 import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { tap } from 'rxjs/operators';
 import { IndexedDBService } from './indexed-db.service';
 import { forkJoin,of  } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -72,36 +74,51 @@ getDataFromIndexedDB() {
       });
   }
 
-  obternerPlan(){
-    return this.clienteHttp.get<any[]>(this.API+"bodega.php?consultar").pipe(
-      tap(dataResponse => {
-          this.saveDataToIndexedDB1(dataResponse);
-      }),
-      catchError(error => {
-          // Intenta obtener los datos de IndexedDB en caso de error
-          return this.getDataFromIndexedDB();
+  obtenerPlan(): Observable<any> {
+    const url = `${this.API}getbodegass`;
+    console.log('URL para obtener bodegas:', url);  // Verificar URL
+    return this.clienteHttp.get<any>(url).pipe(
+      catchError((error) => {
+        console.error('Error al obtener los datos de las sucursales:', error);
+        return throwError(() => new Error('Error al obtener los datos'));
       })
-  );
+    );
   }
+  
+  obtenerBodegaById(idBodega: number): Observable<any> {
+    console.log('aqui');
+    
+    const url = `${this.API}getBodegaById.php?id_bodega=${idBodega}`;
+    console.log('URL para obtener bodega por ID:', url);  // Verificar URL
+    return this.clienteHttp.get<any>(url).pipe(
+      catchError((error) => {
+        console.error('Error al obtener la bodega:', error);
+        return throwError(() => new Error('Error al obtener la bodega'));
+      })
+    );
+  }
+  
+  
 
   getCategoriasSubject() {
     return this.gymSubject.asObservable();
   }
 
   agregarSucursal(datosGym: gimnasio):Observable<any>{
-    return this.clienteHttp.post(this.API+"bodega.php?insertar", datosGym);
+    return this.clienteHttp.post(this.API+"addBodega.php", datosGym);
   }
 
-  consultarArchivos(id: any):Observable<any>{
-    return this.clienteHttp.get(this.API+"bodega.php?consultarArchivos="+id);
-  }
+  consultarArchivos(id: any): Observable<any> {
+    return this.clienteHttp.get(this.API + "getArchivos.php?id_bodega=" + id);
+}
+
 
   actualizarSucursal(datosGym: any):Observable<any>{
-    return this.clienteHttp.post(this.API+"bodega.php?actualizar", datosGym);
+    return this.clienteHttp.post(this.API+"getBodegaById", datosGym);
   }
 
   consultarPlan(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"bodega.php?consultarB="+id);
+    return this.clienteHttp.get(this.API+"getbodegas.php"+id);
   }
 
   actualizarEstatus(idGimnasio: any, estatus: any): Observable<any> {
@@ -194,3 +211,5 @@ getInfoBodega(id_bodega: any): Observable<any> {
 
 
 }
+
+

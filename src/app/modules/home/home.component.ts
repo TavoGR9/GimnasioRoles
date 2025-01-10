@@ -626,7 +626,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-
 consultarMembresia(){ 
 //this.homeService.ConsultarPedidosMembresias(this)
 this.pagoService.getPedidosMembresias(4).subscribe(
@@ -640,6 +639,7 @@ this.pagoService.getPedidosMembresias(4).subscribe(
       console.log('Agrupados por fechas',pedidosConteoDia)
       this.salesData= pedidosConteoDia
       this.processSalesData();
+      //this.processVisitsData();
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
       console.log(errorMessage)
@@ -653,7 +653,6 @@ this.pagoService.getPedidosMembresias(4).subscribe(
   }
 );
 }
-
 
  agruparPorPedido(clientes: any[]): any[] {
   // Creamos un objeto para almacenar los resultados agrupados por id_pedido.
@@ -803,7 +802,7 @@ yScaleMax2: number | undefined = undefined; // Escala Y dinámica
 salesChartData: any[] = []; // Aquí guardaremos los resultados procesados
 
 // Producto seleccionado dinámicamente
-selectedProduct2: string = 'Mensualidad'; // Valor inicial
+selectedProduct2: string = 'Visita'; // Valor inicial
 
 // Procesar los datos
 processSalesData() {
@@ -869,6 +868,7 @@ processSalesData() {
     },
   ];
 }
+
 
 
 // Actualizar producto seleccionado
