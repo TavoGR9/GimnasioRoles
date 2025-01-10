@@ -293,6 +293,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                   }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
                     if (cerrarDialogo) {
                       this.imprimirResumen3(); // Imprimir el resumen si el diálogo se cierra
+                      this.cancelDialogo();
                     } else {
                       // Aquí puedes agregar cualquier otra lógica si lo necesitas
                     }

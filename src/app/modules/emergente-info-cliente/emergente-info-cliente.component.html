@@ -117,7 +117,7 @@
             {{ memCli.membresia}}
           </ng-container>
           <ng-container *ngIf="column === 'Precio'">
-            {{ memCli.total | currency }}
+            {{ memCli.precioPedido | currency }}
           </ng-container>
           <ng-container *ngIf="column === 'Duración'">
             <div *ngIf="duracionCalculo(memCli.fecha_caducidad)">
