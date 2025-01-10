@@ -619,55 +619,54 @@ console.log(filtrados2);
 
 
   
-  // Nueva función: agruparPorPedido
-  private agruparPorPedido(clientes: any[]): any[] {
-    // Creamos un objeto para almacenar los resultados agrupados por id_pedido.
-    const agrupadosPorPedido: { [key: string]: any } = {};
-  
-    clientes.forEach(cliente => {
-      const idPedido = cliente.id_pedido;
-  
-      if (!agrupadosPorPedido[idPedido]) {
-        // Si no existe este `id_pedido` en el objeto agrupador, lo inicializamos.
-        agrupadosPorPedido[idPedido] = {
-          clave: cliente.clave,
-          estafeta: cliente.estafeta,
-          telefono: cliente.telefono,
-          fotoUrl: cliente.fotoUrl,
-          Correo: cliente.Correo,
-          nombreCompleto: cliente.nombreCompleto,
-          fechaRegistro: cliente.fechaRegistro,
-          huella: cliente.huella,
-          precioPedido: cliente.precioPedido,
-          total: cliente.total,
-          membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-          correoCliente: cliente.correoCliente,
-          id_pedido: cliente.id_pedido,
-          fecha_hora_pedido: cliente.fecha_hora_pedido,
-          id_bodega: cliente.id_bodega,
-          precioCompra: cliente.precioCompra,
-          conteoPedidos: cliente.conteoPedidos,
-          fecha_inicio: cliente.fecha_inicio,
-          fecha_caducidad: cliente.fecha_caducidad,
-          idPromocion: cliente.idPromocion,
-          nombrePromocion: cliente.nombrePromocion,
-          estatus: cliente.estatus,
-          productos: [] // Inicializamos un array vacío para los productos.
-        };
-      }
-  
-      // Agregamos la información del producto al array `productos` correspondiente.
-      agrupadosPorPedido[idPedido].productos.push({
-        id_producto: cliente.id_producto,
-        marca: cliente.marca,
-        nombreProducto: cliente.nombreProducto,
-        idProbob: cliente.idProbob
+    // Función para agrupar por pedido
+    private agruparPorPedido(clientes: any[]): any[] {
+      const agrupadosPorPedido: { [key: string]: any } = {};
+    
+      clientes.forEach(cliente => {
+        const idPedido = cliente.id_pedido;
+    
+        if (!agrupadosPorPedido[idPedido]) {
+          agrupadosPorPedido[idPedido] = {
+            clave: cliente.clave,
+            estafeta: cliente.estafeta,
+            telefono: cliente.telefono,
+            fotoUrl: cliente.fotoUrl,
+            Correo: cliente.Correo,
+            nombreCompleto: cliente.nombreCompleto,
+            fechaRegistro: cliente.fechaRegistro,
+            huella: cliente.huella,
+            precioPedido: cliente.precioPedido,
+            total: cliente.total,
+            membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
+            correoCliente: cliente.correoCliente,
+            id_pedido: cliente.id_pedido,
+            fecha_hora_pedido: cliente.fecha_hora_pedido,
+            id_bodega: cliente.id_bodega,
+            precioCompra: cliente.precioCompra,
+            conteoPedidos: cliente.conteoPedidos,
+            fecha_inicio: cliente.fecha_inicio,
+            fecha_caducidad: cliente.fecha_caducidad,
+            idPromocion: cliente.idPromocion,
+            nombrePromocion: cliente.nombrePromocion,
+            estatus: cliente.estatus,
+            productos: [] // Inicializamos un array vacío para los productos
+          };
+        }
+    
+        // Agregamos la información del producto al array `productos` correspondiente
+        agrupadosPorPedido[idPedido].productos.push({
+          id_producto: cliente.id_producto,
+          marca: cliente.marca,
+          nombreProducto: cliente.nombreProducto,
+          idProbob: cliente.idProbob
+        });
       });
-    });
-  
-    // Convertimos el objeto agrupado en un array.
-    return Object.values(agrupadosPorPedido);
-  }
+    
+      // Convertimos el objeto agrupado en un array
+      return Object.values(agrupadosPorPedido);
+    }
+    
   
   procesarPedidos(pedidos: any[]): any[] {
     // Filtrar solo los registros con estatus = 1
@@ -714,7 +713,7 @@ console.log(filtrados2);
 
   
 
-  listaClientesData3(): void {
+  listaClientesData3Original(): void {
     console.log(this.fechaInicio, this.fechaFin);
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (response: any) => {
@@ -729,6 +728,9 @@ console.log(filtrados2);
         // Obtenemos la lista completa de clientes desde la respuesta.
         
         const Clientes = response.data;
+        console.log('Datos originales Api',Clientes)
+        const clientesAgrupadosPedidos = this.agruparPorPedido(Clientes);
+        console.log('prueba usuarios sin pedidos --Resultado: solo agrupa pedidos',clientesAgrupadosPedidos)
 
        
 
@@ -780,8 +782,10 @@ const pedidosPorUsuario: Record<string, any[]> =pedidosAgrupados.reduce((acc: Re
   return acc;
 }, {});
 
-console.log(pedidosPorUsuario)
+console.log('pedidospor usuario',pedidosPorUsuario)
 // Filtrar usuarios con un único pedido y estatus "0"
+
+
 const filtrados2 = Object.values(pedidosPorUsuario)
   .filter((pedidos: any[]) => pedidos.length === 1 && pedidos[0].estatus === "0" && pedidos[0].id_pedido !=null) // Filtrar usuarios con un único pedido y estatus "0"
   .flat(); // Aplana el array para obtener un solo nivel de datos
@@ -793,6 +797,8 @@ console.log(filtrados2);
         const filtrados = filtradosPorFecha.filter((item: any) =>
           (item.conteoPedidos == "1" && item.estatus == "1") || item.conteoPedidos === null
         );
+
+        console.log('const filtrados',filtrados)
 
         // Dividimos entre usuarios con pedidos y usuarios sin pedidos.
         const conPedidos = filtrados.filter((item: any) => item.conteoPedidos == "1");
@@ -848,6 +854,125 @@ console.log(filtrados2);
         }
       });
   }
+
+
+
+  listaClientesData3(): void {
+    console.log(this.fechaInicio, this.fechaFin);
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+      (response: any) => {
+
+        if (!response) {
+          // Muestra el mensaje de error
+          return; // Salir del método
+        }
+
+        // Obtenemos la lista completa de clientes desde la respuesta.
+        const Clientes = response.data;
+        console.log('Datos originales Api', Clientes);
+
+        // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
+        const fechaInicio = this.fechaInicio ? new Date(this.fechaInicio) : new Date('2000-01-01');
+        const fechaFin = this.fechaFin ? new Date(this.fechaFin) : new Date();
+        fechaFin.setHours(23, 59, 0); // Ajustamos hora fin del día.
+
+        console.log('const', fechaInicio, fechaFin);
+
+        // Filtramos los clientes dentro del rango de fechas.
+        const filtradosPorFecha = Clientes.filter((cliente: any) => {
+          const fechaRegistro = new Date(cliente.fechaRegistro);
+          return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+        });
+
+        console.log('filtradosPorFecha', filtradosPorFecha);
+
+        // Separar los clientes en dos grupos: con pedidos (id_pedido != null) y sin pedidos (id_pedido == null)
+        const clientesConPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido != null);
+        const clientesSinPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido == null);
+
+        console.log('clientesConPedidos', clientesConPedidos);
+        console.log('clientesSinPedidos', clientesSinPedidos);
+
+        // Agrupar los clientes con pedidos
+        const pedidosAgrupados = this.agruparPorPedido(clientesConPedidos);
+        console.log('pedidosAgrupados', pedidosAgrupados);
+
+        // Agrupar pedidos únicos por usuario y evitar duplicados por id_pedido
+        const pedidosPorUsuario: Record<string, any[]> = pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
+          const identificador = item.clave;
+          const idPedido = item.id_pedido;
+
+          if (!acc[identificador]) acc[identificador] = [];
+
+          // Verifica si ya se agregó este id_pedido al grupo del usuario
+          const existePedido = acc[identificador].some((pedido) => pedido.id_pedido === idPedido);
+          if (!existePedido) {
+            acc[identificador].push(item);
+          }
+
+          return acc;
+        }, {});
+
+        console.log('pedidosPorUsuario', pedidosPorUsuario);
+
+        // Filtrar usuarios con un único pedido y estatus "0" (caducado)
+        const pedidosCaducados = Object.values(pedidosPorUsuario)
+          .filter((pedidos: any[]) => pedidos.length === 1 && pedidos[0].estatus === "0" )
+          .flat(); // Aplana el array para obtener un solo nivel de datos
+
+        console.log('pedidosCaducados', pedidosCaducados);
+
+        // Filtramos los clientes con conteoPedidos = "1" y estatus = "1", o conteoPedidos === null
+        const filtrados = filtradosPorFecha.filter((item: any) =>
+          (item.conteoPedidos == "1" && item.estatus == "1") || item.conteoPedidos === null
+        );
+
+       const AgrupadosActivos = this.agruparPorPedido(clientesConPedidos);
+
+        const filtradosPedidosActivos= AgrupadosActivos.filter((item: any) =>
+          (item.conteoPedidos == "1" && item.estatus == "1") 
+        );
+
+
+        console.log('Prospecto susutituir',AgrupadosActivos)
+        console.log ('Casi',filtradosPedidosActivos, )
+
+        // Dividimos entre usuarios con pedidos (id_pedido != null) y usuarios sin pedidos (id_pedido == null)
+        const conPedidos = filtrados.filter((item: any) => item.id_pedido != null);
+        const sinPedidos = filtrados.filter((item: any) => item.id_pedido == null);
+
+        // Agrupamos los usuarios con pedidos
+        const agrupadosConPedidos = this.agruparPorPedido(conPedidos);
+
+        // A los usuarios sin pedidos, les añadimos un campo `productos` vacío
+        const procesadosSinPedidos = sinPedidos.map((usuario: any) => ({
+          ...usuario,
+          productos: [] // Añadimos un array vacío para mantener consistencia en la estructura.
+        }));
+
+        // Combinamos ambos resultados (con pedidos y sin pedidos), además de los pedidos caducados
+        const clientesFinales = [...filtradosPedidosActivos, ...procesadosSinPedidos, ...pedidosCaducados];
+
+        // Ahora ordenamos el arreglo final por `fechaRegistro` antes de asignarlo a `clienteActivo`.
+        this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
+          const fechaA = new Date(a.fechaRegistro).getTime();
+          const fechaB = new Date(b.fechaRegistro).getTime();
+          return fechaB - fechaA; // Ascendente (de más antiguo a más reciente)
+        });
+
+        console.log("clienteActivo final (agrupados y sin pedidos):", this.clienteActivo);
+
+        // Actualizamos el DataSource de la tabla
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
+
+      },
+      (error: any) => {
+        console.error("Error al obtener activos:", error);
+      }
+    );
+    console.log('executed');
+}
 
   
 }
