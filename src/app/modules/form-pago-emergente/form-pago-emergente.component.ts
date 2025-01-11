@@ -13,7 +13,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeAceptarComponent } from "../mensaje-aceptar/mensaje-aceptar.component";
 import { MatDialogConfig } from "@angular/material/dialog";
 
-//PARA LLAMAR PRODUCTOS EN LUGAR DE MEMBRESIAS
+// PARA LLAMAR PRODUCTOS EN LUGAR DE MEMBRESIAS
 import { ProductoService } from "../../service/producto.service";
 import { addDays } from 'date-fns'; //Calcular duración
 
@@ -45,8 +45,6 @@ export class FormPagoEmergenteComponent implements OnInit {
   datosTicket:any;
   nombreCliente: any;
   nombreCompleto: any;
-
-  
 
   constructor(
     private toastr: ToastrService,
@@ -105,16 +103,16 @@ export class FormPagoEmergenteComponent implements OnInit {
           console.warn('No se seleccionó ninguna membresía o promoción.');
           return;
         }
-      
+
         const { id, esPromocion } = this.membresiaSeleccionada;
-      
+
         // Buscar en membresias considerando que los IDs pueden ser strings o números
         const resultado = this.membresias.find((item) =>
           esPromocion
             ? item.id_promocion === id || item.id_promocion === +id
             : item.idProbob === id || item.idProbob === +id
         );
-      
+
         if (resultado) {
           this.duracion = resultado.descripcion; // Asignar descripción
           this.precio = resultado.precio; // Asignar precio
@@ -123,7 +121,7 @@ export class FormPagoEmergenteComponent implements OnInit {
           this.id_promocion = resultado.id_promocion;
           this.idProbob = resultado.idProbob;
           console.log('id_prom',this.id_promocion, 'idPRobob',this.idProbob);
-      
+
           console.log('Datos seleccionados:', {
             duracion: this.duracion,
             precio: this.precio,
@@ -132,15 +130,15 @@ export class FormPagoEmergenteComponent implements OnInit {
             idProbob: this.idProbob
 
           });
-      
+
           // Preparar datos para el procedimiento
           this.ejecutarProcedimiento(id, esPromocion);
         } else {
           console.warn('No se encontró la membresía o promoción seleccionada:', this.membresiaSeleccionada);
         }
       }
-      
-      
+
+
       // Método para ejecutar el procedimiento
       ejecutarProcedimiento(id: string, esPromocion: boolean): void {
         if (esPromocion) {
@@ -153,7 +151,7 @@ export class FormPagoEmergenteComponent implements OnInit {
           // this.miServicio.llamarProcedimiento({ idProbob: id });
         }
       }
-      
+
 
       cancelDialogo(): void {
         this.dialogo.close(true);
@@ -167,20 +165,20 @@ export class FormPagoEmergenteComponent implements OnInit {
       (respuesta: any[]) => {  // Asignamos cualquier arreglo
         if (respuesta && respuesta[0] && respuesta[0].foto) {
           let fotoUrl = respuesta[0].foto;
-  
+
           // Añadir el esquema si no está presente
           if (!/^https?:\/\//i.test(fotoUrl)) {
             fotoUrl = "https://" + fotoUrl;  // Asumimos que la URL siempre será https
           }
-  
+
           this.fotoUrl = fotoUrl;
-  
+
          const datosGym ={
           nombreBodega: respuesta[0].nombreBodega,
           direccion: respuesta[0].direccion,
           numeroTelefonico:  respuesta[0].numeroTelefonico,
-          fotoUrl: this.fotoUrl 
-        
+          fotoUrl: this.fotoUrl
+
          }
 
          this.dataGym=datosGym
@@ -192,16 +190,13 @@ export class FormPagoEmergenteComponent implements OnInit {
       }
     );
   }
-  
-
-  
 
   succesDialog2() {
     if (this.moneyRecibido >= this.precio) {
       // Si el dinero recibido es suficiente, muestra el spinner y realiza la acción
       this.spinner.show();
       this.onMembresiaChange(); // Llama a la función para cambiar la membresía
-  
+
       // Configuración del diálogo de confirmación
       const dialogConfig = new MatDialogConfig();
       dialogConfig.width = "30%"; // Ajusta el ancho del diálogo
@@ -212,22 +207,22 @@ export class FormPagoEmergenteComponent implements OnInit {
         cliente: this.data.nombre,
         membresia: this.nombreMembresia,
       };
-  
+
       // Abre el diálogo de confirmación y maneja la respuesta
       this.dialog
         .open(MensajeAceptarComponent, dialogConfig)
         .afterClosed()
         .subscribe((confirmado: boolean) => {
           if (confirmado) {
-           
+
               const PrecioCalcular = this.moneyRecibido - this.precio;
               console.log('PrecioCalcular', PrecioCalcular);
               this.dineroDevuelto =   PrecioCalcular;
-              
+
               const fechaVencimiento = this.calcularFecha(this.duracion); // Duración de la membresía (mensual, anual, etc.)
               console.log(fechaVencimiento)
-              // calcular fechas 
-              //hacer solicitud post 
+              // calcular fechas
+              //hacer solicitud post
               const dataPromo = {
                 p_isPromoPaquete: this.IspromocionPaquete, // Indicar si es una promoción
                 p_correo: this.data.correo, // Correo del cliente ---
@@ -239,12 +234,12 @@ export class FormPagoEmergenteComponent implements OnInit {
                 p_idPromo:  this.id_promocion, // El ID de la promoción si lo tienes
               };
 
-              
-              
+
+
               const DatosTicket ={
-                
+
                 fechaVencimiento:fechaVencimiento,
-               
+
                 duracion: this.duracion,
                 producto: this.nombreMembresia,
                 claveUser: this.data.idCliente,
@@ -258,24 +253,24 @@ export class FormPagoEmergenteComponent implements OnInit {
                 idProbob : this.idProbob,
                 fechaActual: new Date().toLocaleDateString(), // Fecha en formato local (ej. '12/16/2024')
                  horaActual: new Date().toLocaleTimeString(),  // Hora en formato local (ej. '12:30:00 PM')
-                
+
                 nombreMembresia: this.nombreMembresia,
               id_promocion: this.id_promocion,
               nombreCompleto:this.nombreCompleto
-            
+
               }
 
-       
+
               this.datosTicket= DatosTicket;
 
               console.log('ticket',DatosTicket);
               this.obtenerFoto()
-           
-            
+
+
 
 
               //this.imprimirResumen3();
-              
+
 
               console.log("data",this.data);
               console.log ('dataPromo',dataPromo);
@@ -283,6 +278,7 @@ export class FormPagoEmergenteComponent implements OnInit {
               this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
                 response => {
                   console.log('Respuesta de la API de promociones:', response);
+                  const apiResponse = response
 
                 // Si la compra es exitosa
                 if (response.payment ==1)  { // Asumiendo que 'success' es el campo que indica una compra exitosa
@@ -301,7 +297,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                 } else {
                   // Si no es exitoso, mostrar mensaje de error
                   this.spinner.hide();
-                  this.toastr.error("Hubo un error al procesar tu pago. Intenta nuevamente.", "¡Error!");
+                  this.toastr.error(`Hubo un error al procesar tu pago. ${apiResponse.message} Intenta nuevamente.`, "¡Error!");
                 }
               },
               error => {
@@ -325,7 +321,7 @@ export class FormPagoEmergenteComponent implements OnInit {
       );
     }
   }
-  
+
 
   successDialog() {
     if (this.moneyRecibido >= this.precio) {
@@ -349,8 +345,8 @@ export class FormPagoEmergenteComponent implements OnInit {
           if (confirmado) {
             if (this.membresiaSeleccionada != undefined) {
                 const PrecioCalcular = this.moneyRecibido - this.precio;
-                console.log('PrecioCalcular',PrecioCalcular);
-                console.log('previo',this.fechaDeInicio,this.fechaDeFin);
+                //console.log('PrecioCalcular',PrecioCalcular);
+                //console.log('previo',this.fechaDeInicio,this.fechaDeFin);
                 if (this.fechaDeInicio && this.fechaDeFin) {
                   console.log(this.fechaDeInicio,this.fechaDeFin)
                   const añoInicio = this.fechaDeInicio.getFullYear();
@@ -361,7 +357,6 @@ export class FormPagoEmergenteComponent implements OnInit {
                     this.fechaDeInicio.getDate()
                   ).padStart(2, "0");
                   const fechaFormateada1 = `${añoInicio}-${mesInicio}-${díaInicio}`;
-
                   const añoFin = this.fechaDeInicio.getFullYear();
                   const mesFin = String(
                     this.fechaDeInicio.getMonth() + 1
@@ -453,7 +448,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                           }
                         });
                     });
-                } 
+                }
             }
           } else {
             this.spinner.hide();
@@ -468,7 +463,7 @@ export class FormPagoEmergenteComponent implements OnInit {
     );
   }
   }
-  
+
 imprimirResumen(){
   console.log("Imprimir resumen")
 }
@@ -524,26 +519,25 @@ calcularFecha(duracion: string, fechaInicial?: string): string {
   return `${datePart} ${timePart.split(".")[0]}`; // Formato 'YYYY-MM-DD HH:mm:ss'
 }
 
-
 imprimirResumen2() {
 
 // Calcular cambio
 
-//Convertir precio a palabras 
+//Convertir precio a palabras
 
 //Convertir pago a palabras
 
 
 //Obtner datos
   //clave
-  //fecha actual 
-  //fecha fin 
-  //producto 
+  //fecha actual
+  //fecha fin
+  //producto
   // precio y precio en numeero
-  // cambio y cambio en numero 
+  // cambio y cambio en numero
 // hora actual
 
-  //logo 
+  //logo
   //direccion gym
   // sucursal
   // nombre sucursla
@@ -564,12 +558,12 @@ imprimirResumen2() {
           );
           const totalEnPesosCambio =
             this.convertirNumeroAPalabrasPesos(PrecioCalcular);
-         
+
           const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
           const horaActual = new Date().toLocaleTimeString("es-MX", {
             hour: "2-digit",
             minute: "2-digit",
-            
+
           }); // Obtener solo la hora en formato local de México
 
           const ventanaImpresion = window.open("", "_blank");
@@ -649,7 +643,7 @@ imprimirResumen2() {
                     }
                   </style>
                 </head>
-                <body> 
+                <body>
                 <div class="ticket">
                 ${
                   this.dataGym.foto
@@ -676,7 +670,7 @@ imprimirResumen2() {
                               <td>${ticketInfo.Fecha_Inicio}</td>
                               <td>${ticketInfo.Fecha_Fin}</td>
                               <td>$${ticketInfo.Precio}</td>
-                            </tr> 
+                            </tr>
                       </tbody>
                     </table>
                     <hr>
@@ -865,7 +859,7 @@ imprimirResumen2() {
                           }
                         });
                     });
-                } 
+                }
             }
           } else {
             this.spinner.hide();
@@ -880,14 +874,11 @@ imprimirResumen2() {
     );
   }
   }
-  
-
-  
   imprimirResumen() {
     if (this.precio <= this.moneyRecibido) {
       const PrecioCalcular = this.moneyRecibido - this.precio;
       this.membresiaService
-        .ticketPagoInfo(this.data.idCliente)
+        .ticketPagoInfoPed(this.data.idCliente)
         .subscribe((respuesta) => {
           if (respuesta && respuesta.length > 0) {
             const ticketInfo = respuesta[0];
@@ -981,11 +972,11 @@ imprimirResumen2() {
                     }
                   </style>
                 </head>
-                <body> 
+                <body>
                 <div class="ticket">
                 ${
                   this.fotoUrl
-                    ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">`
+                     `<img class="logo" src="${this.fotoUrl}" alt="Logo">`
                     : ""
                 }
                 <p class="direccion">${this.auth.nombreGym.getValue()}</p>
@@ -1008,7 +999,7 @@ imprimirResumen2() {
                               <td>${ticketInfo.Fecha_Inicio}</td>
                               <td>${ticketInfo.Fecha_Fin}</td>
                               <td>$${ticketInfo.Precio}</td>
-                            </tr> 
+                            </tr>
                       </tbody>
                     </table>
                     <hr>
@@ -1067,9 +1058,9 @@ imprimirResumen2() {
       this.toastr.error("Ingresa el pago");
     }
   }
-  
+
   */
-  
+
 
 
   convertirNumeroAPalabrasPesos(numero: number): string {
@@ -1176,17 +1167,17 @@ imprimirResumen3() {
     // Convertir pago a palabras
     // Obtener datos
     // clave
-    // fecha actual 
-    // fecha fin 
-    // producto 
+    // fecha actual
+    // fecha fin
+    // producto
     // precio y precio en número
-    // cambio y cambio en número 
+    // cambio y cambio en número
     // hora actual
-    // logo 
+    // logo
     // dirección gym
     // sucursal
     // nombre sucursal
-    
+
     /*
     if (this.precio <= this.moneyRecibido) {
       const PrecioCalcular = this.moneyRecibido - this.precio;
@@ -1198,7 +1189,7 @@ imprimirResumen3() {
             const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.precio);
             const totalEnPesosRecibido = this.convertirNumeroAPalabrasPesos(this.moneyRecibido);
             const totalEnPesosCambio = this.convertirNumeroAPalabrasPesos(PrecioCalcular);
-           
+
             const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
             const horaActual = new Date().toLocaleTimeString("es-MX", {
               hour: "2-digit",
@@ -1210,10 +1201,10 @@ imprimirResumen3() {
             console.log(this.dataGym);
             console.log(this.dataGym.direccion)
 
-         
-  
+
+
     const ventanaImpresion = window.open("", "_blank");
-  
+
     if (ventanaImpresion) {
       ventanaImpresion.document.open();
       ventanaImpresion.document.write(`
@@ -1290,7 +1281,7 @@ imprimirResumen3() {
                     }
                   </style>
                 </head>
-                <body> 
+                <body>
                 <div class="ticket">
                 ${
                   this.dataGym.fotoUrl
@@ -1317,7 +1308,7 @@ imprimirResumen3() {
                               <td>${this.datosTicket.fechaActual}</td>
                               <td>${this.datosTicket.fechaVencimiento}</td>
                               <td>$${this.datosTicket.precio}</td>
-                            </tr> 
+                            </tr>
                       </tbody>
                     </table>
                     <hr>
@@ -1346,7 +1337,7 @@ imprimirResumen3() {
               </html>
       `);
       ventanaImpresion.document.close();
-  
+
       // Esperar a que la imagen se cargue antes de imprimir
       const image: HTMLImageElement | null = ventanaImpresion.document.querySelector("img");
       if (image) {
@@ -1354,7 +1345,7 @@ imprimirResumen3() {
           ventanaImpresion.print();
           ventanaImpresion.close();
         };
-  
+
         image.onerror = (error) => {
           console.error("Error al cargar la imagen:", error);
           ventanaImpresion.print();
@@ -1366,6 +1357,6 @@ imprimirResumen3() {
       }
     }
   } // Cierre correcto de la función
-  
+
 
 }

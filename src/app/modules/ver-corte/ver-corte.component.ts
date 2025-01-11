@@ -20,7 +20,7 @@ import { combineLatest } from 'rxjs';
 })
 export class VerCorteComponent implements OnInit  {
 
-  constructor( 
+  constructor(
     public dialog: MatDialog,
     private auth: AuthService,
     public formulario: FormBuilder,
@@ -49,7 +49,7 @@ export class VerCorteComponent implements OnInit  {
     "fechaVenta",
   ];
   dialogRef: any;
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   habilitarBoton: boolean = false;
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -62,7 +62,7 @@ export class VerCorteComponent implements OnInit  {
     // this.InventarioService.comprobar();
     // this.ventasService.comprobar();
     // this.joinDetalleVentaService.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
     this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
@@ -73,7 +73,7 @@ export class VerCorteComponent implements OnInit  {
           this.dialogRef.updateSize('auto', 'auto');
         }
       }
-    });  
+    });
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
@@ -84,10 +84,19 @@ export class VerCorteComponent implements OnInit  {
       if (idGym && idUser) {
         this.idGym = idGym;
         this.idUser = idUser;
+        // console.log('idGym combine: ',this.idGym);
         this.listaTablas();
       }
     });
-  }  
+
+
+    const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
+  this.fechaFiltro = fechaActual;
+  this.fechaInicio = new Date(fechaActual);
+  this.fechaFin = new Date(fechaActual);
+  this.opcionSeleccionada = 'rango'; // Configuración por defecto
+
+  }
 
   loadData() {
     setTimeout(() => {
@@ -106,16 +115,19 @@ export class VerCorteComponent implements OnInit  {
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
+          // console.log('DATAUSER: ', resultData);
       }, error: (error) => { console.log(error); }
     });
   }
 
   listaTablas(){
-    this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
+    // console.log('idGym en la lista: ', this.idGym);
+    this.joinDetalleVentaService.consultarProductosVentasBodega(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
+        // console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
         this.dataSource = new MatTableDataSource(this.detallesCaja);
-        this.loadData(); 
+        this.loadData();
         this.dataSource.data = this.detallesCaja;
         const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
         this.fechaFiltro = fechaActual;
@@ -129,28 +141,37 @@ export class VerCorteComponent implements OnInit  {
 
   private obtenerFechaActual(): Date {
     const fechaActual = new Date();
-    fechaActual.setHours(fechaActual.getHours() - 6); // Agregar 6 horas
+    // fechaActual.setHours(fechaActual.getHours() - 0); // Agregar 6 horas
     return fechaActual;
   }
-  
+
   aplicarFiltro() {
     this.dataSource.filter = this.fechaFiltro; // Aplica el filtro con la fecha actual
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-      return data.fechaVenta.includes(filter); // Compara la fecha con el filtro
+      return data.fecha_hora_pedido.includes(filter); // Compara la fecha con el filtro
     };
     this.actualizarTotalVentas();
   }
 
   aplicarFiltross() {
     const fechaInicioFiltrar = new Date(this.fechaInicio);
+    fechaInicioFiltrar.setHours(23, 59, 59, 999);  // Ajusta la hora a las 00:00:00
     const fechaFinFiltrar = new Date(this.fechaFin);
+    fechaFinFiltrar.setHours(23, 59, 59, 999);
+
+     // Convertir la fecha a formato ISO sin horas
+    const fechaInicioIso = fechaInicioFiltrar.toISOString().slice(0, 10);
+    const fechaFinIso = fechaFinFiltrar.toISOString().slice(0, 10);
+
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-      const fechaItem = new Date(data.fechaVenta); // Ajusta 'fechaVenta' a tu propiedad de fecha
-      return fechaItem >= fechaInicioFiltrar && fechaItem <= fechaFinFiltrar;
+      const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' a tu propiedad de fecha
+      fechaItem.setHours(0, 0, 0, 0);
+      const fechaItemIso = fechaItem.toISOString().slice(0, 10);
+
+      return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
     };
     // Concatenar las fechas con un carácter que no se espera en las fechas
-    const filtro = `${fechaInicioFiltrar.toISOString().slice(0, 10)}_${fechaFinFiltrar.toISOString().slice(0, 10)}`;
-    this.dataSource.filter = filtro;
+    this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;;
     this.actualizarTotalVentas();
   }
 
@@ -162,14 +183,14 @@ export class VerCorteComponent implements OnInit  {
   actualizarTotalVentas(): void {
     this.totalVentas = this.calcularTotalVentas();
   }
-  
+
   calcularTotalVentas(): number {
     // Obtén los datos visibles después de aplicar filtros
     const datosVisibles = this.dataSource.filteredData || this.dataSource.data;
     // Realiza el cálculo del total
     return datosVisibles.reduce((total, detalle) => {
-      const cantidad = parseFloat(detalle.cantidadElegida);
-      const precioUnitario = parseFloat(detalle.precioUnitario);
+      const cantidad = parseFloat(detalle.cantidad);
+      const precioUnitario = parseFloat(detalle.total);
       if (!isNaN(cantidad) && !isNaN(precioUnitario)) {
         return total + (cantidad * precioUnitario);
       } else {
@@ -177,7 +198,7 @@ export class VerCorteComponent implements OnInit  {
       }
     }, 0);
   }
-  
+
   descargarPDF2(): void {
     // Verifica si hay datos para exportar
     if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
@@ -187,11 +208,11 @@ export class VerCorteComponent implements OnInit  {
     }
     // Crear un objeto jsPDF
     const pdf = new (jsPDF as any)();  // Utilizar 'as any' para evitar problemas de tipo
-  
+
     // Encabezado del PDF
     pdf.setFontSize(20);
     pdf.text('Corte de Caja', 105, 15, null, null, 'center');
-  
+
     // Obtener datos filtrados según el filtro actual de la tabla
     const datosFiltrados = this.dataSource.filteredData.map((detalle: any) => [
       detalle.nombreProducto,
@@ -199,8 +220,8 @@ export class VerCorteComponent implements OnInit  {
       detalle.precioUnitario,
       detalle.fechaVenta
     ]);
-  
-    
+
+
     // Agregar estilos al PDF
     const styles = {
       theme: 'striped',
@@ -220,7 +241,7 @@ export class VerCorteComponent implements OnInit  {
       },
       margin: { top: 30 }
     };
-  
+
     // Añadir filas al PDF con autoTable
     pdf.autoTable({
       head: [['Nombre Producto', 'Cantidad', 'Precio Unitario', 'Fecha']],
@@ -232,11 +253,11 @@ export class VerCorteComponent implements OnInit  {
       alternateRowStyles: styles.alternateRowStyles,
       columnStyles: styles.columnStyles
     });
-  
+
     // Descargar el archivo PDF
     pdf.save('CorteDeCaja.pdf');
   }
-  
+
   descargarExcel2(): void {
     // Verificar si hay datos para exportar
     if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
@@ -244,61 +265,63 @@ export class VerCorteComponent implements OnInit  {
       console.warn('No hay datos filtrados para exportar a Excel.');
       return;
     }
-  
+
     // Copiar los datos filtrados
     const datosFiltrados = [...this.dataSource.filteredData];
-  
+    console.log('datosFiltrados: ', datosFiltrados);
+
+
     // Agregar una fila al final con el total
     datosFiltrados.push({
       'Total Ventas': this.totalVentas  // Ajusta la clave según tu estructura de datos
     });
 
     const titulos = {
-      nombreProducto: 'Nombre del producto',
-      cantidadElegida: 'Cantidad',
-      precioUnitario: 'Precio unitario',
-      fechaVenta: 'Fecha de venta',
+      descripcion: 'Nombre del producto',
+      cantidad: 'Cantidad',
+      total: 'Precio unitario',
+      fecha_hora_pedido: 'Fecha de venta',
       VendidoPor: 'Vendido por',
       'Total Ventas': 'Total de ventas'
     };
-  
+
     // Crear un nuevo array con los datos filtrados incluyendo los nuevos títulos
     const datosConTitulos = datosFiltrados.map(elemento => {
       return {
-        'Nombre del producto': elemento.nombreProducto,
-        'Cantidad': elemento.cantidadElegida,
-        'Precio unitario': elemento.precioUnitario,
-        'Fecha de venta': elemento.fechaVenta,
-        'Vendido por': elemento.VendidoPor, // Asegúrate de que esto coincida con la estructura de tus datos
+        'Nombre del producto': elemento.descripcion,
+        'Cantidad': elemento.cantidad,
+        'Precio unitario': elemento.total,
+        'Fecha de venta': elemento.fecha_hora_pedido,
+        'Vendido por': elemento.nombreCompleto, // Asegúrate de que esto coincida con la estructura de tus datos
         'Total de ventas': elemento['Total Ventas']
       };
     });
 
-  
+
     // Crear un objeto de trabajo de Excel
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosConTitulos);
 
     worksheet['!cols'] = [
-      { wpx: 200 }, 
-      { wpx: 100 }, 
-      { wpx: 100 }, 
-      { wpx: 100 }, 
-      { wpx: 200 }, 
-      { wpx: 100 }, 
+      { wpx: 200 },
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 100 },
+      { wpx: 200 },
+      { wpx: 100 },
     ];
 
     const workbook: XLSX.WorkBook = { Sheets: { 'Datos': worksheet }, SheetNames: ['Datos'] };
-  
+
     // Convertir el libro de trabajo a un archivo de Excel binario
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  
+
     // Crear un Blob y descargar el archivo Excel
     const fecha = new Date().toISOString().split('T')[0]; // Obtener la fecha actual para el nombre del archivo
     const nombreArchivo = `CorteDeCaja_${fecha}.xlsx`;
-  
+
     const data: Blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
     saveAs(data, nombreArchivo); // Utiliza la función saveAs para descargar el archivo
-  
+
     this.toastr.success('Archivo Excel generado correctamente.', '¡Éxito!');
   }
 
@@ -324,20 +347,7 @@ export class VerCorteComponent implements OnInit  {
       disableClose: true
     });
     this.dialogRef.afterClosed().subscribe(() => {
-      this.joinDetalleVentaService.consultarProductosVentas(this.idGym).subscribe(
-        (data) => {
-          this.detallesCaja = data;
-          this.dataSource = new MatTableDataSource(this.detallesCaja);
-          this.loadData(); 
-          this.dataSource.data = this.detallesCaja;
-          const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
-          this.fechaFiltro = fechaActual;
-          this.aplicarFiltro();
-        },
-        (error) => {
-          console.error("Error al obtener detalles de la caja:", error);
-        }
-      );
+      this.listaTablas();
     });
   }
 

@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable, Pipe } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { horario } from '../models/horario';
 import { ConnectivityService } from './connectivity.service';
 @Injectable({
@@ -21,32 +22,55 @@ export class HorarioService {
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
   }
 
-  // comprobar(){
-  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-  //     this.isConnected = isConnected;
-  //     if (isConnected) {
-  //       this.API = this.APIv2;
-  //     } else {
-  //       this.API = this.APIv3;
-  //     }
-  //   });
-  // }
-
-  obternerHorario(){
-    return this.clienteHttp.get(this.API+"horario.php");
-  }
-
   agregarHorario(datosHorario: horario):Observable<any>{
-    return this.clienteHttp.post(this.API+"horario.php?insertar=1", datosHorario);
+    return this.clienteHttp.post(this.API+"horario.php?insertar", datosHorario).pipe(
+      tap(dataResponse => {
+        //console.log("DATOS ENVIADOS DESDE LA API: ",dataResponse);
+      }),
+      catchError(error => {
+        //console.error("ERROR DE LA API: ",error)
+        return error;
+      })
+    );
   }
 
   actualizarHorario(id: any, datosPlan: any): Observable<any> {
-    console.log(datosPlan, "datosPlan");
-    return this.clienteHttp.post(`${this.API}horario.php?actualizar=${id}`, datosPlan, { headers: { 'Content-Type': 'application/json' }, responseType: 'text' });
+    //console.log("datosPlan", datosPlan);
+
+    const httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json' // Especifica el tipo de contenido como JSON
+          })
+        };
+
+    const datos = {
+      ...datosPlan,
+      id : id
+    }
+
+   // console.log("Datos a enviar: ",datos)
+
+    return this.clienteHttp.post(`${this.API}horario.php?actualizar`, datos, httpOptions).pipe(
+      tap(dataResponse => {
+        //console.log("RESPUESTA DE API ",dataResponse);
+      }),
+      catchError(error => {
+        //console.error("ERROR DE LA API: ",error)
+        return error;
+      })
+    );
   }
 
   consultarHorario(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"horario.php?consultar="+id);
+    return this.clienteHttp.get(this.API+"horario.php?consultar="+id).pipe(
+      tap(dataResponse => {
+        //console.log("DATOS ENVIADOS DESDE LA API: ",dataResponse);
+      }),
+      catchError(error => {
+        //console.error("ERROR DE LA API: ",error)
+        return error;
+      })
+    );
   }
 
 }

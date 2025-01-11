@@ -47,7 +47,7 @@ export class PagoMembresiaEfectivoService {
   obtenerActivos(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"getClientes3.php?bodegaId="+id).pipe(
       tap(dataResponse => {
-        
+
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
@@ -239,7 +239,7 @@ deleteMembresia(id: any): Observable<any> {
       })
     );
   }
-  
+
 
   deleteService(datos: any): Observable<any>{
     return this.clienteHttp.post(this.API+"Usuario.php?eliminarServicio", datos);
@@ -261,7 +261,7 @@ deleteMembresia(id: any): Observable<any> {
   }
 */
 
-  //Alternativa con  clave 
+  //Alternativa con  clave
 
   deleteServiceUsuario(clave: any): Observable<any> {
     return this.clienteHttp
@@ -277,6 +277,30 @@ deleteMembresia(id: any): Observable<any> {
 
 
   // Actualización del estado del cliente de su membresia (producto)
+  // agregarPedido(datos: any):Observable<any>{
+  //   return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedidoMem=1", datos);
+  // }
+
+  obtenerPedidosActivos(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"UsuarioProds.php?obtenerVista="+id);
+  }
+
+  ticketPagoInfoPed(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"UsuarioProds.php?infoTicketMembresia="+id);
+  }
+
+  agregarPedidoConDetalles(pedido: any, detalles: any[]): Observable<any> {
+    const datos = {
+      pedido,
+      detalles
+    };
+    return this.clienteHttp.post(this.API + "UsuarioProds.php?insertarPedidoConDetalles", datos).pipe(
+      catchError(error => {
+        console.error('Error al registrar el pedido: ', error);
+        return throwError(error);
+      })
+    );
+  }
 
   actualizacionMemebresiaProd(idCli:any,idMem:any, fechaActual: any, detMemID: any, precio: any, fechaFormateadaFin: any, created_by: any):Observable<any>{
     const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fechaActual).set('detMemID',detMemID).set('precio',precio).set('fechaFormateadaFin',fechaFormateadaFin).set('created_by',created_by);
@@ -317,5 +341,4 @@ console.log("datos emnviado en servico",data);
       })
     );
   }
-  
 }

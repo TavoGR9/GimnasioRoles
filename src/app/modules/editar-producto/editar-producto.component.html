@@ -16,6 +16,11 @@
                            <label *ngFor="let archivo of editarProd">
                                {{ archivo.nombreProducto }}-{{ archivo.marca }}
                            </label>
+<!--
+                           <mat-form-field appearance="outline" style="width: 100%;" required>
+                            <mat-label>Nombre del producto</mat-label>
+                            <input matInput type="text" placeholder="Producto" id="descripcion" formControlName="descripcion" autocomplete="off" />
+                           </mat-form-field> -->
                        </div>
                        <div class="col-sm-6" *ngIf="!esServicio">
                            <label><strong>Codigo de barras:</strong></label>

@@ -18,8 +18,9 @@ export class HomeService {
   // API: String = '';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  //API: string = 'http://localhost/serviciosGimnasio/';
-  API: string = 'http://localhost/serviciosGym/';
+  API: string ='http://localhost/serviciosGym/';
+  API2: string ='http://localhost/serviciosGimnasio/';
+
 
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService ) {
   }
@@ -35,8 +36,10 @@ export class HomeService {
   //   });
   // }
 
+   //HOME
+  // llamada HTTP a la API REST, para obtener el total de ventas del día
   consultarHome(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHome="+id).pipe(
+    return this.clienteHttp.get(this.API+"obtenerSumaPedidos.php?idGim="+id).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
       }),
@@ -85,8 +88,10 @@ export class HomeService {
     });
   }
 
+  //HOME
+  // llamada HTTP a la API REST, para obtener los productos más vendidos
   getAnalyticsData(sucursalId: any): Observable<any> {
-    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultarProductosVendidos="+sucursalId).pipe(
+    return this.clienteHttp.get(this.API+"productosMasComprados.php?consultarProductosVendidos="+sucursalId).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB2(dataResponse);
       }),
@@ -193,31 +198,31 @@ export class HomeService {
   }
 
   consultasFechaMensualidad(idGim: any, fecha: any) {
-    return this.clienteHttp.get(this.API + "ConsultasHome.php", {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
         params: {
             idGim: idGim,
             fecha: fecha
         }
     });
-}
+  }
 
-consultasFechaVisita(idGim: any, fecha: any) {
-  return this.clienteHttp.get(this.API + "ConsultasHome.php", {
-      params: {
-        idGimVisita: idGim,
-        fechaVisita: fecha
-      }
-  });
-}
+  consultasFechaVisita(idGim: any, fecha: any) {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
+        params: {
+          idGimVisita: idGim,
+          fechaVisita: fecha
+        }
+    });
+  }
 
-consultasFechaQuincena(idGim: any, fecha: any) {
-  return this.clienteHttp.get(this.API + "ConsultasHome.php", {
-      params: {
-          idGimQuincena: idGim,
-          fechaQuincena: fecha
-      }
-  });
-}
+  consultasFechaQuincena(idGim: any, fecha: any) {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
+        params: {
+            idGimQuincena: idGim,
+            fechaQuincena: fecha
+        }
+    });
+  }
 
 ConsultarPedidosMembresias(id_bodega: any ){
   return  this.clienteHttp.get(this.API+'pedidosMembresias.php?id_bodega='+ id_bodega)

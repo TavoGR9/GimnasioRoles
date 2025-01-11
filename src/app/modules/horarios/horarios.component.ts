@@ -6,6 +6,10 @@ import { AbstractControl } from '@angular/forms';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { HorarioService } from '../../service/horario.service';
 import { NgxSpinnerService } from "ngx-spinner";
+
+import { ToastrService } from "ngx-toastr";
+import { Router } from '@angular/router';
+
 class Horario {
   constructor(
     public diaSemana: string,
@@ -14,6 +18,7 @@ class Horario {
     public Gimnasio_idGimnasio: string
   ) {}
 }
+
 @Component({
   selector: 'app-horarios',
   templateUrl: './horarios.component.html',
@@ -22,9 +27,9 @@ class Horario {
 export class HorariosComponent implements OnInit {
   idGimnasio: any;
   formularioHorarios: FormGroup;
-  message: string = "";
   datosHorario: any[] = [];
-  horarioExistente: boolean = false; 
+  horarioExistente: boolean = false;
+  message : string = "";
   constructor(
     public dialogo: MatDialogRef<HorariosComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -32,8 +37,13 @@ export class HorariosComponent implements OnInit {
     private HorarioService: HorarioService,
     private spinner: NgxSpinnerService,
     public dialog: MatDialog,
+
+    private toastr: ToastrService,
+    private router: Router,
+
+
   ) {
-    this.idGimnasio = data.idGimnasio; 
+    this.idGimnasio = data.idGimnasio;
     this.formularioHorarios = this.formularioHorario.group({
       horarios: this.formularioHorario.array([]),
     });
@@ -50,7 +60,7 @@ export class HorariosComponent implements OnInit {
       horaSalida: [""],
       Gimnasio_idGimnasio: [this.idGimnasio, Validators.required]
     });
-  
+
     const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
     if (horariosArray) {
       horariosArray.push(horarioFormGroup);
@@ -59,7 +69,7 @@ export class HorariosComponent implements OnInit {
 
     this.HorarioService.consultarHorario(this.idGimnasio).subscribe(
       (data) => {
-        this.datosHorario = data;  
+        this.datosHorario = data;
         this.horarioExistente = data && data.length > 0;
       },
       (error) => {
@@ -68,55 +78,84 @@ export class HorariosComponent implements OnInit {
       }
     );
   }
-  
+
   getHorariosControls(): AbstractControl[] {
     const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
     return horariosArray.controls;
   }
-  
+
+
   enviarHorario(): void {
     const horarios: Horario[] = this.formularioHorarios.value.horarios;
+
+    // Filtrar horarios que estan vacios
+    const horariosConDatos = horarios.filter(horario =>
+      horario.horaEntrada !== '00:00:00' || horario.horaSalida !== '00:00:00'
+    );
+
+    // Validar y completar campos vacíos
     horarios.forEach(horario => {
       if (!horario.horaEntrada) {
         horario.horaEntrada = '00:00:00';
       }
-  
       if (!horario.horaSalida) {
         horario.horaSalida = '00:00:00';
       }
     });
-    // Verifica si el formulario es válido
-    if (this.formularioHorarios.valid) {
-      this.spinner.show();
-      this.HorarioService.agregarHorario(this.formularioHorarios.value).subscribe((respuesta) => {
-        this.spinner.hide();
-        this.dialog.open(MensajeEmergentesComponent, {
-          data: `Horario agregado exitosamente`,
-        })
-        .afterClosed()
-        .subscribe((cerrarDialogo: Boolean) => {
-          if (cerrarDialogo) {
-            this.dialogo.close();
-          } else {
-            // Puedes agregar lógica adicional si es necesario
-          }
+
+
+    // validar que el horario no este completamente vacio
+    const horarioValido = horarios.some(horario =>
+      horario.horaEntrada !== '00:00:00' && horario.horaSalida !== '00:00:00'
+    );
+
+    if (!horarioValido) {
+      this.toastr.error("El horario no puede estar completamente vacio ---- La hora de entrada o salida no puede estar vacia.");
+      return;
+    }
+
+    // Validar que la hora de salida sea mayor que la hora de entrada
+    const horasCorrectas = horariosConDatos.every(horario => {
+      const entrada = horario.horaEntrada.split(':').map(Number);
+      const salida = horario.horaSalida.split(':').map(Number);
+      const minutosEntrada = entrada[0] * 60 + entrada[1]; // Convertir a minutos
+      const minutosSalida = salida[0] * 60 + salida[1];   // Convertir a minutos
+
+      return minutosSalida > minutosEntrada; // Validar que la salida sea mayor
+    });
+
+  if (!horasCorrectas) {
+    this.toastr.error("La hora de salida debe ser mayor que la hora de entrada.");
+    return;
+  }
+
+    if (Array.isArray(horarios)) {
+      //console.log("Datos de horario: ", this.formularioHorarios.value);
+
+      if (this.formularioHorarios.valid) {
+        this.spinner.show();
+        this.HorarioService.agregarHorario(this.formularioHorarios.value).subscribe((respuesta) => {
+          this.spinner.hide();
+          this.dialog.open(MensajeEmergentesComponent, {
+            data: `Horario agregado exitosamente`,
+          })
+          .afterClosed()
+          .subscribe((cerrarDialogo: Boolean) => {
+            if (cerrarDialogo) {
+                this.dialogo.close();
+            }
+          });
         });
-      });
+      } else {
+        //console.log("Por favor, complete todos los campos requeridos.");
+      }
     } else {
-      // El formulario no es válido, muestra un mensaje de error
-      this.message = "Por favor, complete todos los campos requeridos.";
+     // console.log("LOS DATOS NO SON UN ARREGLO VALIDO");
     }
   }
 
-  /*verHorario(idGimnasio: string): void {
-    const dialogRef = this.dialog.open(HorariosVistaComponent, {
-      width: '60%',
-      height: '90%',
-      data: { idGimnasio: idGimnasio },
-    });
-  }*/
-    
   cancelar() {
     this.dialogo.close();
   }
+
 }

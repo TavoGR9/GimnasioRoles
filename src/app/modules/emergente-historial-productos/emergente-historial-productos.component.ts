@@ -16,9 +16,9 @@ export interface Historial {
   Usuario: number;
   Producto: number;
   Concepto: string;
-  FechaMovimiento: string; 
-  ActualStock: string; 
-  MovimientoStock: string; 
+  FechaMovimiento: string;
+  // StockActual: string;
+  // StockMovimiento: string;
   NuevoStock: string;
 }
 @Component({
@@ -29,18 +29,20 @@ export interface Historial {
 })
 
 export class EmergenteHistorialProductosComponent implements OnInit{
-  dataHistorial: Historial[] = []; 
-  dataSource: any; 
+  dataHistorial: Historial[] = [];
+  dataSource: any;
   displayedColumnsHistorial: string[] = [
     'Producto',
     'Concepto',
     'Fecha Movimiento',
     'Stock Movimiento',
   ];
-  fechaInicio: Date = new Date(); 
-  fechaFin: Date = new Date();  
+  fechaInicio: Date = new Date();
+  fechaFin: Date = new Date();
   private fechaInicioAnterior: Date | null = null;
-  private fechaFinAnterior: Date | null = null; 
+  private fechaFinAnterior: Date | null = null;
+
+  idUsuarioo: number =0;
 
   @ViewChild('paginatorHistorial', { static: true }) paginatorHistorial!: MatPaginator;
 
@@ -51,13 +53,16 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     private toastr: ToastrService,
     private auth: AuthService,
     private datePipe: DatePipe,) { }
-  
+
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
 
   ngOnInit(): void {
-    this.updateDateLogs(); 
+    this.updateDateLogs();
+    this.idUsuarioo = this.auth.idUser.getValue();
+    console.log('idUsuario: ', this.idUsuarioo);
+
   }
 
   ngDoCheck(): void {
@@ -65,6 +70,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       this.updateDateLogs();
     }
   }
+
 
   onFechaInicioChange(event: any): void {
   }
@@ -85,7 +91,9 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       this.auth.idGym.getValue()
     ).subscribe(
       response => {
-        if (response.msg == 'No hay resultados') {
+        // console.log('RESULTADOS DEL HISTORIAL: ', response);
+
+        if (response.length === 0) {
           this.dataHistorial = [];
           this.dataSource = new MatTableDataSource(this.dataHistorial);
           this.dataSource.paginator = this.paginatorHistorial;
@@ -93,6 +101,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
 
         } else if(response){
           this.dataHistorial = response;
+          //console.log("RESULTADOS DE API: ",response);
           this.dataSource = new MatTableDataSource(this.dataHistorial);
           this.dataSource.paginator = this.paginatorHistorial;
           this.toastr.success('Datos encontrados.', 'Success!!!');
@@ -122,15 +131,15 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     }
 
     const datos = [
-      ['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Actual', 'Stock Movimiento', 'Stock Nuevo'],
+      ['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Nuevo'],
       ...this.dataSource.filteredData.map((listaHist: Historial) => [
         listaHist.Sucursal,
         listaHist.Usuario,
         listaHist.Producto,
         listaHist.Concepto,
         listaHist.FechaMovimiento,
-        listaHist.ActualStock,
-        listaHist.MovimientoStock,
+        // listaHist.StockActual,
+        // listaHist.StockMovimiento,
         listaHist.NuevoStock
       ])
     ];
@@ -181,7 +190,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
     const fechaInicio = this.formatDateV2(this.fechaInicio);
     const fechaFin = this.formatDateV2(this.fechaFin);
     // Encabezado del PDF con las fechas
-    pdf.text(`Historial del inventario (${fechaInicio} - ${fechaFin})`, 10, 10);   
+    pdf.text(`Historial del inventario (${fechaInicio} - ${fechaFin})`, 10, 10);
     // Contenido del PDF
     const datos = this.dataSource.filteredData.map((listaHist: Historial) => [
       listaHist.Sucursal,
@@ -189,13 +198,13 @@ export class EmergenteHistorialProductosComponent implements OnInit{
       listaHist.Producto,
       listaHist.Concepto,
       listaHist.FechaMovimiento,
-      listaHist.ActualStock,
-      listaHist.MovimientoStock,
+      // listaHist.StockActual,
+      // listaHist.StockMovimiento,
       listaHist.NuevoStock
     ]);
     // Añadir filas al PDF con encabezado naranja
     pdf.autoTable({
-      head: [['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Actual', 'Stock Movimiento', 'Stock Nuevo']],
+      head: [['Sucursal', 'Usuario', 'Producto', 'Concepto', 'Fecha Movimiento', 'Stock Nuevo']],
       body: datos,
       startY: 20,  // Ajusta la posición inicial del contenido
       headStyles: {

@@ -32,7 +32,7 @@ export class ArchivosComponent implements OnInit{
     public form: FormBuilder,
     private archivoService: ArchivoService,
     private spinner: NgxSpinnerService,
-    public dialog: MatDialog, 
+    public dialog: MatDialog,
     private gimnasio: GimnasioService
   ) {
     this.id_bodega = data.id_bodega;
@@ -49,7 +49,7 @@ export class ArchivosComponent implements OnInit{
    ngOnInit(): void {
     this.gimnasio.consultarArchivos(this.id_bodega).subscribe(
       (response) => {
-        console.log('Archivos recibidos:', response);
+        // console.log('Archivos recibidos:', response);
         this.archivos = response.archivos;  // Asegúrate de que estés asignando el arreglo correctamente
       },
       (error) => {
@@ -57,15 +57,26 @@ export class ArchivosComponent implements OnInit{
       }
     );
   }
-  
-  
+
+
   openURL(url: string): void {
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'http://' + url;
+
+      const urlBase = 'http://localhost/archivos/';
+
+      // Eliminar la parte local de la ruta (por ejemplo, 'C:/wamp64/www/archivos/')
+      const rutaRelativa = url.replace('C:/wamp64/www/archivos/', '');  // O usando substring si prefieres
+
+      // Generar la URL completa
+      const urlFinal = urlBase + rutaRelativa;
+
+      url = urlFinal;
     }
+    // console.log('url: ', url);
+
     window.open(url, '_blank', 'noopener,noreferrer');
   }
-  
+
   descargarArchivo(url: string, nombreArchivo: string): void {
     const enlaceTemporal = document.createElement('a');
     enlaceTemporal.href = url;
@@ -77,13 +88,13 @@ export class ArchivosComponent implements OnInit{
     for (let i = 0; i < archivos.length; i++) {
       this.archivosSeleccionados.push(archivos[i]);
     }
-  
+
     if (archivos && archivos.length > 0) {
       const lector = new FileReader();
       lector.onload = (e) => {
         // Se obtiene la representación en base64 del archivo
         const base64textString = lector.result as string;
-  
+
         // Se signa la representación en base64 al campo del formulario
         this.formularioArchivo.patchValue({
           base64textString: base64textString,
@@ -101,7 +112,7 @@ export class ArchivosComponent implements OnInit{
       base64textString: this.archivo.base64textString, // Corrección aquí
     });
   }
-    
+
   onArchivoSeleccionado(event: any): void {
     const archivos: FileList = event.target.files;
     for (let i = 0; i < archivos.length; i++) {
@@ -111,37 +122,51 @@ export class ArchivosComponent implements OnInit{
 
   subirArchivo = async () => {
     this.spinner.show();
-  
+
     if (this.archivosSeleccionados.length > 0) {
       try {
         const formData = new FormData();
         const zip = new JSZip();
-  
+
         // Comprimir cada archivo antes de agregarlo al ZIP
         await Promise.all(this.archivosSeleccionados.map(async (archivo) => {
           const arrayBuffer = await this.leerArchivoComoArrayBuffer(archivo);
           zip.file(archivo.name, arrayBuffer); // Agrega el archivo sin compresión extra (deja que JSZip maneje la compresión).
         }));
-  
+
         // Generar el archivo ZIP
         const zipBlob = await zip.generateAsync({ type: 'blob' });
-  
+
         // Generar nombre único del ZIP basado en la fecha y bodega
         const fechaActual = new Date();
+        console.log('fechaActual: ', fechaActual);
+
+        // const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1)
+        //   .toString()
+        //   .padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;
+
+        // Formatear la fecha en el formato 'YYYY-MM-DD HH:mm:ss'
         const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1)
           .toString()
-          .padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')}`;
+          .padStart(2, '0')}-${fechaActual.getDate().toString().padStart(2, '0')} ${fechaActual
+          .getHours()
+          .toString()
+          .padStart(2, '0')}:${fechaActual.getMinutes().toString().padStart(2, '0')}:${fechaActual
+          .getSeconds()
+          .toString()
+          .padStart(2, '0')}`;
+
         const nombreArchivo = `${this.nombreBodega}_${fechaFormateada}_archivos.zip`;
-  
+
         // Agregar el archivo ZIP al FormData
         formData.append('archivos', zipBlob, nombreArchivo);
-  
+
         // Agregar otros campos al FormData
         formData.append('nombreArchivo', nombreArchivo);
         formData.append('tipoArchivo', 'application/zip');
-        formData.append('id_bodega', this.id_bodega); 
+        formData.append('id_bodega', this.id_bodega);
         formData.forEach((value, key) => console.log(`${key}: ${value}`));
-  
+
         // Enviar el formulario al servicio
         this.archivoService.guardarArchivos(formData).subscribe(
           (respuesta) => {
@@ -158,7 +183,7 @@ export class ArchivosComponent implements OnInit{
             this.spinner.hide();
           }
         );
-  
+
         // Limpiar la lista de archivos seleccionados
         this.archivosSeleccionados = [];
       } catch (error) {
@@ -170,24 +195,24 @@ export class ArchivosComponent implements OnInit{
       this.spinner.hide();
     }
   };
-  
-  
+
+
   cancelar(): void {
     this.dialogo.close();
   }
-  
+
   private leerArchivoComoArrayBuffer(archivo: File): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-  
+
       reader.onload = (event) => {
         resolve(event.target?.result as ArrayBuffer);
       };
-  
+
       reader.onerror = (error) => {
         reject(error);
       };
-  
+
       reader.readAsArrayBuffer(archivo);
     });
   }

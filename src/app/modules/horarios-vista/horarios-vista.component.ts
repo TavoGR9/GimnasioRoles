@@ -20,6 +20,7 @@ import { PostalCodeService } from "./../../service/cp.service";
 import { AuthService } from "./../../service/auth.service";
 import { ColaboradorService } from "./../../service/colaborador.service";
 import { NgxSpinnerService } from "ngx-spinner";
+import { switchMap } from "rxjs";
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
@@ -274,30 +275,24 @@ export class HorariosVistaComponent implements OnInit {
     this.dialogo.close();
   }
 
+
   editarCosa() {
     this.gimnasioService.gimnasioSeleccionado.subscribe((data) => {
       if (data) {
         this.idGimnasio = data;
         this.gimnasioService
-          .consultarPlan(this.idGimnasio)
-          .subscribe((data) => {
-            if (data) {
-              this.formularioSucursales.setValue({
-                nombre: data[0].nombreBodega,
-                codigoPostal: 0,
-                estado: 0,
-                colonia: 0,
-                calle: 0,
-                ciudad: 0,
-                numExt: 0,
-                numInt: 0,
-                estatus: 1,
-                fotoUrl: data[0].foto,
-                nombreArchivo: 0,
-                base64textString: 0,
-                direccion: data[0].direccion,
-                numeroTelefonico: data[0].numeroTelefonico,
-              });
+          .obtenerBodegaById(this.idGimnasio)
+          .subscribe((respuesta) => {
+            console.log("DATOS; ",respuesta);
+            if (respuesta && respuesta.success && respuesta.data.length > 0) {
+              const bodega = respuesta.data[0];//primer elemento del array
+              if(bodega && bodega.length === 4){
+                this.formularioSucursales.patchValue({
+                  nombre: bodega[1],
+                  direccion: bodega[2],
+                  numeroTelefonico: bodega[3],
+                });
+              }
             }
           });
       }
@@ -312,6 +307,8 @@ export class HorariosVistaComponent implements OnInit {
       numero: this.formularioSucursales.value.numeroTelefonico,
       id_bod: this.idGimnasio,
     };
+    console.log('Datos enviados a actualizarSucursal:', datosAc);
+
     this.gimnasioService.actualizarSucursal(datosAc).subscribe((respuesta) => {
       if (respuesta) {
         if (respuesta.success === 1) {
@@ -425,16 +422,16 @@ export class HorariosVistaComponent implements OnInit {
               if (respuestaSucursal && respuestaSucursal.success === 1) {
 
                 datosFormulario.idGym = respuestaSucursal.id_bodega;
-                datosFormulario.email = datosFormulario.correoEmp; 
+                datosFormulario.email = datosFormulario.correoEmp;
                 delete datosFormulario.correoEmp;
-                datosFormulario.idGym = Number(datosFormulario.idGym); 
-                datosFormulario.foto = datosFormulario.foto || null; 
+                datosFormulario.idGym = Number(datosFormulario.idGym);
+                datosFormulario.foto = datosFormulario.foto || null;
                 console.log("Datos del formulario antes de enviar:", datosFormulario);
-                
+
                 this.http.agregarEmpleadoA(datosFormulario).subscribe(
                   (respuestaEmpleado) => {
                     console.log("Respuesta del servidor (empleado):", respuestaEmpleado);
-                
+
                     // Verificar si la respuesta tiene 'ok: true'
                     if (respuestaEmpleado && respuestaEmpleado.ok === true) {
                       this.enviarMensajeWhatsApp();
@@ -463,7 +460,7 @@ export class HorariosVistaComponent implements OnInit {
                     this.toastr.error('Error al agregar empleado. Inténtalo de nuevo.', 'Error');
                   }
                 );
-                
+
               } else {
               }
             },

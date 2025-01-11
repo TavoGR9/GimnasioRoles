@@ -2,7 +2,7 @@
    <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true">
       <p style="color: white" > Cargando... </p>
    </ngx-spinner>
-   
+
    <div class="title"  mat-dialog-title>
       <label class="ventas-label">VENTAS</label>
    </div>
@@ -15,7 +15,7 @@
         <!-- <mat-form-field class="full-width">
             <mat-label>Filtro</mat-label>
             <input
-            matInput 
+            matInput
             (keyup)="applyFilter($event)"
             placeholder="Busca por columnas"
             #input
@@ -45,9 +45,9 @@
                    </mat-form-field>
                  </p>
                </div>
-             </form>             
+             </form>
          </div>
-         
+
        <!--  <div class="table-container">
             <table *ngIf="showTable" mat-table [dataSource]="filteredDataSource" class="mat-elevation-z8">
 
@@ -89,7 +89,7 @@
                </thead>
                <tbody>
                   <tr *ngFor="let selectedProduct of selectedProducts; let i = index">
-                     <td>{{ selectedProduct.nombreProducto }}_{{ selectedProduct.marca }} {{ selectedProduct.detalleCompra }}</td>
+                     <td>{{ selectedProduct.nombreProducto }}_{{ selectedProduct.marca }}</td>
                      <td >{{ selectedProduct.cantidad }}</td>
                      <td>${{ selectedProduct.precioSucursal }}</td>
                      <td>${{ selectedProduct.precioSucursal * selectedProduct.cantidad }}</td>
@@ -114,7 +114,7 @@
       </div>
    </div>
    <div style="display: flex; justify-content: center;" mat-dialog-actions>
-      <button  mat-raised-button class="aceptar" (click)="imprimirResumen()">Pagar</button>
+      <button  mat-raised-button class="aceptar" (click)="imprimirResumenPedido()">Pagar</button>
       <button mat-stroked-button (click)="cerrarDialogo()" class="cancelar">Cancelar</button>
    </div>
 </div>
