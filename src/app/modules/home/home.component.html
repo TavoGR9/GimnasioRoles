@@ -111,18 +111,6 @@
             <div *ngIf="tablaHTML" [innerHTML]="tablaHTML ">
    </div>
    </mat-card-content>
-   <!-- <mat-card class="ancho-2">
-      <mat-card-header>
-          <h3 class="icon-title">
-              <mat-icon class="icon">grid_view</mat-icon>
-              ÚLTIMAS VENTAS
-          </h3>
-      </mat-card-header>
-      <mat-card-content>
-          <p style="border-top: 2px solid orange;"></p>
-          <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
-      </mat-card-content>
-      </mat-card>-->
    </mat-card>
    <mat-card *ngIf="isAdmin() || isRecep()">
       <mat-card-header>

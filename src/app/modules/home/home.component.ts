@@ -410,8 +410,23 @@ export class HomeComponent implements OnInit {
     }
   }
 
-
   onSelectQuincena(event?: any): void {
+    if (event == undefined) {
+      this.fechaMensualidad = this.fechaFormateada;
+      this.graficasFecha(this.fechaFormateada);
+    }
+    else if (typeof event.series === "string") {
+      // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
+      const numeroMes = this.meses[event.series as keyof typeof this.meses];
+      //this.fechaMensualidad = this.año + "-" + numeroMes + "-" + event.name;
+      this.fechaMensualidad = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
+      this.graficasFecha(this.fechaMensualidad);
+    } else {
+      console.warn("Nombre de mes no es una cadena válida:", event.series);
+    }
+  }
+
+  /*onSelectQuincena(event?: any): void {
     if (event == undefined) {
       this.fechaQuincena = this.fechaFormateada;
       this.graficasFechaQuincena(this.fechaFormateada);
@@ -426,7 +441,7 @@ export class HomeComponent implements OnInit {
     } else {
       console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
-  }
+  }*/
 
   onSelectVisita(event?: any): void {
     if (event == undefined) {
@@ -792,9 +807,9 @@ gradient2: boolean = false;
 showXAxis2: boolean = true;
 showYAxis2: boolean = true;
 showXAxisLabel2: boolean = true;
-xAxisLabel2: string = 'Días';
+xAxisLabel2: string = '';
 showYAxisLabel2: boolean = true;
-yAxisLabel2: string = 'Ventas';
+yAxisLabel2: string = '';
 timeline2: boolean = true;
 yScaleMax2: number | undefined = undefined; // Escala Y dinámica
 
@@ -803,6 +818,7 @@ salesChartData: any[] = []; // Aquí guardaremos los resultados procesados
 
 // Producto seleccionado dinámicamente
 selectedProduct2: string = 'Visita'; // Valor inicial
+selectedProduct3: string = 'Quincenal'; // Valor inicial
 
 // Procesar los datos
 processSalesData() {
