@@ -278,6 +278,7 @@ export class FormPagoEmergenteComponent implements OnInit {
               this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
                 response => {
                   console.log('Respuesta de la API de promociones:', response);
+                  const apiResponse = response
 
                 // Si la compra es exitosa
                 if (response.payment ==1)  { // Asumiendo que 'success' es el campo que indica una compra exitosa
@@ -296,7 +297,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                 } else {
                   // Si no es exitoso, mostrar mensaje de error
                   this.spinner.hide();
-                  this.toastr.error("Hubo un error al procesar tu pago. Intenta nuevamente.", "¡Error!");
+                  this.toastr.error(`Hubo un error al procesar tu pago. ${apiResponse.message} Intenta nuevamente.`, "¡Error!");
                 }
               },
               error => {
