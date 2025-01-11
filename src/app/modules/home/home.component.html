@@ -26,6 +26,8 @@
             </div>
          </mat-card-content>
       </mat-card>
+
+
 <!--GRÁFICAS A PARTIR DE AQUÍ-->
 <div style="margin-top: 60px;">
    <mat-card *ngIf="isAdmin() || isRecep()">
@@ -34,18 +36,21 @@
             <tr>
             <td colspan="1" class="column">
                <div class="chart-container">
+                  <div>
+                     <h3>{{ currentDate }}</h3>
+                  </div>
                   <ngx-charts-line-chart
-                     [view]="[300, 200]" 
-                     [scheme]="colorScheme2"
-                     [results]="salesChartData"
-                     [gradient]="gradient2"
-                     [xAxis]="showXAxis2"
-                     [yAxis]="showYAxis2"
-                     [showXAxisLabel]="showXAxisLabel2"
-                     [showYAxisLabel]="showYAxisLabel2"
-                     [xAxisLabel]="xAxisLabel2"
-                     [yAxisLabel]="yAxisLabel2"
-                     [timeline]="timeline2"
+                     [view]="viewVisita" 
+                     [scheme]="colorSchemeVisita"
+                     [results]="salesChartDataVisita"
+                     [gradient]="gradientVisita"
+                     [xAxis]="showXAxisVisita"
+                     [yAxis]="showXAxisVisita"
+                     [showXAxisLabel]="showYAxisLabelVisita"
+                     [showYAxisLabel]="showYAxisLabelVisita"
+                     [xAxisLabel]="xAxisLabelVisita"
+                     [yAxisLabel]="yAxisLabelVisita"
+                     [timeline]="timelineVisita"
                      [legend]="true"
                      [legendTitle]="'Mes'"
                      (select)="onSelect($event)">
@@ -54,8 +59,11 @@
             </td>
             <td colspan="1" class="column">
                <div class="chart-container">
+                  <div>
+                     <h3>{{ currentDate }}</h3>
+                  </div>
                   <ngx-charts-line-chart
-                  [view]="[300, 200]"
+                  [view]="[300, 300]"
                   [scheme]="colorScheme2"
                   [results]="salesChartData"
                   [gradient]="gradient2"
@@ -74,8 +82,11 @@
             </td>
             <td colspan="1" class="column">
                <div class="chart-container">
+                  <div>
+                     <h3>{{ currentDate }}</h3>
+                  </div>
                   <ngx-charts-line-chart
-                  [view]="[300, 200]"
+                  [view]="[300, 300]"
                   [scheme]="colorScheme2"
                   [results]="salesChartData"
                   [gradient]="gradient2"
