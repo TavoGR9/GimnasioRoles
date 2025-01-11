@@ -7,6 +7,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User, dataChart, dataLogin, listaSucursal } from '../models/User';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
+
+//MENSAJE EMERGENTE
+import { MatDialog } from '@angular/material/dialog';
+import { MensajeEliminarComponent } from '../modules/mensaje-eliminar/mensaje-eliminar.component';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,17 +37,16 @@ export class AuthService {
   //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  //API: string = 'http://localhost/serviciosGimnasio/'
 
   API: string = 'http://localhost/serviciosGym/'
-  
+
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private router: Router, private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
+  constructor(private router: Router, private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService, public dialog: MatDialog) {
     const encryptedMail = sessionStorage.getItem(this.USER_KEY);
     if (encryptedMail) {
       this.encryptedMail.next(encryptedMail);
@@ -85,10 +90,22 @@ export class AuthService {
   }
 
   logoutBS(): void {
-    this.loggedIn.next(false);
-    this.role.next('');
-    this.clearCurrentUser();  // Borrar informacion de usuario en sesion storage
-    this.router.navigate(['login'], { replaceUrl: true });
+    const dialogRef = this.dialog.open(MensajeEliminarComponent, {
+      width: '350px',
+      data: `¿Está seguro de que desea cerrar la sesión?`,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result === true){
+        this.loggedIn.next(false);
+        this.role.next('');
+        this.clearCurrentUser();  // Borrar informacion de usuario en sesion storage
+        this.router.navigate(['login'], { replaceUrl: true });
+      }else {
+        console.log("Cierre de sesión cancelado");
+      }
+    })
+
   }
 
   isLoggedInBS(): boolean {
@@ -199,9 +216,15 @@ export class AuthService {
   //   return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders});
   // }
 
+  getUsuario(correo: string): Observable<any> {
+    const params = { correo };
+    return this.clienteHttp.get<any>(this.API +  'getUsuarioActual.php', { params });
+  }
+
   dataUser(data: any): Observable<any> {
     return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
       tap(dataResponse => {
+        //console.log("DATOS: ",dataResponse);
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {

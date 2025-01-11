@@ -29,11 +29,11 @@
                                   <label>Precio:</label>
                                   <mat-form-field appearance="outline"  style="width: 95%;" required>
                                       <mat-label>Precio</mat-label>
-                                      <input type="number" placeholder="Precio" matInput autocomplete="off" id="preciopv" formControlName="preciopv" >
-                                      <mat-error *ngIf="isFieldInvalid('preciopv', 'required')">
+                                      <input type="number" placeholder="Precio" matInput autocomplete="off" id="PrecioPaquete" formControlName="PrecioPaquete" >
+                                      <mat-error *ngIf="isFieldInvalid('PrecioPaquete', 'required')">
                                           El precio es requerido.
                                         </mat-error>
-                                        <mat-error *ngIf="isFieldInvalid('preciopv', 'pattern')">
+                                        <mat-error *ngIf="isFieldInvalid('PrecioPaquete', 'pattern')">
                                           Solo se aceptan números.
                                         </mat-error>
                                   </mat-form-field>
@@ -47,7 +47,7 @@
                             <label>Tipo de Promoción:</label>
                             <mat-form-field appearance="outline" style="width: 95%;" required>
                               <mat-label>Selecciona Tipo de Promoción</mat-label>
-                              <mat-select formControlName="idChoProm" placeholder="Seleccione un tipo">
+                              <mat-select formControlName="idChoProm" placeholder="Seleccione un tipo" (selectionChange)="onTipoPromocionChange($event.value)">
                                 <!-- Opciones del select -->
                                 <mat-option [value]="1">Paquete</mat-option>
                                 <mat-option [value]="2">Individual</mat-option>
@@ -97,29 +97,33 @@
                       </div>
                   </div>
 
-                  <!--<div class="row">
+                    <div class="row">
                       <div class="col-sm-6">
-                          <p>
-                              <label>Detalles:</label>
-                              <mat-form-field style="display: inline-block; width: 95%; height: 110px;" required appearance="outline">
-                                  <mat-label>Detalles</mat-label>
-                                  <textarea class="textarea" matInput rows="4" placeholder="Detalles" cols="50" style="display: inline-block; width: 100%;height: 100%;" id="detalles" formControlName="detalles"> </textarea>
+                          <p *ngIf="plan && plan.length > 0; else noServicios ">
 
+                            <label>Membresías:</label>
+                            <!-- Selector para selección múltiple -->
+                             <mat-form-field *ngIf="isMultiple" appearance="outline" style="width: 95%;" required>
+                              <mat-label>Selecciona varias membresías</mat-label>
+                                <mat-select
+                                multiple
+                                formControlName="membresias">
+                                  <mat-option *ngFor="let membresia of plan" [value]="membresia">
+                                  {{ membresia.nombreProducto }} - {{ membresia.nombreCategoria }} - {{ membresia.marca }}
+                                  </mat-option>
+                                </mat-select>
                               </mat-form-field>
-                          </p>
 
-                      </div>
-                      <div class="col-sm-6">
-                          <p *ngIf="plan && plan.length > 0; else noServicios">
-                              <label>Membresías:</label>
-                              <mat-form-field appearance="outline" style="width: 95%;" required>
-                                  <mat-label>Selecciona una membresía</mat-label>
-                                  <mat-select [(value)]="selectedMembresia" multiple formControlName="membresias">
-                                    <mat-option *ngFor="let membresia of plan" [value]="membresia">
-                                      {{ membresia.titulo }} - {{ membresia.duracion }} días - {{ membresia.nombre_servicio }}
-                                    </mat-option>
-                                  </mat-select>
-                                </mat-form-field>
+                            <!-- Selector para selección única -->
+                            <mat-form-field *ngIf="!isMultiple" appearance="outline" style="width: 95%;" required>
+                              <mat-label>Selecciona una membresía</mat-label>
+                                <mat-select
+                                formControlName="membresias">
+                                  <mat-option *ngFor="let membresia of plan" [value]="membresia">
+                                  {{ membresia.nombreProducto }} - {{ membresia.nombreCategoria }} - {{ membresia.marca }}
+                                  </mat-option>
+                                </mat-select>
+                            </mat-form-field>
                           </p>
                         </div>
 
@@ -133,18 +137,7 @@
 
                       </div>
 
-                  </div>-->
-                  <!--<div class="row">
-                      <div class="col-sm-6">
-                          <p>
-                              <mat-form-field>
-                                  <mat-label>Duración</mat-label>
-                                  <input matInput type="number" formControlName="duracion">
-                                </mat-form-field>
-                          </p>
-
-                      </div>
-                  </div>  -->
+                  </div>
               </div>
           </form>
       </div>

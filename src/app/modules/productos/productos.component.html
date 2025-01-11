@@ -41,7 +41,7 @@
                     </div>
                   </th>
                   <td mat-cell *matCellDef="let producto">
-                    {{ producto.nombreProducto }}, {{ producto.marca }} - {{ producto.detalleCompra }}
+                    {{ producto.presentacionProducto }}
                   </td>
                 </ng-container>
 
@@ -76,11 +76,17 @@
                      </button>
                    </ng-container>
 
-                   <ng-container *ngIf="isAdmin() && producto.existencia === null">
+                   <ng-container *ngIf="isAdmin() && producto.existencia; else iconoNoIdBodega">
+                    <button mat-icon-button color="warn" (click)="deleteProducto(producto.idProbob)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                   </ng-container>
+
+                   <!-- <ng-container *ngIf="isAdmin() && producto.existencia === null">
                     <button mat-icon-button color="primary" (click)="deleteProducto(producto.idProbob)" [disabled]="!habilitarBoton">
                       <mat-icon>delete</mat-icon>
                     </button>
-                  </ng-container>
+                  </ng-container> -->
 
                    <ng-template #iconoNoIdBodega>
                      <mat-icon color="warn">block</mat-icon>
@@ -94,7 +100,7 @@
              </table>
          </div>
          <mat-paginator #paginator
-            [pageSizeOptions]="[5, 10, 15, 20]"
+            [pageSizeOptions]="[10, 25, 50, 100]"
             showFirstLastButtons
             ></mat-paginator>
          <br />

@@ -11,18 +11,13 @@ import { AuthService } from '../../service/auth.service';
 import { catchError} from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { tap } from 'rxjs/operators';
-class Horario {
-  constructor(
-    public diaSemana: string,
-    public horaEntrada: string,
-    public horaSalida: string,
-    public Gimnasio_idGimnasio: string
-  ) {}
-}
+import { ToastrService } from "ngx-toastr";
+import { RoleGuard } from '../../guards/role.guard';
+
 @Component({
   selector: 'app-configuracion',
   templateUrl: './configuracion.component.html',
-  styleUrls: ['./configuracion.component.css'] 
+  styleUrls: ['./configuracion.component.css']
 })
 export class ConfiguracionComponent  implements OnInit{
   elID: any;
@@ -35,7 +30,8 @@ export class ConfiguracionComponent  implements OnInit{
   formularioSucursales: FormGroup;
   diasSemana = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
   idGimnasio: any;
-  
+  correo: string = "";
+
   constructor(
     private router: Router,
     public dialog: MatDialog,
@@ -44,37 +40,59 @@ export class ConfiguracionComponent  implements OnInit{
     private activeRoute: ActivatedRoute,
     public formularioHorario: FormBuilder,
     private HorarioService: HorarioService,
-    private gimnasioService: GimnasioService, 
+    private gimnasioService: GimnasioService,
+
+    private toastr: ToastrService,
   ) {
     {
-      this.idGimnasio = this.auth.idGym.getValue(); // Accede a idGimnasio desde los datos
+      this.idGimnasio = this.auth.idGym.getValue(); // Accede a idGimnasio
+
       this.formularioHorarios = this.formulario.group({
         horarios: this.formulario.array([]),
       });
-     // this.formularioHorarios = this.formularioHorario.group({ horarios: this.formularioHorario.array([])});
     }
+
     this.elID = this.activeRoute.snapshot.paramMap.get('id');
+
     this.formularioSucursales = this.formulario.group({
-      nombreBodega: [""],
+      nombreBodega: ["",Validators.required],
       direccion: ["", Validators.required],
       numeroTelefonico:  ['', Validators.compose([Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/)])],
     });
   }
 
-  /*agregarHorarioExistente(diaSemana: string, respuesta: any): void {
-    const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
-    const horaEntrada = horarioExistente ? horarioExistente.horaEntrada : '';
-    const horaSalida = horarioExistente ? horarioExistente.horaSalida : '';
-    const horarioFormGroup = this.formularioHorario.group({
-      diaSemana: [diaSemana, Validators.required],
-      horaEntrada: [horaEntrada, Validators.required],
-      horaSalida: [horaSalida, Validators.required],
-    });
-    const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
-    if (horariosArray) {
-      horariosArray.push(horarioFormGroup);
+  ngOnInit(): void {
+
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
     }
-  }*/
+    this.auth.email.subscribe((data) => {
+      this.correo = data;
+      //console.log("datai emil: ",this.email);
+      this.listaTabla();
+    });
+
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      this.verHorario();
+    });
+
+    }
+
+    getSSdata(data: any){
+      this.auth.dataUser(data).subscribe({
+        next: (resultData) => {
+          this.auth.loggedIn.next(true);
+            this.auth.role.next(resultData.rolUser);
+            this.auth.idUser.next(resultData.id);
+            this.auth.idGym.next(resultData.idGym);
+            this.auth.nombreGym.next(resultData.nombreGym);
+            this.auth.email.next(resultData.email);
+            this.auth.encryptedMail.next(resultData.encryptedMail);
+        }, error: (error) => { console.log(error); }
+      });
+    }
 
   agregarHorarioExistente(diaSemana: string, respuesta: any): void {
     const horarioExistente = respuesta.find((horario: any) => horario.diaSemana === diaSemana);
@@ -85,39 +103,18 @@ export class ConfiguracionComponent  implements OnInit{
       horaEntrada: [horaEntrada, Validators.required],
       horaSalida: [horaSalida, Validators.required],
     });
+
     const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
     if (horariosArray) {
       horariosArray.push(horarioFormGroup);
     }
-  }
-  
-  ngOnInit(): void {
-    this.currentUser = this.auth.getCurrentUser();
-    if(this.currentUser){
-      this.getSSdata(JSON.stringify(this.currentUser));
-    }
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      this.listaTabla();
-      this.verHorario();
-    }); 
-  }
 
-/*  verHorario(){
-    this.HorarioService.consultarHorario(this.idGym).subscribe(
-      respuesta => {
-        const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
-        horariosArray.clear();
-        this.diasSemana.forEach(dia => {
-          this.agregarHorarioExistente(dia, respuesta);
-        });
-      }
-    );
-  }*/
+  }
 
   verHorario() {
     this.HorarioService.consultarHorario(this.idGym).subscribe(
       respuesta => {
+        //console.log("datos verHorario: ",respuesta);
         const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
         horariosArray.clear(); // Limpiar el FormArray antes de añadir nuevos elementos
 
@@ -128,57 +125,63 @@ export class ConfiguracionComponent  implements OnInit{
     );
   }
 
+
   listaTabla(){
-    this.gimnasioService.consultarPlan(this.idGym).subscribe(
+    //console.log("DATOS LISTA: ",this.email);
+    this.gimnasioService.consultarPlan(this.correo).subscribe(
       (respuesta) => {
-        this.formularioSucursales.setValue({
-          nombreBodega: respuesta[0]['nombreBodega'],
-          direccion: respuesta[0]['direccion'],
-          numeroTelefonico: respuesta[0]['numeroTelefonico'],
-         // estatus: respuesta[0]['estatus'],
-        }); 
+            this.formularioSucursales.patchValue({
+              nombreBodega: respuesta[0]['nombreBodega'],
+              direccion:  respuesta[0]['direccion'],
+              numeroTelefonico:  respuesta[0]['numeroTelefonico'],
+        });
+
+
+
       }
     );
   }
 
-  getSSdata(data: any){
-    this.auth.dataUser(data).subscribe({
-      next: (resultData) => {
-        this.auth.loggedIn.next(true);
-          this.auth.role.next(resultData.rolUser);
-          this.auth.idUser.next(resultData.id);
-          this.auth.idGym.next(resultData.idGym);
-          this.auth.nombreGym.next(resultData.nombreGym);
-          this.auth.email.next(resultData.email);
-          this.auth.encryptedMail.next(resultData.encryptedMail);
-      }, error: (error) => { console.log(error); }
-    });
-  }
+
+
 
   actualizar() {
     const idGym = this.auth.idGym.getValue();
     const planData = {
       nombre: this.formularioSucursales.value.nombreBodega,
       direcc: this.formularioSucursales.value.direccion,
-      numero: this.formularioSucursales.value.numeroTelefonico,
+      numero: parseInt(this.formularioSucursales.value.numeroTelefonico, 10), // Convertir a número
       id_bod: idGym
-    };  
-    
-
-   // const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
-   // const horariosActualizados = horariosArray.controls.map(horarioControl => horarioControl.value);
-
-    //const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
-    //const horariosActualizados = horariosArray.controls.map(horarioControl => horarioControl.value);
+    };
 
     // Convertir horariosActualizados en un array
-
-
-
     const horariosData = this.formularioHorarios.value;
+
+    //condicionales
+    if(
+      !planData.nombre?.trim() ||
+      !planData.direcc ||
+      !planData.numero
+    ){
+      this.toastr.error("Todos los campos son obligatorios, un campo esta vacio", "Error");
+      return;
+    }
+
+    if (isNaN(planData.numero) || planData.numero.toString().length !== 10) {
+      this.toastr.error("El número telefónico debe ser un número válido de 10 dígitos.", "Error");
+      return;
+    }
+
+    if (!this.validarHorarios(horariosData)) {
+      console.error("Validación de horarios fallida");
+      return;
+    }
+
+
     const actualizarPlan = this.gimnasioService.actualizarSucursal(planData).pipe(
       tap(respuesta => {
         if (respuesta.success === 1) {
+          //console.log(horariosData);
         }
       }),
       catchError(error => {
@@ -186,7 +189,7 @@ export class ConfiguracionComponent  implements OnInit{
         return throwError('Error al actualizar el plan');
       })
     );
-  
+
     const actualizarHorarios = this.HorarioService.actualizarHorario(idGym, horariosData).pipe(
       tap(respuesta => {
         if (respuesta.success === 1) {
@@ -208,7 +211,7 @@ export class ConfiguracionComponent  implements OnInit{
       }
     });
   }
-  
+
   private mostrarMensajeYRedireccionar() {
     this.dialog.open(MensajeEmergentesComponent, {
       data: 'Gimnasio actualizado exitosamente',
@@ -218,16 +221,55 @@ export class ConfiguracionComponent  implements OnInit{
       }
     });
   }
-  
+
   private mostrarMensajeDeError() {
     this.dialog.open(MensajeEmergentesComponent, {
       data: 'Error durante la actualización del gimnasio',
     });
   }
-  
+
   getHorariosControls(): AbstractControl[]{
     const horariosArray = this.formularioHorarios.get('horarios') as FormArray;
     return horariosArray.controls;
   }
+
+  validarHorarios(horariosData: any): boolean {
+    const horarios = horariosData?.horarios;
+
+    if (!Array.isArray(horarios)) {
+      console.error("Horarios no es un arreglo válido:", horariosData);
+      this.toastr.error("Error en los datos de los horarios. Por favor, verifica la información.", "Error");
+      return false;
+    }
+
+    const horariosValidos = horarios.every(horario => {
+      const entrada = horario.horaEntrada ? horario.horaEntrada.split(':').map(Number) : [0, 0];
+      const salida = horario.horaSalida ? horario.horaSalida.split(':').map(Number) : [0, 0];
+      const minutosEntrada = entrada[0] * 60 + entrada[1];
+      const minutosSalida = salida[0] * 60 + salida[1];
+
+      // Condiciones:
+      // 1. Si las horas son "00:00:00" (por ejemplo, para días inactivos), es válido.
+      // 2. Si las horas son distintas de "00:00:00", la hora de salida debe ser mayor que la de entrada.
+      if (
+        (horario.horaEntrada === "00:00:00" && horario.horaSalida === "00:00:00") ||
+        (minutosSalida > minutosEntrada)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    if (!horariosValidos) {
+      this.toastr.error("Algunos horarios tienen la hora de entrada o salida inválidas.", "Error");
+      return false;
+    }
+
+    return true;
+  }
+
+
+
 
 }

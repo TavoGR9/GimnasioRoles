@@ -415,23 +415,8 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  onSelectQuincena(event?: any): void {
-    if (event == undefined) {
-      this.fechaMensualidad = this.fechaFormateada;
-      this.graficasFecha(this.fechaFormateada);
-    }
-    else if (typeof event.series === "string") {
-      // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
-      const numeroMes = this.meses[event.series as keyof typeof this.meses];
-      //this.fechaMensualidad = this.año + "-" + numeroMes + "-" + event.name;
-      this.fechaMensualidad = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
-      this.graficasFecha(this.fechaMensualidad);
-    } else {
-      console.warn("Nombre de mes no es una cadena válida:", event.series);
-    }
-  }
 
-  /*onSelectQuincena(event?: any): void {
+  onSelectQuincena(event?: any): void {
     if (event == undefined) {
       this.fechaQuincena = this.fechaFormateada;
       this.graficasFechaQuincena(this.fechaFormateada);
@@ -446,7 +431,7 @@ export class HomeComponent implements OnInit {
     } else {
       console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
-  }*/
+  }
 
   onSelectVisita(event?: any): void {
     if (event == undefined) {
@@ -660,6 +645,7 @@ this.pagoService.getPedidosMembresias(4).subscribe(
       this.salesData= pedidosConteoDia
       this.processSalesData();
       //this.processVisitsData();
+      this.processSalesDataVisita();
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
       console.log(errorMessage)
@@ -804,7 +790,7 @@ getDatosGraficaPorProducto(data: any, idProducto: string): any[] {
 // Configuración de ngx-charts
 view2: [number, number] = [900, 900]; // Tamaño del gráfico
 colorScheme2: Color = {
-  domain: ["#FF8C00", "#000000"], // Colores
+  domain: ["#4CAF50", "#FF5722"], // Colores
   name: "cool",
   selectable: true,
   group: ScaleType.Ordinal,
@@ -824,7 +810,6 @@ currentMonthStr: string='';
 salesChartData: any[] = []; // Aquí guardaremos los resultados procesados
 
 // Producto seleccionado dinámicamente
-
 selectedProduct2: string = 'Mensualidad'; // Valor inicial
 
 
@@ -898,15 +883,13 @@ processSalesData() {
 //////////VISITA//////////////////////////
 
 // Configuración de ngx-charts para "Visita"
-viewVisita: [number, number] = [300, 300]; // Tamaño del gráfico
-
+viewVisita: [number, number] = [900, 900]; // Tamaño del gráfico
 colorSchemeVisita: Color = {
   domain: ["#4CAF50", "#FF5722"], // Colores específicos para "Visita"
   name: "visita",
   selectable: true,
   group: ScaleType.Ordinal,
 };
-
 gradientVisita: boolean = false;
 showXAxisVisita: boolean = true;
 showYAxisVisita: boolean = true;
@@ -916,40 +899,38 @@ showYAxisLabelVisita: boolean = true;
 yAxisLabelVisita: string = '';
 timelineVisita: boolean = true;
 yScaleMaxVisita: number | undefined = undefined; // Escala Y dinámica
-currentMonthStrVisita: string = '';
+currentMonthStrVisita: string = ''; // Mes actual en formato 'YYYY-MM'
 
-// Datos del gráfico para "Visita"
-salesChartDataVisita: any[] = []; // Aquí guardaremos los resultados procesados para "Visita"
+// Datos del gráfico
+salesChartDataVisita: any[] = []; // Aquí guardaremos los resultados procesados
 
-// Producto seleccionado dinámicamente para "Visita"
+// Producto seleccionado dinámicamente
 selectedProductVisita: string = 'Visita'; // Valor inicial
 
-// Procesar los datos para "Visita"
+// Procesar los datos
 processSalesDataVisita() {
   // Obtener el mes y el año actual dinámicamente
-  console.log(this.salesChartDataVisita);
-  
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
-  const currentMonthStr = `${currentYear}-${currentMonth}`; // Mes actual en formato 'YYYY-MM'
+  const currentMonthStrVisita = `${currentYear}-${currentMonth}`; // Mes actual en formato 'YYYY-MM'
 
   // El mes anterior
   const previousMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1); // Restamos 1 mes
   const previousYear = previousMonthDate.getFullYear();
   const previousMonth = (previousMonthDate.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
-  const previousMonthStr = `${previousYear}-${previousMonth}`; // Mes pasado en formato 'YYYY-MM'
+  const previousMonthStrVisita = `${previousYear}-${previousMonth}`; // Mes pasado en formato 'YYYY-MM'
 
   // Obtener días totales del mes actual y mes anterior
   const daysInCurrentMonth = today.getDate(); // Solo hasta el día actual del mes actual
   const daysInPreviousMonth = new Date(previousYear, parseInt(previousMonth), 0).getDate(); // Último día del mes anterior
 
   // Inicializar series con días y valores en 0
-  const currentMonthSales: { name: string; value: number }[] = Array.from(
+  const currentMonthSalesVisita: { name: string; value: number }[] = Array.from(
     { length: daysInCurrentMonth },
     (_, i) => ({ name: `${i + 1}`, value: 0 })
   );
-  const previousMonthSales: { name: string; value: number }[] = Array.from(
+  const previousMonthSalesVisita: { name: string; value: number }[] = Array.from(
     { length: daysInPreviousMonth },
     (_, i) => ({ name: `${i + 1}`, value: 0 })
   );
@@ -961,10 +942,10 @@ processSalesDataVisita() {
       Object.values(record.conteoProductos).forEach((product: any) => {
         if (product.nombreProducto === this.selectedProductVisita) {
           const day = parseInt(date.split('-')[2]); // Extraer día (DD)
-          if (date.startsWith(currentMonthStr) && day <= daysInCurrentMonth) {
-            currentMonthSales[day - 1].value = product.cantidad;
-          } else if (date.startsWith(previousMonthStr)) {
-            previousMonthSales[day - 1].value = product.cantidad;
+          if (date.startsWith(currentMonthStrVisita) && day <= daysInCurrentMonth) {
+            currentMonthSalesVisita[day - 1].value = product.cantidad;
+          } else if (date.startsWith(previousMonthStrVisita)) {
+            previousMonthSalesVisita[day - 1].value = product.cantidad;
           }
         }
       });
@@ -972,21 +953,21 @@ processSalesDataVisita() {
   });
 
   // Calcular el máximo para el eje Y
-  const allValues = [
-    ...currentMonthSales.map((d) => d.value),
-    ...previousMonthSales.map((d) => d.value),
+  const allValuesVisita = [
+    ...currentMonthSalesVisita.map((d) => d.value),
+    ...previousMonthSalesVisita.map((d) => d.value),
   ];
-  this.yScaleMaxVisita = allValues.length > 0 ? Math.max(...allValues) : 0; // Máximo o 0 si no hay valores
+  this.yScaleMaxVisita = allValuesVisita.length > 0 ? Math.max(...allValuesVisita) : 0; // Máximo o 0 si no hay valores
 
   // Estructurar datos para ngx-charts
   this.salesChartDataVisita = [
     {
-      name: `${currentMonthStr} (${this.selectedProductVisita})`,
-      series: currentMonthSales,
+      name: `${currentMonthStrVisita} (${this.selectedProductVisita})`,
+      series: currentMonthSalesVisita,
     },
     {
-      name: `${previousMonthStr} (${this.selectedProductVisita})`,
-      series: previousMonthSales,
+      name: `${previousMonthStrVisita} (${this.selectedProductVisita})`,
+      series: previousMonthSalesVisita,
     },
   ];
 }
@@ -1017,6 +998,3 @@ updateSelectedProduct2(productName: string) {
   this.processSalesDataVisita();
 }
 }
-
-
-

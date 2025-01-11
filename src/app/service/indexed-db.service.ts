@@ -201,9 +201,16 @@ export class IndexedDBService extends Dexie {
         .toArray();
   }
 
+  ///esta cam,buiandose el guardado de planes
   async savePlanData(key: string, data: any) {
-    await this.PlanDataTable.put({ key, data });
+    try {
+      await this.PlanDataTable.put({ key, data });
+      //console.log("Datos guardados exitosamente en IndexedDB");
+    } catch (error) {
+      //console.error("Error al guardar en IndexedDB:", error);
+    }
   }
+
 
   async getPlanData(key: string) {
     return await this.table('Plan')

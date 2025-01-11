@@ -73,8 +73,8 @@
     </div>
 
     <div class="column" >
-      <ng-container  *ngIf="duracionCalculo(data.fecha_caducidad)" >
-        <h3 style="font-weight: bold;">Duración:</h3>  {{ duracionCalculo(data.fecha_caducidad) || null }}
+      <ng-container  *ngIf="duracionCalculo2(data.fecha_inicio,data.fecha_caducidad)" >
+        <h3 style="font-weight: bold;">Duración:</h3>  {{ duracionCalculo2(data.fecha_inicio,data.fecha_caducidad) || null }}
       </ng-container>
     </div>
 
@@ -108,7 +108,7 @@
         <th mat-header-cell *matHeaderCellDef style="text-align: center;">{{ column }}</th>
         <td mat-cell *matCellDef="let memCli" style="text-align: center;">
           <ng-container *ngIf="column === 'ID'">
-            {{ memCli.clave }}
+            {{ memCli.estafeta }}
           </ng-container>
           <ng-container *ngIf="column === 'Nombre'">
             {{ memCli.nombreCompleto }}
@@ -120,9 +120,9 @@
             {{ memCli.precioPedido | currency }}
           </ng-container>
           <ng-container *ngIf="column === 'Duración'">
-            <div *ngIf="duracionCalculo(memCli.fecha_caducidad)">
+            <div *ngIf="duracionCalculo2(memCli.fecha_inicio,memCli.fecha_caducidad)">
               <!-- Aquí puedes mostrar el resultado de la evaluación -->
-                {{ duracionCalculo(memCli.fecha_caducidad) || null }}
+                {{duracionCalculo2(memCli.fecha_inicio,memCli.fecha_caducidad)}}
             </div>
             
           </ng-container>

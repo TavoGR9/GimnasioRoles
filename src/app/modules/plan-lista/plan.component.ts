@@ -1,98 +1,137 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
 import { MatDialog } from "@angular/material/dialog";
 import { plan } from '../../models/plan';
 import { MensajeEliminarComponent } from '../mensaje-eliminar/mensaje-eliminar.component';
 import { AuthService } from '../../service/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { DialogSelectMembershipComponent } from '../dialog-select-membership/dialog-select-membership.component';
 import { planAgregarComponent } from '../plan-agregar/plan-agregar.component';
 import { planEditarComponent } from '../plan-editar/plan-editar.component';
-import { MembresiaService } from '../../service/membresia.service';
+import { PromocionService } from '../../service/promocion.service';
+import { distinctUntilChanged } from 'rxjs/operators';//Cuando el id del gym cambia
+import { filter, switchMap, tap, catchError, finalize  } from 'rxjs/operators'; //permite transformar el flujo de datos
+import { of } from 'rxjs';//crea un observable
+import { ToastrService } from 'ngx-toastr';
+
+
 
 @Component({
   selector: 'app-membresias',
   templateUrl: './plan.component.html',
   styleUrls: ['./plan.component.css']
 })
-export class planComponent implements OnInit {
+export class planComponent implements OnInit, AfterViewInit  {
 
   membresiaActiva: boolean = true; // Inicializa según el estado de la membresía
-  membresias: plan[] = [];
   plan: plan[] = [];
   message: string = "";
-  public sucursales: any;
-  public page: number = 0;
-  public search: string = '';
   dataSource: any;
-  services: any[] = [];
   idGym: number = 0;
-  section: number = 0;
-  option: number = 0;
   currentUser: string = '';
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = ['title', 'details','price','actions'];
   habilitarBoton: boolean = false;
 
   constructor(
-    private membresiaService: MembresiaService,
+    private promocionService: PromocionService,
     private auth: AuthService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private toastr: ToastrService
   ){}
 
   ngOnInit(): void {
-    // this.membresiaService.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+
+    this.listaTabla();//no quitar,
+
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
 
-    this.membresiaService.optionShow.next(4);
-    this.membresiaService.optionShow.subscribe((option) => {
-      if(option){
-        if(option == 4){
-          this.option = option;
-        }
-      }
-    });
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-    this.auth.idGym.subscribe((data) => {
+
+    //Cuando el id del Gym cambia tambien la tabla
+    this.auth.idGym.pipe(
+      distinctUntilChanged()  // Esto evitará la llamada si el valor no ha cambiado
+    ).subscribe((data) => {
       this.idGym = data;
-      this.listaTabla();
-    }); 
+      this.listaTabla(); // Llama a la tabla solo cuando idGym cambia
+    });
+
+  }
+//LLAMAR LOS DATOS PARA QUE SE MUESTREN CUANDO SE CARGA EL COMPONENTE
+  ngAfterViewInit(): void {
+    this.listaTabla();
   }
 
+  //RECARGAR LA TABLA
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSource.paginator = this.paginator;
-    }, 1000); 
+    }, 1000);
   }
-  
-  listaTabla() {
-    this.membresiaService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
-      if (respuesta && respuesta.success === 1) {
-        if (respuesta.data && Array.isArray(respuesta.data)) {
-          this.plan = respuesta.data; 
-          this.dataSource = new MatTableDataSource(this.plan);
-          this.loadData();
-        } else {
-          console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 1000); 
-        }
-      }  else {
-        setTimeout(() => {
-          this.isLoading = false;
-        }, 1000); 
+
+
+  ///FILTRO PARA LOS PLANES PARA QUE NO SE MUESTREN DOBLES POR LAS MEMBRESIAS
+  private filtrarDatosUnicos(data: { nombrePromocion: string; [key: string]: any }[]): any[] {
+    const nombresUnicos = new Set();
+    const datosUnicos: { nombrePromocion: string; [key: string]: any }[] = []; // Declaramos el tipo de datosUnicos
+
+    data.forEach(item => {
+      if (!nombresUnicos.has(item.nombrePromocion)) {
+        nombresUnicos.add(item.nombrePromocion); // Agregamos el nombre al Set para evitar duplicados
+        datosUnicos.push(item); // Solo agregamos el primer registro encontrado
       }
     });
+
+    return datosUnicos;
   }
-  
+
+
+
+
+  //METODO PARA LOS PLANES Y EL AGREGAR PLANES
+  private actualizaLista(respuesta: any, usePaginator: boolean = false): void {
+    if (respuesta.success === 1) {
+      if (respuesta.data && Array.isArray(respuesta.data)) {
+        const datosUnicos = this.filtrarDatosUnicos(respuesta.data);
+        this.plan = datosUnicos;
+
+        this.dataSource = new MatTableDataSource(this.plan);
+        if (usePaginator) {
+          this.dataSource.paginator = this.paginator; // Asigna el paginador solo si es necesario
+        }
+        this.loadData();
+
+      } else {
+        console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
+      }
+    } else {
+      console.error('Error en respuesta success:', respuesta.success);
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 1000);
+    }
+  }
+
+  //optiene la lista
+  listaTabla() {
+    this.promocionService.listaPlanes(this.idGym).pipe(
+      tap(respuesta => this.actualizaLista(respuesta, false)),
+
+
+      catchError(error => {
+        console.error('Error en la llamada HTTP:', error);
+        return of(null);//evita que el observable falle
+      })
+    ).subscribe();
+}
+
+//DATOS
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -100,6 +139,7 @@ export class planComponent implements OnInit {
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
+          console.log("ES EL ID EN LISTA: " +this.idGym);
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
@@ -107,157 +147,126 @@ export class planComponent implements OnInit {
     });
   }
 
+  //FILTRO DE LOS PRODUCTOS
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  toggleCheckbox(idMem: number, status: number) {
-    const estadoOriginal = status;
+
+
+  // ACTUALIZACIÓN DE ESTATUS
+  toggleCheckbox(idPro: any, status: any) {
+    const nuevoEstado = { status: Number(status) === 1 ? 0 : 1 }; // Forzar a número
+
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
-      data: `¿Desea cambiar el estatus de la categoría?`, 
+      data: `¿Desea cambiar el estatus de la categoría?`,
     });
-    dialogRef.afterClosed().subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        // Invierte el estado actual de la categoría
-        const nuevoEstado = status == 1 ? { status: 0 } : { status: 1 };
-        this.actualizarEstatusMembresia(idMem, nuevoEstado);
-      } else {
-      }
-    });
+
+    dialogRef.afterClosed()
+      .pipe(
+        switchMap((confirmado: boolean) => {
+          if (confirmado) {
+            console.log("id: ", idPro, "estatus: ", nuevoEstado);
+            return this.promocionService.updateStatus(idPro, nuevoEstado);
+          } else {
+            return of(null); // No hacer nada si no se confirma
+          }
+        })
+      )
+      .subscribe({
+        next: (respuesta) => {
+          if (respuesta) {
+            this.membresiaActiva = nuevoEstado.status === 1; // Actualiza la variable local
+            //Actializa la tabla para reflejar cambios
+            this.promocionService.listaPlanes(this.idGym).subscribe(respuesta => {
+              this.actualizaLista(respuesta, true);
+            });
+            console.log('Estatus actualizado exitosamente');
+
+          }
+        },
+        error: (error) => {
+          console.error('Error al actualizar la membresía:', error);
+        },
+      });
   }
 
-  actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
-    this.membresiaService.updateMembresiaStatus(idMem, estado).subscribe(
-      (respuesta) => {
-        this.membresiaActiva = estado.status == 1;
-      },
-      (error) => {
-        console.error('Error al actualizar la membresía:', error);
-      }
-    );
-  }
-  
+  //AGREGAR PLANES
   openDialog(): void {
-    this.membresiaService.section.next(1);
+    this.promocionService.section.next(1);
     const dialogRef = this.dialog.open(planAgregarComponent, {
       width: '70%',
-      //height: '90%',
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe(result => {
-      this.membresiaService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
-        if (respuesta.success === 1) {
-          // Verificar si la propiedad 'data' está presente y es un array
-          if (respuesta.data && Array.isArray(respuesta.data)) {
-            this.plan = respuesta.data;  // Asignar el array 'data' a 'plan'
-            this.dataSource = new MatTableDataSource(this.plan);
-            this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
-          } else {
-            console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
-          }
-        } else if (respuesta.warning) {
-     
-        } else {
-          console.error('Error en la respuesta del servicio:', respuesta.error);
-        }
-      });
-    });
+
+    dialogRef.afterClosed().pipe(
+    filter(result => result === true),
+
+    switchMap(() => this.promocionService.listaPlanes(this.idGym)), // Llamar a la API
+    tap(respuesta => this.actualizaLista(respuesta, true)), // Manejar la respuesta
+    catchError(error => {
+      console.error("Error al cargar la lista de planes:", error);
+      this.toastr.error("Ocurrió un error al agregar los planes.", "Error");
+      return of(null); // Devuelve un observable vacío para continuar
+    }),
+    finalize(() => console.log("Se agrego el plan correctamente."))
+  ).subscribe();
   }
 
-  openDialogService(idMem: number, tipo_membresia: number){
-    this.membresiaService.optionShow.next(5);
-    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-      width: '70%',
-      //height: '50%',
-      disableClose: true,
-      data: {name: 'Servicios de la membresia'}
-    });
-  }
-
-  openDialogEdit(idMem: number, tipo_membresia: number){
-    this.membresiaService.optionShow.subscribe((option) => {
-    })
-
-    this.membresiaService.setDataToupdate(idMem, tipo_membresia);
+  //EDICION DE LOS PLANES
+  openDialogEdit(id_promocion: number){
+    this.promocionService.setDataToupdate(id_promocion);
     const dialogRef = this.dialog.open(planEditarComponent, {
       width: '70%',
       //height: '90%',
       disableClose: true,
-      data: { idMem: idMem },
+      data: { id_promocion: id_promocion },
     })
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.membresiaService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
-        if (respuesta.success === 1) {
-          // Verificar si la propiedad 'data' está presente y es un array
-          if (respuesta.data && Array.isArray(respuesta.data)) {
-            this.plan = respuesta.data;  // Asignar el array 'data' a 'plan'
-            this.dataSource = new MatTableDataSource(this.plan);
-            this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
-          } else {
-            console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
-          }
-        } else if (respuesta.warning) {
-          
-        } else {
-          console.error('Error en la respuesta del servicio:', respuesta.error);
-        }
-      });
-    });
+    dialogRef.afterClosed().pipe(
+      filter(result => result === true),
+
+      switchMap(() => this.promocionService.listaPlanes(this.idGym)), //Llamamos a la API
+      tap(respuesta => this.actualizaLista(respuesta, true)), //Manejamos la respuesta y llamamos a el porcedimiento de cargar la lista
+
+      catchError(error => {
+        console.error("Error al cargar la lista de planes:", error);
+        this.toastr.error("Ocurrió un error al actualizar los planes.", "Error");
+        return of(null); // Devuelve un observable vacío para continuar
+      }),
+      finalize(() => console.log("Se actualizo el plan correctamente"))
+
+    ).subscribe();
+
   }
 
-  openDialogAddServices(){
-    this.membresiaService.optionShow.next(4);
-    this.membresiaService.optionShow.subscribe((option) => {
-      if(option == 4){
-        const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-          width: '70%',
-         // height: '90%',
-          disableClose: true,
-          data: {name: 'Agregar servicios'}
-        });
-      }
-    });
-  }
 
-  borrarPlan(id: any){
+  //ELIMINACION DE PLANES
+  borrarPlan(id: number){
     this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar este servicio?`,
-    })
-    .afterClosed()
-    .subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        this.membresiaService.deletePlan(id).subscribe(
-          (respuesta) => {
-            this.membresiaService.consultarPlanIdPlan2(this.idGym).subscribe(respuesta => {
-              if (respuesta && respuesta.success === 1) {
-                if (respuesta.data && Array.isArray(respuesta.data)) {
-                  this.plan = respuesta.data; 
-                  this.dataSource = new MatTableDataSource(this.plan);
-                  this.loadData();
-                } else {
-                  console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
-                  setTimeout(() => {
-                    this.isLoading = false;
-                  }, 1000); 
-                }
-              } else if (respuesta.success === 0) {
-                this.plan = respuesta.data; 
-                this.dataSource = new MatTableDataSource(this.plan);
-                this.dataSource.paginator = this.paginator;
-                setTimeout(() => {
-                  this.isLoading = false;
-                }, 1000); 
-              }
-            });
-          },
-          (error) => {
-          }
-        );
-      } else {
-      }
-    });
+      data: `¿Desea eliminar este plan?`,
+    }).afterClosed().pipe(
+      filter((confirmado: boolean) => confirmado === true),
+      switchMap(() => this.promocionService.deletePlan(id)), //lalamos a la API para eliminacion
+      switchMap(() => this.promocionService.listaPlanes(this.idGym)),//Recargar la pagina
+
+      tap((respuesta) => {
+        if (respuesta.success === 1) {
+          this.actualizaLista(respuesta, true);
+          this.toastr.success("El plan se a eliminado corretamente.", "Éxito");
+        } else {
+          this.actualizaLista(respuesta, false);
+          this.toastr.warning("No se encontraron planes para actualizar.", "Advertencia");
+        }
+      }),
+      catchError((error) => {
+        console.error("Error al eliminar el plan: ", error);
+        this.toastr.error("Ocurrió un error al eliminar el plan.", "Error");
+        return of(null);//Evita que el observable falle
+      }),
+      finalize(() => console.log("Proceso de eliminación finalizado."))
+    ).subscribe();
 
   }
 }

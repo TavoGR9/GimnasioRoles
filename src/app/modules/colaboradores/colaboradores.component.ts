@@ -27,15 +27,15 @@ export class ColaboradoresComponent {
   dataSource: any;
   colaboradores: any;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   habilitarBoton: boolean = false;
-  
+
   constructor(private http: ColaboradorService, public dialog: MatDialog, private auth: AuthService, private indexedDBService: IndexedDBService){
-    
+
   }
 
   ngOnInit():void{
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
     this.currentUser = this.auth.getCurrentUser();
@@ -47,24 +47,24 @@ export class ColaboradoresComponent {
       //console.log('Dato', this.idGym);
       this.listaTabla();
 
- 
-    
+
+
       const datos = {
         idGym: this.auth.idGym.getValue()
       };
-      
+
       const jsonData: string = JSON.stringify(datos);
       this.parametro = jsonData
       /*console.log('que paso', this.parametro)*/
 
-    }); 
+    });
   }
 
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSource.paginator = this.paginator;
-    }, 1000); 
+    }, 1000);
   }
 
 
@@ -73,33 +73,33 @@ export class ColaboradoresComponent {
     if (this.isSupadmin()) {
         this.http.listaColaboradores().subscribe({
             next: (resultData) => {
-                //console.log('Datos obtenidos para Supadmin:', this.empleados); 
+                //console.log('Datos obtenidos para Supadmin:', this.empleados);
                 this.empleados = resultData;
-                this.dataSource = new MatTableDataSource(this.empleados); 
+                this.dataSource = new MatTableDataSource(this.empleados);
                 this.loadData();
-                
+
             },
             error: (error) => {
-                //console.error('Error al obtener colaboradores:', error); 
+                //console.error('Error al obtener colaboradores:', error);
             }
         });
-    } 
+    }
 
     if (this.isAdmin()) {
         this.http.MostrarRecepcionistas(this.parametro).subscribe({
             next: (dataResponse) => {
-               // console.log('Datos obtenidos para Admin:', dataResponse); 
+               // console.log('Datos obtenidos para Admin:', dataResponse);
                 this.empleados = dataResponse;
-                //console.log('///////',  this.empleados); 
+                //console.log('daros',  this.empleados);
 
-                this.dataSource = new MatTableDataSource(this.empleados); 
+                this.dataSource = new MatTableDataSource(this.empleados);
                 this.loadData();
             },
             error: (error) => {
-                //console.error('Error al obtener recepcionistas:', error); 
+                //console.error('Error al obtener recepcionistas:', error);
             }
         });
-        //console.log('Datos idGYm:', this.auth.idGym.getValue()); 
+        //console.log('Datos idGYm:', this.auth.idGym.getValue());
     }
 }
 
@@ -122,7 +122,7 @@ export class ColaboradoresComponent {
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
-  
+
   isSupadmin(): boolean {
     return this.auth.isSupadmin();
   }
@@ -167,7 +167,7 @@ export class ColaboradoresComponent {
           console.error("El objeto empleados no contiene id_empleado:", empleados);
           return;
         }
-      
+
         const dialogConfig = new MatDialogConfig();
         dialogConfig.width = '70%';
         dialogConfig.disableClose = true;
@@ -180,8 +180,8 @@ export class ColaboradoresComponent {
             }
           });
       }
-      
-  
+
+
   OpenEditar(empleados: any) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '70%';
@@ -200,39 +200,40 @@ export class ColaboradoresComponent {
       });
   }
 
-  onToggle(event: Event, idEmpleado: number, correoParametro: string) {
+  onToggle(event: Event, idEmpleado: number, estatus: number) {
+    /*
     const colab = this.empleados.find((e: { id_empleado: number }) => e.id_empleado === idEmpleado);
 
     if (!colab) {
       console.error('Colaborador no encontrado');
       return;
     }
+*/
+const nuevoEstatus = estatus == 1 ? 0 : 1; // Alterna entre 0 y 1
+    console.log('Estatus actual:', estatus);
+    console.log('Nuevo estatus que se asignará:', nuevoEstatus);
 
-    const nuevoStatuss = colab.estatus === 1 ? 0 : 1; // Alterna entre 0 y 1
-    console.log('Estatus actual:', colab.estatus);
-    console.log('Nuevo estatus que se asignará:', nuevoStatuss);
+    const mensaje = nuevoEstatus === 0
+      ? '¿Deseas desactivar este colaborador?'
+      : '¿Deseas activar este colaborador?'; //
 
-    const mensaje = nuevoStatuss === 0 
-      ? '¿Deseas desactivar este colaborador?' 
-      : '¿Deseas activar este colaborador?'; // Cambia el mensaje según el nuevo estatus
-    
     console.log('Mensaje del diálogo:', mensaje);
 
     const dialogRef = this.dialog.open(MensajeDesactivarComponent, {
-      data: { mensaje: mensaje, idEmpleado: colab },
+      data: { mensaje: mensaje, idEmpleado: idEmpleado },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Actualizando estatus...', { idEmpleado, nuevoStatuss, correoParametro });
+        console.log('Actualizando estatus...', { idEmpleado, nuevoEstatus });
 
         this.isLoading = true;
 
-        this.http.actualizarEstatus(idEmpleado, nuevoStatuss, correoParametro).subscribe({
+        this.http.actualizarEstatus(Number(idEmpleado), nuevoEstatus).subscribe({
           next: (response) => {
             console.log('Respuesta del servidor:', response);
             if (response && response.success === 1) {
-              colab.estatus = nuevoStatuss;
+              //colab.estatus = nuevoEstatus;
               this.listaTabla();
             } else {
               console.error('Error al actualizar el estatus:', response?.error || 'Sin respuesta del servidor');
@@ -248,8 +249,8 @@ export class ColaboradoresComponent {
     });
 }
 
-  
-  
+
+
 
   Sincronizar() {
       this.indexedDBService.getAgregarEmpleadoData('AgregarEmpleado').then(data => {
@@ -264,7 +265,7 @@ export class ColaboradoresComponent {
           this.listaTabla();
           //observer.next(lastData); // Emitir el último dato encontrado
         } else {
-          console.log("No hay datos"); 
+          console.log("No hay datos");
         }
       });
    }

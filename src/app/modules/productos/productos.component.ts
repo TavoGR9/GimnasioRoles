@@ -73,9 +73,11 @@ export class ProductosComponent implements OnInit {
   }
 
   listaTabla(){
-    this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
+    this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
-      this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.marca !== 'Olympus');
+      // console.log('Resultados: ', resultData);
+
+      this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios' && producto.activo == 1);
 
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData();
@@ -127,12 +129,7 @@ export class ProductosComponent implements OnInit {
       disableClose: true,
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-        //this.productos = resultData
-        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
-        this.dataSource = new MatTableDataSource(this.productos);
-        this.loadData();
-      });
+      this.listaTabla();
     })
   }
 
@@ -142,13 +139,10 @@ export class ProductosComponent implements OnInit {
       width: '70%',
       disableClose: true,
     });
+    console.log('idProbob: ', idProducto);
+
     dialogRef.afterClosed().subscribe(() => {
-      this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-        //this.productos = resultData
-        this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
-        this.dataSource = new MatTableDataSource(this.productos);
-        this.loadData();
-      });
+      this.listaTabla();
     });
   }
 
@@ -166,22 +160,20 @@ export class ProductosComponent implements OnInit {
   }
 
   deleteProducto(id: any) {
+    console.log('IDProbob: ', id);
     this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar este servicio?`,
+      data: `¿Desea eliminar este producto?`,
     })
     .afterClosed()
     .subscribe((confirmado: boolean) => {
       if (confirmado) {
         this.productoService.deleteProd(id).subscribe(
           (respuesta) => {
-            this.productoService.consultarAllProducto(this.idGym).subscribe((resultData) => {
-              //this.productos = resultData
-              this.productos = resultData.filter(producto => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria.toLowerCase() !== 'servicios');
-              this.dataSource = new MatTableDataSource(this.productos);
-              this.loadData();
-            });
+            // console.log('respuesta: ', respuesta);
+            this.listaTabla();
           },
           (error) => {
+            console.error('Error en la solicitud: ', error);
           }
         );
       } else {

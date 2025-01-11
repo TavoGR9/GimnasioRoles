@@ -1,4 +1,4 @@
-   <div *ngIf="isLoading">
+<div *ngIf="isLoading">
    <div style="margin-top: 60px;">
       <mat-card *ngIf="isAdmin() || isRecep()">
          <mat-card-content>
@@ -40,21 +40,22 @@
                      <h3>{{ currentDate }}</h3>
                   </div>
                   <ngx-charts-line-chart
-                     [view]="viewVisita" 
-                     [scheme]="colorSchemeVisita"
-                     [results]="salesChartDataVisita"
-                     [gradient]="gradientVisita"
-                     [xAxis]="showXAxisVisita"
-                     [yAxis]="showXAxisVisita"
-                     [showXAxisLabel]="showYAxisLabelVisita"
-                     [showYAxisLabel]="showYAxisLabelVisita"
-                     [xAxisLabel]="xAxisLabelVisita"
-                     [yAxisLabel]="yAxisLabelVisita"
-                     [timeline]="timelineVisita"
-                     [legend]="true"
-                     [legendTitle]="'Mes'"
-                     (select)="onSelect($event)">
-                     </ngx-charts-line-chart>
+                  [view]="[300,300]" 
+                  [scheme]="colorSchemeVisita"
+                  [results]="salesChartDataVisita" 
+                  [gradient]="gradientVisita"
+                  [xAxis]="showXAxisVisita"
+                  [yAxis]="showYAxisVisita"
+                  [showXAxisLabel]="showXAxisLabelVisita"
+                  [showYAxisLabel]="showYAxisLabelVisita"
+                  [xAxisLabel]="xAxisLabelVisita"
+                  [yAxisLabel]="yAxisLabelVisita"
+                  [timeline]="timelineVisita"
+                  [legend]="true"
+                  [animations]="false"
+                  [legendTitle]="'Producto: Visita'"
+                  (select)="onSelect($event)">
+                </ngx-charts-line-chart>
                </div>
             </td>
             <td colspan="1" class="column">
@@ -75,6 +76,7 @@
                   [yAxisLabel]="yAxisLabel2"
                   [timeline]="timeline2"
                   [legend]="true"
+                  [animations]="false"
                   [legendTitle]="'Mes'"
                   (select)="onSelect($event)">
                   </ngx-charts-line-chart>
@@ -99,6 +101,7 @@
                   [timeline]="timeline2"
                   [legend]="true"
                   [legendTitle]="'Mes'"
+                  [animations]="false"
                   (select)="onSelect($event)">
                   </ngx-charts-line-chart>
                </div>
@@ -122,6 +125,18 @@
             <div *ngIf="tablaHTML" [innerHTML]="tablaHTML ">
    </div>
    </mat-card-content>
+   <!-- <mat-card class="ancho-2">
+      <mat-card-header>
+          <h3 class="icon-title">
+              <mat-icon class="icon">grid_view</mat-icon>
+              ÚLTIMAS VENTAS
+          </h3>
+      </mat-card-header>
+      <mat-card-content>
+          <p style="border-top: 2px solid orange;"></p>
+          <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
+      </mat-card-content>
+      </mat-card>-->
    </mat-card>
    <mat-card *ngIf="isAdmin() || isRecep()">
       <mat-card-header>
@@ -194,9 +209,9 @@
          [timeline]="timeline2"
          [legend]="true"
          [legendTitle]="'Mes'"
+         [animations]="false"
          (select)="onSelect($event)">
        </ngx-charts-line-chart>
      </div>
    </div>
  </div>
- 

@@ -5,6 +5,9 @@ import { ProductoService } from '../../service/producto.service';
 import { EmergenteHistorialProductosComponent } from '../emergente-historial-productos/emergente-historial-productos.component';
 import { MatDialog} from '@angular/material/dialog';
 import { AuthService } from '../../service/auth.service';
+
+import { Inventario } from "../../models/inventario";
+
 @Component({
   selector: 'inventarios',
   templateUrl: './inventarios.component.html',
@@ -16,10 +19,8 @@ export class InventariosComponent implements OnInit {
     'Código De Barras',
     'Producto',
     'Marca',
-    //'Precio',
     'Existencia',
-    'Categoria',
-    'Bodega'
+    'Categoria'
   ];
 
   listInventarioData: any[] = [];
@@ -60,11 +61,20 @@ export class InventariosComponent implements OnInit {
     }, 1000);
   }
 
+  aplicarFiltro(productos: Inventario[]): Inventario[] {
+    return productos.filter((producto) => {
+      return producto.nombreCategoria !== "Servicios";
+    });
+  }
+
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      this.listInventarioData = respuesta;
+      // console.log('TODAS LAS EXISTENCIAS: ', respuesta);
+
+      this.listInventarioData = this.aplicarFiltro(respuesta);
+      //this.listInventarioData = respuesta;
       this.dataSource= new MatTableDataSource(this.listInventarioData);
-      console.log("DATOs: " +this.listInventarioData);
+      //console.log("DATOs: " ,this.listInventarioData);
       this.loadData();
     });
   }
@@ -76,7 +86,7 @@ export class InventariosComponent implements OnInit {
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
-          console.log("Este es el ID: " +this.idGym);
+          // console.log("Este es el ID: " +this.idGym);
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);
@@ -84,6 +94,7 @@ export class InventariosComponent implements OnInit {
     });
   }
 
+  //Filtro para los datos
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();

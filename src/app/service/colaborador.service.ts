@@ -15,17 +15,21 @@ import { HttpParams } from '@angular/common/http';
 })
 
 export class ColaboradorService {
-  isConnected: boolean = true;
 
-  //Servicio para la manipulacion de datos de un colaborador.
+    isConnected: boolean = true;
 
-  private categoriasSubject = new BehaviorSubject<any[]>([]);
-  // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  // APIv3: string = 'http://localhost/olimpusGym/conf/';
-  // API: String = '';
+    //Servicio para la manipulacion de datos de un colaborador.
 
-  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string = 'http://localhost/serviciosGym/';
+
+    private categoriasSubject = new BehaviorSubject<any[]>([]);
+    // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+    // APIv3: string = 'http://localhost/olimpusGym/conf/';
+    // API: String = '';
+
+    //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+    //API: string = 'http://localhost/serviciosGimnasio/'
+      API: string = 'http://localhost/serviciosGym/'
+
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
@@ -104,7 +108,23 @@ export class ColaboradorService {
         this.indexedDBService.saveAgregarRegistroData('AgregarRegistro', data);
     }
 
+    agregarUsuario(datosEmpleado: any): Observable<any> {
+      console.log("Enviando solicitud HTTP...");
 
+        return this.clienteHttp.post(this.API + "registrarUsuarioCliente2.php", datosEmpleado).pipe(
+
+            tap(dataResponse => {
+           console.log(dataResponse)
+            }),
+            catchError(error => {
+              //this.saveDataToIndexedDBC(datosEmpleado);
+              console.error('Error en la solicitud HTTP:', error);
+              console.error(datosEmpleado);
+              const resultData = { success: '2' };
+              return of(resultData);
+            })
+          );
+    }
 
     agregarUsuarioBodega(datosEmpleado: any): Observable<any> {
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuarioBodega", datosEmpleado);
@@ -151,13 +171,13 @@ export class ColaboradorService {
 
 
 
-   
+
     MostrarRecepcionistas(idGym: any): Observable<any> {
        // let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let params = 'idGym=' + idGym;
         return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php',idGym).pipe(
              tap(dataResponse => {
-              //console.log('++++', idGym); 
+              //console.log('++++', idGym);
 
                 this.saveDataToIndexedDB1(dataResponse);
             }),
@@ -209,23 +229,23 @@ export class ColaboradorService {
         return this.clienteHttp.post(this.API + 'updateEmpleado.php', params, { headers });
       }*/
         ActualizarColaborador(
-          pid_bodega: number, 
-          pnombreCompleto: string, 
-          pCorreoEmpleado: string, 
-          ptelefono: string, 
+          pid_bodega: number,
+          pnombreCompleto: string,
+          pCorreoEmpleado: string,
+          ptelefono: string,
           pidEmp: string
         ) {
           const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-          const body = { 
-            pid_bodega, 
-            pnombreCompleto, 
-            pCorreoEmpleado, 
-            ptelefono, 
-            pidEmp 
+          const body = {
+            pid_bodega,
+            pnombreCompleto,
+            pCorreoEmpleado,
+            ptelefono,
+            pidEmp
           };
           return this.clienteHttp.post(this.API + 'updateEmpleado.php', body, { headers });
         }
-        
+
 
      /* ActualizarContrasenia(p_idUsuario: number, p_contrasenia: string) {
         // Define headers and params for the request
@@ -242,47 +262,27 @@ export class ColaboradorService {
           const body = { idempleado, contrasenia };
           return this.clienteHttp.post(this.API + 'updateContrasenia.php', body, { headers });
       }
-      
-
-      actualizarEstatus(idEmpleado: number, statuss: number, correoParametro: string): Observable<any> {
-        const body = { idEmpleado, statuss, correoParametro };
-        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-      
-        // Agregar un console log para verificar los datos que se envían
-        console.log('Datos enviados desde Angular al backend:', body);
-        console.log('Valor de statuss:', statuss); // Verifica el valor específico de statuss
-      
-        return this.clienteHttp.post(`${this.API}/Status_Bodega_Empleado.php`, body, { headers }).pipe(
-          catchError((error) => {
-            console.error('Error en la petición al backend:', error);
-            return throwError(() => new Error('Error al actualizar el estatus en el backend'));
-          })
-        );
-      }
-      
-      
-         
-        
-    
 
 
-  agregarUsuario(datosEmpleado: any): Observable<any> {
-    console.log("Enviando solicitud HTTP...");
 
-      return this.clienteHttp.post(this.API + "registrarUsuarioCliente2.php", datosEmpleado).pipe(
-     
-          tap(dataResponse => {
-         console.log(dataResponse)
-          }),
-          catchError(error => {
-            //this.saveDataToIndexedDBC(datosEmpleado);
-            console.error('Error en la solicitud HTTP:', error);
-            console.error(datosEmpleado);
-            const resultData = { success: '2' };
-            return of(resultData);
-          })
-        );
+    actualizarEstatus(idEmpleado: number, estatus: number): Observable<any> {
+      const body = {
+        idEm: idEmpleado, // Nombre del campo debe coincidir con PHP
+        estatus: estatus
+      };
+
+      const options = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json', // Cabecera para enviar JSON
+        }),
+      };
+
+      console.log('Datos enviados desde Angular al backend (body):', body);
+
+      // Incluimos `options` en la llamada
+      return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php',body, options);
+    }
+
+
+
   }
-
-
-}
