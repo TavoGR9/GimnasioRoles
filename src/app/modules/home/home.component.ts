@@ -1004,27 +1004,28 @@ processSalesDataQuincenal() {
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
-  const currentMonthStr = `${currentYear}-${currentMonth}`; // Mes actual en formato 'YYYY-MM'
+  const currentMonthStrQuincenal = `${currentYear}-${currentMonth}`; // Mes actual en formato 'YYYY-MM'
 
-  // Mes anterior
+  // El mes anterior
   const previousMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1); // Restamos 1 mes
   const previousYear = previousMonthDate.getFullYear();
   const previousMonth = (previousMonthDate.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
-  const previousMonthStr = `${previousYear}-${previousMonth}`; // Mes pasado en formato 'YYYY-MM'
+  const previousMonthStrQuincenal = `${previousYear}-${previousMonth}`; // Mes pasado en formato 'YYYY-MM'
 
   // Obtener días totales del mes actual y mes anterior
-  const daysInCurrentMonth = new Date(currentYear, parseInt(currentMonth), 0).getDate();
-  const daysInPreviousMonth = new Date(previousYear, parseInt(previousMonth), 0).getDate();
-
-  // Inicializar series para el mes actual y mes anterior
-  const currentMonthSales: { name: string; value: number }[] = [
-    { name: '', value: 0 },
-    { name: '', value: 0 },
-  ];
-  const previousMonthSales: { name: string; value: number }[] = [
-    { name: '', value: 0 },
-    { name: '', value: 0 },
-  ];
+  const daysInCurrentMonth = today.getDate(); // Solo hasta el día actual del mes actual
+  const daysInPreviousMonth = new Date(previousYear, parseInt(previousMonth), 0).getDate(); // Último día del mes anterior
+  console.log('Días previos:', daysInPreviousMonth);
+  
+  // Inicializar series con días y valores en 0
+  const currentMonthSalesQuincenal: { name: string; value: number }[] = Array.from(
+    { length: daysInCurrentMonth },
+    (_, i) => ({ name: `${i + 1}`, value: 0 })
+  );
+  const previousMonthSalesQuincenal: { name: string; value: number }[] = Array.from(
+    { length: daysInPreviousMonth },
+    (_, i) => ({ name: `${i + 1}`, value: 0 })
+  );
 
   // Rellenar datos reales en las series
   Object.keys(this.salesData).forEach((date) => {
@@ -1033,23 +1034,10 @@ processSalesDataQuincenal() {
       Object.values(record.conteoProductos).forEach((product: any) => {
         if (product.nombreProducto === this.selectedProductQuincenal) {
           const day = parseInt(date.split('-')[2]); // Extraer día (DD)
-
-          // Ventas en el mes actual
-          if (date.startsWith(currentMonthStr)) {
-            if (day >= 1 && day <= 15) {
-              currentMonthSales[0].value += product.cantidad; // Primera quincena
-            } else if (day >= 16 && day <= daysInCurrentMonth) {
-              currentMonthSales[1].value += product.cantidad; // Segunda quincena
-            }
-          }
-
-          // Ventas en el mes anterior
-          if (date.startsWith(previousMonthStr)) {
-            if (day >= 1 && day <= 15) {
-              previousMonthSales[0].value += product.cantidad; // Primera quincena
-            } else if (day >= 16 && day <= daysInPreviousMonth) {
-              previousMonthSales[1].value += product.cantidad; // Segunda quincena
-            }
+          if (date.startsWith(currentMonthStrQuincenal) && day <= daysInCurrentMonth) {
+            currentMonthSalesQuincenal[day - 1].value = product.cantidad;
+          } else if (date.startsWith(previousMonthStrQuincenal)) {
+            previousMonthSalesQuincenal[day - 1].value = product.cantidad;
           }
         }
       });
@@ -1057,25 +1045,24 @@ processSalesDataQuincenal() {
   });
 
   // Calcular el máximo para el eje Y
-  const allValues = [
-    ...currentMonthSales.map((d) => d.value),
-    ...previousMonthSales.map((d) => d.value),
+  const allValuesQuincenal = [
+    ...currentMonthSalesQuincenal.map((d) => d.value),
+    ...previousMonthSalesQuincenal.map((d) => d.value),
   ];
-  this.yScaleMaxQuincenal = allValues.length > 0 ? Math.max(...allValues) : 0; // Máximo o 0 si no hay valores
+  this.yScaleMax2 = allValuesQuincenal.length > 0 ? Math.max(...allValuesQuincenal) : 0; // Máximo o 0 si no hay valores
 
   // Estructurar datos para ngx-charts
- this.salesChartDataQuincenal = [
+  this.salesChartData = [
     {
-      name: `${currentMonthStr} ()`,
-      series: currentMonthSales,
+      name: `${currentMonthStrQuincenal} (${this.selectedProductQuincenal})`,
+      series: currentMonthSalesQuincenal,
     },
     {
-      name: `${previousMonthStr} ()`,
-      series: previousMonthSales,
+      name: `${previousMonthStrQuincenal} (${this.selectedProductQuincenal})`,
+      series: previousMonthSalesQuincenal,
     },
   ];
 }
-
 
 ///////FIN QUINCENA/////////////////
 
