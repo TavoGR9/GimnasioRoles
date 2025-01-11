@@ -40,6 +40,8 @@ interface Cliente {
 })
 export class HomeComponent implements OnInit {
   currentUser: string = "";
+  currentDate: string = ''; 
+  timer: any; 
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
   idGym: number = 0;
@@ -56,6 +58,7 @@ export class HomeComponent implements OnInit {
 
   homeCard: any;
   homeCard2: any;
+  homeCard21: any[] = [];
   homeCardVisita: any[] = [];
   homeCardQuincena: any[] = [];
 
@@ -67,12 +70,6 @@ export class HomeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
   displayedColumns: string[] = ["title", "details", "price", "rol"];
-
-  dataSourceProductos: any;
-  displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
-  masVendidos: any;
-
-  homeCard21: any[] = [];
 
 
   /**graficas**/
@@ -102,6 +99,7 @@ export class HomeComponent implements OnInit {
   yAxisLabel2sd = "Quincena";
   yAxisLabel3 = "Visita";
   timeline: boolean = false;
+
 
 
   //define la apariencia visual del gráfico en términos de colores.
@@ -135,6 +133,7 @@ export class HomeComponent implements OnInit {
   fechaQuincena: string = "";
   año: number = 0;
   salesData: any;
+  //visitsData_ any;
 
   constructor(
     private homeService: HomeService,
@@ -152,12 +151,13 @@ export class HomeComponent implements OnInit {
   fechaFormateada: string = "";
   ngOnInit(): void {
     this.consultarMembresia();
-  
-
+    this.updateDate(); 
+    this.startDateUpdater();
+    //this.processSalesData();
     console.log(this.isLoading)
     // this.auth.comprobar();
     // this.homeService.comprobar();
-
+/*
     const today = new Date();
     const year = today.getFullYear();
     let month = '' + (today.getMonth() + 1);
@@ -176,7 +176,7 @@ export class HomeComponent implements OnInit {
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
-
+      
     }
 
     combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
@@ -198,7 +198,7 @@ export class HomeComponent implements OnInit {
         }
       }
     );
-
+    */
   }
 
   /**LOCAL */
@@ -224,7 +224,6 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSource.paginator = this.paginator;
-      this.dataSourceProductos.paginador = this.paginator;
     }, 1000);
   }
 
@@ -373,8 +372,6 @@ export class HomeComponent implements OnInit {
   graficasFechaVisita(fecha: any): void {
     this.homeService.consultasFechaVisita(this.idGym, fecha).subscribe(
       (respuesta: any) => {
-        console.log('VISITA',respuesta);
-
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCardVisita = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
         } else {
@@ -454,26 +451,19 @@ export class HomeComponent implements OnInit {
 
   /**LISTA PRODUCTOS */
   listaTablas() {
-    // Total de ventas del día $
     this.homeService.consultarHome(this.idGym).subscribe((respuesta) => {
       this.homeCard = respuesta;
     });
 
-    // Card entradas del día
     this.homeService.consultarHome2(this.idGym).subscribe((respuesta) => {
       this.homeCard2 = respuesta;
     });
 
-    // Tabla de los productos más vendidos de la bodega
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      this.masVendidos = data;
-      //console.log('MasVendidos: ', this.masVendidos);
-
-      this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
-      this.loadData();
+      this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(
+        `<table class="mi-tabla">${data.tablaHTML}</table>`
+      );
     });
-
-    // Tabla de ventas recientes
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
         `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
@@ -641,10 +631,9 @@ export class HomeComponent implements OnInit {
     });
   }
 
-
-consultarMembresia(){
+consultarMembresia(){ 
 //this.homeService.ConsultarPedidosMembresias(this)
-this.pagoService.obtenerPedidosActivos(4).subscribe(
+this.pagoService.getPedidosMembresias(4).subscribe(
   (response) => {
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
@@ -655,20 +644,22 @@ this.pagoService.obtenerPedidosActivos(4).subscribe(
       console.log('Agrupados por fechas',pedidosConteoDia)
       this.salesData= pedidosConteoDia
       this.processSalesData();
+      //this.processVisitsData();
+      this.processSalesDataVisita();
+      this.processSalesDataQuincenal();
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
       console.log(errorMessage)
     }
-
+   
   },
   (error) => {
-
+    
     let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
     console.error(error); // También lo mostramos en la consola
   }
 );
 }
-
 
  agruparPorPedido(clientes: any[]): any[] {
   // Creamos un objeto para almacenar los resultados agrupados por id_pedido.
@@ -709,7 +700,7 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
   const conteos: { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } = {};
 
   clientes.forEach(cliente => {
-    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0];
+    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0]; 
 
     if (!conteos[fecha]) {
       conteos[fecha] = {
@@ -796,6 +787,7 @@ getDatosGraficaPorProducto(data: any, idProducto: string): any[] {
   return resultado; // Arreglo listo para la gráfica
 }
 
+///////////MENSUALIDAD/////////////
 // Configuración de ngx-charts
 view2: [number, number] = [900, 900]; // Tamaño del gráfico
 colorScheme2: Color = {
@@ -808,17 +800,19 @@ gradient2: boolean = false;
 showXAxis2: boolean = true;
 showYAxis2: boolean = true;
 showXAxisLabel2: boolean = true;
-xAxisLabel2: string = 'Días';
+xAxisLabel2: string = '';
 showYAxisLabel2: boolean = true;
-yAxisLabel2: string = 'Ventas';
+yAxisLabel2: string = '';
 timeline2: boolean = true;
 yScaleMax2: number | undefined = undefined; // Escala Y dinámica
+currentMonthStr: string='';
 
 // Datos del gráfico
 salesChartData: any[] = []; // Aquí guardaremos los resultados procesados
 
 // Producto seleccionado dinámicamente
 selectedProduct2: string = 'Mensualidad'; // Valor inicial
+
 
 // Procesar los datos
 processSalesData() {
@@ -884,13 +878,230 @@ processSalesData() {
     },
   ];
 }
+///////////FIN MENSUALIDAD/////////////////
 
+//////////VISITA//////////////////////////
+
+// Configuración de ngx-charts para "Visita"
+viewVisita: [number, number] = [900, 900]; // Tamaño del gráfico
+colorSchemeVisita: Color = {
+  domain: ["#4CAF50", "#FF5722"], // Colores específicos para "Visita"
+  name: "visita",
+  selectable: true,
+  group: ScaleType.Ordinal,
+};
+gradientVisita: boolean = false;
+showXAxisVisita: boolean = true;
+showYAxisVisita: boolean = true;
+showXAxisLabelVisita: boolean = true;
+xAxisLabelVisita: string = '';
+showYAxisLabelVisita: boolean = true;
+yAxisLabelVisita: string = '';
+timelineVisita: boolean = true;
+yScaleMaxVisita: number | undefined = undefined; // Escala Y dinámica
+currentMonthStrVisita: string = ''; // Mes actual en formato 'YYYY-MM'
+
+// Datos del gráfico
+salesChartDataVisita: any[] = []; // Aquí guardaremos los resultados procesados
+
+// Producto seleccionado dinámicamente
+selectedProductVisita: string = 'Visita'; // Valor inicial
+
+// Procesar los datos
+processSalesDataVisita() {
+  // Obtener el mes y el año actual dinámicamente
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
+  const currentMonthStrVisita = `${currentYear}-${currentMonth}`; // Mes actual en formato 'YYYY-MM'
+
+  // El mes anterior
+  const previousMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1); // Restamos 1 mes
+  const previousYear = previousMonthDate.getFullYear();
+  const previousMonth = (previousMonthDate.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
+  const previousMonthStrVisita = `${previousYear}-${previousMonth}`; // Mes pasado en formato 'YYYY-MM'
+
+  // Obtener días totales del mes actual y mes anterior
+  const daysInCurrentMonth = today.getDate(); // Solo hasta el día actual del mes actual
+  const daysInPreviousMonth = new Date(previousYear, parseInt(previousMonth), 0).getDate(); // Último día del mes anterior
+
+  // Inicializar series con días y valores en 0
+  const currentMonthSalesVisita: { name: string; value: number }[] = Array.from(
+    { length: daysInCurrentMonth },
+    (_, i) => ({ name: `${i + 1}`, value: 0 })
+  );
+  const previousMonthSalesVisita: { name: string; value: number }[] = Array.from(
+    { length: daysInPreviousMonth },
+    (_, i) => ({ name: `${i + 1}`, value: 0 })
+  );
+
+  // Rellenar datos reales en las series
+  Object.keys(this.salesData).forEach((date) => {
+    const record = this.salesData[date];
+    if (record.conteoProductos) {
+      Object.values(record.conteoProductos).forEach((product: any) => {
+        if (product.nombreProducto === this.selectedProductVisita) {
+          const day = parseInt(date.split('-')[2]); // Extraer día (DD)
+          if (date.startsWith(currentMonthStrVisita) && day <= daysInCurrentMonth) {
+            currentMonthSalesVisita[day - 1].value = product.cantidad;
+          } else if (date.startsWith(previousMonthStrVisita)) {
+            previousMonthSalesVisita[day - 1].value = product.cantidad;
+          }
+        }
+      });
+    }
+  });
+
+  // Calcular el máximo para el eje Y
+  const allValuesVisita = [
+    ...currentMonthSalesVisita.map((d) => d.value),
+    ...previousMonthSalesVisita.map((d) => d.value),
+  ];
+  this.yScaleMaxVisita = allValuesVisita.length > 0 ? Math.max(...allValuesVisita) : 0; // Máximo o 0 si no hay valores
+
+  // Estructurar datos para ngx-charts
+  this.salesChartDataVisita = [
+    {
+      name: `${currentMonthStrVisita} (${this.selectedProductVisita})`,
+      series: currentMonthSalesVisita,
+    },
+    {
+      name: `${previousMonthStrVisita} (${this.selectedProductVisita})`,
+      series: previousMonthSalesVisita,
+    },
+  ];
+}
+/////////FIN VISITA///////////////////
+
+////////QUINCENA/////////////////////
+viewQuincenal: [number, number] = [900, 900]; // Tamaño del gráfico
+colorSchemeQuincenal: Color = {
+  domain: ["#4CAF50", "#FF5722"], // Colores específicos para "Visita"
+  name: "Quincenal",
+  selectable: true,
+  group: ScaleType.Ordinal,
+};
+gradientQuincenal: boolean = false;
+showXAxisQuincenal: boolean = true;
+showYAxisQuincenal: boolean = true;
+showXAxisLabelQuincenal: boolean = true;
+xAxisLabelQuincenal: string = '';
+showYAxisLabelQuincenal: boolean = true;
+yAxisLabelQuincenal: string = '';
+timelineQuincenal: boolean = true;
+yScaleMaxQuincenal: number | undefined = undefined; // Escala Y dinámica
+currentMonthStrQuincenal: string = ''; // Mes actual en formato 'YYYY-MM'
+
+// Datos del gráfico
+salesChartDataQuincenal: any[] = []; // Aquí guardaremos los resultados procesados
+
+// Producto seleccionado dinámicamente
+selectedProductQuincenal: string = 'Quincenal'; // Valor inicial
+
+// Procesar los datos
+processSalesDataQuincenal() {
+  // Obtener el mes y el año actual dinámicamente
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
+  const currentMonthStr = `${currentYear}-${currentMonth}`; // Mes actual en formato 'YYYY-MM'
+
+  // Mes anterior
+  const previousMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1); // Restamos 1 mes
+  const previousYear = previousMonthDate.getFullYear();
+  const previousMonth = (previousMonthDate.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
+  const previousMonthStr = `${previousYear}-${previousMonth}`; // Mes pasado en formato 'YYYY-MM'
+
+  // Obtener días totales del mes actual y mes anterior
+  const daysInCurrentMonth = new Date(currentYear, parseInt(currentMonth), 0).getDate();
+  const daysInPreviousMonth = new Date(previousYear, parseInt(previousMonth), 0).getDate();
+
+  // Inicializar series para el mes actual y mes anterior
+  const currentMonthSales: { name: string; value: number }[] = [
+    { name: '', value: 0 },
+    { name: '', value: 0 },
+  ];
+  const previousMonthSales: { name: string; value: number }[] = [
+    { name: '', value: 0 },
+    { name: '', value: 0 },
+  ];
+
+  // Rellenar datos reales en las series
+  Object.keys(this.salesData).forEach((date) => {
+    const record = this.salesData[date];
+    if (record.conteoProductos) {
+      Object.values(record.conteoProductos).forEach((product: any) => {
+        if (product.nombreProducto === this.selectedProductQuincenal) {
+          const day = parseInt(date.split('-')[2]); // Extraer día (DD)
+
+          // Ventas en el mes actual
+          if (date.startsWith(currentMonthStr)) {
+            if (day >= 1 && day <= 15) {
+              currentMonthSales[0].value += product.cantidad; // Primera quincena
+            } else if (day >= 16 && day <= daysInCurrentMonth) {
+              currentMonthSales[1].value += product.cantidad; // Segunda quincena
+            }
+          }
+
+          // Ventas en el mes anterior
+          if (date.startsWith(previousMonthStr)) {
+            if (day >= 1 && day <= 15) {
+              previousMonthSales[0].value += product.cantidad; // Primera quincena
+            } else if (day >= 16 && day <= daysInPreviousMonth) {
+              previousMonthSales[1].value += product.cantidad; // Segunda quincena
+            }
+          }
+        }
+      });
+    }
+  });
+
+  // Calcular el máximo para el eje Y
+  const allValues = [
+    ...currentMonthSales.map((d) => d.value),
+    ...previousMonthSales.map((d) => d.value),
+  ];
+  this.yScaleMaxQuincenal = allValues.length > 0 ? Math.max(...allValues) : 0; // Máximo o 0 si no hay valores
+
+  // Estructurar datos para ngx-charts
+ this.salesChartDataQuincenal = [
+    {
+      name: `${currentMonthStr} ()`,
+      series: currentMonthSales,
+    },
+    {
+      name: `${previousMonthStr} ()`,
+      series: previousMonthSales,
+    },
+  ];
+}
+
+
+///////FIN QUINCENA/////////////////
 
 // Actualizar producto seleccionado
 updateSelectedProduct2(productName: string) {
   this.selectedProduct2 = productName;
   this.processSalesData(); // Actualizar los datos del gráfico
+  this.processSalesDataVisita();
+  this.processSalesDataQuincenal();
 }
+////////FIN GRÁFICAS////////////
+
+updateDate(): void {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0'); 
+  const day = today.getDate().toString().padStart(2, '0');
+
+  this.currentDate = `${year}-${month}-${day}`;
+  console.log('Fecha actualizada:', this.currentDate);
 }
 
+startDateUpdater(): void {
+  this.timer = setInterval(() => {
+    this.updateDate();
+  }, 24 * 60 * 60 * 1000); 
+}
 
+}
