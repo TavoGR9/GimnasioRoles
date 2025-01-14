@@ -433,53 +433,77 @@ UserHIstorial(clave: string) {
     console.log('executed');
   }
 
-  // Función para agrupar por pedido
-  private agruparPorPedido(clientes: any[]): any[] {
-    const agrupadosPorPedido: { [key: string]: any } = {};
+  
+// Función para agrupar por pedido
+agruparPorPedido(clientes: any[]): any[] {
+  const agrupadosPorPedido: { [key: string]: any } = {};
 
-    clientes.forEach(cliente => {
-      const idPedido = cliente.id_pedido;
+  clientes.forEach(cliente => {
+    const idPedido = cliente.id_pedido;
 
-      if (!agrupadosPorPedido[idPedido]) {
-        agrupadosPorPedido[idPedido] = {
-          clave: cliente.clave,
-          estafeta: cliente.estafeta,
-          telefono: cliente.telefono,
-          fotoUrl: cliente.fotoUrl,
-          Correo: cliente.Correo,
-          nombreCompleto: cliente.nombreCompleto,
-          fechaRegistro: cliente.fechaRegistro,
-          huella: cliente.huella,
-          precioPedido: cliente.precioPedido,
-          total: cliente.total,
-          membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-          correoCliente: cliente.correoCliente,
-          id_pedido: cliente.id_pedido,
-          fecha_hora_pedido: cliente.fecha_hora_pedido,
-          id_bodega: cliente.id_bodega,
-          precioCompra: cliente.precioCompra,
-          conteoPedidos: cliente.conteoPedidos,
-          fecha_inicio: cliente.fecha_inicio,
-          fecha_caducidad: cliente.fecha_caducidad,
-          idPromocion: cliente.idPromocion,
-          nombrePromocion: cliente.nombrePromocion,
-          estatus: cliente.estatus,
-          productos: [] // Inicializamos un array vacío para los productos
-        };
-      }
+    if (!agrupadosPorPedido[idPedido]) {
+      agrupadosPorPedido[idPedido] = {
+        clave: cliente.clave,
+        estafeta: cliente.estafeta,
+        telefono: cliente.telefono,
+        fotoUrl: cliente.fotoUrl,
+        Correo: cliente.Correo,
+        nombreCompleto: cliente.nombreCompleto,
+        fechaRegistro: cliente.fechaRegistro,
+        huella: cliente.huella,
+        precioPedido: cliente.precioPedido,
+        total: cliente.total,
+        membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
+        correoCliente: cliente.correoCliente,
+        id_pedido: cliente.id_pedido,
+        fecha_hora_pedido: cliente.fecha_hora_pedido,
+        id_bodega: cliente.id_bodega,
+        precioCompra: cliente.precioCompra,
+        conteoPedidos: cliente.conteoPedidos, // Inicia con el valor del primer producto
+        estatus: cliente.estatus, // Inicia con el valor del primer producto
+        fecha_inicio: cliente.fecha_inicio,
+        fecha_caducidad: cliente.fecha_caducidad, // Inicialmente tomamos la fecha
+        idPromocion: cliente.idPromocion,
+        nombrePromocion: cliente.nombrePromocion,
+        productos: [] // Inicializamos un array vacío para los productos
+      };
+    }
 
-      // Agregamos la información del producto al array `productos` correspondiente
-      agrupadosPorPedido[idPedido].productos.push({
-        id_producto: cliente.id_producto,
-        marca: cliente.marca,
-        nombreProducto: cliente.nombreProducto,
-        idProbob: cliente.idProbob
-      });
+    // Agregamos la información del producto al array productos correspondiente
+    agrupadosPorPedido[idPedido].productos.push({
+      id_producto: cliente.id_producto,
+      marca: cliente.marca,
+      nombreProducto: cliente.nombreProducto,
+      idProbob: cliente.idProbob,
+      estatus: cliente.estatus,
+      fecha_inicio: cliente.fecha_inicio,
+      fecha_caducidad: cliente.fecha_caducidad,
+      conteoPedidos: cliente.conteoPedidos
     });
 
-    // Convertimos el objeto agrupado en un array
-    return Object.values(agrupadosPorPedido);
-  }
+    // Cambiar el valor de conteoPedidos si algún producto tiene conteoPedidos = 1
+    if (cliente.conteoPedidos === 1) {
+      agrupadosPorPedido[idPedido].conteoPedidos = 1;
+    }
+
+    // Cambiar el valor de estatus si algún producto tiene estatus = '1'
+    if (cliente.estatus === '1') {
+      agrupadosPorPedido[idPedido].estatus = '1';
+    }
+
+    // Comparar las fechas de caducidad para actualizar el valor más alto
+    const fechaCliente = new Date(cliente.fecha_caducidad);
+    if (!isNaN(fechaCliente.getTime())) {
+      const fechaMaxima = new Date(agrupadosPorPedido[idPedido].fecha_caducidad);
+      if (!isNaN(fechaMaxima.getTime()) && fechaCliente > fechaMaxima) {
+        agrupadosPorPedido[idPedido].fecha_caducidad = cliente.fecha_caducidad;
+      }
+    }
+  });
+
+  // Convertimos el objeto agrupado en un array
+  return Object.values(agrupadosPorPedido);
+}
 
 
 
