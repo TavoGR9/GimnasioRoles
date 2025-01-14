@@ -633,22 +633,27 @@ export class HomeComponent implements OnInit {
 
 consultarMembresia(){ 
 //this.homeService.ConsultarPedidosMembresias(this)
-this.pagoService.getPedidosMembresias(4).subscribe(
+this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   (response) => {
+    console.log(this.auth.idGym.getValue(),'id')
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
-      const pedidosAgrupados = this.agruparPorPedido(pedidos);
-      const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
       console.log('API',response.data)
-      console.log(pedidos)
-      console.log(pedidosAgrupados)
-      console.log('Agrupados por fechas',pedidosConteoDia)
+
+      
+      const pedidosAgrupados = this.agruparPorPedido(pedidos);
+      console.log('Agrupados Por pedido',pedidosAgrupados);
+      
+      const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
+      console.log('Conteo por dias',pedidosConteoDia);
+      
+
+
       this.salesData= pedidosConteoDia
       this.processSalesData();
       //this.processVisitsData();
       this.processSalesDataVisita();
-      console.log(this.procesarVentas(response.data,'Mensualidad'))
-      this.grafico1=this.procesarVentas(response.data,'Mensualidad')
+  
       //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
       
     } else {
@@ -699,12 +704,13 @@ this.pagoService.getPedidosMembresias(4).subscribe(
   return Object.values(agrupadosPorPedido);
 }
 
-
 contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } {
   const conteos: { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } = {};
 
   clientes.forEach(cliente => {
-    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0]; 
+    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0]; // Extraemos solo la fecha (YYYY-MM-DD)
+
+    console.log(`Procesando cliente con fecha: ${fecha}`, cliente);
 
     if (!conteos[fecha]) {
       conteos[fecha] = {
@@ -714,82 +720,66 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       };
     }
 
-    // Conteo de productos (ahora incluye nombreProducto)
-    cliente.productos.forEach((producto) => {
-      if (producto.id_producto) {
-        const idProducto = producto.id_producto;
-        const nombreProducto = producto.nombreProducto;
+    // **Conteo de productos**
+    cliente.productos.forEach((producto, index) => {
+      const idProducto = producto.id_producto || `temp_${index}`; // ID temporal si falta
+      const nombreProducto = producto.nombreProducto || 'Producto desconocido';
 
-        // Verificamos si el producto ya ha sido contado
-        if (!conteos[fecha].conteoProductos[idProducto]) {
-          conteos[fecha].conteoProductos[idProducto] = {
-            nombreProducto: nombreProducto,
-            cantidad: 0
-          };
-        }
+      console.log(`Procesando producto:`, { idProducto, nombreProducto, fecha });
 
-        // Incrementamos la cantidad del producto
-        conteos[fecha].conteoProductos[idProducto].cantidad += 1;
+      if (!conteos[fecha].conteoProductos[idProducto]) {
+        console.log(`Producto nuevo encontrado, inicializando conteo:`, { idProducto, nombreProducto });
+        conteos[fecha].conteoProductos[idProducto] = {
+          nombreProducto: nombreProducto,
+          cantidad: 0
+        };
       }
+
+      conteos[fecha].conteoProductos[idProducto].cantidad += 1;
+      console.log(`Producto actualizado:`, conteos[fecha].conteoProductos[idProducto]);
     });
 
-    // Conteo de bodegas (agregamos la cadena de marca y nombreProducto)
-    cliente.productos.forEach((producto) => {
-      if (producto.idBodPro) {
-        const idBodPro = producto.idBodPro;
-        const marcaYProducto = `${producto.marca} - ${producto.nombreProducto}`;
+    // **Conteo de bodegas**
+    cliente.productos.forEach((producto, index) => {
+      const idBodPro = producto.idBodPro || `temp_bodega_${index}`;
+      const marcaYProducto = `${producto.marca} - ${producto.nombreProducto}`;
 
-        // Verificamos si la bodega ya ha sido contada
-        if (!conteos[fecha].conteoBodegas[idBodPro]) {
-          conteos[fecha].conteoBodegas[idBodPro] = {
-            marcaYProducto: marcaYProducto,
-            cantidad: 0
-          };
-        }
+      console.log(`Procesando bodega:`, { idBodPro, marcaYProducto, fecha });
 
-        // Incrementamos la cantidad de esa bodega
-        conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
+      if (!conteos[fecha].conteoBodegas[idBodPro]) {
+        console.log(`Bodega nueva encontrada, inicializando conteo:`, { idBodPro, marcaYProducto });
+        conteos[fecha].conteoBodegas[idBodPro] = {
+          marcaYProducto: marcaYProducto,
+          cantidad: 0
+        };
       }
+
+      conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
+      console.log(`Bodega actualizada:`, conteos[fecha].conteoBodegas[idBodPro]);
     });
 
-    // Conteo de promociones (ahora incluye nombrePromocion)
+    // **Conteo de promociones**
     if (cliente.id_promocion && cliente.nombrePromocion) {
+      console.log(`Procesando promoción:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion, fecha });
+
       if (!conteos[fecha].conteoPromociones[cliente.id_promocion]) {
+        console.log(`Promoción nueva encontrada, inicializando conteo:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion });
         conteos[fecha].conteoPromociones[cliente.id_promocion] = {
           nombrePromocion: cliente.nombrePromocion,
           cantidad: 0
         };
       }
 
-      // Incrementamos el contador de esa promoción
       conteos[fecha].conteoPromociones[cliente.id_promocion].cantidad += 1;
+      console.log(`Promoción actualizada:`, conteos[fecha].conteoPromociones[cliente.id_promocion]);
     }
   });
 
+  console.log('Conteos finales:', conteos);
   return conteos;
 }
 
-getDatosGraficaPorProducto(data: any, idProducto: string): any[] {
-  // Resultado final: [{ name: '2024-12-04', value: 4 }, ...]
-  const resultado: any[] = [];
 
-  // Recorrer cada fecha en el objeto original
-  Object.keys(data).forEach((fecha) => {
-    // Obtener los productos de esa fecha
-    const productos = data[fecha]?.conteoProductos || {};
-
-    // Verificar si el producto con el ID dado existe en esa fecha
-    if (productos[idProducto]) {
-      // Agregar al resultado el nombre de la fecha y el conteo
-      resultado.push({
-        name: fecha, // La fecha como categoría
-        value: productos[idProducto].cantidad, // Cantidad del producto
-      });
-    }
-  });
-
-  return resultado; // Arreglo listo para la gráfica
-}
 
 ///////////MENSUALIDAD/////////////
 // Configuración de ngx-charts
@@ -1006,94 +996,100 @@ updateSelectedProduct2(productName: string) {
 }
 
 
-// Método de procesamiento de ventas
-procesarVentas(pedidos: any[], producto: string): any[] {
-  const now = new Date();
-  const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfPreviousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const endOfPreviousMonth = new Date(now.getFullYear(), now.getMonth(), 0);
 
-  console.log("Fechas de análisis:");
-  console.log("Inicio mes actual:", startOfCurrentMonth);
-  console.log("Fin mes anterior:", endOfPreviousMonth);
-  
-  // Filtramos los pedidos para el producto proporcionado
-  const productoPedidosMesPasado = pedidos.filter(p => {
-    const fechaPedido = new Date(p.fecha_hora_pedido);
-    return p.nombreProducto === producto && fechaPedido >= startOfPreviousMonth && fechaPedido <= endOfPreviousMonth;
-  });
-
-  const productoPedidosMesActual = pedidos.filter(p => {
-    const fechaPedido = new Date(p.fecha_hora_pedido);
-    return p.nombreProducto === producto && fechaPedido >= startOfCurrentMonth && fechaPedido <= now;
-  });
-
-  console.log(`Pedidos del ${producto} en el mes pasado:`, productoPedidosMesPasado);
-  console.log(`Pedidos del ${producto} en el mes actual:`, productoPedidosMesActual);
-
-  const contarPorDia = (pedidos: any[], startDate: Date, endDate: Date) => {
-    const dias: { [key: string]: number } = {};
-    let currentDate = new Date(startDate);
-    
-    while (currentDate <= endDate) {
-      const dia = currentDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-      dias[dia] = 0;  // Iniciamos con 0 pedidos para ese día
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    console.log("Dias iniciales:", dias);
-
-    // Contamos los pedidos por día
-    pedidos.forEach(p => {
-      const dia = new Date(p.fecha_hora_pedido).toISOString().split('T')[0];
-      if (dias.hasOwnProperty(dia)) {
-        dias[dia]++;
-      }
-    });
-
-    console.log("Conteo por día:", dias);
-
-    // Convertimos el objeto a un arreglo de objetos con el formato { name: 'YYYY-MM-DD', value: count }
-    return Object.entries(dias).map(([dia, conteo]) => ({ name: dia, value: conteo }));
-  };
-
-  const datosMesPasado = contarPorDia(productoPedidosMesPasado, startOfPreviousMonth, endOfPreviousMonth);
-  const datosMesActual = contarPorDia(productoPedidosMesActual, startOfCurrentMonth, now);
-
-  console.log(`Datos para el mes pasado:`, datosMesPasado);
-  console.log(`Datos para el mes actual:`, datosMesActual);
-
-  return [
-    {
-      name: `${producto} - Mes pasado (${startOfPreviousMonth.toLocaleString('default', { month: 'long' })})`,
-      series: datosMesPasado
-    },
-    {
-      name: `${producto} - Mes actual (${startOfCurrentMonth.toLocaleString('default', { month: 'long' })})`,
-      series: datosMesActual
-    }
-  ];
-}
-
-view4: [number, number] = [900, 900]; // Tamaño del gráfico
-colorScheme4: Color = {
-  domain: ["#FF8C00", "#000000"], // Colores
-  name: "cool",
+////////QUINCENA/////////////////////
+viewQuincenal: [number, number] = [900, 900]; // Tamaño del gráfico
+colorSchemeQuincenal: Color = {
+  domain: ["#4CAF50", "#FF5722"], // Colores específicos para "Visita"
+  name: "Quincenal",
   selectable: true,
   group: ScaleType.Ordinal,
 };
-gradient4: boolean = false;
-showXAxis4: boolean = true;
-showYAxis4: boolean = true;
-showXAxisLabel4: boolean = true;
-xAxisLabel4: string = '';
-showYAxisLabel4: boolean = true;
-yAxisLabel4: string = '';
-timeline4: boolean = true;
-yScaleMax4: number | undefined = undefined; // Escala Y dinámica
+gradientQuincenal: boolean = false;
+showXAxisQuincenal: boolean = true;
+showYAxisQuincenal: boolean = true;
+showXAxisLabelQuincenal: boolean = true;
+xAxisLabelQuincenal: string = '';
+showYAxisLabelQuincenal: boolean = true;
+yAxisLabelQuincenal: string = '';
+timelineQuincenal: boolean = true;
+yScaleMaxQuincenal: number | undefined = undefined; // Escala Y dinámica
+currentMonthStrQuincenal: string = ''; // Mes actual en formato 'YYYY-MM'
 
 // Datos del gráfico
-salesChartData4: any[] = []; // Aquí guardaremos los resultados procesados
+salesChartDataQuincenal: any[] = []; // Aquí guardaremos los resultados procesados
+
+// Producto seleccionado dinámicamente
+selectedProductQuincenal: string = 'Quincenal'; // Valor inicial
+
+// Procesar los datos
+processSalesDataQuincenal() {
+  // Obtener el mes y el año actual dinámicamente
+  console.log('hola');
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
+  this.currentMonthStrQuincenal = `${currentYear}-${currentMonth}`; // Mes actual en formato 'YYYY-MM'
+
+  // El mes anterior
+  const previousMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1); // Restamos 1 mes
+  const previousYear = previousMonthDate.getFullYear();
+  const previousMonth = (previousMonthDate.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
+  const previousMonthStr = `${previousYear}-${previousMonth}`; // Mes pasado en formato 'YYYY-MM'
+
+  // Obtener días totales del mes actual y mes anterior
+  const daysInCurrentMonth = today.getDate(); // Solo hasta el día actual del mes actual
+  const daysInPreviousMonth = new Date(previousYear, parseInt(previousMonth), 0).getDate(); // Último día del mes anterior
+
+  // Inicializar series con días y valores en 0
+  const currentMonthSales: { name: string; value: number }[] = Array.from(
+    { length: daysInCurrentMonth },
+    (_, i) => ({ name: `${i + 1}`, value: 0 })
+  );
+  const previousMonthSales: { name: string; value: number }[] = Array.from(
+    { length: daysInPreviousMonth },
+    (_, i) => ({ name: `${i + 1}`, value: 0 })
+  );
+
+  // Rellenar datos reales en las series
+  Object.keys(this.salesData).forEach((date) => {
+    const record = this.salesData[date];
+    if (record.conteoProductos) {
+      Object.values(record.conteoProductos).forEach((product: any) => {
+        if (product.nombreProducto === this.selectedProductQuincenal) {
+          const day = parseInt(date.split('-')[2]); // Extraer día (DD)
+          if (date.startsWith(this.currentMonthStrQuincenal) && day <= daysInCurrentMonth) {
+            currentMonthSales[day - 1].value = product.cantidad;
+          } else if (date.startsWith(previousMonthStr)) {
+            previousMonthSales[day - 1].value = product.cantidad;
+          }
+        }
+      });
+    }
+  });
+
+  // Calcular el máximo para el eje Y
+  const allValues = [
+    ...currentMonthSales.map((d) => d.value),
+    ...previousMonthSales.map((d) => d.value),
+  ];
+  this.yScaleMaxQuincenal = allValues.length > 0 ? Math.max(...allValues) : 0; // Máximo o 0 si no hay valores
+
+  // Estructurar datos para ngx-charts
+  this.salesChartDataQuincenal = [
+    {
+      name: `${this.currentMonthStrQuincenal} (${this.selectedProductQuincenal})`,
+      series: currentMonthSales,
+    },
+    {
+      name: `${previousMonthStr} (${this.selectedProductQuincenal})`,
+      series: previousMonthSales,
+    },
+  ];
+}
+
+
+///////FIN QUINCENA/////////////////
 
 
 
