@@ -707,6 +707,10 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       //this.processVisitsData();
       this.processSalesDataVisita();
 
+
+      this.processSalesDataQuincenal();
+
+
       //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
 
     } else {
