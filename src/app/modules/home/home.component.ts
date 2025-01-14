@@ -40,8 +40,8 @@ interface Cliente {
 })
 export class HomeComponent implements OnInit {
   currentUser: string = "";
-  currentDate: string = ''; 
-  timer: any; 
+  currentDate: string = '';
+  timer: any;
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
   idGym: number = 0;
@@ -58,7 +58,6 @@ export class HomeComponent implements OnInit {
 
   homeCard: any;
   homeCard2: any;
-  homeCard21: any[] = [];
   homeCardVisita: any[] = [];
   homeCardQuincena: any[] = [];
 
@@ -70,6 +69,12 @@ export class HomeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
   displayedColumns: string[] = ["title", "details", "price", "rol"];
+
+  dataSourceProductos: any;
+  displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
+  masVendidos: any;
+
+  homeCard21: any[] = [];
 
 
   /**graficas**/
@@ -150,8 +155,9 @@ export class HomeComponent implements OnInit {
 
   fechaFormateada: string = "";
   ngOnInit(): void {
+
     this.consultarMembresia();
-    this.updateDate(); 
+    this.updateDate();
     this.startDateUpdater();
     //this.processSalesData();
     console.log(this.isLoading)
@@ -176,7 +182,7 @@ export class HomeComponent implements OnInit {
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
-      
+
     }
 
     combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
@@ -199,6 +205,35 @@ export class HomeComponent implements OnInit {
       }
     );
     */
+
+
+    // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
+    //   ([idGym, idUser]) => {
+    //     if (idGym && idUser) {
+    //       this.idGym = idGym;
+    //       this.idUser = idUser;
+    //       this.listaTablas();
+    //     }
+    //   }
+    // );
+
+
+    // this.listaTablas();
+
+    // this.homeService.consultarHome(this.idGym).subscribe((respuesta) => {
+    //   this.homeCard = respuesta;
+    // });
+
+
+    // this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
+    //   this.masVendidos = data;
+    //   console.log('MasVendidos: ', this.masVendidos);
+
+    //   this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
+    //   this.loadData();
+    // });
+
+
   }
 
   /**LOCAL */
@@ -224,6 +259,7 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       this.isLoading = false;
       this.dataSource.paginator = this.paginator;
+      this.dataSourceProductos.paginador = this.paginator;
     }, 1000);
   }
 
@@ -460,9 +496,11 @@ export class HomeComponent implements OnInit {
     });
 
     this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      this.tablaHTML = this.sanitizer.bypassSecurityTrustHtml(
-        `<table class="mi-tabla">${data.tablaHTML}</table>`
-      );
+      this.masVendidos = data;
+      console.log('MasVendidos: ', this.masVendidos);
+
+      this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
+      this.loadData();
     });
     this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
       this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
@@ -631,7 +669,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-consultarMembresia(){ 
+consultarMembresia(){
 //this.homeService.ConsultarPedidosMembresias(this)
 this.pagoService.getPedidosMembresias(4).subscribe(
   (response) => {
@@ -650,10 +688,10 @@ this.pagoService.getPedidosMembresias(4).subscribe(
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
       console.log(errorMessage)
     }
-   
+
   },
   (error) => {
-    
+
     let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
     console.error(error); // También lo mostramos en la consola
   }
@@ -699,7 +737,7 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
   const conteos: { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } = {};
 
   clientes.forEach(cliente => {
-    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0]; 
+    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0];
 
     if (!conteos[fecha]) {
       conteos[fecha] = {
@@ -977,7 +1015,7 @@ processSalesDataVisita() {
 updateDate(): void {
   const today = new Date();
   const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0'); 
+  const month = (today.getMonth() + 1).toString().padStart(2, '0');
   const day = today.getDate().toString().padStart(2, '0');
 
   this.currentDate = `${year}-${month}-${day}`;
@@ -987,7 +1025,7 @@ updateDate(): void {
 startDateUpdater(): void {
   this.timer = setInterval(() => {
     this.updateDate();
-  }, 24 * 60 * 60 * 1000); 
+  }, 24 * 60 * 60 * 1000);
 }
 
 
