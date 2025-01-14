@@ -62,7 +62,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   //@ViewChild("paginatorReenovacionMem", { static: true })
   paginatorReenovacion!: MatPaginator;
   displayedColumnsActivos: string[] = [
-    "Estafeta",
+    "ID",
     "Nombre",
     "Membresia",
     "Precio",
@@ -850,9 +850,11 @@ console.log(filtrados2);
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
+          this.listaClientesData3()
         } else {
         }
       });
+      
   }
 
 

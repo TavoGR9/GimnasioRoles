@@ -382,7 +382,7 @@ descargarExcel(): void {
       [`Con fechas: ${fechaInicioFormateada} - ${fechaFinFormateada}`],
       [],
       [
-          "Estafeta",
+          "ID",
           "Nombre completo",
           "Sucursal",
           "Membresía",
