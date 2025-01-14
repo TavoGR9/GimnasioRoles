@@ -1,4 +1,9 @@
-<div *ngIf="isLoading">
+<div *ngIf="isLoading" class="loading-spinner">
+  <!-- Aquí se puede incluir un spinner o mensaje de carga -->
+  Cargando...
+</div>
+
+<div *ngIf="!isLoading">
    <div style="margin-top: 60px;">
       <mat-card *ngIf="isAdmin() || isRecep()">
          <mat-card-content>
@@ -154,7 +159,7 @@
       </mat-card-content>
       </mat-card>-->
    </mat-card>
-   <mat-card *ngIf="isAdmin() || isRecep()">
+   <!-- <mat-card *ngIf="isAdmin() || isRecep()">
       <mat-card-header>
          <h3 class="icon-title">
             <mat-icon class="icon">people</mat-icon>
@@ -187,7 +192,7 @@
          </table>
          <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20, 30,40,50,100,200,300,4000]" showFirstLastButtons></mat-paginator>
       </div>
-   </mat-card>
+   </mat-card> -->
 </div>
 <!--<div>
    <br>
@@ -209,7 +214,6 @@
      </div>
 
      <div class="col-12">
-       <!-- Gráfico de ngx-charts -->
        <ngx-charts-line-chart
          class="hide-mini-chart"
          [view]="view2"

@@ -206,6 +206,16 @@ export class HomeComponent implements OnInit {
     );
     */
 
+    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
+      ([idGym, idUser]) => {
+        if (idGym && idUser) {
+          this.idGym = idGym;
+          this.idUser = idUser;
+          this.listaTablas();
+        }
+      }
+    );
+
 
     // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
     //   ([idGym, idUser]) => {
@@ -491,22 +501,27 @@ export class HomeComponent implements OnInit {
       this.homeCard = respuesta;
     });
 
-    this.homeService.consultarHome2(this.idGym).subscribe((respuesta) => {
-      this.homeCard2 = respuesta;
-    });
+    // this.homeService.consultarHome2(this.idGym).subscribe((respuesta) => {
+    //   this.homeCard2 = respuesta;
+    // });
 
-    this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-      this.masVendidos = data;
-      console.log('MasVendidos: ', this.masVendidos);
+    this.homeService.getAnalyticsData(this.idGym).subscribe(
+      (data) => {
+        console.log('Datos recibidos en Angular:', data); // Verifica si hay errores o estructura inesperada
+        this.masVendidos = data;
+        this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
+        this.loadData();
+      },
+      (error) => {
+        console.error('Error al obtener datos:', error); // Captura cualquier error
+      }
+    );
 
-      this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
-      this.loadData();
-    });
-    this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
-      this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
-        `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
-      );
-    });
+    // this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
+    //   this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
+    //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
+    //   );
+    // });
   }
 
   /**ASISTENCIA */
@@ -671,7 +686,7 @@ export class HomeComponent implements OnInit {
 
 consultarMembresia(){
 //this.homeService.ConsultarPedidosMembresias(this)
-this.pagoService.getPedidosMembresias(4).subscribe(
+this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   (response) => {
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
@@ -688,7 +703,7 @@ this.pagoService.getPedidosMembresias(4).subscribe(
       console.log(this.procesarVentas(response.data,'Mensualidad'))
       this.grafico1=this.procesarVentas(response.data,'Mensualidad')
       //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
-      
+
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
       console.log(errorMessage)
@@ -1054,7 +1069,7 @@ procesarVentas(pedidos: any[], producto: string): any[] {
   console.log("Fechas de análisis:");
   console.log("Inicio mes actual:", startOfCurrentMonth);
   console.log("Fin mes anterior:", endOfPreviousMonth);
-  
+
   // Filtramos los pedidos para el producto proporcionado
   const productoPedidosMesPasado = pedidos.filter(p => {
     const fechaPedido = new Date(p.fecha_hora_pedido);
@@ -1072,7 +1087,7 @@ procesarVentas(pedidos: any[], producto: string): any[] {
   const contarPorDia = (pedidos: any[], startDate: Date, endDate: Date) => {
     const dias: { [key: string]: number } = {};
     let currentDate = new Date(startDate);
-    
+
     while (currentDate <= endDate) {
       const dia = currentDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
       dias[dia] = 0;  // Iniciamos con 0 pedidos para ese día
