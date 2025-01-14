@@ -59,6 +59,9 @@ export class AgregarProductoMembresiaComponent implements OnInit {
   preciosucu: string = '';
   // botonDeshabilitado: boolean = false;
 
+  esServicio: boolean = false;
+
+
   constructor(
     public dialogo: MatDialogRef<AgregarProductoMembresiaComponent>,
     @Inject(MAT_DIALOG_DATA) public mensaje: string,
@@ -76,11 +79,11 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     this.form = this.fb.group({
       detalleUnidadMedida: ["pza"],
       precioCompra: [0],
-      detalleCompra: ["", Validators.required],
+      detalleCompra: [0],
       marcaP: ["", Validators.required],
       activo: [1],
       ItemNumber: [0],
-      codigoBarra: ["", Validators.required],
+      codigoBarra: [""],
       ieps: [0],
       iva: [0],
       sat: [0],
@@ -92,6 +95,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
       cantidadMayoreo: ["0"],
       descripcion: ["", Validators.required],
       precciosucu: ["", Validators.required],
+      duracion: ["", Validators.required]
     });
 
     this.form.get("nombreCategoriaP")?.valueChanges.subscribe((value) => {
@@ -304,7 +308,8 @@ export class AgregarProductoMembresiaComponent implements OnInit {
             factura: respuesta[0]["factura"],
             STYLE_ITEM_ID: respuesta[0]["STYLE_ITEM_ID"],
             cantidadMayoreo: respuesta[0]["cantidadMayoreo"],
-            precciosucu: respuesta[0]["precioSucursal"]
+            precciosucu: respuesta[0]["precioSucursal"],
+            duracion: respuesta[0]["duracion_dias"]
           });
 
           // this.botonDeshabilitado = true;
@@ -330,6 +335,12 @@ export class AgregarProductoMembresiaComponent implements OnInit {
       }
     });
   }
+
+  generateUniqueCode(): string {
+  const timestamp = Date.now().toString(36); // Marca de tiempo en base 36
+  const random = Math.random().toString(36).substring(2, 8); // Número aleatorio en base 36
+  return `${timestamp}-${random}`;
+}
 
   registrarProd() {
     if (this.form.valid) {
@@ -364,11 +375,11 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                                   subCategoriaExistente.producto.id_producto,
                                 detalleUnidadMedida: "pza",
                                 precioCompra: this.form.value.precioCompra,
-                                detalleCompra: this.form.value.detalleCompra,
+                                detalleCompra: "Membresia",
                                 id_marcaV:
                                   marcaExistente.marca.id_marcas,
                                 descripcion: this.form.value.descripcion,
-                                codigoBarra: this.form.value.codigoBarra,
+                                codigoBarra: this.generateUniqueCode(),
                                 ItemNumber: this.form.value.ItemNumber,
                                 activo: this.form.value.activo,
                                 sat: this.form.value.sat,
@@ -448,11 +459,10 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                                         .id_producto,
                                     detalleUnidadMedida: "pza",
                                     precioCompra: this.form.value.precioCompra,
-                                    detalleCompra:
-                                      this.form.value.detalleCompra,
+                                    detalleCompra: "Membresia",
                                     id_marcaV: respuestaMarca.data.id_marcas,
                                     descripcion: this.form.value.descripcion,
-                                    codigoBarra: this.form.value.codigoBarra,
+                                    codigoBarra: this.generateUniqueCode(),
                                     ItemNumber: this.form.value.ItemNumber,
                                     activo: this.form.value.activo,
                                     sat: this.form.value.sat,
@@ -521,14 +531,663 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                             }
                           });
                       } else {
-                        console.error("Error: subcategoría no encontrada o success no es 1");
+                        ///********** Si la sub no existe */
+                        console.log('No existe la subcategoria');
+
+                        const formSub = {
+                          idcatte: categoriaExistente.categoria.id_categoria,
+                          nomsubcate: this.form.value.nomsubcate,
+                          duracion: this.form.value.duracion,
+                          membresia: 1
+                        };
+                        console.log('Datos a enviar de la sub: ', formSub);
+                        this.categoriaService
+                          .agregarSubCategoria2(formSub)
+                          .subscribe((respuestaSub) => {
+                            console.log('NUEVA SUBCATEGORIA AGREGADA: ', respuestaSub);
+
+                            ///********** Verifica si la marca ya existe */
+                            this.categoriaService
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .subscribe((marcaExistente) => {
+                                console.log('Marca existente: ', marcaExistente);
+
+                                if (marcaExistente.success == 1) {
+                                  this.spinner.hide();
+                                  //agregar producto
+
+                                  const formularioP = {
+                                    idProducto: respuestaSub.id_producto,
+                                    detalleUnidadMedida: "pza",
+                                    precioCompra: this.form.value.precioCompra,
+                                    detalleCompra: "Membresia",
+                                    id_marcaV:
+                                      marcaExistente.marca.id_marcas,
+                                    descripcion: this.form.value.descripcion,
+                                    codigoBarra: this.generateUniqueCode(),
+                                    ItemNumber: this.form.value.ItemNumber,
+                                    activo: this.form.value.activo,
+                                    sat: this.form.value.sat,
+                                    ieps: this.form.value.ieps,
+                                    iva: this.form.value.iva,
+                                    factura: this.form.value.factura,
+                                    STYLE_ITEM_ID:
+                                      this.form.value.STYLE_ITEM_ID,
+                                    precioCaja: this.form.value.precioCaja,
+                                    cantidadMayoreo:
+                                      this.form.value.cantidadMayoreo,
+                                      //idUsuario: this.auth.idUser.getValue(),
+                                  };
+                                  console.log('form enviado: ', formularioP);
+
+
+                                  this.productoService
+                                    .creaProductoMemb(formularioP)
+                                    .subscribe({
+                                      next: (respuesta) => {
+                                        console.log('respuesta: ', respuesta);
+                                        // console.log('RESPUESTA: ', respuesta);
+
+                                        //se obtiene el ultimo idProbob
+                                        this.idProbob = respuesta.idProbob;
+                                        // console.log("IDProbob Obtenido: ", this.idProbob);
+
+                                        // Después de obtener el idProbob, llamamos a enviarRegistros para guardar los demás datos
+                                        this.enviarRegistros();
+
+                                        if (respuesta.success) {
+                                          this.spinner.hide();
+                                          this.dialog
+                                            .open(MensajeEmergentesComponent, {
+                                              data: `Producto agregado exitosamente`,
+                                            })
+                                            .afterClosed()
+                                            .subscribe(
+                                              (cerrarDialogo: Boolean) => {
+                                                if (cerrarDialogo) {
+                                                  this.productoSubject.next();
+                                                  this.dialogo.close(true);
+                                                } else {
+                                                  // Puedes agregar lógica adicional aquí si es necesario
+                                                }
+                                              }
+                                            );
+                                        } else {
+                                          this.toastr.error(
+                                            respuesta.message,
+                                            "Error",
+                                            {
+                                              positionClass:
+                                                "toast-bottom-left",
+                                            }
+                                          );
+                                        }
+                                      },
+                                      error: (paramError) => {
+                                        this.toastr.error(
+                                          paramError.error.message,
+                                          "Error",
+                                          {
+                                            positionClass: "toast-bottom-left",
+                                          }
+                                        );
+                                      },
+                                    });
+                                } else {
+                                  console.log('NO EXISTE LA MARCA');
+
+                                  const formMarca = {
+                                    marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
+                                  };
+                                  console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+
+                                  this.categoriaService
+                                    .agregarMarca2(formMarca)
+                                    .subscribe((respuestaMarca) => {
+                                      console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                      console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                      const formularioP = {
+                                        idProducto: respuestaSub.id_producto,
+                                        detalleUnidadMedida: "pza",
+                                        precioCompra:
+                                          this.form.value.precioCompra,
+                                        detalleCompra: "Membresia",
+                                        id_marcaV: respuestaMarca.data.id_marcas,
+                                        descripcion:
+                                          this.form.value.descripcion,
+                                          codigoBarra: this.generateUniqueCode(),
+
+                                        ItemNumber: this.form.value.ItemNumber,
+                                        activo: this.form.value.activo,
+                                        sat: this.form.value.sat,
+                                        ieps: this.form.value.ieps,
+                                        iva: this.form.value.iva,
+                                        factura: this.form.value.factura,
+                                        STYLE_ITEM_ID:
+                                          this.form.value.STYLE_ITEM_ID,
+                                        precioCaja: this.form.value.precioCaja,
+                                        cantidadMayoreo:
+                                          this.form.value.cantidadMayoreo,
+                                          //idUsuario: this.auth.idUser.getValue(),
+                                      };
+                                      console.log('form enviado: ', formularioP);
+
+
+                                      this.productoService
+                                        .creaProductoMemb(formularioP)
+                                        .subscribe({
+                                          next: (respuesta) => {
+                                            console.log('respuesta: ', respuesta);
+
+                                            // console.log('RESPUESTA: ', respuesta);
+
+                                            //se obtiene el ultimo idProbob
+                                            this.idProbob = respuesta.idProbob;
+                                            // console.log("IDProbob Obtenido: ", this.idProbob);
+
+                                            // Después de obtener el idProbob, llamamos a enviarRegistros para guardar los demás datos
+                                            this.enviarRegistros();
+
+                                            if (respuesta.success) {
+                                              this.spinner.hide();
+                                              this.dialog
+                                                .open(
+                                                  MensajeEmergentesComponent,
+                                                  {
+                                                    data: `Producto agregado exitosamente`,
+                                                  }
+                                                )
+                                                .afterClosed()
+                                                .subscribe(
+                                                  (cerrarDialogo: Boolean) => {
+                                                    if (cerrarDialogo) {
+                                                      this.productoSubject.next();
+                                                      this.dialogo.close(true);
+                                                    } else {
+                                                      // Puedes agregar lógica adicional aquí si es necesario
+                                                    }
+                                                  }
+                                                );
+                                            } else {
+                                              this.toastr.error(
+                                                respuesta.message,
+                                                "Error",
+                                                {
+                                                  positionClass:
+                                                    "toast-bottom-left",
+                                                }
+                                              );
+                                            }
+                                          },
+                                          error: (paramError) => {
+                                            this.toastr.error(
+                                              paramError.error.message,
+                                              "Error",
+                                              {
+                                                positionClass:
+                                                  "toast-bottom-left",
+                                              }
+                                            );
+                                          },
+                                        });
+                                      this.spinner.hide();
+                                    });
+                                }
+                              });
+                          });
+                        // console.error("Error: subcategoría no encontrada o success no es 1");
                       }
                     });
                 } else {
-                  console.error("Error: categoría no encontrada o success no es 1");
+                  console.log("La categoría no existe, creando nueva...");
+                  // Si la categoría no existe, se agrega
+                  this.categoriaService
+                    .agregarCategoria2(this.form.value)
+                    .subscribe((respuesta) => {
+                      // nombreCategoriaP
+                      console.log('valor de la subcategoria: ', respuesta);
+
+
+                      if (respuesta.success === 1) {
+                      console.log('TODO EL FORMULARIO: ', this.form.value);
+                      console.log('Nombre de la nueva categoria: ', this.form.value.nombreCategoriaP)
+                      console.log('Categoría agregada:', respuesta);  // Verifica la respuesta
+                      ///********** Verifica si la subcategoria ya existe */
+                      this.categoriaService
+                        .obtenerSubCategoriaPorNombre2(
+                          this.form.value.nomsubcate,
+                          respuesta.id_categoria
+                        )
+
+                        .subscribe((subCategoriaExistente) => {
+                          console.log('subcategoria existente: ', subCategoriaExistente);
+
+                          if (subCategoriaExistente.success == 1) {
+                            this.categoriaService
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .subscribe((marcaExistente) => {
+                                console.log('marca: ', marcaExistente);
+
+                                if (marcaExistente.success == 1) {
+                                  //agregar producto
+
+                                  const formularioP = {
+                                    idProducto:
+                                      subCategoriaExistente.producto
+                                        .id_producto,
+                                    detalleUnidadMedida: "pza",
+                                    precioCompra: this.form.value.precioCompra,
+                                    detalleCompra: "Membresia",
+                                    id_marcaV:
+                                      marcaExistente.marca.id_marcas,
+                                    descripcion: this.form.value.descripcion,
+                                    codigoBarra: this.generateUniqueCode(),
+                                    ItemNumber: this.form.value.ItemNumber,
+                                    activo: this.form.value.activo,
+                                    sat: this.form.value.sat,
+                                    ieps: this.form.value.ieps,
+                                    iva: this.form.value.iva,
+                                    factura: this.form.value.factura,
+                                    STYLE_ITEM_ID:
+                                      this.form.value.STYLE_ITEM_ID,
+                                    precioCaja: this.form.value.precioCaja,
+                                    cantidadMayoreo:
+                                      this.form.value.cantidadMayoreo,
+                                      //idUsuario: this.auth.idUser.getValue(),
+                                  };
+                                  console.log('Form enviado: ', formularioP);
+
+
+                                  this.productoService
+                                    .creaProductoMemb(formularioP)
+                                    .subscribe({
+                                      next: (respuesta) => {
+                                        console.log('Respuesta: ', respuesta);
+
+                                        // console.log('RESPUESTA: ', respuesta);
+
+                                        //se obtiene el ultimo idProbob
+                                        this.idProbob = respuesta.idProbob;
+                                        // console.log("IDProbob Obtenido: ", this.idProbob);
+
+                                        // Después de obtener el idProbob, llamamos a enviarRegistros para guardar los demás datos
+                                        this.enviarRegistros();
+
+                                        if (respuesta.success) {
+                                          this.spinner.hide();
+                                          this.dialog
+                                            .open(MensajeEmergentesComponent, {
+                                              data: `Producto agregado exitosamente`,
+                                            })
+                                            .afterClosed()
+                                            .subscribe(
+                                              (cerrarDialogo: Boolean) => {
+                                                if (cerrarDialogo) {
+                                                  this.productoSubject.next();
+                                                  this.dialogo.close(true);
+                                                } else {
+                                                  // Puedes agregar lógica adicional aquí si es necesario
+                                                }
+                                              }
+                                            );
+                                        } else {
+                                          this.toastr.error(
+                                            respuesta.message,
+                                            "Error",
+                                            {
+                                              positionClass:
+                                                "toast-bottom-left",
+                                            }
+                                          );
+                                        }
+                                      },
+                                      error: (paramError) => {
+                                        this.toastr.error(
+                                          paramError.error.message,
+                                          "Error",
+                                          {
+                                            positionClass: "toast-bottom-left",
+                                          }
+                                        );
+                                      },
+                                    });
+                                } else {
+                                  console.log('NO EXISTE LA MARCA');
+
+                                  const formMarca = {
+                                    marcaP: this.form.value.marcaP,
+                                    idGimnasio: 0,
+                                    servicio: 0
+                                  };
+                                  console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+
+                                  this.categoriaService
+                                    .agregarMarca2(formMarca)
+                                    .subscribe((respuestaMarca) => {
+                                      console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                      const formularioP = {
+                                        idProducto:
+                                          subCategoriaExistente.producto
+                                            .id_producto,
+                                        detalleUnidadMedida: "pza",
+                                        precioCompra:
+                                          this.form.value.precioCompra,
+                                        detalleCompra: "Membresia",
+                                        id_marcaV: respuestaMarca.data.id_marcas,
+                                        descripcion:
+                                          this.form.value.descripcion,
+                                          codigoBarra: this.generateUniqueCode(),
+
+                                        ItemNumber: this.form.value.ItemNumber,
+                                        activo: this.form.value.activo,
+                                        sat: this.form.value.sat,
+                                        ieps: this.form.value.ieps,
+                                        iva: this.form.value.iva,
+                                        factura: this.form.value.factura,
+                                        STYLE_ITEM_ID:
+                                          this.form.value.STYLE_ITEM_ID,
+                                        precioCaja: this.form.value.precioCaja,
+                                        cantidadMayoreo:
+                                          this.form.value.cantidadMayoreo,
+                                          //idUsuario: this.auth.idUser.getValue(),
+                                      };
+                                      console.log('Form enviado: ', formularioP);
+
+
+                                      this.productoService
+                                        .creaProductoMemb(formularioP)
+                                        .subscribe({
+                                          next: (respuesta) => {
+                                            console.log('Respuesta: ', respuesta);
+
+                                            // console.log('RESPUESTA: ', respuesta);
+
+                                            //se obtiene el ultimo idProbob
+                                            this.idProbob = respuesta.idProbob;
+                                            // console.log("IDProbob Obtenido: ", this.idProbob);
+
+                                            // Después de obtener el idProbob, llamamos a enviarRegistros para guardar los demás datos
+                                            this.enviarRegistros();
+
+                                            if (respuesta.success) {
+                                              this.spinner.hide();
+                                              this.dialog
+                                                .open(
+                                                  MensajeEmergentesComponent,
+                                                  {
+                                                    data: `Producto agregado exitosamente`,
+                                                  }
+                                                )
+                                                .afterClosed()
+                                                .subscribe(
+                                                  (cerrarDialogo: Boolean) => {
+                                                    if (cerrarDialogo) {
+                                                      this.productoSubject.next();
+                                                      this.dialogo.close(true);
+                                                    } else {
+                                                    }
+                                                  }
+                                                );
+                                            } else {
+                                              this.toastr.error(
+                                                respuesta.message,
+                                                "Error",
+                                                {
+                                                  positionClass:
+                                                    "toast-bottom-left",
+                                                }
+                                              );
+                                            }
+                                          },
+                                          error: (paramError) => {
+                                            this.toastr.error(
+                                              paramError.error.message,
+                                              "Error",
+                                              {
+                                                positionClass:
+                                                  "toast-bottom-left",
+                                              }
+                                            );
+                                          },
+                                        });
+                                      this.spinner.hide();
+                                    });
+                                }
+                              });
+                          } else {
+                            console.log('NO EXISTE LA subcategoria');
+                            // Si la subcategoría no existe, agregarla
+                            const formSub = {
+                              idcatte: respuesta.id_categoria,
+                              nomsubcate: this.form.value.nomsubcate,
+                              duracion: this.form.value.duracion,
+                              membresia: 1
+                            };
+                            console.log('valor de la nueva subcategoria: ', formSub);
+
+
+                            this.categoriaService
+                              .agregarSubCategoria2(formSub)
+                              .subscribe((respuestaSub) => {
+                                console.log('no existe categoriaExistente, creando: ', respuestaSub);
+
+                                ///********** Verifica si la marca ya existe */
+                                this.categoriaService
+                                  .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                                  .subscribe((marcaExistente) => {
+                                    console.log('MARCA EXISTENTE: ', marcaExistente);
+
+                                    if (marcaExistente.success == 1) {
+                                      const formularioP = {
+                                        idProducto: respuestaSub.id_producto,
+                                        detalleUnidadMedida: "pza",
+                                        precioCompra:
+                                          this.form.value.precioCompra,
+                                        detalleCompra: "Membresia",
+                                        id_marcaV:
+                                          marcaExistente.marca
+                                            .id_marcas,
+                                        descripcion:
+                                          this.form.value.descripcion,
+                                          codigoBarra: this.generateUniqueCode(),
+
+                                        ItemNumber: this.form.value.ItemNumber,
+                                        activo: this.form.value.activo,
+                                        sat: this.form.value.sat,
+                                        ieps: this.form.value.ieps,
+                                        iva: this.form.value.iva,
+                                        factura: this.form.value.factura,
+                                        STYLE_ITEM_ID:
+                                          this.form.value.STYLE_ITEM_ID,
+                                        precioCaja: this.form.value.precioCaja,
+                                        cantidadMayoreo:
+                                          this.form.value.cantidadMayoreo,
+                                          //idUsuario: this.auth.idUser.getValue(),
+                                      };
+                                      console.log('Form enviado: ', formularioP);
+
+                                      this.productoService
+                                        .creaProductoMemb(formularioP)
+                                        .subscribe({
+                                          next: (respuesta) => {
+                                            console.log('Respuesta: ', respuesta);
+
+                                            // console.log('RESPUESTA: ', respuesta);
+
+                                            //se obtiene el ultimo idProbob
+                                            this.idProbob = respuesta.idProbob;
+                                            // console.log("IDProbob Obtenido: ", this.idProbob);
+
+                                            // Después de obtener el idProbob, llamamos a enviarRegistros para guardar los demás datos
+                                            this.enviarRegistros();
+
+                                            if (respuesta.success) {
+                                              this.spinner.hide();
+                                              this.dialog
+                                                .open(
+                                                  MensajeEmergentesComponent,
+                                                  {
+                                                    data: `Producto agregado exitosamente`,
+                                                  }
+                                                )
+                                                .afterClosed()
+                                                .subscribe(
+                                                  (cerrarDialogo: Boolean) => {
+                                                    if (cerrarDialogo) {
+                                                      this.productoSubject.next();
+                                                      this.dialogo.close(true);
+                                                    } else {
+                                                    }
+                                                  }
+                                                );
+                                            } else {
+                                              this.toastr.error(
+                                                respuesta.message,
+                                                "Error",
+                                                {
+                                                  positionClass:
+                                                    "toast-bottom-left",
+                                                }
+                                              );
+                                            }
+                                          },
+                                          error: (paramError) => {
+                                            this.toastr.error(
+                                              paramError.error.message,
+                                              "Error",
+                                              {
+                                                positionClass:
+                                                  "toast-bottom-left",
+                                              }
+                                            );
+                                          },
+                                        });
+                                    } else {
+                                      console.log('NO EXISTE LA MARCA');
+
+                                      const formMarca = {
+                                        marcaP: this.form.value.marcaP,
+                                        idGimnasio: 0,
+                                        servicio: 0
+                                      };
+                                      console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+
+                                      this.categoriaService
+                                        .agregarMarca2(formMarca)
+                                        .subscribe((respuestaMarca) => {
+                                          console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+
+                                          const formularioP = {
+                                            idProducto:
+                                              respuestaSub.id_producto,
+                                            detalleUnidadMedida: "pza",
+                                            precioCompra:
+                                              this.form.value.precioCompra,
+                                            detalleCompra: "Membresia",
+                                            id_marcaV: respuestaMarca.data.id_marcas,
+                                            descripcion:
+                                              this.form.value.descripcion,
+                                              codigoBarra: this.generateUniqueCode(),
+
+                                            ItemNumber:
+                                              this.form.value.ItemNumber,
+                                            activo: this.form.value.activo,
+                                            sat: this.form.value.sat,
+                                            ieps: this.form.value.ieps,
+                                            iva: this.form.value.iva,
+                                            factura: this.form.value.factura,
+                                            STYLE_ITEM_ID:
+                                              this.form.value.STYLE_ITEM_ID,
+                                            precioCaja:
+                                              this.form.value.precioCaja,
+                                            cantidadMayoreo:
+                                              this.form.value.cantidadMayoreo,
+                                              //idUsuario: this.auth.idUser.getValue(),
+                                          };
+                                          console.log('Form enviado: ', formularioP);
+
+
+                                          this.productoService
+                                            .creaProductoMemb(formularioP)
+                                            .subscribe({
+                                              next: (respuesta) => {
+                                                console.log('Respuesta: ', respuesta);
+
+                                                // console.log('RESPUESTA: ', respuesta);
+
+                                                //se obtiene el ultimo idProbob
+                                                this.idProbob = respuesta.idProbob;
+                                                // console.log("IDProbob Obtenido: ", this.idProbob);
+
+                                                // Después de obtener el idProbob, llamamos a enviarRegistros para guardar los demás datos
+                                                this.enviarRegistros();
+
+                                                if (respuesta.success) {
+                                                  this.spinner.hide();
+                                                  this.dialog
+                                                    .open(
+                                                      MensajeEmergentesComponent,
+                                                      {
+                                                        data: `Producto agregado exitosamente`,
+                                                      }
+                                                    )
+                                                    .afterClosed()
+                                                    .subscribe(
+                                                      (
+                                                        cerrarDialogo: Boolean
+                                                      ) => {
+                                                        if (cerrarDialogo) {
+                                                          this.productoSubject.next();
+                                                          this.dialogo.close(
+                                                            true
+                                                          );
+                                                        } else {
+                                                        }
+                                                      }
+                                                    );
+                                                } else {
+                                                  this.toastr.error(
+                                                    respuesta.message,
+                                                    "Error",
+                                                    {
+                                                      positionClass:
+                                                        "toast-bottom-left",
+                                                    }
+                                                  );
+                                                }
+                                              },
+                                              error: (paramError) => {
+                                                this.toastr.error(
+                                                  paramError.error.message,
+                                                  "Error",
+                                                  {
+                                                    positionClass:
+                                                      "toast-bottom-left",
+                                                  }
+                                                );
+                                              },
+                                            });
+                                          this.spinner.hide();
+                                        });
+                                    }
+                                  });
+                              });
+                          }
+                        });
+                      } else {
+                        console.log('Error al agregar la categoría:', respuesta.message);
+                      }
+                    });
+                  // console.error("Error: categoría no encontrada o success no es 1");
                 }
               });
           } else {
+            console.log('CUANDO EXISTE EL CODIGO BARRAS NO UTILIZADO EN MEMBRESIAS');
+
             // console.log('entra a actualizar');
             this.form.get("nomsubcate")?.enable();
             this.categoriaService
@@ -557,7 +1216,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                             subCategoriaExistente.producto.id_producto,
                           detalleUnidadMedida: "pza",
                           precioCompra: this.form.value.precioCompra,
-                          detalleCompra: this.form.value.detalleCompra,
+                          detalleCompra: "Membresia",
                           idMarcaProducto:
                             marcaExistente.marca.id_marcas,
                           descripcion: this.form.value.descripcion,
@@ -642,8 +1301,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                                   .id_producto,
                               detalleUnidadMedida: "pza",
                               precioCompra: this.form.value.precioCompra,
-                              detalleCompra:
-                                this.form.value.detalleCompra,
+                              detalleCompra: "Membresia",
                               idMarcaProducto: respuestaMarca.data.id_marcas,
                               descripcion: this.form.value.descripcion,
                               codigoBarra: this.form.value.codigoBarra,

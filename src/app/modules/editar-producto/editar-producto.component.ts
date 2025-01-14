@@ -68,7 +68,7 @@ export class EditarProductoComponent implements OnInit{
     this.inventarioService.obtenerProductoPorIdYIdBodega(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
         this.editarProd = respuesta;
-        // console.log('editarProd: ', this.editarProd);
+        console.log('editarProd: ', this.editarProd);
 
 
         // Imprimir en consola el nombre de la categoría
@@ -213,13 +213,13 @@ export class EditarProductoComponent implements OnInit{
     }
 
     const dataArray = [data];
-    // console.log('Datos a enviar: ', dataArray);
+    console.log('Datos a enviar: ', dataArray);
 
     this.entrada.actualizarProductoEInsertarHistorial(dataArray).subscribe({next: (update) =>{
       // console.log('Update: ', update);
 
       if (update.success == 1) {
-        // console.log('Update: ', update);
+        console.log('Update: ', update);
 
         this.spinner.hide();
         this.dialog.open(MensajeEmergentesComponent, {data: `Producto actualizado exitosamente`})

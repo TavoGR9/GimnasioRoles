@@ -140,7 +140,7 @@ export class VentasComponent implements OnInit {
     //Obtener productos de la bodega
     this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      // console.log('ProductosV: ', this.productData);
+      console.log('ProductosV: ', this.productData);
 
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator;
@@ -347,10 +347,15 @@ export class VentasComponent implements OnInit {
     const productoIngresado = this.form.get("producto")?.value;
       this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
-          // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
+          console.log('PRODUCTOS POR NOMBRE: ', respuesta);
+
+           // Filtrar las subcategorías excluyendo aquellas donde
+        const productosFiltrados = respuesta.nombreproducto.filter(
+          (productos: any) => productos.servicio != "1"
+        );
 
           const prod = new Set(
-            respuesta.nombreproducto.map(
+            productosFiltrados.map(
               (productosN: any) => productosN.descripcion+'_'+productosN.detalleCompra+'_'+productosN.marca
             )
           );
