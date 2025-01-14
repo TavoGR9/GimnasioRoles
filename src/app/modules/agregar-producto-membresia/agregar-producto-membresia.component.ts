@@ -966,7 +966,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                               duracion: this.form.value.duracion,
                               membresia: 1
                             };
-                            console.log('valor de la nueva subcategoria: ', formSub);
+                            console.log('valorr de la nueva subcategoria: ', formSub);
 
 
                             this.categoriaService
