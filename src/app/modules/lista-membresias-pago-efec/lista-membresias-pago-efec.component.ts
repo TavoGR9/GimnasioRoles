@@ -375,6 +375,7 @@ verificarCambios(): void {
           this.listaClientesData3();
         }
       });
+    
   }
 
   abrirEmergente(prod: any) {
@@ -917,12 +918,15 @@ console.log(filtrados2);
 
         console.log('pedidosPorUsuario', pedidosPorUsuario);
 
-        // Filtrar usuarios con un único pedido y estatus "0" (caducado)
         const pedidosCaducados = Object.values(pedidosPorUsuario)
-          .filter((pedidos: any[]) => pedidos.length === 1 && pedidos[0].estatus === "0" )
-          .flat(); // Aplana el array para obtener un solo nivel de datos
-
-        console.log('pedidosCaducados', pedidosCaducados);
+        .filter((pedidos: any[]) => 
+          pedidos.every(pedido => pedido.estatus === "0") // Verifica que todos los pedidos estén caducos
+        )
+        .map((pedidos: any[]) => 
+          pedidos.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())[0] // Ordena por fecha descendente y toma el último
+        );
+      
+      console.log('pedidosCaducados', pedidosCaducados);
 
         // Filtramos los clientes con conteoPedidos = "1" y estatus = "1", o conteoPedidos === null
         const filtrados = filtradosPorFecha.filter((item: any) =>
@@ -953,7 +957,7 @@ console.log(filtrados2);
         }));
 
         // Combinamos ambos resultados (con pedidos y sin pedidos), además de los pedidos caducados
-        const clientesFinales = [...filtradosPedidosActivos, ...procesadosSinPedidos, ...pedidosCaducados];
+        const clientesFinales = [...filtradosPedidosActivos, ...procesadosSinPedidos];
 
         // Ahora ordenamos el arreglo final por `fechaRegistro` antes de asignarlo a `clienteActivo`.
         this.clienteActivo = clientesFinales.sort((a: any, b: any) => {

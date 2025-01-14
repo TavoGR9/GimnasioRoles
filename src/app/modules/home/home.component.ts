@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit {
   };
 
 
-
+  grafico1:any=[];
 
   meses = {
     Enero: "01",
@@ -639,6 +639,7 @@ this.pagoService.getPedidosMembresias(4).subscribe(
       const pedidos = response.data; // Almacenamos los datos de la respuesta
       const pedidosAgrupados = this.agruparPorPedido(pedidos);
       const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
+      console.log('API',response.data)
       console.log(pedidos)
       console.log(pedidosAgrupados)
       console.log('Agrupados por fechas',pedidosConteoDia)
@@ -646,6 +647,10 @@ this.pagoService.getPedidosMembresias(4).subscribe(
       this.processSalesData();
       //this.processVisitsData();
       this.processSalesDataVisita();
+      console.log(this.procesarVentas(response.data,'Mensualidad'))
+      this.grafico1=this.procesarVentas(response.data,'Mensualidad')
+      //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+      
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
       console.log(errorMessage)
@@ -804,13 +809,14 @@ showYAxisLabel2: boolean = true;
 yAxisLabel2: string = '';
 timeline2: boolean = true;
 yScaleMax2: number | undefined = undefined; // Escala Y dinámica
-currentMonthStr: string='';
 
 // Datos del gráfico
 salesChartData: any[] = []; // Aquí guardaremos los resultados procesados
 
 // Producto seleccionado dinámicamente
 selectedProduct2: string = 'Mensualidad'; // Valor inicial
+currentMonthStr: string='';
+
 
 
 // Procesar los datos
@@ -996,7 +1002,112 @@ updateSelectedProduct2(productName: string) {
   this.selectedProduct2 = productName;
   this.processSalesData(); // Actualizar los datos del gráfico
   this.processSalesDataVisita();
+
 }
+
+
+// Método de procesamiento de ventas
+procesarVentas(pedidos: any[], producto: string): any[] {
+  const now = new Date();
+  const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfPreviousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const endOfPreviousMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+  console.log("Fechas de análisis:");
+  console.log("Inicio mes actual:", startOfCurrentMonth);
+  console.log("Fin mes anterior:", endOfPreviousMonth);
+  
+  // Filtramos los pedidos para el producto proporcionado
+  const productoPedidosMesPasado = pedidos.filter(p => {
+    const fechaPedido = new Date(p.fecha_hora_pedido);
+    return p.nombreProducto === producto && fechaPedido >= startOfPreviousMonth && fechaPedido <= endOfPreviousMonth;
+  });
+
+  const productoPedidosMesActual = pedidos.filter(p => {
+    const fechaPedido = new Date(p.fecha_hora_pedido);
+    return p.nombreProducto === producto && fechaPedido >= startOfCurrentMonth && fechaPedido <= now;
+  });
+
+  console.log(`Pedidos del ${producto} en el mes pasado:`, productoPedidosMesPasado);
+  console.log(`Pedidos del ${producto} en el mes actual:`, productoPedidosMesActual);
+
+  const contarPorDia = (pedidos: any[], startDate: Date, endDate: Date) => {
+    const dias: { [key: string]: number } = {};
+    let currentDate = new Date(startDate);
+    
+    while (currentDate <= endDate) {
+      const dia = currentDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      dias[dia] = 0;  // Iniciamos con 0 pedidos para ese día
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    console.log("Dias iniciales:", dias);
+
+    // Contamos los pedidos por día
+    pedidos.forEach(p => {
+      const dia = new Date(p.fecha_hora_pedido).toISOString().split('T')[0];
+      if (dias.hasOwnProperty(dia)) {
+        dias[dia]++;
+      }
+    });
+
+    console.log("Conteo por día:", dias);
+
+    // Convertimos el objeto a un arreglo de objetos con el formato { name: 'YYYY-MM-DD', value: count }
+    return Object.entries(dias).map(([dia, conteo]) => ({ name: dia, value: conteo }));
+  };
+
+  const datosMesPasado = contarPorDia(productoPedidosMesPasado, startOfPreviousMonth, endOfPreviousMonth);
+  const datosMesActual = contarPorDia(productoPedidosMesActual, startOfCurrentMonth, now);
+
+  console.log(`Datos para el mes pasado:`, datosMesPasado);
+  console.log(`Datos para el mes actual:`, datosMesActual);
+
+  return [
+    {
+      name: `${producto} - Mes pasado (${startOfPreviousMonth.toLocaleString('default', { month: 'long' })})`,
+      series: datosMesPasado
+    },
+    {
+      name: `${producto} - Mes actual (${startOfCurrentMonth.toLocaleString('default', { month: 'long' })})`,
+      series: datosMesActual
+    }
+  ];
 }
+
+view4: [number, number] = [900, 900]; // Tamaño del gráfico
+colorScheme4: Color = {
+  domain: ["#FF8C00", "#000000"], // Colores
+  name: "cool",
+  selectable: true,
+  group: ScaleType.Ordinal,
+};
+gradient4: boolean = false;
+showXAxis4: boolean = true;
+showYAxis4: boolean = true;
+showXAxisLabel4: boolean = true;
+xAxisLabel4: string = '';
+showYAxisLabel4: boolean = true;
+yAxisLabel4: string = '';
+timeline4: boolean = true;
+yScaleMax4: number | undefined = undefined; // Escala Y dinámica
+
+// Datos del gráfico
+salesChartData4: any[] = []; // Aquí guardaremos los resultados procesados
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 

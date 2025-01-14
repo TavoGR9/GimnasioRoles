@@ -327,7 +327,7 @@ console.log("datos emnviado en servico",data);
 
 
   // Método para obtener los pedidos de membresías por bodega
-  getPedidosMembresias(bodega: number): Observable<any> {
+  getPedidosMembresias(bodega: any): Observable<any> {
     // Configuramos los parámetros para la solicitud GET
     const params = new HttpParams().set('bodega', bodega.toString());
 

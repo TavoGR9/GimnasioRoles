@@ -163,4 +163,23 @@ export class EmergenteCargarFotoComponent implements OnInit{
     this.mostrarInfo = boton;
   }
 
+  uploadPhoto2() {
+    if (!this.archivo.base64textString || !this.archivo.nombreArchivo || this.archivo.id === 0) {
+      this.toastr.error('Aún no has seleccionado una imagen válida...', 'Error');
+      return;
+    }
+  
+    // Llamar al servicio con el objeto archivo
+    this.ServiceCliente.updatePhoto2(this.archivo).subscribe({
+      next: (response) => {
+        this.toastr.success('Se guardó la foto exitosamente...', 'Éxito');
+        this.dialogo.close(true); // Cerrar el diálogo si se guarda correctamente
+      },
+      error: (error) => {
+        console.error('Error al guardar la imagen:', error);
+        this.toastr.error('Ocurrió un error al guardar la foto.', 'Error');
+      }
+    });
+  }
+
 }
