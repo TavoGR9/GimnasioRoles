@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
           if (resultData && resultData.rol !== 'No_acceso') {
-            
+
             this.auth.loggedIn.next(true);
             this.auth.idUser.next(resultData.clave);
             this.auth.role.next(resultData.rol);
