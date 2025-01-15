@@ -85,7 +85,10 @@
         <h3 style="font-weight: bold;">Información de la membresia:</h3>
         <ul>
           <li *ngFor="let producto of productos">
-            {{ producto.marca }} -  {{ producto.nombreProducto }}
+            <ng-container *ngIf="duracionCalculo2(producto.fecha_inicio, producto.fecha_caducidad) > 0">
+              {{ producto.marca }} -  {{ producto.nombreProducto }}  
+              - Duración: {{ duracionCalculo2(producto.fecha_inicio, producto.fecha_caducidad) }} días
+            </ng-container>
           </li>
         </ul>
       </ng-container>
