@@ -72,11 +72,13 @@ export class AuthService {
 
   loginBS(data: User): Observable<any> {
   const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;
+  console.log("datas: ",url);
   return this.clienteHttp.request('GET', url, {responseType:'json'})
       .pipe(
         catchError((err: any) => {
           if (err.status == 0) {
             const errorMessage = err.error;
+
             return throwError(() => errorMessage);
 
           } else if (err.status === 401) {
@@ -113,6 +115,7 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
+    ///console.log("ESTE ES EL ROL: ",this.role.value);
     return this.role.getValue() === 'Administrador';
   }
 
@@ -222,6 +225,7 @@ export class AuthService {
   }
 
   dataUser(data: any): Observable<any> {
+    console.log("datos: ",data)
     return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
       tap(dataResponse => {
         //console.log("DATOS: ",dataResponse);

@@ -23,7 +23,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class AltaColaboradoresComponent {
   modalVisible: boolean = true;
-  mensajeExito: string = ''; 
+  mensajeExito: string = '';
   hide = true;
   form: FormGroup;
   sucursales: any;
@@ -31,6 +31,9 @@ export class AltaColaboradoresComponent {
   currentUser: string = '';
   idGym!: number;
   matcher = new MyErrorStateMatcher();
+
+  filteredPersonal: string[] = [];
+  personal: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -43,13 +46,14 @@ export class AltaColaboradoresComponent {
     private toastr: ToastrService
   ) {
     this.form = this.fb.group({
-      //clave: ['', Validators.required],
+      clave: ['', Validators.required],
       nombre: ['', [Validators.required, Validators.pattern(/^[^\d]*$/)]],
-      puesto: ['', Validators.required],
+      puesto: ['', Validators.compose([ Validators.required])],
       email: ['', [Validators.required, Validators.pattern(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)]],
       pass: ['', [Validators.required, Validators.minLength(8)]],
       celular: ['', [Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)]],
-      idGym: ''
+      idGym: [this.idGym],
+      estatus:[0]
     });
   }
 
@@ -66,6 +70,7 @@ export class AltaColaboradoresComponent {
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
+      //console.log("DT: ",this.idGym);
       if (this.form.get('idGym') !== null) {
         this.form.get('idGym')!.setValue(this.idGym);
       }
@@ -74,43 +79,37 @@ export class AltaColaboradoresComponent {
 
   registrar(): void {
     if (this.form.valid) {
-      this.spinner.show();
-      const empleadoData = this.form.value;
+      console.log("DATOS: ",this.form.value);
 
-      this.http.agregarPersonal(empleadoData.puesto).subscribe({
-        next: (respuestaPersonal) => {
-          this.llamarAgregarEmpleado(empleadoData);
-        },
-        error: (error) => {
-          this.spinner.hide();
-          this.toastr.error('Error al agregar el puesto.', 'Error!!!');
+      const formularioDa = this.form.value;
+
+      if(
+        !formularioDa.nombre?.trim() ||
+        !formularioDa.puesto?.trim() ||
+        !formularioDa.pass?.trim()
+      ){
+        this.toastr.error("Todos los campos son obligatorios, un campo esta vacio", "Error");
+        return;
+      }
+
+      this.spinner.show();
+
+      this.http.agregarPersonal(formularioDa).subscribe((respuesta) => {
+        console.log(respuesta);
+
+        this.spinner.hide();
+
+        if(respuesta.ok === true){
+          this.dialogo.close(true); // Cierra el modal
+          this.mostrarMensajeExito(); // Muestra el mensaje de éxito
+        } else{
+          this.toastr.error('El correo electrónico ya existe o la clave ya existe.', 'Error!!!');
         }
-      });
+      })
     } else {
       this.message = 'Por favor, complete todos los campos requeridos.';
       this.marcarCamposInvalidos(this.form);
     }
-  }
-
-  private llamarAgregarEmpleado(empleadoData: any): void {
-    this.http.agregarEmpleado(empleadoData).subscribe({
-      next: (resultData) => {
-        this.spinner.hide();
-        if (resultData.message === 'MailExists') {
-          this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
-        } else if (resultData.ok === true) {
-          this.dialogo.close(true); // Cierra el modal
-          this.mostrarMensajeExito(); // Muestra el mensaje de éxito
-        } else {
-          console.log('Respuesta inesperada:', resultData);
-          this.toastr.error('Error el correo electronico ya existe.', 'Error!!!');
-        }
-      },
-      error: (error) => {
-        this.spinner.hide();
-        this.toastr.error('Ocurrió un error al intentar agregar el empleado.', 'Error!!!');
-      }
-    });
   }
 
   mostrarMensajeExito(): void {
@@ -141,5 +140,34 @@ export class AltaColaboradoresComponent {
           control.markAsTouched();
         };
       }
-    });  }
+    });
+  }
+
+  verPersonal(){
+    this.http.getPersonal().subscribe(respuesta =>{
+    });
+  };
+
+  buscarPersonal() {
+    const personalIngresado = this.form.get("puesto")?.value;
+    this.http.getPersonal().subscribe({
+      next: (respuesta) => {
+        //console.log("DATO: ", respuesta);
+        const puesto = new Set(
+          respuesta.map((persona: any) => persona.usu)
+        );
+        this.personal = Array.from(puesto) as string[];
+        this.filteredPersonal = this.personal.filter(
+          (persona) =>
+            !personalIngresado ||
+            persona.toLowerCase().includes(personalIngresado.toLowerCase())
+        );
+      },
+      error: (error) => {
+        console.error("Error al obtener el personal:", error);
+      },
+    });
+  }
+
+
 }

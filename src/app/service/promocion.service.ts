@@ -96,7 +96,7 @@ export class PromocionService {
       membresias: membresiaIds, // Enviar los IDs procesados
     };
 
-    console.log("Datos que se envían a la API:", datosAEnviar);
+    console.log("Datos que se envían a la API agregar:", datosAEnviar);
 
     return this.clienteHttp.post(this.API + "addPromocionPaquete.php", datosAEnviar).pipe(
       tap(dataResponse => {
@@ -134,7 +134,7 @@ export class PromocionService {
       membresias: membresiaIds, // Enviar los IDs procesados
     };
 
-    console.log("Datos que se envían a la API:", datosAEnviar);
+    console.log("Datos que se envían a la API edicion:", datosAEnviar);
 
     return this.clienteHttp.post(this.API + "updatePromocion.php", datosAEnviar).pipe(
       tap(dataResponse => {

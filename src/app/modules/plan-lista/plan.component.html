@@ -52,9 +52,9 @@
                     </button>
 
                     <div class="toggle-container">
-                       <input type="checkbox" id="toggle{{item.id_promocion}}" class="toggle-checkbox" [checked]="item.estatus == 1" (change)="toggleCheckbox(item.id_promocion, item.estatus)">
-                       <label for="toggle{{item.id_promocion}}" class="toggle-label"></label>
-                    </div>
+                      <input type="checkbox" id="toggle{{item.id_promocion}}" class="toggle-checkbox" [checked]="item.estatus == 1" disabled>
+                      <label for="toggle{{item.id_promocion}}" class="toggle-label"></label>
+                   </div>
 
                     <button mat-icon-button color="warn" (click)="borrarPlan(item.id_promocion)">
                        <mat-icon>delete</mat-icon>

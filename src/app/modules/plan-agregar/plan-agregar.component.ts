@@ -16,6 +16,7 @@ import { ProductoService } from "../../service/producto.service";
 
 import { Inventario } from "../../models/inventario";
 import { AgregarProductoMembresiaComponent } from '../agregar-producto-membresia/agregar-producto-membresia.component';
+import { plan } from '../../models/plan';
 
 @Component({
   selector: "app-membresias-agregar",
@@ -50,7 +51,7 @@ export class planAgregarComponent {
     this.formulariodePlan = this.fb.group(
       {
         idChoProm: ["", Validators.required],
-        estatus: [0],
+        estatus: [1],
         nombrePromocion: ["", Validators.required],
         FechaInicio: ["", Validators.required],
         FechaFin: ["", Validators.required],
@@ -77,6 +78,7 @@ export class planAgregarComponent {
         .subscribe((respuesta) => {
           if (respuesta )
           this.plan = this.aplicarFiltro(respuesta);
+        console.log("datos membresia: ",this.plan);
         });
     });
 

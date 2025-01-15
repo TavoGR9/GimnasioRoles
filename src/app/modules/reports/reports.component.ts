@@ -28,12 +28,12 @@ export class ReportsComponent implements OnInit {
   }; // opciones de configuración, como si debe ser responsivo (responsive).
   public barChartType: ChartType = "bar"; //tipo de grafico
   public barChartLegend = true;
-  public barChartData: ChartDataset[] = []; //array de objetos que contiene los datos, necesario 
+  public barChartData: ChartDataset[] = []; //array de objetos que contiene los datos, necesario
   public coloresPersonalizados: string[] = ["#fd9727"]; //color
   datosGraficosPorGimnasio: {
     [key: string]: { chartLabels: string[]; chartData: any[] };
   } = {}; //almacena datos para gráficos específicos de cada gimnasio
-  doughnutChartLegend = true; 
+  doughnutChartLegend = true;
   doughnutChartType: ChartType = "doughnut";
   isLoading: boolean = true;
 
@@ -52,13 +52,13 @@ export class ReportsComponent implements OnInit {
 
   ngOnInit(): void {
     // this.auth.comprobar();
-    
+
       this.currentUser = this.auth.getCurrentUser();
       if (this.currentUser) {
         this.getSSdata(JSON.stringify(this.currentUser));
       }
-    
-   
+
+
     this.loadData();
   }
 
@@ -99,7 +99,9 @@ export class ReportsComponent implements OnInit {
       let final = this.formatearFecha(this.form.value.p_final);
       this.form.value.p_inicial = inicial;
       this.form.value.p_final = final;
-   
+
+      console.log("DATOS: ",this.form.value);
+
       this.auth.chart_sucursales(this.form.value).subscribe({
         next: (resultData: DatosGrafico[]) => {
           if (resultData.length === 0 || resultData[0].nombre === "No_result") {
@@ -135,7 +137,7 @@ export class ReportsComponent implements OnInit {
       let final = this.formatearFecha(this.form.value.p_final);
       this.form.value.p_inicial = inicial;
       this.form.value.p_final = final;
-  
+
     // Simulando datos, puedes reemplazar esto con tu lógica de obtención de datos
       this.auth.chart_sucursales(this.form.value).subscribe({
         next: (resultData: DatosGraficoss[]) => {
@@ -198,7 +200,7 @@ export class ReportsComponent implements OnInit {
         }
         // Inicializar la estructura de datos para almacenar la información del gráfico
         const datosGraficosPorGimnasio: DatosGraficosPorGimnasio = {};
-        
+
         // Procesar datos
         resultData.forEach((dato) => {
           if (!datosGraficosPorGimnasio[dato.nombreGimnasio]) {
