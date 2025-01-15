@@ -646,6 +646,8 @@ this.pagoService.getPedidosMembresias(4).subscribe(
       this.processSalesData();
       //this.processVisitsData();
       this.processSalesDataVisita();
+      this.processSalesDataQuincenal();
+
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
       console.log(errorMessage)
@@ -816,7 +818,6 @@ selectedProduct2: string = 'Mensualidad'; // Valor inicial
 // Procesar los datos
 processSalesData() {
   // Obtener el mes y el año actual dinámicamente
-  console.log('hola');
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
@@ -971,8 +972,123 @@ processSalesDataVisita() {
     },
   ];
 }
-
 /////////FIN VISITA///////////////////
+
+////////QUINCENA/////////////////////
+viewQuincenal: [number, number] = [900, 900]; // Tamaño del gráfico
+colorSchemeQuincenal: Color = {
+  domain: ["#4CAF50", "#FF5722"], // Colores específicos para "Visita"
+  name: "Quincenal",
+  selectable: true,
+  group: ScaleType.Ordinal,
+};
+gradientQuincenal: boolean = false;
+showXAxisQuincenal: boolean = true;
+showYAxisQuincenal: boolean = true;
+showXAxisLabelQuincenal: boolean = true;
+xAxisLabelQuincenal: string = '';
+showYAxisLabelQuincenal: boolean = true;
+yAxisLabelQuincenal: string = '';
+timelineQuincenal: boolean = true;
+yScaleMaxQuincenal: number | undefined = undefined; // Escala Y dinámica
+currentMonthStrQuincenal: string = ''; // Mes actual en formato 'YYYY-MM'
+
+// Datos del gráfico
+salesChartDataQuincenal: any[] = []; // Aquí guardaremos los resultados procesados
+
+// Producto seleccionado dinámicamente
+selectedProductQuincenal: string = 'Quincenal'; // Valor inicial
+
+// Procesar los datos
+processSalesDataQuincenal() {
+  // Obtener el mes y el año actual dinámicamente
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
+  const currentMonthStr = `${currentYear}-${currentMonth}`; // Mes actual en formato 'YYYY-MM'
+
+  // Mes anterior
+  const previousMonthDate = new Date(today.getFullYear(), today.getMonth() - 1, 1); // Restamos 1 mes
+  const previousYear = previousMonthDate.getFullYear();
+  const previousMonth = (previousMonthDate.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
+  const previousMonthStr = `${previousYear}-${previousMonth}`; // Mes pasado en formato 'YYYY-MM'
+
+  // Obtener días totales del mes actual y mes anterior
+  const daysInCurrentMonth = new Date(currentYear, parseInt(currentMonth), 0).getDate();
+  const daysInPreviousMonth = new Date(previousYear, parseInt(previousMonth), 0).getDate();
+
+  // Inicializar series para el mes actual y mes anterior
+  const currentMonthSales: { name: string; value: number }[] = [
+    { name: '', value: 0 },
+    { name: '', value: 0 },
+  ];
+  const previousMonthSales: { name: string; value: number }[] = [
+    { name: '', value: 0 },
+    { name: '', value: 0 },
+  ];
+
+  // Rellenar datos reales en las series
+  Object.keys(this.salesData).forEach((date) => {
+    const record = this.salesData[date];
+    if (record.conteoProductos) {
+      Object.values(record.conteoProductos).forEach((product: any) => {
+        if (product.nombreProducto === this.selectedProductQuincenal) {
+          const day = parseInt(date.split('-')[2]); // Extraer día (DD)
+
+          // Ventas en el mes actual
+          if (date.startsWith(currentMonthStr)) {
+            if (day >= 1 && day <= 15) {
+              currentMonthSales[0].value += product.cantidad; // Primera quincena
+            } else if (day >= 16 && day <= daysInCurrentMonth) {
+              currentMonthSales[1].value += product.cantidad; // Segunda quincena
+            }
+          }
+
+          // Ventas en el mes anterior
+          if (date.startsWith(previousMonthStr)) {
+            if (day >= 1 && day <= 15) {
+              previousMonthSales[0].value += product.cantidad; // Primera quincena
+            } else if (day >= 16 && day <= daysInPreviousMonth) {
+              previousMonthSales[1].value += product.cantidad; // Segunda quincena
+            }
+          }
+        }
+      });
+    }
+  });
+
+  // Calcular el máximo para el eje Y
+  const allValues = [
+    ...currentMonthSales.map((d) => d.value),
+    ...previousMonthSales.map((d) => d.value),
+  ];
+  this.yScaleMaxQuincenal = allValues.length > 0 ? Math.max(...allValues) : 0; // Máximo o 0 si no hay valores
+
+  // Estructurar datos para ngx-charts
+ this.salesChartDataQuincenal = [
+    {
+      name: `${currentMonthStr} ()`,
+      series: currentMonthSales,
+    },
+    {
+      name: `${previousMonthStr} ()`,
+      series: previousMonthSales,
+
+    },
+  ];
+}
+
+
+///////FIN QUINCENA/////////////////
+
+// Actualizar producto seleccionado
+updateSelectedProduct2(productName: string) {
+  this.selectedProduct2 = productName;
+  this.processSalesData(); // Actualizar los datos del gráfico
+  this.processSalesDataVisita();
+  this.processSalesDataQuincenal();
+}
+////////FIN GRÁFICAS////////////
 
 updateDate(): void {
   const today = new Date();
@@ -991,10 +1107,4 @@ startDateUpdater(): void {
 }
 
 
-// Actualizar producto seleccionado
-updateSelectedProduct2(productName: string) {
-  this.selectedProduct2 = productName;
-  this.processSalesData(); // Actualizar los datos del gráfico
-  this.processSalesDataVisita();
-}
 }

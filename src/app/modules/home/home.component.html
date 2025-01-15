@@ -53,7 +53,7 @@
                   [timeline]="timelineVisita"
                   [legend]="true"
                   [animations]="false"
-                  [legendTitle]="'Producto: Visita'"
+                  [legendTitle]="'Visita'"
                   (select)="onSelect($event)">
                 </ngx-charts-line-chart>
                </div>
@@ -65,19 +65,19 @@
                   </div>
                   <ngx-charts-line-chart
                   [view]="[300, 300]"
-                  [scheme]="colorScheme2"
-                  [results]="salesChartData"
-                  [gradient]="gradient2"
-                  [xAxis]="showXAxis2"
-                  [yAxis]="showYAxis2"
-                  [showXAxisLabel]="showXAxisLabel2"
-                  [showYAxisLabel]="showYAxisLabel2"
-                  [xAxisLabel]="xAxisLabel2"
-                  [yAxisLabel]="yAxisLabel2"
-                  [timeline]="timeline2"
+                  [scheme]="colorSchemeQuincenal"
+                  [results]="salesChartDataQuincenal"
+                  [gradient]="gradientQuincenal"
+                  [xAxis]="showXAxisQuincenal"
+                  [yAxis]="showXAxisQuincenal"
+                  [showXAxisLabel]="showXAxisLabelQuincenal"
+                  [showYAxisLabel]="showXAxisLabelQuincenal"
+                  [xAxisLabel]="yAxisLabelQuincenal"
+                  [yAxisLabel]="yAxisLabelQuincenal"
+                  [timeline]="timelineQuincenal"
                   [legend]="true"
                   [animations]="false"
-                  [legendTitle]="'Mes'"
+                  [legendTitle]="'Quincenal'"
                   (select)="onSelect($event)">
                   </ngx-charts-line-chart>
                </div>
@@ -179,10 +179,10 @@
    </div>-->
 </div>
 
-<div class="container">
+<!--<div class="container">
    <div class="row">
      <div class="col-12 d-flex justify-content-center align-items-center mb-3">
-       <!-- Input dinámico para seleccionar producto -->
+        Input dinámico para seleccionar producto 
        <input
          type="text"
          [(ngModel)]="selectedProduct2"
@@ -193,7 +193,7 @@
      </div>
  
      <div class="col-12">
-       <!-- Gráfico de ngx-charts -->
+        Gráfico de ngx-charts 
        <ngx-charts-line-chart
          class="hide-mini-chart"
          [view]="view2"
@@ -214,4 +214,4 @@
        </ngx-charts-line-chart>
      </div>
    </div>
- </div>
+ </div>-->
