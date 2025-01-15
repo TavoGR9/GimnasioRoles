@@ -163,7 +163,7 @@ export class ServiciosListaComponent implements OnInit{
     .afterClosed()
     .subscribe((confirmado: boolean) => {
       if (confirmado) {
-        this.categoriaService.updateMarcaService(id_marcas).subscribe(
+        this.categoriaService.deleteMarcaServ(id_marcas).subscribe(
           (respuesta) => {
             this.listaTablaMarca();
             this.toastr.success('Registro eliminado exitosamente', 'Exitó', {

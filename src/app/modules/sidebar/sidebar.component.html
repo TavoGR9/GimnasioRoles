@@ -44,7 +44,7 @@
 
         <button *ngIf="isAdmin()" routerLink="./plan" class="hover-orange transparent-button" [class.active]="isRouteActive('/plan')">
             <mat-icon>date_range</mat-icon>
-            Planes
+            Promociones
         </button>
 
         <button *ngIf="isAdmin() || isRecep()" routerLink="./productos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productos')">
@@ -86,12 +86,12 @@
             <mat-icon>person</mat-icon>
             Socios
         </button>
-
+<!--
         <button *ngIf="isAdmin() || isRecep()" (click)="AbrirRegistro()" class="hover-orange transparent-button">
             <mat-icon>person</mat-icon>
             Registro
         </button>
-
+-->
         <a href="{{url}}">
         <button *ngIf="isAdmin() || isRecep()"  class="hover-orange transparent-button">
 

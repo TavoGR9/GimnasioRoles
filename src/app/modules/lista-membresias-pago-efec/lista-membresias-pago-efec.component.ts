@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog,MatDialogConfig } from "@angular/material/dialog";
 import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
 import { FormBuilder, FormGroup} from "@angular/forms";
@@ -11,9 +11,52 @@ import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efect
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { FormPagoEmergenteComponent } from "../form-pago-emergente/form-pago-emergente.component";
 
+import { RegistroComponent } from "../registro/registro.component";
+
+
 import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergente-info-cliente.component";
 
 import { ChangeDetectorRef } from "@angular/core";
+
+
+interface Producto {
+  id_producto: string;
+  marca: string;
+  nombreProducto: string;
+  idProbob: string;
+  estatus: string;
+  fecha_inicio: string;
+  fecha_caducidad: string;
+  conteoPedidos: number;
+}
+
+interface Cliente {
+  clave: string;
+  estafeta: string;
+  telefono: string;
+  fotoUrl: string;
+  Correo: string;
+  nombreCompleto: string;
+  fechaRegistro: string;
+  huella: string;
+  precioPedido: number;
+  total: number;
+  membresia: string; // Definido para concatenar marca y nombreProducto
+  correoCliente: string;
+  id_pedido: string;
+  fecha_hora_pedido: string;
+  id_bodega: string;
+  precioCompra: number;
+  conteoPedidos: number;
+  fecha_inicio: string;
+  fecha_caducidad: string;
+  idPromocion: string;
+  nombrePromocion: string;
+  estatus: string;
+  productos: Producto[]; // Asegúrate de que productos tenga el tipo Producto
+}
+
+
 
 interface ClientesActivos {
   Clave: number;
@@ -25,6 +68,9 @@ interface ClientesActivos {
   fechaFin: string;
   estatus: string;
 }
+
+
+
 @Component({
   selector: "app-lista-membresias-pago-efec",
   templateUrl: "./lista-membresias-pago-efec.component.html",
@@ -59,7 +105,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   //@ViewChild("paginatorReenovacionMem", { static: true })
   paginatorReenovacion!: MatPaginator;
   displayedColumnsActivos: string[] = [
-    "Estafeta",
+    "ID",
     "Nombre",
     "Membresia",
     "Precio",
@@ -107,7 +153,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.loadData()
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      //this.listaClientesData();
+
+
     });
 
     this.auth.comprobar().subscribe((respuesta) => {
@@ -175,9 +222,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     setTimeout(() => {
 
       this.isLoading = false;
-      //this.dataSourcePedidosActivos.paginator = this.paginatorActivos;
-      //this.listaClientesData();
-      this.listaClientesData();
+      this.listaClientesData3();
+
+
     }, 1000);
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -215,7 +262,7 @@ verificarCambios(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
 
-    this.listaClientesData()
+    this.listaClientesData3()
     //this.updateDateLogs();
   }
 }
@@ -273,7 +320,7 @@ verificarCambios(): void {
     data.sort((a, b) => {
       const isAsc = this.sortDirection === "asc";
       switch (column) {
-        case "Estafeta":
+        case "ID":
           return this.compare(Number(a.estafeta || 0), Number(b.estafeta || 0), isAsc);
           case "Nombre":
             return this.compare(
@@ -283,7 +330,7 @@ verificarCambios(): void {
             );
 
         case "Precio":
-          return this.compare(Number(a.total || 0), Number(b.total || 0), isAsc);
+          return this.compare(Number(a.precioPedido || 0), Number(b.precioPedido || 0), isAsc);
           case "Membresia":
             return this.compare(
               `${a.membresia || ""}`,
@@ -368,9 +415,10 @@ verificarCambios(): void {
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          this.listaClientesData();
+          this.listaClientesData3();
         }
       });
+    
   }
 
   abrirEmergente(prod: any) {
@@ -396,14 +444,14 @@ verificarCambios(): void {
     dialogRef.componentInstance.actualizarTablas.subscribe(
       (actualizar: boolean) => {
         if (actualizar) {
-          this.listaClientesData();
+          this.listaClientesData3();
         }
       }
     );
 
     dialogRef.afterClosed().subscribe((cancelDialog: boolean) => {
       if (cancelDialog) {
-        this.listaClientesData();
+        this.listaClientesData3();
       } else {
       }
     });
@@ -433,7 +481,7 @@ verificarCambios(): void {
       .afterClosed()
       .subscribe((confirmado: boolean) => {
         if (confirmado) {
-          this.listaClientesData();
+          this.listaClientesData3();
         }
       });
   }
@@ -454,7 +502,7 @@ verificarCambios(): void {
           this.pagoService.deleteServiceUsuario(correo).subscribe({
             next: (respuesta) => {
               console.log("Usuario eliminado exitosamente:", respuesta);
-              this.listaClientesData();
+              this.listaClientesData3();
             },
             error: (error) => {
               console.error("Error al eliminar el usuario:", error);
@@ -506,6 +554,12 @@ verificarCambios(): void {
         // Obtenemos la lista completa de clientes desde la respuesta.
 
         const Clientes = response.data;
+
+        console.log('beerer',response.data);
+
+        const PedidosConteo =this.procesarPedidos(Clientes);
+
+        console.log('Conteo',PedidosConteo);
 
 
 
@@ -564,11 +618,11 @@ console.log(filtrados2);
 
         // Aplicamos el filtro inicial: usuarios con conteoPedidos = "1" y estatus = "1", o conteoPedidos === null.
         const filtrados = filtradosPorFecha.filter((item: any) =>
-          (item.conteoPedidos === "1" && item.estatus === "1") || item.conteoPedidos === null
+          (item.conteoPedidos == "1" && item.estatus == "1") || item.conteoPedidos === null
         );
 
         // Dividimos entre usuarios con pedidos y usuarios sin pedidos.
-        const conPedidos = filtrados.filter((item: any) => item.conteoPedidos === "1");
+        const conPedidos = filtrados.filter((item: any) => item.conteoPedidos == "1");
         const sinPedidos = filtrados.filter((item: any) => item.conteoPedidos === null);
 
         // Agrupamos los usuarios con pedidos.
@@ -609,54 +663,573 @@ console.log(filtrados2);
 
 
 
-  // Nueva función: agruparPorPedido
-  private agruparPorPedido(clientes: any[]): any[] {
-    // Creamos un objeto para almacenar los resultados agrupados por id_pedido.
-    const agrupadosPorPedido: { [key: string]: any } = {};
 
-    clientes.forEach(cliente => {
-      const idPedido = cliente.id_pedido;
 
-      if (!agrupadosPorPedido[idPedido]) {
-        // Si no existe este `id_pedido` en el objeto agrupador, lo inicializamos.
-        agrupadosPorPedido[idPedido] = {
-          clave: cliente.clave,
-          estafeta: cliente.estafeta,
-          telefono: cliente.telefono,
-          fotoUrl: cliente.fotoUrl,
-          Correo: cliente.Correo,
-          nombreCompleto: cliente.nombreCompleto,
-          fechaRegistro: cliente.fechaRegistro,
-          huella: cliente.huella,
-          precioPedido: cliente.precioPedido,
-          total: cliente.total,
-          membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-          correoCliente: cliente.correoCliente,
-          id_pedido: cliente.id_pedido,
-          fecha_hora_pedido: cliente.fecha_hora_pedido,
-          id_bodega: cliente.id_bodega,
-          precioCompra: cliente.precioCompra,
-          conteoPedidos: cliente.conteoPedidos,
-          fecha_inicio: cliente.fecha_inicio,
-          fecha_caducidad: cliente.fecha_caducidad,
-          idPromocion: cliente.idPromocion,
-          nombrePromocion: cliente.nombrePromocion,
-          estatus: cliente.estatus,
-          productos: [] // Inicializamos un array vacío para los productos.
-        };
+  procesarPedidos(pedidos: any[]): any[] {
+    // Filtrar solo los registros con estatus = 1
+    const pedidosFiltrados = pedidos.filter(pedido => pedido.estatus === '1');
+
+    // Agrupar pedidos por idProbob
+    const gruposPorUsuario: { [key: string]: any[] } = {};
+
+    pedidosFiltrados.forEach(pedido => {
+      if (!gruposPorUsuario[pedido.idProbob]) {
+        gruposPorUsuario[pedido.idProbob] = [];
       }
+      gruposPorUsuario[pedido.idProbob].push(pedido);
+    });
 
-      // Agregamos la información del producto al array `productos` correspondiente.
-      agrupadosPorPedido[idPedido].productos.push({
-        id_producto: cliente.id_producto,
-        marca: cliente.marca,
-        nombreProducto: cliente.nombreProducto,
-        idProbob: cliente.idProbob
+    // Ahora numeramos los pedidos por cada grupo de idProbob, ordenados por fecha_caducidad
+    Object.keys(gruposPorUsuario).forEach(idProbob => {
+      // Ordenar pedidos por fecha de caducidad
+      gruposPorUsuario[idProbob].sort((a, b) => {
+        const fechaA = new Date(a.fecha_caducidad);
+        const fechaB = new Date(b.fecha_caducidad);
+        return fechaA.getTime() - fechaB.getTime();
+      });
+
+      // Asignar el conteo de pedidos ascendente
+      gruposPorUsuario[idProbob].forEach((pedido, index) => {
+        pedido.conteoPedidos = index + 1; // Numeración ascendente
       });
     });
 
-    // Convertimos el objeto agrupado en un array.
-    return Object.values(agrupadosPorPedido);
+    // Devolver la lista de pedidos con los conteos
+    return pedidos.map(pedido => {
+      const grupo = gruposPorUsuario[pedido.idProbob];
+      if (grupo) {
+        // Encontrar el pedido en el grupo y agregar el conteo
+        const pedidoConConteo = grupo.find(p => p.clave === pedido.clave);
+        if (pedidoConConteo) {
+          return { ...pedido, conteoPedidos: pedidoConConteo.conteoPedidos };
+        }
+      }
+      return pedido; // Si no está en el grupo, devolverlo tal cual.
+    });
   }
+
+
+
+  listaClientesData3Original(): void {
+    console.log(this.fechaInicio, this.fechaFin);
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+      (response: any) => {
+
+        if (!response) {
+          // Muestra el mensaje de error
+         // this.toastr.warning('No hay información disponible', 'Advertencia');
+          return; // Salir del método
+        }
+
+
+        // Obtenemos la lista completa de clientes desde la respuesta.
+
+        const Clientes = response.data;
+        console.log('Datos originales Api',Clientes)
+        const clientesAgrupadosPedidos = this.agruparPorPedido(Clientes);
+        console.log('prueba usuarios sin pedidos --Resultado: solo agrupa pedidos',clientesAgrupadosPedidos)
+
+
+
+
+
+
+
+        // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
+        const fechaInicio = this.fechaInicio
+          ? new Date(this.fechaInicio)
+          : new Date('2000-01-01'); // Fecha predeterminada.
+        const fechaFin = this.fechaFin
+          ? new Date(this.fechaFin)
+          : new Date(); // Fecha predeterminada (hoy).
+        fechaFin.setHours(23, 59, 0); // Ajustamos hora fin del día.
+
+        console.log('const', fechaInicio, fechaFin);
+
+
+
+
+
+        // Filtramos los clientes dentro del rango de fechas.
+        const filtradosPorFecha = Clientes.filter((cliente: any) => {
+          const fechaRegistro = new Date(cliente.fechaRegistro);
+          return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+        });
+
+        console.log('filtradosPorFecha',filtradosPorFecha)
+
+
+const pedidosAgrupados = this.agruparPorPedido(filtradosPorFecha);
+console.log('pedidosAgrupados',pedidosAgrupados)
+
+        // probar
+// Agrupar pedidos únicos por el identificador del usuario y evitar duplicados por id_pedido
+const pedidosPorUsuario: Record<string, any[]> =pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
+  const identificador = item.clave; // Usa el identificador del usuario
+  const idPedido = item.id_pedido; // Identificador único del pedido
+
+  if (!acc[identificador]) acc[identificador] = []; // Inicializa si no existe
+
+  // Verifica si ya se agregó este id_pedido al grupo del usuario
+  const existePedido = acc[identificador].some((pedido) => pedido.id_pedido === idPedido);
+  if (!existePedido) {
+    acc[identificador].push(item);
+  }
+
+  return acc;
+}, {});
+
+console.log('pedidospor usuario',pedidosPorUsuario)
+// Filtrar usuarios con un único pedido y estatus "0"
+
+
+const filtrados2 = Object.values(pedidosPorUsuario)
+  .filter((pedidos: any[]) => pedidos.length === 1 && pedidos[0].estatus === "0" && pedidos[0].id_pedido !=null) // Filtrar usuarios con un único pedido y estatus "0"
+  .flat(); // Aplana el array para obtener un solo nivel de datos
+
+console.log(filtrados2);
+
+
+        // Aplicamos el filtro inicial: usuarios con conteoPedidos = "1" y estatus = "1", o conteoPedidos === null.
+        const filtrados = filtradosPorFecha.filter((item: any) =>
+          (item.conteoPedidos == "1" && item.estatus == "1") || item.conteoPedidos === null
+        );
+
+        console.log('const filtrados',filtrados)
+
+        // Dividimos entre usuarios con pedidos y usuarios sin pedidos.
+        const conPedidos = filtrados.filter((item: any) => item.conteoPedidos == "1");
+        const sinPedidos = filtrados.filter((item: any) => item.conteoPedidos === null);
+
+        // Agrupamos los usuarios con pedidos.
+        const agrupadosConPedidos = this.agruparPorPedido(conPedidos);
+
+        // A los usuarios sin pedidos, les añadimos un campo `productos` vacío.
+        const procesadosSinPedidos = sinPedidos.map((usuario: any) => ({
+          ...usuario,
+          productos: [] // Añadimos un array vacío para mantener consistencia en la estructura.
+        }));
+
+        // Combinamos ambos resultados (con pedidos y sin pedidos).
+        const clientesFinales = [...agrupadosConPedidos, ...procesadosSinPedidos,...filtrados2 ];
+
+        // Ahora ordenamos el arreglo final por `fechaRegistro` antes de asignarlo a `clienteActivo`.
+        this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
+          const fechaA = new Date(a.fechaRegistro).getTime();
+          const fechaB = new Date(b.fechaRegistro).getTime();
+          return fechaB- fechaA; // Ascendente (de más antiguo a más reciente)
+        });
+
+        console.log("clienteActivo final (agrupados y sin pedidos):", this.clienteActivo);
+
+        // Actualizamos el DataSource de la tabla.
+
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
+
+
+
+      },
+      (error: any) => {
+        console.error("Error al obtener activos:", error);
+      }
+    );
+    console.log('executed');
+}
+
+  AbrirRegistro() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = `Empleado agregado correctamente.`;
+    dialogConfig.disableClose = true; // Bloquea el cierre del diálogo haciendo clic fuera de él
+    dialogConfig.width = '75%';
+    dialogConfig.height = '95%';
+    this.dialog.open(RegistroComponent, dialogConfig)
+    .afterClosed()
+    .subscribe((cerrarDialogo: boolean) => {
+      if (cerrarDialogo) {
+        this.listaClientesData3();  // Actualizar la lista o realizar alguna acción
+      }
+      // Puedes agregar más acciones aquí si es necesario cuando cerrarDialogo sea false
+    });
+     
+      
+  }
+
+
+
+  listaClientesData3Or(): void {
+    console.log(this.fechaInicio, this.fechaFin);
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+      (response: any) => {
+
+        if (!response) {
+          // Muestra el mensaje de error
+          return; // Salir del método
+        }
+
+        // Obtenemos la lista completa de clientes desde la respuesta.
+        const Clientes = response.data;
+        console.log('Datos originales Api', Clientes);
+
+        // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
+        const fechaInicio = this.fechaInicio ? new Date(this.fechaInicio) : new Date('2000-01-01');
+        const fechaFin = this.fechaFin ? new Date(this.fechaFin) : new Date();
+        fechaFin.setHours(23, 59, 0); // Ajustamos hora fin del día.
+
+        console.log('const', fechaInicio, fechaFin);
+
+        // Filtramos los clientes dentro del rango de fechas.
+        const filtradosPorFecha = Clientes.filter((cliente: any) => {
+          const fechaRegistro = new Date(cliente.fechaRegistro);
+          return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+        });
+
+        console.log('filtradosPorFecha', filtradosPorFecha);
+
+        // Separar los clientes en dos grupos: con pedidos (id_pedido != null) y sin pedidos (id_pedido == null)
+        const clientesConPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido != null);
+        const clientesSinPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido == null);
+
+        console.log('clientesConPedidos', clientesConPedidos);
+        console.log('clientesSinPedidos', clientesSinPedidos);
+
+        // Agrupar los clientes con pedidos
+        const pedidosAgrupados = this.agruparPorPedido(clientesConPedidos);
+        console.log('pedidosAgrupados', pedidosAgrupados);
+
+        // Agrupar pedidos únicos por usuario y evitar duplicados por id_pedido
+        const pedidosPorUsuario: Record<string, any[]> = pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
+          const identificador = item.clave;
+          const idPedido = item.id_pedido;
+
+          if (!acc[identificador]) acc[identificador] = [];
+
+          // Verifica si ya se agregó este id_pedido al grupo del usuario
+          const existePedido = acc[identificador].some((pedido) => pedido.id_pedido === idPedido);
+          if (!existePedido) {
+            acc[identificador].push(item);
+          }
+
+          return acc;
+        }, {});
+
+        console.log('pedidosPorUsuario', pedidosPorUsuario);
+
+
+
+
+        ///////////////////// HASTA AQUI VA BIEN////////////////////////
+
+        const pedidosCaducados = Object.values(pedidosPorUsuario)
+        .filter((pedidos: any[]) => 
+          pedidos.every(pedido => pedido.estatus === "0") // Verifica que todos los pedidos estén caducos
+        )
+        .map((pedidos: any[]) => 
+          pedidos.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())[0] // Ordena por fecha descendente y toma el último
+        );
+      
+      console.log('pedidosCaducados', pedidosCaducados);
+
+        // Filtramos los clientes con conteoPedidos = "1" y estatus = "1", o conteoPedidos === null
+        const filtrados = filtradosPorFecha.filter((item: any) =>
+          (item.conteoPedidos == "1" && item.estatus == "1") || item.conteoPedidos === null
+        );
+
+       const AgrupadosActivos = this.agruparPorPedido(clientesConPedidos);
+
+        const filtradosPedidosActivos= AgrupadosActivos.filter((item: any) =>
+          (item.conteoPedidos == "1" && item.estatus == "1")
+        );
+
+
+        console.log('Prospecto susutituir',AgrupadosActivos)
+        console.log ('Casi',filtradosPedidosActivos, )
+
+        // Dividimos entre usuarios con pedidos (id_pedido != null) y usuarios sin pedidos (id_pedido == null)
+        const conPedidos = filtrados.filter((item: any) => item.id_pedido != null);
+        const sinPedidos = filtrados.filter((item: any) => item.id_pedido == null);
+
+        // Agrupamos los usuarios con pedidos
+        const agrupadosConPedidos = this.agruparPorPedido(conPedidos);
+
+        // A los usuarios sin pedidos, les añadimos un campo `productos` vacío
+        const procesadosSinPedidos = sinPedidos.map((usuario: any) => ({
+          ...usuario,
+          productos: [] // Añadimos un array vacío para mantener consistencia en la estructura.
+        }));
+
+        // Combinamos ambos resultados (con pedidos y sin pedidos), además de los pedidos caducados
+        const clientesFinales = [...filtradosPedidosActivos, ...procesadosSinPedidos,...agrupadosConPedidos];
+
+
+
+
+
+
+
+
+
+
+
+        ////////////SOLO FILTRO y ODERNAR POR FEHCA_REGISTRO///////////////////
+
+        // Ahora ordenamos el arreglo final por `fechaRegistro` antes de asignarlo a `clienteActivo`.
+        this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
+          const fechaA = new Date(a.fechaRegistro).getTime();
+          const fechaB = new Date(b.fechaRegistro).getTime();
+          return fechaB - fechaA; // Ascendente (de más antiguo a más reciente)
+        });
+
+        console.log("clienteActivo final (agrupados y sin pedidos):", this.clienteActivo);
+
+        // Actualizamos el DataSource de la tabla
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
+
+      },
+      (error: any) => {
+        console.error("Error al obtener activos:", error);
+      }
+    );
+    console.log('executed');
+}
+
+
+// Función para agrupar por pedido
+agruparPorPedido(clientes: any[]): any[] {
+  const agrupadosPorPedido: { [key: string]: any } = {};
+
+  clientes.forEach(cliente => {
+    const idPedido = cliente.id_pedido;
+
+    if (!agrupadosPorPedido[idPedido]) {
+      agrupadosPorPedido[idPedido] = {
+        clave: cliente.clave,
+        estafeta: cliente.estafeta,
+        telefono: cliente.telefono,
+        fotoUrl: cliente.fotoUrl,
+        Correo: cliente.Correo,
+        nombreCompleto: cliente.nombreCompleto,
+        fechaRegistro: cliente.fechaRegistro,
+        huella: cliente.huella,
+        precioPedido: cliente.precioPedido,
+        total: cliente.total,
+        membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
+        correoCliente: cliente.correoCliente,
+        id_pedido: cliente.id_pedido,
+        fecha_hora_pedido: cliente.fecha_hora_pedido,
+        id_bodega: cliente.id_bodega,
+        precioCompra: cliente.precioCompra,
+        conteoPedidos: cliente.conteoPedidos, // Inicia con el valor del primer producto
+        estatus: cliente.estatus, // Inicia con el valor del primer producto
+        fecha_inicio: cliente.fecha_inicio,
+        fecha_caducidad: cliente.fecha_caducidad, // Inicialmente tomamos la fecha
+        idPromocion: cliente.idPromocion,
+        nombrePromocion: cliente.nombrePromocion,
+        productos: [] // Inicializamos un array vacío para los productos
+      };
+    }
+
+    // Agregamos la información del producto al array productos correspondiente
+    agrupadosPorPedido[idPedido].productos.push({
+      id_producto: cliente.id_producto,
+      marca: cliente.marca,
+      nombreProducto: cliente.nombreProducto,
+      idProbob: cliente.idProbob,
+      estatus: cliente.estatus,
+      fecha_inicio: cliente.fecha_inicio,
+      fecha_caducidad: cliente.fecha_caducidad,
+      conteoPedidos: cliente.conteoPedidos
+    });
+
+    // Cambiar el valor de conteoPedidos si algún producto tiene conteoPedidos = 1
+    if (cliente.conteoPedidos === 1) {
+      agrupadosPorPedido[idPedido].conteoPedidos = 1;
+    }
+
+    // Cambiar el valor de estatus si algún producto tiene estatus = '1'
+    if (cliente.estatus === '1') {
+      agrupadosPorPedido[idPedido].estatus = '1';
+    }
+
+    // Comparar las fechas de caducidad para actualizar el valor más alto
+    const fechaCliente = new Date(cliente.fecha_caducidad);
+    if (!isNaN(fechaCliente.getTime())) {
+      const fechaMaxima = new Date(agrupadosPorPedido[idPedido].fecha_caducidad);
+      if (!isNaN(fechaMaxima.getTime()) && fechaCliente > fechaMaxima) {
+        agrupadosPorPedido[idPedido].fecha_caducidad = cliente.fecha_caducidad;
+      }
+    }
+  });
+
+  // Convertimos el objeto agrupado en un array
+  return Object.values(agrupadosPorPedido);
+}
+
+
+
+
+    listaClientesData3(): void {
+      console.log(this.fechaInicio, this.fechaFin);
+      this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+        (response: any) => {
+  
+          if (!response) {
+            // Muestra el mensaje de error
+            return; // Salir del método
+          }
+  
+          // Obtenemos la lista completa de clientes desde la respuesta.
+          const Clientes = response.data;
+          console.log('Datos originales Api', Clientes);
+  
+          // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
+          const fechaInicio = this.fechaInicio ? new Date(this.fechaInicio) : new Date('2000-01-01');
+          const fechaFin = this.fechaFin ? new Date(this.fechaFin) : new Date();
+          fechaFin.setHours(23, 59, 0); // Ajustamos hora fin del día.
+  
+          console.log('const', fechaInicio, fechaFin);
+  
+          // Filtramos los clientes dentro del rango de fechas.
+          const filtradosPorFecha = Clientes.filter((cliente: any) => {
+            const fechaRegistro = new Date(cliente.fechaRegistro);
+            return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+          });
+  
+          console.log('filtradosPorFecha', filtradosPorFecha);
+  
+          // Separar los clientes en dos grupos: con pedidos (id_pedido != null) y sin pedidos (id_pedido == null)
+          const clientesConPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido != null);
+          const clientesSinPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido == null);
+  
+          console.log('clientesConPedidos', clientesConPedidos);
+          console.log('clientesSinPedidos', clientesSinPedidos);
+  
+          // Agrupar los clientes con pedidos
+          const pedidosAgrupados = this.agruparPorPedido(clientesConPedidos);
+          console.log('pedidosAgrupados', pedidosAgrupados);
+          console.log('clientesSinPedidos',clientesSinPedidos);
+
+
+
+     
+     
+
+
+
+
+  
+          // Agrupar pedidos únicos por usuario y evitar duplicados por id_pedido
+          const pedidosPorUsuario: Record<string, any[]> = pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
+            const identificador = item.clave; // Usamos "clave" para identificar al usuario.
+            const idPedido = item.id_pedido;
+          
+            // Si no existe un grupo para este usuario, lo creamos.
+            if (!acc[identificador]) acc[identificador] = [];
+          
+            // Verificamos si ya se agregó este pedido (por id_pedido) al grupo del usuario.
+            const existePedido = acc[identificador].some((pedido) => pedido.id_pedido === idPedido);
+            if (!existePedido) {
+              acc[identificador].push(item); // Agregamos el pedido si no se ha agregado previamente.
+            }
+          
+            return acc; // Retornamos el objeto acumulador.
+          }, {});
+  
+          console.log('pedidosPorUsuario', pedidosPorUsuario);
+  
+     ///////////////////// HASTA AQUI VA BIEN////////////////////////
+
+
+     const clavesConPedido = new Set(
+      Object.values(pedidosPorUsuario).flat().map(pedido => pedido.clave)
+    );
+
+    console.log('Claves con pedido',clavesConPedido);
+    console.log('clientesSinPedidos',clientesSinPedidos);
+  
+  ///¿Como quitar del arreglo clientesSinPedidos aquellos registros donde coincidan clavesConPedido con el campo clave
+
+  const clientesSinPedidosFiltrados = clientesSinPedidos.filter((cliente: any) => {
+    // Verificamos si la clave del cliente está en el conjunto de claves con pedido
+    return !clavesConPedido.has(cliente.clave);
+  });
+  
+  console.log('clientesSinPedidosFiltrados', clientesSinPedidosFiltrados);
+
+
+
+
+console.log('ver pedidos por ususario',pedidosPorUsuario)
+
+
+
+
+ 
+  
+          const pedidosCaducados = Object.values(pedidosPorUsuario)
+          .filter((pedidos: any[]) => 
+            pedidos.every(pedido => pedido.estatus === "0") // Verifica que todos los pedidos estén caducos
+          )
+          .map((pedidos: any[]) => 
+            pedidos.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())[0] // Ordena por fecha descendente y toma el último
+          );
+        
+        console.log('pedidosCaducados', pedidosCaducados);
+
+///Implementarse aqui///
+
+
+  
+  const filteredData = Object.values(pedidosPorUsuario) // Convertir el objeto en un arreglo de valores
+  .flat() // Aplanar para obtener un solo nivel de objetos
+  .filter((item: any) => 
+    Array.isArray(item.productos) && // Verificar que item.productos es un array
+    item.productos.some((producto: any) => // Declarar explícitamente el tipo de 'producto'
+      producto.conteoPedidos === "1" && producto.estatus === "1"
+    )
+  );
+
+console.log('filteredData', filteredData);
+
+  
+  
+ 
+          // Combinamos ambos resultados (con pedidos y sin pedidos), además de los pedidos caducados
+          const clientesFinales = [...clientesSinPedidosFiltrados,...filteredData,...pedidosCaducados];
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+          ////////////SOLO FILTRO y ODERNAR POR FEHCA_REGISTRO///////////////////
+  
+          // Ahora ordenamos el arreglo final por `fechaRegistro` antes de asignarlo a `clienteActivo`.
+          this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
+            const fechaA = new Date(a.fechaRegistro).getTime();
+            const fechaB = new Date(b.fechaRegistro).getTime();
+            return fechaB - fechaA; // Ascendente (de más antiguo a más reciente)
+          });
+  
+          console.log("clienteActivo final (agrupados y sin pedidos):", this.clienteActivo);
+  
+          // Actualizamos el DataSource de la tabla
+          this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+          this.dataSourceActivos.paginator = this.paginatorActivos;
+  
+        },
+        (error: any) => {
+          console.error("Error al obtener activos:", error);
+        }
+      );
+      console.log('executed');
+  }
+
 
 }

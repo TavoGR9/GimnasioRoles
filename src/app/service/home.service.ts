@@ -19,6 +19,7 @@ export class HomeService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   API: string ='http://localhost/serviciosGym/';
+  API2: string ='http://localhost/serviciosGimnasio/';
 
 
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService ) {
@@ -90,7 +91,7 @@ export class HomeService {
   //HOME
   // llamada HTTP a la API REST, para obtener los productos más vendidos
   getAnalyticsData(sucursalId: any): Observable<any> {
-    return this.clienteHttp.get(this.API+"productosMasComprados.php?consultarProductosVendidos="+sucursalId).pipe(
+    return this.clienteHttp.get(this.API+"ProductosMasComprados.php?consultarProductosVendidos="+sucursalId).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB2(dataResponse);
       }),
@@ -197,7 +198,7 @@ export class HomeService {
   }
 
   consultasFechaMensualidad(idGim: any, fecha: any) {
-    return this.clienteHttp.get(this.API + "ConsultasHome.php", {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
         params: {
             idGim: idGim,
             fecha: fecha
@@ -206,7 +207,7 @@ export class HomeService {
   }
 
   consultasFechaVisita(idGim: any, fecha: any) {
-    return this.clienteHttp.get(this.API + "ConsultasHome.php", {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
         params: {
           idGimVisita: idGim,
           fechaVisita: fecha
@@ -215,7 +216,7 @@ export class HomeService {
   }
 
   consultasFechaQuincena(idGim: any, fecha: any) {
-    return this.clienteHttp.get(this.API + "ConsultasHome.php", {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
         params: {
             idGimQuincena: idGim,
             fechaQuincena: fecha

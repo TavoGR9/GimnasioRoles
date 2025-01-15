@@ -106,8 +106,9 @@ export class ColaboradorService {
 
 
 
-    correoEmpleado(correo: string): Observable<any> {
-        return this.clienteHttp.post<any>(this.API + "empleado.php?consultarCorreo", { correo });
+    correoEmpleado(email: string): Observable<any> {
+      console.log(email);
+        return this.clienteHttp.post<any>(this.API + "empleado.php?insertar", email);
     }
 
     private saveDataToIndexedDBC(data: any) {

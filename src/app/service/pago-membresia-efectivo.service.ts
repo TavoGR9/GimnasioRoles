@@ -321,13 +321,13 @@ deleteMembresia(id: any): Observable<any> {
       'Content-Type': 'application/json'
     });
 console.log("datos emnviado en servico",data);
-    return this.clienteHttp.post<any>(this.API+"test_membresia.php", JSON.stringify(data), { headers });
+    return this.clienteHttp.post<any>(this.API+"Pago_Membresias_Efectivo2.php", JSON.stringify(data), { headers });
   }
 
 
 
   // Método para obtener los pedidos de membresías por bodega
-  getPedidosMembresias(bodega: number): Observable<any> {
+  getPedidosMembresias(bodega: any): Observable<any> {
     // Configuramos los parámetros para la solicitud GET
     const params = new HttpParams().set('bodega', bodega.toString());
 

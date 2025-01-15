@@ -75,7 +75,7 @@ export class ProductosComponent implements OnInit {
   listaTabla(){
     this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
-      // console.log('Resultados: ', resultData);
+      console.log('Resultados: ', resultData);
 
       this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios' && producto.activo == 1);
 
@@ -169,6 +169,7 @@ export class ProductosComponent implements OnInit {
       if (confirmado) {
         this.productoService.deleteProd(id).subscribe(
           (respuesta) => {
+            // console.log('respuesta: ', respuesta);
             this.listaTabla();
           },
           (error) => {

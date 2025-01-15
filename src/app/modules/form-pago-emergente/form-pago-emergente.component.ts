@@ -45,6 +45,8 @@ export class FormPagoEmergenteComponent implements OnInit {
   datosTicket:any;
   nombreCliente: any;
   nombreCompleto: any;
+  fechaVencimientoMembresia:string='';
+  fechaInicioMembresia: string='';
 
   constructor(
     private toastr: ToastrService,
@@ -219,7 +221,10 @@ export class FormPagoEmergenteComponent implements OnInit {
               console.log('PrecioCalcular', PrecioCalcular);
               this.dineroDevuelto =   PrecioCalcular;
 
-              const fechaVencimiento = this.calcularFecha(this.duracion); // Duración de la membresía (mensual, anual, etc.)
+              let fechaVencimiento = new Date(); // Duración de la membresía (mensual, anual, etc.)
+              let fechaInicioMembresia ='';
+              let fechaVencimientoMembresia =''
+
               console.log(fechaVencimiento)
               // calcular fechas
               //hacer solicitud post
@@ -236,34 +241,7 @@ export class FormPagoEmergenteComponent implements OnInit {
 
 
 
-              const DatosTicket ={
 
-                fechaVencimiento:fechaVencimiento,
-
-                duracion: this.duracion,
-                producto: this.nombreMembresia,
-                claveUser: this.data.idCliente,
-                precio:  this.precio,
-                precioLetra: this.convertirNumeroAPalabrasPesos(this.precio),
-                pago: this.moneyRecibido,
-                pagoLetra:this.convertirNumeroAPalabrasPesos(this.moneyRecibido),
-                dineroDevuelto: this.dineroDevuelto,
-                dineroDevueltoLetra:this.convertirNumeroAPalabrasPesos(this.dineroDevuelto),
-                idPromocion:this.id_promocion,
-                idProbob : this.idProbob,
-                fechaActual: new Date().toLocaleDateString(), // Fecha en formato local (ej. '12/16/2024')
-                 horaActual: new Date().toLocaleTimeString(),  // Hora en formato local (ej. '12:30:00 PM')
-
-                nombreMembresia: this.nombreMembresia,
-              id_promocion: this.id_promocion,
-              nombreCompleto:this.nombreCompleto
-
-              }
-
-
-              this.datosTicket= DatosTicket;
-
-              console.log('ticket',DatosTicket);
               this.obtenerFoto()
 
 
@@ -278,16 +256,59 @@ export class FormPagoEmergenteComponent implements OnInit {
               this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
                 response => {
                   console.log('Respuesta de la API de promociones:', response);
+                  const apiResponse = response
 
                 // Si la compra es exitosa
                 if (response.payment ==1)  { // Asumiendo que 'success' es el campo que indica una compra exitosa
                   // Mostrar mensaje de compra exitosa
+                  this.fechaInicioMembresia = response.Fecha_inicio;  // '2025-06-15'
+                  this.fechaVencimientoMembresia = response.Fecha_Fin.split(' ')[0];  // '2025-07-14'  // '2025-07-14'
+
+                  console.log('fechaVencimientoMembresia');
+                  console.log('responseFechaFin',response.Fecha_Fin);
+const DatosTicket ={
+
+  fechaVencimiento:this.fechaVencimientoMembresia,
+  fechaInicioMembresia:this.fechaInicioMembresia,
+
+  duracion: this.duracion,
+  producto: this.nombreMembresia,
+  claveUser: this.data.idCliente,
+  precio:  this.precio,
+  precioLetra: this.convertirNumeroAPalabrasPesos(this.precio),
+  pago: this.moneyRecibido,
+  pagoLetra:this.convertirNumeroAPalabrasPesos(this.moneyRecibido),
+  dineroDevuelto: this.dineroDevuelto,
+  dineroDevueltoLetra:this.convertirNumeroAPalabrasPesos(this.dineroDevuelto),
+  idPromocion:this.id_promocion,
+  idProbob : this.idProbob,
+  fechaActual: new Date().toLocaleDateString(), // Fecha en formato local (ej. '12/16/2024')
+   horaActual: new Date().toLocaleTimeString(),  // Hora en formato local (ej. '12:30:00 PM')
+
+  nombreMembresia: this.nombreMembresia,
+id_promocion: this.id_promocion,
+nombreCompleto:this.nombreCompleto
+
+}
+
+
+this.datosTicket= DatosTicket;
+
+console.log('ticket',DatosTicket);
+
+console.log('fechaVencimietno',this.fechaVencimientoMembresia);
+console.log('');
                   this.dialog.open(MensajeEmergenteComponent, {
+                   
                     data: `Pago exitoso, el cambio es de: $${this.dineroDevuelto}`, // Ajusta el mensaje con el precio calculado
                     disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
                   }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
                     if (cerrarDialogo) {
+                  // Dentro de tu componente en Angular
+
+
                       this.imprimirResumen3(); // Imprimir el resumen si el diálogo se cierra
+                      this.cancelDialogo();
                     } else {
                       // Aquí puedes agregar cualquier otra lógica si lo necesitas
                     }
@@ -295,7 +316,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                 } else {
                   // Si no es exitoso, mostrar mensaje de error
                   this.spinner.hide();
-                  this.toastr.error("Hubo un error al procesar tu pago. Intenta nuevamente.", "¡Error!");
+                  this.toastr.error(`Hubo un error al procesar tu pago. ${apiResponse.message} Intenta nuevamente.`, "¡Error!");
                 }
               },
               error => {
@@ -665,8 +686,8 @@ imprimirResumen2() {
                               <td>${ticketInfo.Nombre}</td>
                               <td>${ticketInfo.Sucursal}</td>
                               <td>${ticketInfo.Membresia}</td>
-                              <td>${ticketInfo.Fecha_Inicio}</td>
-                              <td>${ticketInfo.Fecha_Fin}</td>
+                              <td>${ticketInfo.fechaInicioMembresia}</td>
+                              <td>${ticketInfo.fechaVencimiento}</td>
                               <td>$${ticketInfo.Precio}</td>
                             </tr>
                       </tbody>
@@ -1195,9 +1216,11 @@ imprimirResumen3() {
             }); // Obtener solo la hora en formato local de México
     */
 
-            console.log(this.datosTicket);
+            console.log('Ver los datos del ticket',this.datosTicket);
             console.log(this.dataGym);
             console.log(this.dataGym.direccion)
+            //fechaInicioMembresia
+            //fechaVencimientoMembresia
 
 
 
@@ -1303,7 +1326,7 @@ imprimirResumen3() {
                               <td>${this.datosTicket.nombreCompleto}</td>
                               <td>${this.dataGym.nombreBodega}</td>
                               <td>${this.datosTicket.nombreMembresia}</td>
-                              <td>${this.datosTicket.fechaActual}</td>
+                              <td>${this.datosTicket.fechaInicioMembresia}</td>
                               <td>${this.datosTicket.fechaVencimiento}</td>
                               <td>$${this.datosTicket.precio}</td>
                             </tr>

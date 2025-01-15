@@ -49,6 +49,20 @@ export class GimnasioService {
   }
 
 
+  obternerPlan(){
+    return this.clienteHttp.get<any[]>(this.API+"getBodega.php").pipe(
+      tap(dataResponse => {
+       // console.log("Respuesta de la API: ",dataResponse);
+          this.saveDataToIndexedDB1(dataResponse);
+      }),
+      catchError(error => {
+          // Intenta obtener los datos de IndexedDB en caso de error
+          //console.error("DATOS NO OBTENIDOS: ",error);
+          return this.getDataFromIndexedDB();
+      })
+    );
+  }
+
   private saveDataToIndexedDB1(data: any) {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveSucursalesData('Sucursales', data);

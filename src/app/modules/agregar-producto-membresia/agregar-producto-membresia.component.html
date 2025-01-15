@@ -13,9 +13,9 @@
               <div >
                  <div style="color:red">{{message}}</div>
                  <fieldset>
-                    <div class="row" *ngIf="isAdmin()">
+                    <div class="row" *ngIf="isAdmin() && esServicio">
                        <p>
-                          <mat-form-field appearance="outline"  style="width: 100%;" required >
+                          <mat-form-field appearance="outline"  style="width: 100%;"  >
                              <mat-label>Codigo de barra</mat-label>
                              <input
                                 matInput
@@ -32,7 +32,7 @@
 
                     <div class="row" *ngIf="isRecep()">
                        <p>
-                          <mat-form-field appearance="outline"  style="width: 100%;" required >
+                          <mat-form-field appearance="outline"  style="width: 100%;"  >
                              <mat-label>Codigo de barra</mat-label>
                              <input
                                 matInput
@@ -127,14 +127,14 @@
                        <div class="col-sm-6">
                           <p>
                              <mat-form-field appearance="outline"  style="width: 100%;" required>
-                                <mat-label>Detalle de la membresia</mat-label>
+                                <mat-label>Duración de la membresia</mat-label>
                                 <input
-                                   id="detalleCompra"
-                                   formControlName="detalleCompra"
-                                   type="text"
+                                   id="duracion"
+                                   formControlName="duracion"
+                                   type="number"
                                    matInput
                                    autocomplete="off"
-                                   placeholder="Detalle de la membresia"
+                                   placeholder="Duración de la membresia"
                                    />
                              </mat-form-field>
                           </p>

@@ -175,6 +175,8 @@ export class HorariosVistaComponent implements OnInit {
       email: [""],
       nombre: [""],
       idGym: [""],
+      clave:[1],
+      estatus:[1]
     });
   }
 
@@ -374,6 +376,7 @@ export class HorariosVistaComponent implements OnInit {
     return pass;
   }
 
+
   enviarSucursal(): void {
     if (this.formularioSucursales.valid && this.personaForm.valid) {
       const nombreS = this.personaForm.get("nombreS")?.value;
@@ -391,96 +394,82 @@ export class HorariosVistaComponent implements OnInit {
       console.log("Correo: ", this.correoEmp);
       console.log("pass: ", this.pass);
 
-      this.http.correoEmpleado(datosFormulario.correoEmp).subscribe((respuesta) => {
-        if(respuesta.message === 'MailExists'){
-          this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
-        }else{
-          const codigoPostal = this.formularioSucursales.get("codigoPostal")?.value;
-          const estado = this.formularioSucursales.get("estado")?.value;
-          const ciudad = this.formularioSucursales.get("ciudad")?.value;
-          const colonia = this.formularioSucursales.get("colonia")?.value;
-          const calle = this.formularioSucursales.get("calle")?.value;
-          const numExt = this.formularioSucursales.get("numExt")?.value;
-          const numInt = this.formularioSucursales.get("numInt")?.value;
+      const codigoPostal = this.formularioSucursales.get("codigoPostal")?.value;
+      const estado = this.formularioSucursales.get("estado")?.value;
+      const ciudad = this.formularioSucursales.get("ciudad")?.value;
+      const colonia = this.formularioSucursales.get("colonia")?.value;
+      const calle = this.formularioSucursales.get("calle")?.value;
+      const numExt = this.formularioSucursales.get("numExt")?.value;
+      const numInt = this.formularioSucursales.get("numInt")?.value;
 
-          const direccionCompleta = `${calle} ${numExt} ${
-            numInt ? "Int. " + numInt : ""
-          }, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
-          this.formularioSucursales.patchValue({
-            direccion: direccionCompleta,
-          });
-          console.log("dirección completa: ", direccionCompleta);
-          console.log("Datos de la sucursal: ", this.formularioSucursales.value);
-
-
-          this.gimnasioService
-          .agregarSucursal(this.formularioSucursales.value)
-          .subscribe(
-            (respuestaSucursal) => {
-              console.log("Se creo la sucursal: ", this.formularioSucursales.value);
-
-              if (respuestaSucursal && respuestaSucursal.success === 1) {
-
-                datosFormulario.idGym = respuestaSucursal.id_bodega;
-                datosFormulario.email = datosFormulario.correoEmp;
-                delete datosFormulario.correoEmp;
-                datosFormulario.idGym = Number(datosFormulario.idGym);
-                datosFormulario.foto = datosFormulario.foto || null;
-                console.log("Datos del formulario antes de enviar:", datosFormulario);
-
-                this.http.agregarEmpleadoA(datosFormulario).subscribe(
-                  (respuestaEmpleado) => {
-                    console.log("Respuesta del servidor (empleado):", respuestaEmpleado);
-
-                    // Verificar si la respuesta tiene 'ok: true'
-                    if (respuestaEmpleado && respuestaEmpleado.ok === true) {
-                      this.enviarMensajeWhatsApp();
-                      this.dialog
-                        .open(MensajeEmergentesComponent, {
-                          data: `El registro se ha completado exitosamente`,
-                          disableClose: true,
-                        })
-                        .afterClosed()
-                        .subscribe((cerrarDialogo: Boolean) => {
-                          if (cerrarDialogo) {
-                            this.dialogo.close();
-                            this.personaForm.reset();
-                          }
-                        });
-                    } else {
-                      if (respuestaEmpleado && respuestaEmpleado.error) {
-                        console.error("Error al agregar empleado:", respuestaEmpleado.error);
-                      } else {
-                        console.error("Error al agregar empleado: Respuesta inválida o vacía.");
-                      }
-                    }
-                  },
-                  (error) => {
-                    console.error("Error en la solicitud al servidor para agregarEmpleado:", error);
-                    this.toastr.error('Error al agregar empleado. Inténtalo de nuevo.', 'Error');
-                  }
-                );
-
-              } else {
-              }
-            },
-            (error) => {
-              console.log("Error al agregar la sucursal: ", error)
-              this.toastr.error('Error al agregar sucursal, intentelo más tarde....', 'Error', {
-                positionClass: 'toast-bottom-left',
-              });
-            }
-          );
-        }
-
+      const direccionCompleta = `${calle} ${numExt} ${numInt ? "Int. " + numInt : ""}, ${colonia}, ${ciudad}, ${estado}, CP ${codigoPostal}`;
+      this.formularioSucursales.patchValue({
+        direccion: direccionCompleta,
       });
+      console.log("dirección completa: ", direccionCompleta);
+      console.log("Datos de la sucursal: ", this.formularioSucursales.value);
 
+      this.gimnasioService.agregarSucursal(this.formularioSucursales.value).subscribe(
+        (respuestaSucursal) => {
+          console.log("Se creo la sucursal: ", this.formularioSucursales.value);
+
+          if (respuestaSucursal && respuestaSucursal.success === 1) {
+            datosFormulario.idGym = respuestaSucursal.id_bodega;
+            datosFormulario.email = datosFormulario.correoEmp;
+            delete datosFormulario.correoEmp;
+            datosFormulario.idGym = Number(datosFormulario.idGym);
+            datosFormulario.foto = datosFormulario.foto || null;
+            console.log("Datos del formulario antes de enviar:", datosFormulario);
+
+            this.http.agregarPersonal(datosFormulario).subscribe(
+              (respuestaEmpleado) => {
+                console.log("Respuesta del servidor (empleado):", respuestaEmpleado);
+
+                if (respuestaEmpleado && respuestaEmpleado.ok === true) {
+                  this.enviarMensajeWhatsApp();
+                  this.dialog
+                    .open(MensajeEmergentesComponent, {
+                      data: `El registro se ha completado exitosamente`,
+                      disableClose: true,
+                    })
+                    .afterClosed()
+                    .subscribe((cerrarDialogo: Boolean) => {
+                      if (cerrarDialogo) {
+                        this.dialogo.close();
+                        this.personaForm.reset();
+                      }
+                    });
+                } else {
+                  if (respuestaEmpleado && respuestaEmpleado.error) {
+                    console.error("Error al agregar empleado:", respuestaEmpleado.error);
+                  } else {
+                    console.error("Error al agregar empleado: Respuesta inválida o vacía.");
+                  }
+                }
+              },
+              (error) => {
+                console.error("Error en la solicitud al servidor para agregarEmpleado:", error);
+                this.toastr.error('Error al agregar empleado. Inténtalo de nuevo.', 'Error');
+              }
+            );
+          } else {
+            console.error("Error al crear sucursal: Respuesta inválida.");
+          }
+        },
+        (error) => {
+          console.log("Error al agregar la sucursal: ", error);
+          this.toastr.error('Error al agregar sucursal, intentelo más tarde....', 'Error', {
+            positionClass: 'toast-bottom-left',
+          });
+        }
+      );
     } else {
       this.toastr.error('Completa los campos requeridos.', 'Error!!!');
       this.marcarCamposInvalidos(this.formularioSucursales);
       this.marcarCamposInvalidos(this.personaForm);
     }
   }
+
 
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {

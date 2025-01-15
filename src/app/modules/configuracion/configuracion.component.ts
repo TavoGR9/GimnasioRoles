@@ -108,6 +108,7 @@ export class ConfiguracionComponent  implements OnInit{
     if (horariosArray) {
       horariosArray.push(horarioFormGroup);
     }
+
   }
 
   verHorario() {
