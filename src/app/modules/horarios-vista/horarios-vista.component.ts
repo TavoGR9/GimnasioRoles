@@ -175,7 +175,8 @@ export class HorariosVistaComponent implements OnInit {
       email: [""],
       nombre: [""],
       idGym: [""],
-      clave:[1]
+      clave:[1],
+      estatus:[1]
     });
   }
 
