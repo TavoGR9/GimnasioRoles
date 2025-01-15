@@ -16,6 +16,9 @@ import { saveAs } from "file-saver";
 import { ProductoService } from "../../service/producto.service";
 import { inventarioService } from "../../service/inventario.service";
 
+import { ChangeDetectorRef } from "@angular/core";
+
+
 interface Producto {
   idProbob: number;
   descripcion: string;
@@ -62,6 +65,8 @@ export class EntradasComponent implements OnInit {
     "existencias"
   ];
 
+  productosFiltrados: any[] = [];
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
@@ -74,7 +79,8 @@ export class EntradasComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private GimnasioService: GimnasioService,
     private productoService: ProductoService,
-    private inventarioService: inventarioService
+    private inventarioService: inventarioService,
+    private cdr: ChangeDetectorRef
   ) {
     // this.obtenerFoto();
     this.id = this.auth.idGym.getValue();
@@ -150,8 +156,22 @@ export class EntradasComponent implements OnInit {
   listaTablas() {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
-        // console.log("Resultado de listaProductos:", resultData);
-        this.listaProductos = resultData.productos;
+        console.log("Resultado de listaProductos:", resultData);
+
+        // Filtrar las subcategorías excluyendo aquellas donde
+        this.productosFiltrados = resultData.productos.filter(
+          (productos: any) => productos.servicio != "1"
+        );
+
+        console.log("Productos después del filtro:", this.productosFiltrados);
+
+
+      //   // Asignar datos filtrados a la tabla
+      this.dataSource = new MatTableDataSource(this.productosFiltrados);
+      this.loadData();
+
+
+      this.listaProductos = this.productosFiltrados;
       },
       error: (error) => {
         console.error(error);
@@ -163,10 +183,15 @@ export class EntradasComponent implements OnInit {
     const marcaIngresado = this.form.get("idProbob")?.value;
     this.entrada.listaProductos().subscribe({
       next: (respuesta) => {
-        // console.log('respuesta: ', respuesta);
+        console.log('respuesta: ', respuesta);
+
+         // Filtrar las subcategorías excluyendo aquellas donde
+         const productosFiltrados = respuesta.productos.filter(
+          (productos: any) => productos.servicio != "1"
+        );
 
         const marcasU = new Set(
-          respuesta.productos.map((product: any) => ({
+          productosFiltrados.map((product: any) => ({
             idProd: product.idProbob,
             nombre: `${product.descripcion} ${product.marca} ${product.detalleCompra}`,
           }))
@@ -195,9 +220,9 @@ export class EntradasComponent implements OnInit {
       idProbob: product,
     });
 
-    this.productoService.consultarProductoId(product.idProd).subscribe(respuesta => {
+    this.productoService.consultarProductosId(product.idProd, this.auth.idGym.getValue()).subscribe(respuesta => {
       this.resultadoData = respuesta;
-      // console.log('resultData: ', respuesta);
+      console.log('resultData: ', respuesta);
 
       if (respuesta.length > 0 ) {
         // patchValue: Actualiza solo los campos necesarios
@@ -385,7 +410,7 @@ export class EntradasComponent implements OnInit {
                 this.form.reset();
                 this.tablaDatos = [];
                 this.entrada
-                .obtenerCompras(
+                .obtenerEntradas(
                   this.fechaInicio,
                   this.fechaFin,
                   this.auth.idGym.getValue()
@@ -431,7 +456,7 @@ export class EntradasComponent implements OnInit {
                 this.form.reset();
                 this.tablaDatos = [];
                 this.entrada
-                .obtenerCompras(
+                .obtenerEntradas(
                   this.fechaInicio,
                   this.fechaFin,
                   this.auth.idGym.getValue()
@@ -629,14 +654,14 @@ export class EntradasComponent implements OnInit {
 
   verCompras(): void {
     this.entrada
-      .obtenerCompras(
+      .obtenerEntradas(
         this.fechaInicio,
         this.fechaFin,
         this.auth.idGym.getValue()
       )
       .subscribe((respuesta) => {
         this.compras = respuesta.data;
-        // console.log('compras ver: ', this.compras);
+        console.log('compras ver: ', this.compras);
 
         this.dataSource = new MatTableDataSource(this.compras);
         this.loadData();
@@ -658,7 +683,7 @@ todosClientes: any;
       return;
     }
     this.entrada
-      .obtenerCompras(
+      .obtenerEntradas(
         this.fechaInicio,
         this.fechaFin,
         this.auth.idGym.getValue()

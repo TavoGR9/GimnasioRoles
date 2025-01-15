@@ -200,7 +200,7 @@ export class MembresiasComponent implements OnInit {
   //Reemplazar por productos
   listaTablaProdMem(){
     this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
-      // console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
+      console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
 
       //this.productos = resultData
       this.productos = resultData.filter((producto: any) => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);

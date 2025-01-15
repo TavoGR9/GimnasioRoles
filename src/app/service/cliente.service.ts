@@ -16,7 +16,9 @@ export class ClienteService {
   URLServices: String = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/registros.php";
   URL: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/formaPago.php/";
   //apiFoto: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/update_image.php";
-  apiFoto: string = "https://olympus.arvispace.com/olimpusGym/conf/";
+  //apiFoto: string = "https://olympus.arvispace.com/olimpusGym/conf/";
+  apiFoto: string = "http://localhost/serviciosGym/";
+
 
   constructor(private clienteHttp:HttpClient) {
   }
@@ -29,6 +31,10 @@ export class ClienteService {
 
   updatePhoto(archivo: any): Observable<any> {
     return this.clienteHttp.post<any>(this.apiFoto + 'update_image.php', archivo);
+  }
+
+  updatePhoto2(archivo: { id: number; nombreArchivo: string; base64textString: string }): Observable<any> {
+    return this.clienteHttp.post(this.apiFoto, archivo); // Enviar el objeto como payload
   }
 
   idPagoSucursal(id:any):Observable<any>{
