@@ -198,8 +198,8 @@ export class CategoriaService {
     // return this.clienteHttp.get(this.API2+"getSubCategorisNombre.php?SubcategoriaName="+nombre+"&id="+id);
   }
   // obtener marca por nombre
-  obtenerMarcaPorNombre2(nombre:string):Observable<any>{
-    return this.clienteHttp.get(this.API+"getMarcaNombre.php?marcaName="+nombre);
+  obtenerMarcaPorNombre2(nombre:string, idGym:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"getMarcaNombre.php?marcaName="+nombre+"&idGym="+idGym);
   }
   // obtener todas las marcas en productos
   obtenerMarcas2():Observable<any>{

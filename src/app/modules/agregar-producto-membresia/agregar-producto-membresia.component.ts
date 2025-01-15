@@ -261,8 +261,11 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
         // Filtra las marcas que tienen 'servicio' igual a 1
         const marcasFiltradas = respuesta.Productos.filter(
-          (marca: any) => marca.servicio !== null && marca.servicio !==0
+          (marca: any) => marca.servicio !== null && marca.servicio !==0 && marca.fk_idGimnasio == this.idGym
         );
+
+        console.log('Marcas de este gym: ', marcasFiltradas);
+
 
         const marcasU = new Set(
           marcasFiltradas.map((marca: any) => marca.marca)
@@ -367,7 +370,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                       if (subCategoriaExistente.success == 1) {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
-                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               const formularioP = {
@@ -392,11 +395,14 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                                 //idUsuario: this.auth.idUser.getValue(),
                               };
 
+                              console.log("Datos a enviar: ", formularioP);
+
+
                               this.productoService
                                 .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
-                                    // console.log('RESPUESTA: ', respuesta);
+                                    console.log('RESPUESTA: ', respuesta);
 
                                     //se obtiene el ultimo idProbob
                                     this.idProbob = respuesta.idProbob;
@@ -548,7 +554,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
                             ///********** Verifica si la marca ya existe */
                             this.categoriaService
-                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
                                 console.log('Marca existente: ', marcaExistente);
 
@@ -766,7 +772,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
                           if (subCategoriaExistente.success == 1) {
                             this.categoriaService
-                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
                                 console.log('marca: ', marcaExistente);
 
@@ -976,7 +982,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
                                 ///********** Verifica si la marca ya existe */
                                 this.categoriaService
-                                  .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                                  .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                                   .subscribe((marcaExistente) => {
                                     console.log('MARCA EXISTENTE: ', marcaExistente);
 
@@ -1207,7 +1213,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
                   if (subCategoriaExistente.success == 1) {
                     ///********** Verifica si la marca ya existe */
                     this.categoriaService
-                    .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                    .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                     .subscribe((marcaExistente) => {
                       // console.log('success de marca: ', marcaExistente.success);
                       if (marcaExistente.success == 1) {
