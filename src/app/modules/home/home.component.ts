@@ -30,6 +30,7 @@ interface Cliente {
   id_promocion: string | null;
   nombrePromocion: string;
   membresia: string;
+  total:string;
   productos: Producto[];
 }
 
@@ -697,6 +698,9 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       const pedidosAgrupados = this.agruparPorPedido(pedidos);
       console.log('Agrupados Por pedido',pedidosAgrupados);
 
+      const ventasDiaGym =this.obtenerVentasDelDia(pedidosAgrupados);
+      console.log('ventas del dia',ventasDiaGym)
+
       const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
       console.log('Conteo por dias',pedidosConteoDia);
 
@@ -743,6 +747,7 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
         id_promocion: cliente.id_promocion,
         nombrePromocion: cliente.nombrePromocion,
         membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
+        total:cliente.total,
         productos: [] // Inicializamos un array vacío para los productos.
       };
     }
@@ -1149,6 +1154,20 @@ processSalesDataQuincenal() {
 ///////FIN QUINCENA/////////////////
 
 
+
+obtenerVentasDelDia(pedidos: any[]): any[] {
+  const hoy = new Date();
+  // Ajustamos la fecha para las horas 00:00:00
+  const inicioDia = new Date(hoy.setHours(0, 0, 0, 0));
+  // Ajustamos la fecha para las horas 23:59:59
+  const finDia = new Date(hoy.setHours(23, 59, 59, 999));
+
+  return pedidos.filter(pedido => {
+    const fechaPedido = new Date(pedido.fecha_hora_pedido);
+    // Compara si la fecha del pedido está dentro del rango del día actual
+    return fechaPedido >= inicioDia && fechaPedido <= finDia;
+  });
+}
 
 }
 
