@@ -1,217 +1,237 @@
-<div *ngIf="isLoading">
-   <div style="margin-top: 60px;">
-      <mat-card *ngIf="isAdmin() || isRecep()">
-         <mat-card-content>
-            <div class="row" >
-               <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard">
-                  <mat-card class="orange-card">
-                     <mat-card-header>
-                        <mat-card-title>{{card.titulo}}</mat-card-title>
-                     </mat-card-header>
-                     <mat-card-content>
-                        <!--col-8: Esta clase hace que la columna ocupe 8 de las 12 columnas disponibles en todos los tamaños de pantalla, desde el tamaño más pequeño hasta el más grande.-->
-                        <br>
-                        <div class="row">
-                           <div class="col-4 d-flex align-items-center justify-content-center">
-                              <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icnono" class="img-fluid card-image">
-                           </div>
-                           <div class="col-8">
-                              <br>
-                              <p style="color: rgb(0, 0, 0); font-size: 25px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
-                           </div>
-                        </div>
-                     </mat-card-content>
-                  </mat-card>
-               </div>
-            </div>
-         </mat-card-content>
-      </mat-card>
-
-
-<!--GRÁFICAS A PARTIR DE AQUÍ-->
-<div style="margin-top: 60px;">
-   <mat-card *ngIf="isAdmin() || isRecep()">
-      <mat-card-content>
-         <table class="three-columns-table">
-            <tr>
-            <td colspan="1" class="column">
-               <div class="chart-container">
-                  <div>
-                     <h3>{{ currentDate }}</h3>
-                  </div>
-                  <ngx-charts-line-chart
-                  [view]="[300,300]" 
-                  [scheme]="colorSchemeVisita"
-                  [results]="salesChartDataVisita" 
-                  [gradient]="gradientVisita"
-                  [xAxis]="showXAxisVisita"
-                  [yAxis]="showYAxisVisita"
-                  [showXAxisLabel]="showXAxisLabelVisita"
-                  [showYAxisLabel]="showYAxisLabelVisita"
-                  [xAxisLabel]="xAxisLabelVisita"
-                  [yAxisLabel]="yAxisLabelVisita"
-                  [timeline]="timelineVisita"
-                  [legend]="true"
-                  [animations]="false"
-                  [legendTitle]="'Visita'"
-                  (select)="onSelect($event)">
-                </ngx-charts-line-chart>
-               </div>
-            </td>
-            <td colspan="1" class="column">
-               <div class="chart-container">
-                  <div>
-                     <h3>{{ currentDate }}</h3>
-                  </div>
-                  <ngx-charts-line-chart
-                  [view]="[300, 300]"
-                  [scheme]="colorSchemeQuincenal"
-                  [results]="salesChartDataQuincenal"
-                  [gradient]="gradientQuincenal"
-                  [xAxis]="showXAxisQuincenal"
-                  [yAxis]="showXAxisQuincenal"
-                  [showXAxisLabel]="showXAxisLabelQuincenal"
-                  [showYAxisLabel]="showXAxisLabelQuincenal"
-                  [xAxisLabel]="yAxisLabelQuincenal"
-                  [yAxisLabel]="yAxisLabelQuincenal"
-                  [timeline]="timelineQuincenal"
-                  [legend]="true"
-                  [animations]="false"
-                  [legendTitle]="'Quincenal'"
-                  (select)="onSelect($event)">
-                  </ngx-charts-line-chart>
-               </div>
-            </td>
-            <td colspan="1" class="column">
-               <div class="chart-container">
-                  <div>
-                     <h3>{{ currentDate }}</h3>
-                  </div>
-                  <ngx-charts-line-chart
-                  [view]="[300, 300]"
-                  [scheme]="colorScheme2"
-                  [results]="salesChartData"
-                  [gradient]="gradient2"
-                  [xAxis]="showXAxis2"
-                  [yAxis]="showYAxis2"
-                  [showXAxisLabel]="showXAxisLabel2"
-                  [showYAxisLabel]="showYAxisLabel2"
-                  [xAxisLabel]="xAxisLabel2"
-                  [yAxisLabel]="yAxisLabel2"
-                  [timeline]="timeline2"
-                  [legend]="true"
-                  [legendTitle]="'Mes'"
-                  [animations]="false"
-                  (select)="onSelect($event)">
-                  </ngx-charts-line-chart>
-               </div>
-            </td>
-            </tr>
-         </table>
-      </mat-card-content>
-   </mat-card>
-</div>
-<!--CIERRE DE GRÁFICAS-->
-
-      <mat-card *ngIf="isAdmin() || isRecep()">
-         <mat-card-header>
-            <h3 class="icon-title">
-               <mat-icon class="icon">grid_view</mat-icon>
-               PRODUCTOS MÁS VENDIDOS
-            </h3>
-         </mat-card-header>
-         <mat-card-content>
-            <p style="border-top: 2px solid orange;"></p>
-            <div *ngIf="tablaHTML" [innerHTML]="tablaHTML ">
-   </div>
-   </mat-card-content>
-   <!-- <mat-card class="ancho-2">
-      <mat-card-header>
-          <h3 class="icon-title">
-              <mat-icon class="icon">grid_view</mat-icon>
-              ÚLTIMAS VENTAS
-          </h3>
-      </mat-card-header>
-      <mat-card-content>
-          <p style="border-top: 2px solid orange;"></p>
-          <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
-      </mat-card-content>
-      </mat-card>-->
-   </mat-card>
-   <mat-card *ngIf="isAdmin() || isRecep()">
-      <mat-card-header>
-         <h3 class="icon-title">
-            <mat-icon class="icon">people</mat-icon>
-            LISTA DE ASISTENCIA
-         </h3>
-      </mat-card-header>
-      <mat-card-content>
-         <p style="border-top: 2px solid orange;"></p>
-      </mat-card-content>
-      <div  class="table-container">
-         <table mat-table [dataSource]="dataSource" >
-            <ng-container matColumnDef="title">
-               <th mat-header-cell *matHeaderCellDef>Nombre</th>
-               <td mat-cell *matCellDef="let item">{{ item.nombre }}</td>
-            </ng-container>
-            <ng-container matColumnDef="details">
-               <th mat-header-cell *matHeaderCellDef>Hora de entrada</th>
-               <td mat-cell *matCellDef="let item">{{ item.fechaHoraEntrada }}</td>
-            </ng-container>
-            <ng-container matColumnDef="price">
-               <th mat-header-cell *matHeaderCellDef>Membresia</th>
-               <td mat-cell *matCellDef="let item">{{ item.membresia }}</td>
-            </ng-container>
-            <ng-container matColumnDef="rol">
-               <th mat-header-cell *matHeaderCellDef>Rol</th>
-               <td mat-cell *matCellDef="let item">{{ item.rol }}</td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
-         </table>
-         <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20, 30,40,50,100,200,300,4000]" showFirstLastButtons></mat-paginator>
-      </div>
-   </mat-card>
-</div>
-<!--<div>
-   <br>
-   <button (click)="Sincronizar()">Sincronizar</button>
-   </div>-->
-</div>
-
-<!--<div class="container">
-   <div class="row">
-     <div class="col-12 d-flex justify-content-center align-items-center mb-3">
-        Input dinámico para seleccionar producto 
-       <input
-         type="text"
-         [(ngModel)]="selectedProduct2"
-         (input)="updateSelectedProduct2(selectedProduct2)"
-         class="form-control w-50"
-         placeholder="Escribe el nombre del producto (e.g., Mensualidad)"
-       />
-     </div>
+<div *ngIf="isLoading" class="loading-spinner">
+   <!-- Aquí se puede incluir un spinner o mensaje de carga -->
+   Cargando...
+ </div>
  
-     <div class="col-12">
-        Gráfico de ngx-charts 
-       <ngx-charts-line-chart
-         class="hide-mini-chart"
-         [view]="view2"
-         [scheme]="colorScheme2"
-         [results]="salesChartData"
-         [gradient]="gradient2"
-         [xAxis]="showXAxis2"
-         [yAxis]="showYAxis2"
-         [showXAxisLabel]="showXAxisLabel2"
-         [showYAxisLabel]="showYAxisLabel2"
-         [xAxisLabel]="xAxisLabel2"
-         [yAxisLabel]="yAxisLabel2"
-         [timeline]="timeline2"
-         [legend]="true"
-         [legendTitle]="'Mes'"
-         [animations]="false"
-         (select)="onSelect($event)">
-       </ngx-charts-line-chart>
-     </div>
-   </div>
- </div>-->
+ <div *ngIf="!isLoading">
+    <div style="margin-top: 60px;">
+       <mat-card *ngIf="isAdmin() || isRecep()">
+          <mat-card-content>
+             <div class="row" >
+                <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard">
+                   <mat-card class="orange-card">
+                      <mat-card-header>
+                         <mat-card-title>{{card.titulo}}</mat-card-title>
+                      </mat-card-header>
+                      <mat-card-content>
+                         <!--col-8: Esta clase hace que la columna ocupe 8 de las 12 columnas disponibles en todos los tamaños de pantalla, desde el tamaño más pequeño hasta el más grande.-->
+                         <br>
+                         <div class="row">
+                            <div class="col-4 d-flex align-items-center justify-content-center">
+                               <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icnono" class="img-fluid card-image">
+                            </div>
+                            <div class="col-8">
+                               <br>
+                               <p style="color: rgb(0, 0, 0); font-size: 25px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
+                            </div>
+                         </div>
+                      </mat-card-content>
+                   </mat-card>
+                </div>
+             </div>
+          </mat-card-content>
+       </mat-card>
+ 
+ 
+ <!--GRÁFICAS A PARTIR DE AQUÍ-->
+ <div style="margin-top: 60px;">
+    <mat-card *ngIf="isAdmin() || isRecep()">
+       <mat-card-content>
+          <table class="three-columns-table">
+             <tr>
+             <td colspan="1" class="column">
+                <div class="chart-container">
+                   <div>
+                      <h3>{{ currentDate }}</h3>
+                   </div>
+                   <ngx-charts-line-chart
+                   [view]="[300,300]"
+                   [scheme]="colorSchemeVisita"
+                   [results]="salesChartDataVisita"
+                   [gradient]="gradientVisita"
+                   [xAxis]="showXAxisVisita"
+                   [yAxis]="showYAxisVisita"
+                   [showXAxisLabel]="showXAxisLabelVisita"
+                   [showYAxisLabel]="showYAxisLabelVisita"
+                   [xAxisLabel]="xAxisLabelVisita"
+                   [yAxisLabel]="yAxisLabelVisita"
+                   [timeline]="timelineVisita"
+                   [legend]="true"
+                   [animations]="false"
+                   [legendTitle]="'Producto: Visita'"
+                   (select)="onSelect($event)">
+                 </ngx-charts-line-chart>
+                </div>
+             </td>
+             <td colspan="1" class="column">
+                <div class="chart-container">
+                   <div>
+                      <h3>{{ currentDate }}</h3>
+                   </div>
+                   <ngx-charts-line-chart
+                   [view]="[300, 300]"
+                   [scheme]="colorSchemeQuincenal"
+                   [results]="salesChartDataQuincenal"
+                   [gradient]="gradientQuincenal"
+                   [xAxis]="showXAxisQuincenal"
+                   [yAxis]="showXAxisQuincenal"
+                   [showXAxisLabel]="showXAxisLabelQuincenal"
+                   [showYAxisLabel]="showXAxisLabelQuincenal"
+                   [xAxisLabel]="yAxisLabelQuincenal"
+                   [yAxisLabel]="yAxisLabelQuincenal"
+                   [timeline]="timelineQuincenal"
+                   [legend]="true"
+                   [animations]="false"
+                   [legendTitle]="'Quincenal'"
+                   (select)="onSelect($event)">
+                   </ngx-charts-line-chart>
+                </div>
+             </td>
+             <td colspan="1" class="column">
+                <div class="chart-container">
+                   <div>
+                      <h3>{{ currentDate }}</h3>
+                   </div>
+                   <ngx-charts-line-chart
+                   [view]="[300, 300]"
+                   [scheme]="colorScheme2"
+                   [results]="salesChartData"
+                   [gradient]="gradient2"
+                   [xAxis]="showXAxis2"
+                   [yAxis]="showYAxis2"
+                   [showXAxisLabel]="showXAxisLabel2"
+                   [showYAxisLabel]="showYAxisLabel2"
+                   [xAxisLabel]="xAxisLabel2"
+                   [yAxisLabel]="yAxisLabel2"
+                   [timeline]="timeline2"
+                   [legend]="true"
+                   [legendTitle]="'Mes'"
+                   [animations]="false"
+                   (select)="onSelect($event)">
+                   </ngx-charts-line-chart>
+                </div>
+             </td>
+             </tr>
+          </table>
+       </mat-card-content>
+    </mat-card>
+ </div>
+ <!--CIERRE DE GRÁFICAS-->
+ 
+       <mat-card *ngIf="isAdmin() || isRecep()">
+          <mat-card-header>
+             <h3 class="icon-title">
+                <mat-icon class="icon">grid_view</mat-icon>
+                PRODUCTOS MÁS VENDIDOS
+             </h3>
+          </mat-card-header>
+          <mat-card-content>
+             <p style="border-top: 2px solid orange;"></p>
+             <!-- <div *ngIf="tablaHTML" [innerHTML]="tablaHTML ">
+             </div> -->
+ 
+             <div  class="table-container">
+               <table mat-table [dataSource]="dataSourceProductos" >
+                 <ng-container matColumnDef="Producto">
+                     <th mat-header-cell *matHeaderCellDef>Producto</th>
+                     <td mat-cell *matCellDef="let item">{{ item.nombreProducto }}</td>
+                 </ng-container>
+                 <ng-container matColumnDef="TotalDeVentas">
+                     <th mat-header-cell *matHeaderCellDef>Total de Ventas</th>
+                     <td mat-cell *matCellDef="let item">{{ item.totalProducto }}</td>
+                 </ng-container>
+ 
+                 <tr mat-header-row *matHeaderRowDef="displayedColumnsProductos"></tr>
+                 <tr mat-row *matRowDef="let item; columns: displayedColumnsProductos; let i = index"></tr>
+               </table>
+           </div>
+          </mat-card-content>
+    <!-- <mat-card class="ancho-2">
+       <mat-card-header>
+           <h3 class="icon-title">
+               <mat-icon class="icon">grid_view</mat-icon>
+               ÚLTIMAS VENTAS
+           </h3>
+       </mat-card-header>
+       <mat-card-content>
+           <p style="border-top: 2px solid orange;"></p>
+           <div *ngIf="tablaHTMLVentas" [innerHTML]="tablaHTMLVentas"></div>
+       </mat-card-content>
+       </mat-card>-->
+    </mat-card>
+    <!-- <mat-card *ngIf="isAdmin() || isRecep()">
+       <mat-card-header>
+          <h3 class="icon-title">
+             <mat-icon class="icon">people</mat-icon>
+             LISTA DE ASISTENCIA
+          </h3>
+       </mat-card-header>
+       <mat-card-content>
+          <p style="border-top: 2px solid orange;"></p>
+       </mat-card-content>
+       <div  class="table-container">
+          <table mat-table [dataSource]="dataSource" >
+             <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                <td mat-cell *matCellDef="let item">{{ item.nombre }}</td>
+             </ng-container>
+             <ng-container matColumnDef="details">
+                <th mat-header-cell *matHeaderCellDef>Hora de entrada</th>
+                <td mat-cell *matCellDef="let item">{{ item.fechaHoraEntrada }}</td>
+             </ng-container>
+             <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef>Membresia</th>
+                <td mat-cell *matCellDef="let item">{{ item.membresia }}</td>
+             </ng-container>
+             <ng-container matColumnDef="rol">
+                <th mat-header-cell *matHeaderCellDef>Rol</th>
+                <td mat-cell *matCellDef="let item">{{ item.rol }}</td>
+             </ng-container>
+             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+             <tr mat-row *matRowDef="let item; columns: displayedColumns; let i = index"></tr>
+          </table>
+          <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20, 30,40,50,100,200,300,4000]" showFirstLastButtons></mat-paginator>
+       </div>
+    </mat-card> -->
+ </div>
+ <!--<div>
+    <br>
+    <button (click)="Sincronizar()">Sincronizar</button>
+    </div>-->
+ </div>
+ 
+ <!-- <div class="container">
+    <div class="row">
+      <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+        Input dinámico para seleccionar producto
+        <input
+          type="text"
+          [(ngModel)]="selectedProduct2"
+          (input)="updateSelectedProduct2(selectedProduct2)"
+          class="form-control w-50"
+          placeholder="Escribe el nombre del producto (e.g., Mensualidad)"
+        />
+      </div>
+ 
+      <div class="col-12">
+        <ngx-charts-line-chart
+          class="hide-mini-chart"
+          [view]="view2"
+          [scheme]="colorScheme2"
+          [results]="salesChartData"
+          [gradient]="gradient2"
+          [xAxis]="showXAxis2"
+          [yAxis]="showYAxis2"
+          [showXAxisLabel]="showXAxisLabel2"
+          [showYAxisLabel]="showYAxisLabel2"
+          [xAxisLabel]="xAxisLabel2"
+          [yAxisLabel]="yAxisLabel2"
+          [timeline]="timeline2"
+          [legend]="true"
+          [legendTitle]="'Mes'"
+          [animations]="false"
+          (select)="onSelect($event)">
+        </ngx-charts-line-chart>
+      </div>
+    </div>
+  </div> -->

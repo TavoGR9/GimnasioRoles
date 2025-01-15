@@ -57,7 +57,7 @@ export class SidebarComponent {
     combineLatest([this.auth.idGym, this.auth.idUser, this.auth.nombreGym]).subscribe(([idGym, idUser, nombreGym]) => {
       if (idGym && idUser) {
         this.idGym = idGym;
-        this.idUser = idUser; 
+        this.idUser = idUser;
         this.nombreGym = nombreGym;
         this.url = `HuellaTorniquete://?idSucursal=${this.idGym}`;
       }
@@ -81,7 +81,7 @@ export class SidebarComponent {
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
-  
+
   isSupadmin(): boolean {
     return this.auth.isSupadmin();
   }

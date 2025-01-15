@@ -24,6 +24,7 @@ export class ColaboradorService {
     // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
     // APIv3: string = 'http://localhost/olimpusGym/conf/';
     // API: String = '';
+
     //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
     //API: string = 'http://localhost/serviciosGimnasio/'
       API: string = 'http://localhost/serviciosGym/'
@@ -52,8 +53,17 @@ export class ColaboradorService {
     }
 
    agregarPersonal(datos: any): Observable<any> {
-      const data ={nombre: datos}
-      return this.clienteHttp.post(this.API + "empleado.php", data);
+      console.log("datos: ",datos)
+      return this.clienteHttp.post(this.API + "empleado.php?insertar", datos).pipe(
+        tap(dataResponse => {
+          console.log("datos: ",dataResponse)
+        }),
+        catchError(error => {
+          this.saveDataToIndexedDB(datos);
+          const resultData = { success: '0' };
+          return of(resultData);
+        })
+      );
     }
 
     obtenerPersonalPorNombre(nombre:any):Observable<any>{
@@ -62,7 +72,7 @@ export class ColaboradorService {
     }
 
     getPersonal(): Observable<any> {
-      return this.clienteHttp.get(this.API + "empleado.php");
+      return this.clienteHttp.get(this.API + "empleado.php?lista");
     }
 
    agregarEmpleado(datosEmpleado: any): Observable<any> {
@@ -96,8 +106,9 @@ export class ColaboradorService {
 
 
 
-    correoEmpleado(correo: string): Observable<any> {
-        return this.clienteHttp.post<any>(this.API + "empleado.php?consultarCorreo", { correo });
+    correoEmpleado(email: string): Observable<any> {
+      console.log(email);
+        return this.clienteHttp.post<any>(this.API + "empleado.php?insertar", email);
     }
 
     private saveDataToIndexedDBC(data: any) {
@@ -163,15 +174,9 @@ export class ColaboradorService {
         return this.clienteHttp.post<msgResult>(this.API+"empleado.php?actEmp="+id,datosEmpleado, {headers});
     }
 
-
-
-
-
-
-
     MostrarRecepcionistas(idGym: any): Observable<any> {
        // let headers: any = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-        let params = 'idGym=' + idGym;
+        //let params = 'idGym=' + idGym;
         return this.clienteHttp.post(this.API + 'ser_mostrar_Recepcionistas.php',idGym).pipe(
              tap(dataResponse => {
               //console.log('++++', idGym);
@@ -279,6 +284,7 @@ export class ColaboradorService {
       // Incluimos `options` en la llamada
       return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php',body, options);
     }
+
 
 
 

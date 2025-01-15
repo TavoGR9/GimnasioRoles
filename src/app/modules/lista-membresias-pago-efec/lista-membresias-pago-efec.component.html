@@ -63,7 +63,7 @@
 							</div>
 						</th>
 						<td mat-cell *matCellDef="let prod">
-							<ng-container *ngIf="column === 'Estafeta'">
+							<ng-container *ngIf="column === 'ID'">
 								{{ prod.estafeta }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Nombre'">
@@ -82,7 +82,7 @@
 								{{ prod.fecha_caducidad | date:'dd/MM/yyyy, HH:mm' }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Fecha Registro'">
-								{{ prod.fechaRegistro| date:'dd/MM/yyyy' }}
+								{{ prod.fechaRegistro| date:'dd/MM/yyyy, HH:mm' }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Estatus'">
 								<div [ngClass]="{'estatus-activo': prod.estatus === '1', 'estatus-inactivo': prod.estatus !== '1'}">

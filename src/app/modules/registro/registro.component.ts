@@ -296,6 +296,7 @@ export class RegistroComponent implements OnInit {
       nombre: nombreCompleto,
       user: nombreCompleto,
       pass: this.password,
+      fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png',
     });
   
     if (this.form.valid) {
@@ -317,7 +318,7 @@ export class RegistroComponent implements OnInit {
            console.log('va a home');
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
               if (cerrarDialogo) {
-               this.router.navigateByUrl(`/home`);
+               this.router.navigateByUrl(`/listaMembresias`);
               
               }
             }); 
@@ -328,7 +329,7 @@ export class RegistroComponent implements OnInit {
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
              
               if (cerrarDialogo) {
-               this.router.navigateByUrl(`/home`);
+               this.router.navigateByUrl(`/listaMembresias`);
               
               } 
             });
