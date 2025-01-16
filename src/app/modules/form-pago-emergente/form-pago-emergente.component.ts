@@ -186,6 +186,7 @@ export class FormPagoEmergenteComponent implements OnInit {
          }
 
          this.dataGym=datosGym
+         console.log('datoosssssssss Gyyyyyyyyyyyyyyyyyyym',this.dataGym)
         }
       },
       (error) => {
@@ -495,7 +496,7 @@ imprimirResumen3() {
 
             console.log('Ver los datos del ticket',this.datosTicket);
             console.log(this.dataGym);
-            console.log(this.dataGym.direccion)
+            console.log('datoosssssssss Gyyyyyyyyyyyyyyyyyyym',this.dataGym)
             //fechaInicioMembresia
             //fechaVencimientoMembresia
 
