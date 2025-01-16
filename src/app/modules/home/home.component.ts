@@ -211,58 +211,7 @@ reloadPage(): void {
         }
       }
     );
-
-    this.auth.idGym.subscribe((data) => {
-      this.idGym = data;
-      // Aquí puedes ver que el valor de idGym se está asignando y se llama a listaTabla
-      this.consultarAsistencia();
-      this.listaTablas();
-      this.cargarTarjetas();
-      this.cargarTarjetas2();
-
-      const datos = {
-        idGym: this.auth.idGym.getValue()
-      };
-
-      const jsonData: string = JSON.stringify(datos);
-      this.parametro = jsonData;
-    });
-
-
-
-    // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-    //   ([idGym, idUser]) => {
-    //     if (idGym && idUser) {
-    //       this.idGym = idGym;
-    //       this.idUser = idUser;
-    //       this.listaTablas();
-    //     }
-    //   }
-    // );
-
-
-    // this.listaTablas();
-
-    // this.homeService.consultarHome(this.idGym).subscribe((respuesta) => {
-    //   this.homeCard = respuesta;
-    // });
-
-
-    // this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-    //   this.masVendidos = data;
-    //   console.log('MasVendidos: ', this.masVendidos);
-
-    //   this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
-    //   this.loadData();
-    // });
-
-    this.calculateVisitaTotal();
-    this.consultarMeses();
-    this.consultarQuincenas();
-    this.consultarVisitas();
-
   }
-  
 
   cargarDatosIniciales(): void {
     console.log('Cargando datos iniciales...');
@@ -273,6 +222,12 @@ reloadPage(): void {
     this.startDateUpdater();
     this.listaTablas();
     this.consultarAsistencia();
+    this.cargarTarjetas();
+      this.cargarTarjetas2();
+      this.calculateVisitaTotal();
+    this.consultarMeses();
+    this.consultarQuincenas();
+    this.consultarVisitas();
     console.log(this.isLoading)
   }
 
@@ -461,6 +416,7 @@ reloadPage(): void {
 
     this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
+
 
 
   cargarTarjetas(): void {
@@ -782,8 +738,8 @@ cargarTarjetas2(): void {
       this.asistencia = respuesta;
       this.dataSource = new MatTableDataSource(this.asistencia);
       this.loadData();
-    });
-  }
+    });
+  }
 
   /**Roles**/
   isAdmin(): boolean {
