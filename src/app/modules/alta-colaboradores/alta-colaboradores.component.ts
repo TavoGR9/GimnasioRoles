@@ -51,7 +51,7 @@ export class AltaColaboradoresComponent {
       puesto: ['', Validators.compose([ Validators.required])],
       email: ['', [Validators.required, Validators.pattern(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)]],
       pass: ['', [Validators.required, Validators.minLength(8)]],
-      celular: ['', [Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)]],
+      celular: ['', [Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.maxLength(10)]],
       idGym: [this.idGym],
       estatus:[1]
     });
@@ -94,18 +94,38 @@ export class AltaColaboradoresComponent {
 
       this.spinner.show();
 
-      this.http.agregarPersonal(formularioDa).subscribe((respuesta) => {
+      const datos = {
+        email : formularioDa.email,
+        clave: formularioDa.clave,
+        idGym: formularioDa.idGym
+      }
+
+      console.log("datos 2: ",datos);
+      this.http.correoEmpleado(datos).subscribe((respuesta) => {
         console.log(respuesta);
-
-        this.spinner.hide();
-
-        if(respuesta.ok === true){
-          this.dialogo.close(true); // Cierra el modal
-          this.mostrarMensajeExito(); // Muestra el mensaje de éxito
+        if (respuesta.ok === false) {
+          if (respuesta.message.includes('Correo')) {
+            this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+          } else if (respuesta.message.includes('estafeta')) {
+            this.toastr.error('La clave ya está registrada.', 'Error!!!');
+          } else {
+            this.toastr.error('Error al verificar los datos.', 'Error!!!');
+          }
         } else{
-          this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+          this.http.agregarPersonal(formularioDa).subscribe((respuesta) => {
+            console.log(respuesta);
+
+            this.spinner.hide();
+
+            if(respuesta.ok === true){
+              this.dialogo.close(true); // Cierra el modal
+              this.mostrarMensajeExito(); // Muestra el mensaje de éxito
+            } else{
+              this.toastr.error('ocorruio un error al guardar los datos', 'Error!!!');
+            }
+          });
         }
-      })
+      });
     } else {
       this.message = 'Por favor, complete todos los campos requeridos.';
       this.marcarCamposInvalidos(this.form);
@@ -171,4 +191,3 @@ export class AltaColaboradoresComponent {
 
 
 }
-
