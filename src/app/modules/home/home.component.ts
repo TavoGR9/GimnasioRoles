@@ -40,6 +40,7 @@ interface Cliente {
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.css"],
 })
+
 export class HomeComponent implements OnInit {
   currentUser: string = "";
   currentDate: string = '';
@@ -47,6 +48,7 @@ export class HomeComponent implements OnInit {
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
   idGym: number = 0;
+  parametro: any;
   idUser: number = 0;
   fechaActual: Date = new Date();
   totalVentas: number = 0;
@@ -71,6 +73,8 @@ export class HomeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
   displayedColumns: string[] = ["title", "details", "price", "rol"];
+  //dataSource = new MatTableDataSource(); // Inicialización vacía
+
 
   dataSourceProductos: any;
   displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
@@ -207,6 +211,12 @@ reloadPage(): void {
     this.updateDate();
     this.startDateUpdater();
     this.listaTablas();
+    this.consultarAsistencia();
+  }
+  ngAfterViewInit() {
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   ngOnDestroy(): void {
@@ -376,7 +386,7 @@ reloadPage(): void {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCard21 = [respuesta];
         } else {
-          console.error("La respuesta no es un objeto válido:", respuesta);
+          //console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
@@ -391,7 +401,7 @@ reloadPage(): void {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCardVisita = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
         } else {
-          console.error("La respuesta no es un objeto válido:", respuesta);
+          //console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
@@ -427,7 +437,7 @@ reloadPage(): void {
       this.fechaMensualidad = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFecha(this.fechaMensualidad);
     } else {
-      console.warn("Nombre de mes no es una cadena válida:", event.series);
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
   }
 
@@ -445,7 +455,7 @@ reloadPage(): void {
       this.fechaQuincena = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFechaQuincena(this.fechaQuincena);
     } else {
-      console.warn("Nombre de mes no es una cadena válida:", event.series);
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
   }
 
@@ -477,7 +487,7 @@ reloadPage(): void {
 
     this.homeService.getAnalyticsData(this.idGym).subscribe(
       (data) => {
-        console.log('Datos recibidos en Angular:', data); // Verifica si hay errores o estructura inesperada
+        //console.log('Datos recibidos en Angular:', data); // Verifica si hay errores o estructura inesperada
         this.masVendidos = data;
         this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
         this.loadData();
@@ -492,6 +502,8 @@ reloadPage(): void {
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
     // });
+    console.log('Entraremos a asistencias');
+
   }
 
   /**ASISTENCIA */
@@ -503,6 +515,10 @@ reloadPage(): void {
       this.loadData();
     });
   }
+
+
+
+
 
   /**Roles**/
   isAdmin(): boolean {
@@ -658,19 +674,19 @@ consultarMembresia(){
 //this.homeService.ConsultarPedidosMembresias(this)
 this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   (response) => {
-    console.log(this.auth.idGym.getValue(),'id')
+    //console.log(this.auth.idGym.getValue(),'id')
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
-      console.log('API',response.data)
+      //console.log('API',response.data)
 
 
       const pedidosAgrupados = this.agruparPorPedido(pedidos);
-      console.log('Agrupados Por pedido',pedidosAgrupados);
+      //console.log('Agrupados Por pedido',pedidosAgrupados);
       const ventasDiaGym =this.obtenerVentasDelDia(pedidosAgrupados);
-      console.log('ventas del dia',ventasDiaGym)
+      //console.log('ventas del dia',ventasDiaGym)
 
       const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
-      console.log('Conteo por dias',pedidosConteoDia);
+      //console.log('Conteo por dias',pedidosConteoDia);
 
 
 
@@ -735,7 +751,7 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
   clientes.forEach(cliente => {
     const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0]; // Extraemos solo la fecha (YYYY-MM-DD)
 
-    console.log(`Procesando cliente con fecha: ${fecha}`, cliente);
+    //console.log(`Procesando cliente con fecha: ${fecha}`, cliente);
 
     if (!conteos[fecha]) {
       conteos[fecha] = {
@@ -750,10 +766,10 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       const idProducto = producto.id_producto || `temp_${index}`; // ID temporal si falta
       const nombreProducto = producto.nombreProducto || 'Producto desconocido';
 
-      console.log(`Procesando producto:`, { idProducto, nombreProducto, fecha });
+      //console.log(`Procesando producto:`, { idProducto, nombreProducto, fecha });
 
       if (!conteos[fecha].conteoProductos[idProducto]) {
-        console.log(`Producto nuevo encontrado, inicializando conteo:`, { idProducto, nombreProducto });
+        //console.log(`Producto nuevo encontrado, inicializando conteo:`, { idProducto, nombreProducto });
         conteos[fecha].conteoProductos[idProducto] = {
           nombreProducto: nombreProducto,
           cantidad: 0
@@ -761,7 +777,7 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       }
 
       conteos[fecha].conteoProductos[idProducto].cantidad += 1;
-      console.log(`Producto actualizado:`, conteos[fecha].conteoProductos[idProducto]);
+      //console.log(`Producto actualizado:`, conteos[fecha].conteoProductos[idProducto]);
     });
 
     // **Conteo de bodegas**
@@ -769,10 +785,10 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       const idBodPro = producto.idBodPro || `temp_bodega_${index}`;
       const marcaYProducto = `${producto.marca} - ${producto.nombreProducto}`;
 
-      console.log(`Procesando bodega:`, { idBodPro, marcaYProducto, fecha });
+      //console.log(`Procesando bodega:`, { idBodPro, marcaYProducto, fecha });
 
       if (!conteos[fecha].conteoBodegas[idBodPro]) {
-        console.log(`Bodega nueva encontrada, inicializando conteo:`, { idBodPro, marcaYProducto });
+        //console.log(`Bodega nueva encontrada, inicializando conteo:`, { idBodPro, marcaYProducto });
         conteos[fecha].conteoBodegas[idBodPro] = {
           marcaYProducto: marcaYProducto,
           cantidad: 0
@@ -780,15 +796,15 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       }
 
       conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
-      console.log(`Bodega actualizada:`, conteos[fecha].conteoBodegas[idBodPro]);
+      //console.log(`Bodega actualizada:`, conteos[fecha].conteoBodegas[idBodPro]);
     });
 
     // **Conteo de promociones**
     if (cliente.id_promocion && cliente.nombrePromocion) {
-      console.log(`Procesando promoción:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion, fecha });
+      //console.log(`Procesando promoción:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion, fecha });
 
       if (!conteos[fecha].conteoPromociones[cliente.id_promocion]) {
-        console.log(`Promoción nueva encontrada, inicializando conteo:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion });
+        //console.log(`Promoción nueva encontrada, inicializando conteo:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion });
         conteos[fecha].conteoPromociones[cliente.id_promocion] = {
           nombrePromocion: cliente.nombrePromocion,
           cantidad: 0
@@ -796,11 +812,11 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       }
 
       conteos[fecha].conteoPromociones[cliente.id_promocion].cantidad += 1;
-      console.log(`Promoción actualizada:`, conteos[fecha].conteoPromociones[cliente.id_promocion]);
+      //console.log(`Promoción actualizada:`, conteos[fecha].conteoPromociones[cliente.id_promocion]);
     }
   });
 
-  console.log('Conteos finales:', conteos);
+  //console.log('Conteos finales:', conteos);
   return conteos;
 }
 
@@ -1000,7 +1016,7 @@ updateDate(): void {
   const day = today.getDate().toString().padStart(2, '0');
 
   this.currentDate = `${year}-${month}-${day}`;
-  console.log('Fecha actualizada:', this.currentDate);
+  //console.log('Fecha actualizada:', this.currentDate);
 }
 
 startDateUpdater(): void {
@@ -1046,7 +1062,6 @@ selectedProductQuincenal: string = 'Quincenal'; // Valor inicial
 // Procesar los datos
 processSalesDataQuincenal() {
   // Obtener el mes y el año actual dinámicamente
-  console.log('hola');
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
