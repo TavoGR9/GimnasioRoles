@@ -49,6 +49,35 @@ export class HomeService {
     )
   }
 
+  consultarAsistenciasTotal(idGym: number): Observable<any> {
+    const data = { idGim: idGym }; // Formato esperado por el backend
+    return this.clienteHttp.post(this.API + "ObtenerAsistenciasFechaActualTotal.php", data).pipe(
+      tap((dataResponse) => {
+        console.log('Datos recibidos del backend:', dataResponse);
+        this.saveDataToIndexedDB(dataResponse); // Si estás manejando un IndexedDB
+      }),
+      catchError((error) => {
+        console.error('Error en la solicitud:', error);
+        return this.getServiceDatos(); // Método para manejar errores
+      })
+    );
+}
+
+consultarAsistenciasPersonal(idGym: number): Observable<any> {
+  const data = { idGim: idGym }; // Formato esperado por el backend
+  return this.clienteHttp.post(this.API + "ObtenerAsistenciasRol.php", data).pipe(
+    tap((dataResponse) => {
+      console.log('Datos recibidos del backend:', dataResponse);
+      this.saveDataToIndexedDB(dataResponse); // Si estás manejando un IndexedDB
+    }),
+    catchError((error) => {
+      console.error('Error en la solicitud:', error);
+      return this.getServiceDatos(); // Método para manejar errores
+    })
+  );
+}
+
+
   consultarHome2(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHomeDos="+id);
       /*tap(dataResponse => {
