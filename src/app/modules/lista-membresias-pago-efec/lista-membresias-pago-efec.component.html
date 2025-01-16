@@ -9,9 +9,9 @@
 		<div class="container mt-4">
 			<h2>LISTA DE CLIENTES Y PAGO DE MEMBRESÍA EN EFECTIVO</h2>
 			<div style="display: flex; justify-content: flex-end;">
-			<button *ngIf="isAdmin() || isRecep()" (click)="AbrirRegistro()" class="mat-button"> 
-				<mat-icon>person</mat-icon> 
-				Registro 
+			<button mat-raised-button style="background-color: #fd9727; font-size: 16px;" *ngIf="isAdmin() || isRecep()" (click)="Registro()" class="mat-button">
+				<mat-icon>person</mat-icon>
+				Registro
 			</button>
 		</div>
 			<br>
@@ -84,9 +84,12 @@
 							<ng-container *ngIf="column === 'Fecha Registro'">
 								{{ prod.fechaRegistro| date:'dd/MM/yyyy, HH:mm' }}
 							</ng-container>
+							<ng-container *ngIf="column === 'Rol'">
+								{{prod.rol}}
+							</ng-container>
 							<ng-container *ngIf="column === 'Estatus'">
 								<div [ngClass]="{'estatus-activo': prod.estatus === '1', 'estatus-inactivo': prod.estatus !== '1'}">
-									
+
 								</div>
 							</ng-container>
 							<ng-container *ngIf="column === 'Pago'">

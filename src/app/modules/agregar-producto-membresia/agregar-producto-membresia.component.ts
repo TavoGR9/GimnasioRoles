@@ -118,14 +118,14 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     });
 
     // Configura el valor inicial del formulario
-    this.form.get('nombreCategoriaP')?.setValue('Servicios');
+    // this.form.get('nombreCategoriaP')?.setValue('Servicios');
 
     // Obtener dinámicamente el ID de la categoría "Servicios"
     this.categoriaService.obtenerCategoria2().subscribe({
       next: (respuesta) => {
         // Busca la categoría con el nombre "Servicios"
         const categoriaServicios = respuesta.find(
-          (categoria: any) => categoria.nombreCategoria === 'Servicios'
+          (categoria: any) => categoria.nombreCategoria === 'Servicios' && categoria.membresia==1
         );
 
         if (categoriaServicios) {
@@ -185,42 +185,73 @@ export class AgregarProductoMembresiaComponent implements OnInit {
   }
 
   buscarCategorias() {
-    const saborIngresado = this.form.get("nombreCategoriaP")?.value;
+    const categoriaIngresada = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria2().subscribe({
       next: (respuesta) => {
 
+        console.log("Categorias: ", respuesta);
+
+        // Filtra las marcas que tienen 'servicio' igual a 1
+        const categoriaFiltrada = respuesta.filter(
+          (categoria: any) => categoria.membresia ==1
+        );
+
+        console.log('categoriasFiltradas: ', categoriaFiltrada);
+
         const categoriasU = new Set(
-          respuesta.map(
-            (categoria: any) => categoria.nombreCategoria
-          )
+          categoriaFiltrada.map((categoria: any) => categoria.nombreCategoria)
         );
         this.categorias = Array.from(categoriasU) as string[];
         this.filteredCategorias = this.categorias.filter(
           (categoria) =>
-            !saborIngresado ||
-            categoria.toLowerCase().includes(saborIngresado.toLowerCase())
+            !categoriaIngresada ||
+            categoria.toLowerCase().includes(categoria.toLowerCase())
         );
 
-        // Si se busca específicamente la categoría "Servicios"
-        if (saborIngresado === "Servicios") {
-          const categoriaServicios = respuesta.find(
-            (categoria: any) => categoria.nombreCategoria === "Servicios"
-          );
+        // const categoriasU = new Set(
+        //   respuesta.map(
+        //     (categoria: any) => categoria.nombreCategoria
+        //   )
+        // );
 
-          if (categoriaServicios) {
-            const idCategoriaServicios = categoriaServicios.id_categoria;
+        // console.log("nomcate: ", categoriasU);
+
+        // this.categorias = Array.from(categoriasU) as string[];
+
+        // console.log("stringCategory: ", this.categorias);
+
+        // this.filteredCategorias = this.categorias.filter(
+        //   (categoria) =>
+        //     "!saborIngresado ||
+        //     categoria.toLowerCase().includes(saborIngresado.toLowerCase())
+        // );
+
+        // console.log("filterCategory: ", this.filteredCategorias);
+
+        // // Si se busca específicamente la categoría "Servicios"
+        // if (saborIngresado === "Servicios") {
+        //   const categoriaServicios = respuesta.find(
+        //     (categoria: any) => categoria.nombreCategoria === "Servicios" && categoria.membresia=="1"
+        //   );
+
+        //   console.log("findCategory: ", categoriaServicios);
+
+        //   if (categoriaServicios) {
+        //     const idCategoriaServicios = categoriaServicios.id_categoria;
+
+        //     console.log("idCategory: ", idCategoriaServicios);
 
             // Guardar el ID en localStorage
-            localStorage.setItem("idCategoriaSeleccionada", idCategoriaServicios.toString());
+            // localStorage.setItem("idCategoriaSeleccionada", saborIngresado.toString());
 
             // Llamar a buscarSubCategorias con el ID seleccionado
             this.buscarSubCategorias();
-          } else {
-            console.error("No se encontró la categoría 'Servicios'.");
-          }
+          // } else {
+          //   console.error("No se encontró la categoría 'Servicios'.");
+          // }
         }
 
-      },
+      // },
     });
   }
 

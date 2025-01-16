@@ -89,7 +89,13 @@ export class HorariosVistaComponent implements OnInit {
     this.file = new File([], 'defaultFileName');
 
     this.formularioSucursales = this.formulario.group({
-      nombre: ["", Validators.compose([Validators.required])],
+      nombre: [
+        "",
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/),
+        ]),
+      ],
       codigoPostal: [
         "",
         Validators.compose([
@@ -408,8 +414,14 @@ export class HorariosVistaComponent implements OnInit {
       console.log("datos: ", datos);
 
       this.http.correoEmpleado(datos).subscribe((respuesta) => {
-        if(respuesta.ok === false){
-          this.toastr.error('El correo electrónico ya existe o la clave ya existe.', 'Error!!!');
+        if (respuesta.ok === false) {
+          if (respuesta.message.includes('Correo')) {
+            this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+          } else if (respuesta.message.includes('estafeta')) {
+            this.toastr.error('La clave ya está registrada.', 'Error!!!');
+          } else {
+            this.toastr.error('Error al verificar los datos.', 'Error!!!');
+          }
         }else{
           const codigoPostal = this.formularioSucursales.get("codigoPostal")?.value;
           const estado = this.formularioSucursales.get("estado")?.value;

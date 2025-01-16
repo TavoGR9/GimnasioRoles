@@ -51,9 +51,9 @@ export class AltaColaboradoresComponent {
       puesto: ['', Validators.compose([ Validators.required])],
       email: ['', [Validators.required, Validators.pattern(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/)]],
       pass: ['', [Validators.required, Validators.minLength(8)]],
-      celular: ['', [Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)]],
+      celular: ['', [Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.maxLength(10)]],
       idGym: [this.idGym],
-      estatus:[0]
+      estatus:[1]
     });
   }
 
@@ -103,8 +103,14 @@ export class AltaColaboradoresComponent {
       console.log("datos 2: ",datos);
       this.http.correoEmpleado(datos).subscribe((respuesta) => {
         console.log(respuesta);
-        if(respuesta.ok === false){
-          this.toastr.error('El correo electrónico ya existe o la clave ya existe.', 'Error!!!');
+        if (respuesta.ok === false) {
+          if (respuesta.message.includes('Correo')) {
+            this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+          } else if (respuesta.message.includes('estafeta')) {
+            this.toastr.error('La clave ya está registrada.', 'Error!!!');
+          } else {
+            this.toastr.error('Error al verificar los datos.', 'Error!!!');
+          }
         } else{
           this.http.agregarPersonal(formularioDa).subscribe((respuesta) => {
             console.log(respuesta);

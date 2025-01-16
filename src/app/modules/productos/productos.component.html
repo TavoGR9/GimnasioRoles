@@ -8,12 +8,12 @@
    <div style="margin-top: 60px;">
       <div class="container mt-4">
          <h2 class="mb-3">LISTA DE PRODUCTOS</h2>
-         <div style="text-align: right; margin-bottom: 50px">
+         <div style="text-align: right; margin-bottom: 50px" *ngIf="isAdmin()">
             <button mat-raised-button
                   (click)="crearProducto()"
                   style="background-color: #fd9727; font-size: 16px"
                   [disabled]="!habilitarBoton">
-            AGREGAR/EDITAR
+            AGREGAR
             </button>
 
          </div>
