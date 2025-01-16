@@ -879,12 +879,7 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       this.processSalesData();
       //this.processVisitsData();
       this.processSalesDataVisita();
-
-
       this.processSalesDataQuincenal();
-
-
-      //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
 
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
@@ -1050,7 +1045,6 @@ currentMonthStr: string='';
 // Procesar los datos
 processSalesData() {
   // Obtener el mes y el año actual dinámicamente
-  console.log('hola');
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
@@ -1211,7 +1205,6 @@ processSalesDataVisita() {
    // Recalcula la visita total
    this.calculateVisitaTotal();
 }
-
 /////////FIN VISITA///////////////////
 
 updateDate(): void {
@@ -1238,8 +1231,6 @@ updateSelectedProduct2(productName: string) {
   this.processSalesDataVisita();
 
 }
-
-
 
 ////////QUINCENA/////////////////////
 viewQuincenal: [number, number] = [900, 900]; // Tamaño del gráfico
@@ -1350,18 +1341,4 @@ obtenerVentasDelDia(pedidos: any[]): any[] {
     return fechaPedido >= inicioDia && fechaPedido <= finDia;
   });
 }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

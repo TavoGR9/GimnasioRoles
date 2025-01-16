@@ -138,7 +138,7 @@ export class RegistroComponent implements OnInit {
       user:[''],
       nombre:[''],
       id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      destino:["Cliente"],
+      destino:["2"],
       direccion:[''],
       codigoPromotor:[0],
       genero:[''],

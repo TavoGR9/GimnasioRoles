@@ -44,7 +44,7 @@
 
         <button *ngIf="isAdmin()" routerLink="./plan" class="hover-orange transparent-button" [class.active]="isRouteActive('/plan')">
             <mat-icon>date_range</mat-icon>
-            Planes
+            Promociones
         </button>
 
         <button *ngIf="isAdmin() || isRecep()" routerLink="./productos" class="hover-orange transparent-button" [class.active]="isRouteActive('/productos')">
@@ -54,7 +54,7 @@
 
         <button *ngIf="isAdmin()" routerLink="./entradas" class="hover-orange transparent-button" [class.active]="isRouteActive('/entradas')">
             <mat-icon>shopping_basket</mat-icon>
-            Entradas
+            Gestión de productos
         </button>
 
         <button *ngIf="isAdmin() || isRecep()" routerLink="./verCorte" class="hover-orange transparent-button" [class.active]="isRouteActive('/verCorte')">
