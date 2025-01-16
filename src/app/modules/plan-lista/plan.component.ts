@@ -98,6 +98,7 @@ export class planComponent implements OnInit, AfterViewInit  {
   private actualizaLista(respuesta: any, usePaginator: boolean = false): void {
     if (respuesta.success === 1) {
       if (respuesta.data && Array.isArray(respuesta.data)) {
+        //console.log("DATOS ANTES DE DEL FILTRO: ",respuesta.data);
         const datosUnicos = this.filtrarDatosUnicos(respuesta.data);
         this.plan = datosUnicos;
 
@@ -139,7 +140,7 @@ export class planComponent implements OnInit, AfterViewInit  {
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.clave);
           this.auth.idGym.next(resultData.idGym);
-          console.log("ES EL ID EN LISTA: " +this.idGym);
+          //console.log("ES EL ID EN LISTA: " +this.idGym);
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);

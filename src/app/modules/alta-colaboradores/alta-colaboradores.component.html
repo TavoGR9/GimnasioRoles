@@ -17,7 +17,7 @@
                   <mat-label >Nombre completo: </mat-label>
                   <mat-form-field appearance="outline" style="width: 100%;">
                      <mat-label>Nombre</mat-label>
-                     <input type="text" matInput placeholder="Juan" autocomplete="off" formControlName="nombre" id="nombre" [errorStateMatcher]="matcher">
+                     <input type="text" matInput placeholder="Nombre del colaborador" autocomplete="off" formControlName="nombre" id="nombre" [errorStateMatcher]="matcher">
                      <mat-error *ngIf="form.get('nombre')?.hasError('pattern') && !form.get('nombre')?.hasError('required')">
                         <strong class="txt_msg">**Numeros no permitidos</strong>
                      </mat-error>
@@ -30,10 +30,13 @@
                     <mat-label>Telefono: </mat-label>
                     <mat-form-field appearance="outline" style="width: 95%;">
                        <mat-label>Telefono</mat-label>
-                       <input type="number" placeholder="2221020304" matInput autocomplete="off" formControlName="celular" id="celular" minlength="10" maxlength="10"  [errorStateMatcher]="matcher">
+                       <input matInput placeholder="Número de telefono" formControlName="celular" minlength="10" maxlength="10"  [errorStateMatcher]="matcher">
                        <mat-error *ngIf="form.get('celular')?.hasError('pattern') && !form.get('celular')?.hasError('required')">
                           <strong class="txt_msg">**Formato no válido...</strong>
                        </mat-error>
+                       <mat-error *ngIf="form.get('celular')?.hasError('minlength') && !form.get('celular')?.hasError('required')">
+                        <strong class="error-msg">**Minimo 10 carácteres</strong>
+                    </mat-error>
                        <mat-error *ngIf="form.get('celular')?.hasError('required')">
                           <strong class="txt_msg">**Campo requerido</strong>
                        </mat-error>

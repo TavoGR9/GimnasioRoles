@@ -15,6 +15,7 @@ import { combineLatest } from "rxjs";
 import { Color, ScaleType } from "@swimlane/ngx-charts";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 
+import { Router } from '@angular/router';
 interface Producto {
   id_producto: string;
   marca: string;
@@ -146,6 +147,7 @@ export class HomeComponent implements OnInit {
   año: number = 0;
   salesData: any;
   //visitsData_ any;
+  private hasReloaded = false;
 
   visitaTotal: number = 0;
   total_meses: number = 0;
@@ -165,62 +167,50 @@ export class HomeComponent implements OnInit {
     private http: ColaboradorService,
     public membresiaService: MembresiaService,
     private servicio: serviciosService,
-    private pagoService: PagoMembresiaEfectivoService
+    private pagoService: PagoMembresiaEfectivoService,
+    private router: Router
   ) {}
 
   fechaFormateada: string = "";
+
   ngOnInit(): void {
 
-    this.consultarMembresia();
-    this.updateDate();
-    this.startDateUpdater();
-    this.consultarAsistencia();
-    //this.processSalesData();
-    //console.log(this.isLoading)
-    // this.auth.comprobar();
-    // this.homeService.comprobar();
-/*
-    const today = new Date();
-    const year = today.getFullYear();
-    let month = '' + (today.getMonth() + 1);
-    let day = '' + today.getDate();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    this.fechaFormateada = [year, month, day].join('-');
-    this.año = year;
+  // Verificar si ya se ha recargado la página
+  if (!this.hasReloaded) {
+    this.hasReloaded = true; // Marcar como recargado
+    this.reloadPage();
+  } else {
+    this.loadData(); // Lógica normal de carga de datos
+  }
+}
 
 
-    this.obtenerMesActual();
-    this.obtenerMesAnterior();
 
-    this.currentUser = this.auth.getCurrentUser();
-    if (this.currentUser) {
-      this.getSSdata(JSON.stringify(this.currentUser));
+reloadPage(): void {
+  this.router.navigateByUrl('/home', { skipLocationChange: true }).then(() => {
+    // Navegar nuevamente a la ruta actual
+    this.router.navigate(['/home']).then(() => {
+      this.loadData(); // Cargar datos después de la recarga
+    });
+  });
 
-    }
+  this.inicializarDatos();
 
+  }
+
+  inicializarDatos(): void {
+    // Esperar a que idGym e idUser estén disponibles
     combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
       ([idGym, idUser]) => {
         if (idGym && idUser) {
           this.idGym = idGym;
           this.idUser = idUser;
-          this.listaTablas();
-          this.consultarAsistencia();
-          this.grafica1Visitas();
-          this.grafica2Visitas();
-          this.grafica1Quincena();
-          this.grafica2Quincena();
-          this.grafica1Mensualidad();
-          this.grafica2Mensualidad();
-          this.onSelect();
-          this.onSelectQuincena();
-          this.onSelectVisita();
+
+          // Una vez que los datos necesarios están listos, cargar el resto
+          this.cargarDatosIniciales();
         }
       }
     );
-    */
 
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
@@ -272,6 +262,32 @@ export class HomeComponent implements OnInit {
     this.consultarVisitas();
 
   }
+  
+
+  cargarDatosIniciales(): void {
+    console.log('Cargando datos iniciales...');
+
+    // Ejecutar las funciones que dependen de idGym e idUser
+    this.consultarMembresia();
+    this.updateDate();
+    this.startDateUpdater();
+    this.listaTablas();
+    this.consultarAsistencia();
+    console.log(this.isLoading)
+  }
+
+  ngAfterViewInit() {
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Limpiar estado al salir del componente
+    this.hasReloaded = false;
+    sessionStorage.removeItem('pageReloaded'); // Opción: Limpiar si es necesario
+  }
+
 
   consultarMeses(){
     //this.homeService.ConsultarPedidosMembresias(this)
@@ -446,11 +462,6 @@ export class HomeComponent implements OnInit {
     this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
 
-  ngAfterViewInit() {
-    if (this.dataSource) {
-      this.dataSource.paginator = this.paginator;
-    }
-  }
 
   cargarTarjetas(): void {
     this.homeService.consultarAsistenciasTotal(this.idGym).subscribe(
@@ -771,8 +782,8 @@ cargarTarjetas2(): void {
       this.asistencia = respuesta;
       this.dataSource = new MatTableDataSource(this.asistencia);
       this.loadData();
-    });
-  }
+    });
+  }
 
   /**Roles**/
   isAdmin(): boolean {

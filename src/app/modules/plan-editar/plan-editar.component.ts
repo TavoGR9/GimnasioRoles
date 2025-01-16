@@ -48,7 +48,7 @@ export class planEditarComponent {
     this.formulariodePlan = this.formulario.group(
       {
         id_promocion:["", Validators.required],
-        status: ["", Validators.required],
+        //status: ["", Validators.required],
         titulo: ["", Validators.required],
         fechaInicio: ["", Validators.required],
         fechaFin: ["", Validators.required],
@@ -108,7 +108,7 @@ export class planEditarComponent {
       this.formulariodePlan.patchValue({
         id_promocion: this.servicios[0].id_promocion,
         titulo: this.servicios[0].nombrePromocion,
-        status: this.servicios[0].estatus,
+        //status: this.servicios[0].estatus,
         existencias: this.servicios[0].existencias,
         precio: this.servicios[0].PrecioPaquete,
 

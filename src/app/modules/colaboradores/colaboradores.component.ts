@@ -88,7 +88,7 @@ export class ColaboradoresComponent {
     if (this.isAdmin()) {
         this.http.MostrarRecepcionistas(this.parametro).subscribe({
             next: (dataResponse) => {
-               // console.log('Datos obtenidos para Admin:', dataResponse);
+              console.log('Datos obtenidos para Admin:', dataResponse);
                 this.empleados = dataResponse;
                 //console.log('daros',  this.empleados);
 
@@ -147,21 +147,6 @@ export class ColaboradoresComponent {
       });
   }
 
-  /*OpenRestablecer(empleados: any) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '70%';
-    dialogConfig.disableClose = true; // Evita que el diálogo se cierre haciendo clic fuera de él
-    dialogConfig.data = empleados;
-    dialogConfig.disableClose = true;
-    this.dialog.open(RestablecerContraComponent, dialogConfig)
-      .afterClosed()
-      .subscribe((cerrarDialogo: Boolean) => {
-        if (cerrarDialogo) {
-          this.listaTabla();
-        } else {
-        }
-      });
-  }*/
       OpenRestablecer(empleados: any) {
         if (!empleados || !empleados.id_empleado) {
           console.error("El objeto empleados no contiene id_empleado:", empleados);
@@ -201,17 +186,9 @@ export class ColaboradoresComponent {
   }
 
   onToggle(event: Event, idEmpleado: number, estatus: number) {
-    /*
-    const colab = this.empleados.find((e: { id_empleado: number }) => e.id_empleado === idEmpleado);
-
-    if (!colab) {
-      console.error('Colaborador no encontrado');
-      return;
-    }
-*/
 const nuevoEstatus = estatus == 1 ? 0 : 1; // Alterna entre 0 y 1
-    console.log('Estatus actual:', estatus);
-    console.log('Nuevo estatus que se asignará:', nuevoEstatus);
+    //console.log('Estatus actual:', estatus);
+    //console.log('Nuevo estatus que se asignará:', nuevoEstatus);
 
     const mensaje = nuevoEstatus === 0
       ? '¿Deseas desactivar este colaborador?'
@@ -249,24 +226,4 @@ const nuevoEstatus = estatus == 1 ? 0 : 1; // Alterna entre 0 y 1
     });
 }
 
-
-
-
-  Sincronizar() {
-      this.indexedDBService.getAgregarEmpleadoData('AgregarEmpleado').then(data => {
-        if (data && data.length > 0) {
-          let maxId = -1;
-          let lastData: any;
-          data.forEach((record: any) => {
-            this.http.agregarEmpleado(record.data).subscribe({
-            });
-          });
-          this.indexedDBService.VaciarAgregarEmpleadoData();
-          this.listaTabla();
-          //observer.next(lastData); // Emitir el último dato encontrado
-        } else {
-          console.log("No hay datos");
-        }
-      });
-   }
 }
