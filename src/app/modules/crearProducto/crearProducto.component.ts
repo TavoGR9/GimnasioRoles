@@ -373,7 +373,7 @@ export class CrearProductoComponent implements OnInit {
                                       this.spinner.hide();
                                       this.dialog
                                         .open(MensajeEmergentesComponent, {
-                                          data: `Producto agregado exitosamente`,
+                                          data: `Producto agregado exitosamente, ingresale un precio`,
                                         })
                                         .afterClosed()
                                         .subscribe((cerrarDialogo: Boolean) => {
@@ -455,7 +455,7 @@ export class CrearProductoComponent implements OnInit {
                                           this.spinner.hide();
                                           this.dialog
                                             .open(MensajeEmergentesComponent, {
-                                              data: `Producto agregado exitosamente`,
+                                              data: `Producto agregado exitosamente, ingresale un precio`,
                                             })
                                             .afterClosed()
                                             .subscribe(
@@ -554,7 +554,7 @@ export class CrearProductoComponent implements OnInit {
                                           this.spinner.hide();
                                           this.dialog
                                             .open(MensajeEmergentesComponent, {
-                                              data: `Producto agregado exitosamente`,
+                                              data: `Producto agregado exitosamente, ingresale un precio`,
                                             })
                                             .afterClosed()
                                             .subscribe(
@@ -643,7 +643,7 @@ export class CrearProductoComponent implements OnInit {
                                                 .open(
                                                   MensajeEmergentesComponent,
                                                   {
-                                                    data: `Producto agregado exitosamente`,
+                                                    data: `Producto agregado exitosamente, ingresale un precio`,
                                                   }
                                                 )
                                                 .afterClosed()
@@ -757,7 +757,7 @@ export class CrearProductoComponent implements OnInit {
                                           this.spinner.hide();
                                           this.dialog
                                             .open(MensajeEmergentesComponent, {
-                                              data: `Producto agregado exitosamente`,
+                                              data: `Producto agregado exitosamente, ingresale un precio`,
                                             })
                                             .afterClosed()
                                             .subscribe(
@@ -848,7 +848,7 @@ export class CrearProductoComponent implements OnInit {
                                                 .open(
                                                   MensajeEmergentesComponent,
                                                   {
-                                                    data: `Producto agregado exitosamente`,
+                                                    data: `Producto agregado exitosamente, ingresale un precio`,
                                                   }
                                                 )
                                                 .afterClosed()
@@ -952,7 +952,7 @@ export class CrearProductoComponent implements OnInit {
                                                 .open(
                                                   MensajeEmergentesComponent,
                                                   {
-                                                    data: `Producto agregado exitosamente`,
+                                                    data: `Producto agregado exitosamente, ingresale un precio`,
                                                   }
                                                 )
                                                 .afterClosed()
@@ -1046,7 +1046,7 @@ export class CrearProductoComponent implements OnInit {
                                                     .open(
                                                       MensajeEmergentesComponent,
                                                       {
-                                                        data: `Producto agregado exitosamente`,
+                                                        data: `Producto agregado exitosamente, ingresale un precio`,
                                                       }
                                                     )
                                                     .afterClosed()

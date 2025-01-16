@@ -141,6 +141,14 @@ export class HomeComponent implements OnInit {
   salesData: any;
   //visitsData_ any;
 
+  visitaTotal: number = 0;
+  total_meses: number = 0;
+  totalMesesCantidad: number = 0;
+  total_quincena: number = 0;
+  totalQuincenaCantidad: number = 0;
+  total_visita: number = 0;
+  totalVisitaCantidad: number = 0;
+
   constructor(
     private homeService: HomeService,
     private sanitizer: DomSanitizer,
@@ -244,8 +252,170 @@ export class HomeComponent implements OnInit {
     //   this.loadData();
     // });
 
+    this.calculateVisitaTotal();
+    this.consultarMeses();
+    this.consultarQuincenas();
+    this.consultarVisitas();
 
   }
+
+  consultarMeses(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS TOTAL',response.data)
+
+          if (pedidos) {
+            // console.log(res.Productos);
+
+            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null );
+            // Calculamos la suma de total_cantidad
+             this.totalMesesCantidad = mensualidades.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('MENSUALIDADES: ', mensualidades);
+            this.total_meses = mensualidades.length;
+            console.log('TOTAL MENSUALIDADES: ', this.total_meses);
+            console.log('TOTAL CANTIDAD DE MENSUALIDADES: ', this.totalMesesCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresias para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
+        }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
+      }
+    );
+    }
+
+  consultarQuincenas(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS QUINCENAS TOTAL',response.data)
+
+          if (pedidos) {
+            // console.log(res.Productos);
+
+            const quincenas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Quincenal" && membresia.id_promocion == null );
+            // Calculamos la suma de total_cantidad
+             this.totalQuincenaCantidad = quincenas.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('QUINCENAS: ', quincenas);
+            this.total_quincena = quincenas.length;
+            console.log('TOTAL QUINCENAS: ', this.total_quincena);
+            console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalQuincenaCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresia para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
+        }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
+      }
+    );
+    }
+
+
+  consultarVisitas(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS VISITAS TOTAL',response.data)
+
+          if (pedidos) {
+            // console.log(res.Productos);
+
+            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null );
+            // Calculamos la suma de total_cantidad
+             this.totalVisitaCantidad = visitas.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('QUINCENAS: ', visitas);
+            this.total_visita = visitas.length;
+            console.log('TOTAL QUINCENAS: ', this.total_visita);
+            console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalVisitaCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresia para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
+        }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
+      }
+    );
+    }
+
+  calculateVisitaTotal(): void {
+    // // Verifica si salesChartDataVisita tiene contenido y estructura válida
+    // if (this.salesChartDataVisita.length > 0) {
+    //   console.log('Datos para calcular visita total:', this.salesChartDataVisita);
+
+    //   // Recorre cada serie y suma los valores
+    //   this.visitaTotal = this.salesChartDataVisita.reduce((total, dataset) => {
+    //     return total + dataset.series.reduce((sum, data) => sum + data.value, 0);
+    //   }, 0);
+
+    //   console.log('Visita total calculada:', this.visitaTotal);
+    // } else {
+    //   console.warn('salesChartDataVisita está vacío o no tiene la estructura esperada');
+    //   this.visitaTotal = 0;
+    // }
+
+    this.visitaTotal = (this.salesChartDataVisita.length * 70)
+  }
+
+
+
 
   /**LOCAL */
   getSSdata(data: any) {
@@ -737,6 +907,9 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   clientes.forEach(cliente => {
     const idPedido = cliente.id_pedido;
 
+    console.log('AGRUPADOS: ', idPedido);
+
+
     if (!agrupadosPorPedido[idPedido]) {
       // Si no existe este `id_pedido` en el objeto agrupador, lo inicializamos.
       agrupadosPorPedido[idPedido] = {
@@ -746,9 +919,13 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
         id_promocion: cliente.id_promocion,
         nombrePromocion: cliente.nombrePromocion,
         membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-        total:cliente.total,
+        total_cantidad:cliente.total_cantidad,
         productos: [] // Inicializamos un array vacío para los productos.
       };
+
+      console.log('AQUI DESPUES', agrupadosPorPedido[idPedido]);
+
+
     }
 
     // Agregamos la información del producto al array `productos` correspondiente.
@@ -1027,6 +1204,12 @@ processSalesDataVisita() {
       series: previousMonthSalesVisita,
     },
   ];
+
+  console.log('VALOR DEL DATO DE VISITAS', this.salesChartDataVisita);
+  console.log('VALOR DE LONGITUD DE VISITAS', this.salesChartDataVisita.length);
+
+   // Recalcula la visita total
+   this.calculateVisitaTotal();
 }
 
 /////////FIN VISITA///////////////////
