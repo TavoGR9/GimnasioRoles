@@ -39,6 +39,7 @@ interface Cliente {
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.css"],
 })
+
 export class HomeComponent implements OnInit {
   currentUser: string = "";
   currentDate: string = '';
@@ -46,6 +47,7 @@ export class HomeComponent implements OnInit {
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
   idGym: number = 0;
+  parametro: any;
   idUser: number = 0;
   fechaActual: Date = new Date();
   totalVentas: number = 0;
@@ -70,6 +72,8 @@ export class HomeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
   displayedColumns: string[] = ["title", "details", "price", "rol"];
+  //dataSource = new MatTableDataSource(); // Inicialización vacía
+
 
   dataSourceProductos: any;
   displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
@@ -160,8 +164,9 @@ export class HomeComponent implements OnInit {
     this.consultarMembresia();
     this.updateDate();
     this.startDateUpdater();
+    this.consultarAsistencia();
     //this.processSalesData();
-    console.log(this.isLoading)
+    //console.log(this.isLoading)
     // this.auth.comprobar();
     // this.homeService.comprobar();
 /*
@@ -207,15 +212,19 @@ export class HomeComponent implements OnInit {
     );
     */
 
-    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-      ([idGym, idUser]) => {
-        if (idGym && idUser) {
-          this.idGym = idGym;
-          this.idUser = idUser;
-          this.listaTablas();
-        }
-      }
-    );
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      // Aquí puedes ver que el valor de idGym se está asignando y se llama a listaTabla
+      this.consultarAsistencia();
+    
+      const datos = {
+        idGym: this.auth.idGym.getValue()
+      };
+    
+      const jsonData: string = JSON.stringify(datos);
+      this.parametro = jsonData;
+    });
+    
 
 
     // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
@@ -245,6 +254,11 @@ export class HomeComponent implements OnInit {
     // });
 
 
+  }
+  ngAfterViewInit() {
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   /**LOCAL */
@@ -407,7 +421,7 @@ export class HomeComponent implements OnInit {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCard21 = [respuesta];
         } else {
-          console.error("La respuesta no es un objeto válido:", respuesta);
+          //console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
@@ -422,7 +436,7 @@ export class HomeComponent implements OnInit {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCardVisita = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
         } else {
-          console.error("La respuesta no es un objeto válido:", respuesta);
+          //console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
@@ -458,7 +472,7 @@ export class HomeComponent implements OnInit {
       this.fechaMensualidad = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFecha(this.fechaMensualidad);
     } else {
-      console.warn("Nombre de mes no es una cadena válida:", event.series);
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
   }
 
@@ -476,7 +490,7 @@ export class HomeComponent implements OnInit {
       this.fechaQuincena = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFechaQuincena(this.fechaQuincena);
     } else {
-      console.warn("Nombre de mes no es una cadena válida:", event.series);
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
   }
 
@@ -508,7 +522,7 @@ export class HomeComponent implements OnInit {
 
     this.homeService.getAnalyticsData(this.idGym).subscribe(
       (data) => {
-        console.log('Datos recibidos en Angular:', data); // Verifica si hay errores o estructura inesperada
+        //console.log('Datos recibidos en Angular:', data); // Verifica si hay errores o estructura inesperada
         this.masVendidos = data;
         this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
         this.loadData();
@@ -523,6 +537,8 @@ export class HomeComponent implements OnInit {
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
     // });
+    console.log('Entraremos a asistencias');
+    
   }
 
   /**ASISTENCIA */
@@ -534,6 +550,10 @@ export class HomeComponent implements OnInit {
       this.loadData();
     });
   }
+
+
+  
+  
 
   /**Roles**/
   isAdmin(): boolean {
@@ -689,19 +709,19 @@ consultarMembresia(){
 //this.homeService.ConsultarPedidosMembresias(this)
 this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   (response) => {
-    console.log(this.auth.idGym.getValue(),'id')
+    //console.log(this.auth.idGym.getValue(),'id')
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
-      console.log('API',response.data)
+      //console.log('API',response.data)
 
 
       const pedidosAgrupados = this.agruparPorPedido(pedidos);
-      console.log('Agrupados Por pedido',pedidosAgrupados);
+      //console.log('Agrupados Por pedido',pedidosAgrupados);
       const ventasDiaGym =this.obtenerVentasDelDia(pedidosAgrupados);
-      console.log('ventas del dia',ventasDiaGym)
+      //console.log('ventas del dia',ventasDiaGym)
 
       const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
-      console.log('Conteo por dias',pedidosConteoDia);
+      //console.log('Conteo por dias',pedidosConteoDia);
 
 
 
@@ -790,6 +810,7 @@ contarPorDia(clientes: {
     const [dia, mes, año] = fechaLocal.split('/');
     const fecha = `${año}-${mes}-${dia}`;
 
+
     if (!conteos[fecha]) {
       conteos[fecha] = {
         conteoProductos: {},
@@ -822,10 +843,12 @@ contarPorDia(clientes: {
           };
         }
 
+
         conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
       });
     } else {
       if (!conteos[fecha].conteoPromociones[cliente.id_promocion]) {
+
         conteos[fecha].conteoPromociones[cliente.id_promocion] = {
           nombrePromocion: cliente.nombrePromocion,
           cantidad: 0
@@ -835,6 +858,7 @@ contarPorDia(clientes: {
       conteos[fecha].conteoPromociones[cliente.id_promocion].cantidad += 1;
     }
   });
+
 
   return conteos;
 }
@@ -1036,7 +1060,7 @@ updateDate(): void {
   const day = today.getDate().toString().padStart(2, '0');
 
   this.currentDate = `${year}-${month}-${day}`;
-  console.log('Fecha actualizada:', this.currentDate);
+  //console.log('Fecha actualizada:', this.currentDate);
 }
 
 startDateUpdater(): void {
@@ -1082,7 +1106,6 @@ selectedProductQuincenal: string = 'Quincenal'; // Valor inicial
 // Procesar los datos
 processSalesDataQuincenal() {
   // Obtener el mes y el año actual dinámicamente
-  console.log('hola');
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'

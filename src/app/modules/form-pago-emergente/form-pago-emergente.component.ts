@@ -239,6 +239,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                 p_idProbob: this.idProbob, // ID del producto o servicio si lo tienes
                 p_claveUser: this.data.idCliente, // Clave del usuario
                 p_idPromo:  this.id_promocion, // El ID de la promoción si lo tienes
+                p_idEmpleado:this.auth.idUser.getValue(),
               };
 
 
