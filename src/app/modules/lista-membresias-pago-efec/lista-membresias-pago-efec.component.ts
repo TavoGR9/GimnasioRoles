@@ -596,8 +596,10 @@ agruparPorPedido(clientes: any[]): any[] {
   
           const respuestaApi = response.data;
 
+         // this.Clientes=response.data;
+
 // Validar que respuestaApi es un array antes de aplicar filter
-if (!this.isAdmin()) {
+if (this.isAdmin()) {
   this.Clientes = respuestaApi.filter(
     (cliente: any) => 
         (cliente.rol && cliente.rol === 'Cliente') || cliente.id_rol === 4

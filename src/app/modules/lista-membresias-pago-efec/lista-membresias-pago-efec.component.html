@@ -98,10 +98,15 @@
                 </button>
 							</ng-container>
 							<ng-container *ngIf="column === 'Info Cliente'">
-								<button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirInfoCliente(prod)" color="{{ prod.fotoUrl ? 'primary' : 'warn' }}">
-                  <mat-icon class="icon-size">info</mat-icon>
-                </button>
-							</ng-container>
+								<button 
+								  *ngIf="isAdmin() || (isRecep() && (prod.id_rol === 4 || prod.rol === 'Cliente'))"
+								  mat-icon-button 
+								  [disabled]="!habilitarBoton" 
+								  (click)="abrirInfoCliente(prod)" 
+								  color="{{ prod.fotoUrl ? 'primary' : 'warn' }}">
+								  <mat-icon class="icon-size">info</mat-icon>
+								</button>
+							  </ng-container>
 							<ng-container *ngIf="column === 'Huella'">
 								<div *ngIf="prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0'; else noHuella">
 									<label class="estatus-activo">
