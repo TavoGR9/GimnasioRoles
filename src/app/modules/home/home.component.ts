@@ -942,13 +942,35 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   return Object.values(agrupadosPorPedido);
 }
 
-contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } {
+
+
+contarPorDia(clientes: { 
+  id_pedido: string; 
+  fecha_hora_pedido: string; 
+  id_bodega: string; 
+  id_promocion: string | null; 
+  nombrePromocion: string | null; 
+  membresia: string; 
+  productos: { 
+    id_producto: string; 
+    marca: string; 
+    nombreProducto: string; 
+    idBodPro: string; 
+    nombreCategoria: string; 
+  }[]; 
+}[]): { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } {
   const conteos: { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } = {};
 
   clientes.forEach(cliente => {
-    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0]; // Extraemos solo la fecha (YYYY-MM-DD)
+    const fechaLocal = new Date(cliente.fecha_hora_pedido).toLocaleDateString('es-MX', {
+      timeZone: 'America/Mexico_City',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
 
-    console.log(`Procesando cliente con fecha: ${fecha}`, cliente);
+    const [dia, mes, año] = fechaLocal.split('/');
+    const fecha = `${año}-${mes}-${dia}`;
 
     if (!conteos[fecha]) {
       conteos[fecha] = {
@@ -958,50 +980,34 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       };
     }
 
-    // **Conteo de productos**
-    cliente.productos.forEach((producto, index) => {
-      const idProducto = producto.id_producto || `temp_${index}`; // ID temporal si falta
-      const nombreProducto = producto.nombreProducto || 'Producto desconocido';
+    if (cliente.id_promocion === null) {
+      cliente.productos.forEach((producto: { id_producto: string; marca: string; nombreProducto: string; idBodPro: string; nombreCategoria: string }, index: number) => {
+        const idProducto = producto.id_producto || `temp_${index}`;
+        const nombreProducto = producto.nombreProducto || 'Producto desconocido';
 
-      console.log(`Procesando producto:`, { idProducto, nombreProducto, fecha });
+        if (!conteos[fecha].conteoProductos[idProducto]) {
+          conteos[fecha].conteoProductos[idProducto] = {
+            nombreProducto: nombreProducto,
+            cantidad: 0
+          };
+        }
 
-      if (!conteos[fecha].conteoProductos[idProducto]) {
-        console.log(`Producto nuevo encontrado, inicializando conteo:`, { idProducto, nombreProducto });
-        conteos[fecha].conteoProductos[idProducto] = {
-          nombreProducto: nombreProducto,
-          cantidad: 0
-        };
-      }
+        conteos[fecha].conteoProductos[idProducto].cantidad += 1;
 
-      conteos[fecha].conteoProductos[idProducto].cantidad += 1;
-      console.log(`Producto actualizado:`, conteos[fecha].conteoProductos[idProducto]);
-    });
+        const idBodPro = producto.idBodPro || `temp_bodega_${index}`;
+        const marcaYProducto = `${producto.marca} - ${producto.nombreProducto}`;
 
-    // **Conteo de bodegas**
-    cliente.productos.forEach((producto, index) => {
-      const idBodPro = producto.idBodPro || `temp_bodega_${index}`;
-      const marcaYProducto = `${producto.marca} - ${producto.nombreProducto}`;
+        if (!conteos[fecha].conteoBodegas[idBodPro]) {
+          conteos[fecha].conteoBodegas[idBodPro] = {
+            marcaYProducto: marcaYProducto,
+            cantidad: 0
+          };
+        }
 
-      console.log(`Procesando bodega:`, { idBodPro, marcaYProducto, fecha });
-
-      if (!conteos[fecha].conteoBodegas[idBodPro]) {
-        console.log(`Bodega nueva encontrada, inicializando conteo:`, { idBodPro, marcaYProducto });
-        conteos[fecha].conteoBodegas[idBodPro] = {
-          marcaYProducto: marcaYProducto,
-          cantidad: 0
-        };
-      }
-
-      conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
-      console.log(`Bodega actualizada:`, conteos[fecha].conteoBodegas[idBodPro]);
-    });
-
-    // **Conteo de promociones**
-    if (cliente.id_promocion && cliente.nombrePromocion) {
-      console.log(`Procesando promoción:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion, fecha });
-
+        conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
+      });
+    } else {
       if (!conteos[fecha].conteoPromociones[cliente.id_promocion]) {
-        console.log(`Promoción nueva encontrada, inicializando conteo:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion });
         conteos[fecha].conteoPromociones[cliente.id_promocion] = {
           nombrePromocion: cliente.nombrePromocion,
           cantidad: 0
@@ -1009,13 +1015,12 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       }
 
       conteos[fecha].conteoPromociones[cliente.id_promocion].cantidad += 1;
-      console.log(`Promoción actualizada:`, conteos[fecha].conteoPromociones[cliente.id_promocion]);
     }
   });
 
-  console.log('Conteos finales:', conteos);
   return conteos;
 }
+
 
 
 
