@@ -647,13 +647,6 @@ console.log('else')
 
 
 
-
-
-
-
-
-
-
           // Agrupar pedidos únicos por usuario y evitar duplicados por id_pedido
           const pedidosPorUsuario: Record<string, any[]> = pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
             const identificador = item.clave; // Usamos "clave" para identificar al usuario.
