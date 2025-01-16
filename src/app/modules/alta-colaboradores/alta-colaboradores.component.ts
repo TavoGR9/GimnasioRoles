@@ -53,7 +53,7 @@ export class AltaColaboradoresComponent {
       pass: ['', [Validators.required, Validators.minLength(8)]],
       celular: ['', [Validators.required, Validators.pattern(/^(0|[1-9][0-9]*)$/), Validators.minLength(10)]],
       idGym: [this.idGym],
-      estatus:[0]
+      estatus:[1]
     });
   }
 

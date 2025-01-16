@@ -72,6 +72,7 @@ export class HomeComponent implements OnInit {
   displayedColumns: string[] = ["title", "details", "price", "rol"];
 
   dataSourceProductos: any;
+  parametro: any;
   displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
   masVendidos: any;
 
@@ -215,15 +216,30 @@ export class HomeComponent implements OnInit {
     );
     */
 
-    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-      ([idGym, idUser]) => {
-        if (idGym && idUser) {
-          this.idGym = idGym;
-          this.idUser = idUser;
-          this.listaTablas();
-        }
-      }
-    );
+    this.auth.idGym.subscribe((data) => {
+      this.idGym = data;
+      // Aquí puedes ver que el valor de idGym se está asignando y se llama a listaTabla
+      this.consultarAsistencia();
+      this.listaTablas();
+
+
+      const datos = {
+        idGym: this.auth.idGym.getValue()
+      };
+
+      const jsonData: string = JSON.stringify(datos);
+      this.parametro = jsonData;
+    });
+
+    // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
+    //   ([idGym, idUser]) => {
+    //     if (idGym && idUser) {
+    //       this.idGym = idGym;
+    //       this.idUser = idUser;
+    //       this.listaTablas();
+    //     }
+    //   }
+    // );
 
 
     // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
@@ -720,8 +736,8 @@ export class HomeComponent implements OnInit {
       this.asistencia = respuesta;
       this.dataSource = new MatTableDataSource(this.asistencia);
       this.loadData();
-    });
-  }
+    });
+  }
 
   /**Roles**/
   isAdmin(): boolean {

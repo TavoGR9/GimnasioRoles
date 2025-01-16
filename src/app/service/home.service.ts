@@ -168,10 +168,11 @@ export class HomeService {
     });
   }
 
-  consultarAsistencias(idGim:any){
-    const data ={ idGim: idGim }
-    return this.clienteHttp.post(this.API+"ConsultasHome.php?consultarAsistenciasFechaActual",data);
-  }
+  consultarAsistencias(idGim: any) {
+    const data = { idGim: idGim }; // Formato esperado por el backend
+    console.log("Datos enviados al backend1:", data);
+    return this.clienteHttp.post(this.API + "ObtenerAsistenciasFechaActual.php", data);
+  }
 
   graficas(idGim:any){
     return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1="+idGim);
