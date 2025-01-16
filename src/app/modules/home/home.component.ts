@@ -61,6 +61,8 @@ export class HomeComponent implements OnInit {
 
   homeCard: any;
   homeCard2: any;
+  homeCard3: any[]=[];
+  homeCard4: any[]=[];
   homeCardVisita: any[] = [];
   homeCardQuincena: any[] = [];
 
@@ -216,6 +218,9 @@ export class HomeComponent implements OnInit {
       this.idGym = data;
       // Aquí puedes ver que el valor de idGym se está asignando y se llama a listaTabla
       this.consultarAsistencia();
+      this.listaTablas();
+      this.cargarTarjetas();
+      this.cargarTarjetas2();
     
       const datos = {
         idGym: this.auth.idGym.getValue()
@@ -255,12 +260,46 @@ export class HomeComponent implements OnInit {
 
 
   }
+
   ngAfterViewInit() {
     if (this.dataSource) {
       this.dataSource.paginator = this.paginator;
     }
   }
 
+  cargarTarjetas(): void {
+    this.homeService.consultarAsistenciasTotal(this.idGym).subscribe(
+      (respuesta: any) => {
+        if (!Array.isArray(respuesta)) {
+          this.homeCard3 = [respuesta]; // Convierte el objeto en un array
+        } else {
+          this.homeCard3 = respuesta; // Si ya es un array, úsalo tal cual
+        }
+        console.log('Tarjetas cargadas:', this.homeCard3);
+      },
+      (error) => {
+        console.error('Error al cargar las tarjetas:', error);
+      }
+    );
+}
+
+cargarTarjetas2(): void {
+  this.homeService.consultarAsistenciasPersonal(this.idGym).subscribe(
+    (respuesta: any) => {
+      if (!Array.isArray(respuesta)) {
+        this.homeCard4 = [respuesta]; // Convierte el objeto en un array
+      } else {
+        this.homeCard4 = respuesta; // Si ya es un array, úsalo tal cual
+      }
+      console.log('Tarjetas cargadas:', this.homeCard4);
+    },
+    (error) => {
+      console.error('Error al cargar las tarjetas:', error);
+    }
+  );
+}
+
+  
   /**LOCAL */
   getSSdata(data: any) {
     this.auth.dataUser(data).subscribe({
@@ -536,10 +575,9 @@ export class HomeComponent implements OnInit {
     //   this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
-    // });
-    console.log('Entraremos a asistencias');
-    
+    // });    
   }
+
 
   /**ASISTENCIA */
 
@@ -550,10 +588,6 @@ export class HomeComponent implements OnInit {
       this.loadData();
     });
   }
-
-
-  
-  
 
   /**Roles**/
   isAdmin(): boolean {
