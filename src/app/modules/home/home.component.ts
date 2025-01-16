@@ -48,7 +48,6 @@ export class HomeComponent implements OnInit {
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
   idGym: number = 0;
-  parametro: any;
   idUser: number = 0;
   fechaActual: Date = new Date();
   totalVentas: number = 0;
@@ -62,6 +61,8 @@ export class HomeComponent implements OnInit {
 
   homeCard: any;
   homeCard2: any;
+  homeCard3: any[]=[];
+  homeCard4: any[]=[];
   homeCardVisita: any[] = [];
   homeCardQuincena: any[] = [];
 
@@ -77,6 +78,7 @@ export class HomeComponent implements OnInit {
 
 
   dataSourceProductos: any;
+  parametro: any;
   displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
   masVendidos: any;
 
@@ -409,7 +411,44 @@ reloadPage(): void {
     this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
 
+  /*
+  ngAfterViewInit() {
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+*/
+  cargarTarjetas(): void {
+    this.homeService.consultarAsistenciasTotal(this.idGym).subscribe(
+      (respuesta: any) => {
+        if (!Array.isArray(respuesta)) {
+          this.homeCard3 = [respuesta]; // Convierte el objeto en un array
+        } else {
+          this.homeCard3 = respuesta; // Si ya es un array, úsalo tal cual
+        }
+        console.log('Tarjetas cargadas:', this.homeCard3);
+      },
+      (error) => {
+        console.error('Error al cargar las tarjetas:', error);
+      }
+    );
+}
 
+cargarTarjetas2(): void {
+  this.homeService.consultarAsistenciasPersonal(this.idGym).subscribe(
+    (respuesta: any) => {
+      if (!Array.isArray(respuesta)) {
+        this.homeCard4 = [respuesta]; // Convierte el objeto en un array
+      } else {
+        this.homeCard4 = respuesta; // Si ya es un array, úsalo tal cual
+      }
+      console.log('Tarjetas cargadas:', this.homeCard4);
+    },
+    (error) => {
+      console.error('Error al cargar las tarjetas:', error);
+    }
+  );
+}
 
 
   /**LOCAL */
@@ -692,6 +731,7 @@ reloadPage(): void {
 
   }
 
+
   /**ASISTENCIA */
 
   consultarAsistencia() {
@@ -701,10 +741,6 @@ reloadPage(): void {
       this.loadData();
     });
   }
-
-
-
-
 
   /**Roles**/
   isAdmin(): boolean {

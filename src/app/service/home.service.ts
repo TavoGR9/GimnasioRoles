@@ -49,6 +49,35 @@ export class HomeService {
     )
   }
 
+  consultarAsistenciasTotal(idGym: number): Observable<any> {
+    const data = { idGim: idGym }; // Formato esperado por el backend
+    return this.clienteHttp.post(this.API + "ObtenerAsistenciasFechaActualTotal.php", data).pipe(
+      tap((dataResponse) => {
+        console.log('Datos recibidos del backend:', dataResponse);
+        this.saveDataToIndexedDB(dataResponse); // Si estás manejando un IndexedDB
+      }),
+      catchError((error) => {
+        console.error('Error en la solicitud:', error);
+        return this.getServiceDatos(); // Método para manejar errores
+      })
+    );
+}
+
+consultarAsistenciasPersonal(idGym: number): Observable<any> {
+  const data = { idGim: idGym }; // Formato esperado por el backend
+  return this.clienteHttp.post(this.API + "ObtenerAsistenciasRol.php", data).pipe(
+    tap((dataResponse) => {
+      console.log('Datos recibidos del backend:', dataResponse);
+      this.saveDataToIndexedDB(dataResponse); // Si estás manejando un IndexedDB
+    }),
+    catchError((error) => {
+      console.error('Error en la solicitud:', error);
+      return this.getServiceDatos(); // Método para manejar errores
+    })
+  );
+}
+
+
   consultarHome2(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHomeDos="+id);
       /*tap(dataResponse => {
@@ -171,9 +200,8 @@ export class HomeService {
   consultarAsistencias(idGim: any) {
     const data = { idGim: idGim }; // Formato esperado por el backend
     console.log("Datos enviados al backend1:", data);
-    return this.clienteHttp.post(this.API + "ObtenerAsistenciasFechaActual.php", data);
-  }
-  
+    return this.clienteHttp.post(this.API + "ObtenerAsistenciasFechaActual.php", data);
+  }
 
   graficas(idGim:any){
     return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1="+idGim);

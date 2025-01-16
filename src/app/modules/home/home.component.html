@@ -28,11 +28,51 @@
                      </mat-card-content>
                   </mat-card>
                </div>
+               <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard3">
+                  <mat-card class="orange-card">
+                     <mat-card-header>
+                        <mat-card-title>{{card.titulo}}</mat-card-title>
+                     </mat-card-header>
+                     <mat-card-content>
+                        <!--col-8: Esta clase hace que la columna ocupe 8 de las 12 columnas disponibles en todos los tamaños de pantalla, desde el tamaño más pequeño hasta el más grande.-->
+                        <br>
+                        <div class="row">
+                           <div class="col-4 d-flex align-items-center justify-content-center">
+                              <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icnono" class="img-fluid card-image">
+                           </div>
+                           <div class="col-8">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 25px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
+                           </div>
+                        </div>
+                     </mat-card-content>
+                  </mat-card>
+               </div>
+               <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard4">
+                  <mat-card class="orange-card">
+                     <mat-card-header>
+                        <mat-card-title>{{card.titulo}}</mat-card-title>
+                     </mat-card-header>
+                     <mat-card-content>
+                        <!--col-8: Esta clase hace que la columna ocupe 8 de las 12 columnas disponibles en todos los tamaños de pantalla, desde el tamaño más pequeño hasta el más grande.-->
+                        <br>
+                        <div class="row">
+                           <div class="col-4 d-flex align-items-center justify-content-center">
+                              <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icnono" class="img-fluid card-image">
+                           </div>
+                           <div class="col-8">
+                              <br>
+                              <p style="color: rgb(0, 0, 0); font-size: 25px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
+                           </div>
+                        </div>
+                     </mat-card-content>
+                  </mat-card>
+               </div>
             </div>
          </mat-card-content>
       </mat-card>
 
-      
+
 
 <!--GRÁFICAS A PARTIR DE AQUÍ-->
 <div style="margin-top: 60px;">
