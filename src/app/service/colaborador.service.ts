@@ -106,10 +106,21 @@ export class ColaboradorService {
 
 
 
-    correoEmpleado(email: string): Observable<any> {
-      console.log(email);
-        return this.clienteHttp.post<any>(this.API + "empleado.php?insertar", email);
+    correoEmpleado(datos: any): Observable<any> {
+      console.log(datos);
+        return this.clienteHttp.post<any>(this.API + "empleado.php?comprobar", datos).pipe(
+          tap(dataResponse => {
+          console.log(dataResponse)
+          }),
+          catchError(error => {
+            console.error('Error en la solicitud HTTP:', error);
+            return of(error);
+          })
+        );
     }
+
+
+
 
     private saveDataToIndexedDBC(data: any) {
         // Guarda los datos en IndexedDB

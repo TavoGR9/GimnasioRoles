@@ -334,7 +334,7 @@ export class CrearProductoComponent implements OnInit {
                       if (subCategoriaExistente.success == 1) {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
-                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                           .subscribe((marcaExistente) => {
                             console.log('MARCA EXISTENTE: ', marcaExistente);
 
@@ -510,7 +510,7 @@ export class CrearProductoComponent implements OnInit {
 
                             ///********** Verifica si la marca ya existe */
                             this.categoriaService
-                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
                                 console.log('Marca existente: ', marcaExistente);
 
@@ -712,7 +712,7 @@ export class CrearProductoComponent implements OnInit {
 
                           if (subCategoriaExistente.success == 1) {
                             this.categoriaService
-                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
                                 console.log('marca: ', marcaExistente);
 
@@ -906,7 +906,7 @@ export class CrearProductoComponent implements OnInit {
 
                                 ///********** Verifica si la marca ya existe */
                                 this.categoriaService
-                                  .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                                  .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                                   .subscribe((marcaExistente) => {
                                     console.log('MARCA EXISTENTE: ', marcaExistente);
 
@@ -1116,7 +1116,7 @@ export class CrearProductoComponent implements OnInit {
                       if (subCategoriaExistente.success == 1) {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
-                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               const formularioP = {
@@ -1273,7 +1273,7 @@ export class CrearProductoComponent implements OnInit {
                           .subscribe((respuestaSub) => {
                             ///********** Verifica si la marca ya existe */
                             this.categoriaService
-                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
                                 if (marcaExistente.success == 1) {
                                   this.spinner.hide();
@@ -1450,7 +1450,7 @@ export class CrearProductoComponent implements OnInit {
                         .subscribe((subCategoriaExistente) => {
                           if (subCategoriaExistente.success == 1) {
                             this.categoriaService
-                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
                                 if (marcaExistente.success == 1) {
                                   //agregar producto
@@ -1624,7 +1624,7 @@ export class CrearProductoComponent implements OnInit {
                               .subscribe((respuestaSub) => {
                                 ///********** Verifica si la marca ya existe */
                                 this.categoriaService
-                                  .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                                  .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                                   .subscribe((marcaExistente) => {
                                     if (marcaExistente.success == 1) {
                                       const formularioP = {
@@ -1830,7 +1830,7 @@ export class CrearProductoComponent implements OnInit {
                   if (subCategoriaExistente.success == 1) {
                     ///********** Verifica si la marca ya existe */
                     this.categoriaService
-                      .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                      .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                       .subscribe((marcaExistente) => {
                         if (marcaExistente.success == 1) {
                           const formularioP = {
@@ -1973,7 +1973,7 @@ export class CrearProductoComponent implements OnInit {
                       .subscribe((respuestaSub) => {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
-                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               this.spinner.hide();
@@ -2133,7 +2133,7 @@ export class CrearProductoComponent implements OnInit {
                     .subscribe((subCategoriaExistente) => {
                       if (subCategoriaExistente.success == 1) {
                         this.categoriaService
-                          .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                          .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                           .subscribe((marcaExistente) => {
                             if (marcaExistente.success == 1) {
                               //agregar producto
@@ -2286,7 +2286,7 @@ export class CrearProductoComponent implements OnInit {
                           .subscribe((respuestaSub) => {
                             ///********** Verifica si la marca ya existe */
                             this.categoriaService
-                              .obtenerMarcaPorNombre2(this.form.value.marcaP)
+                              .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
                                 if (marcaExistente.success == 1) {
                                   const formularioP = {

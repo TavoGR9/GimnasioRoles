@@ -15,6 +15,7 @@ import { combineLatest } from "rxjs";
 import { Color, ScaleType } from "@swimlane/ngx-charts";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 
+import { Router } from '@angular/router';
 interface Producto {
   id_producto: string;
   marca: string;
@@ -140,6 +141,7 @@ export class HomeComponent implements OnInit {
   año: number = 0;
   salesData: any;
   //visitsData_ any;
+  private hasReloaded = false;
 
   constructor(
     private homeService: HomeService,
@@ -151,101 +153,68 @@ export class HomeComponent implements OnInit {
     private http: ColaboradorService,
     public membresiaService: MembresiaService,
     private servicio: serviciosService,
-    private pagoService: PagoMembresiaEfectivoService
+    private pagoService: PagoMembresiaEfectivoService,
+    private router: Router
   ) {}
 
   fechaFormateada: string = "";
+
   ngOnInit(): void {
 
+  // Verificar si ya se ha recargado la página
+  if (!this.hasReloaded) {
+    this.hasReloaded = true; // Marcar como recargado
+    this.reloadPage();
+  } else {
+    this.loadData(); // Lógica normal de carga de datos
+  }
+}
+
+
+
+reloadPage(): void {
+  this.router.navigateByUrl('/home', { skipLocationChange: true }).then(() => {
+    // Navegar nuevamente a la ruta actual
+    this.router.navigate(['/home']).then(() => {
+      this.loadData(); // Cargar datos después de la recarga
+    });
+  });
+
+  this.inicializarDatos();
+
+  }
+
+  inicializarDatos(): void {
+    // Esperar a que idGym e idUser estén disponibles
+    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
+      ([idGym, idUser]) => {
+        if (idGym && idUser) {
+          this.idGym = idGym;
+          this.idUser = idUser;
+
+          // Una vez que los datos necesarios están listos, cargar el resto
+          this.cargarDatosIniciales();
+        }
+      }
+    );
+  }
+
+  cargarDatosIniciales(): void {
+    console.log('Cargando datos iniciales...');
+
+    // Ejecutar las funciones que dependen de idGym e idUser
     this.consultarMembresia();
     this.updateDate();
     this.startDateUpdater();
-    //this.processSalesData();
-    console.log(this.isLoading)
-    // this.auth.comprobar();
-    // this.homeService.comprobar();
-/*
-    const today = new Date();
-    const year = today.getFullYear();
-    let month = '' + (today.getMonth() + 1);
-    let day = '' + today.getDate();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    this.fechaFormateada = [year, month, day].join('-');
-    this.año = year;
-
-
-    this.obtenerMesActual();
-    this.obtenerMesAnterior();
-
-    this.currentUser = this.auth.getCurrentUser();
-    if (this.currentUser) {
-      this.getSSdata(JSON.stringify(this.currentUser));
-
-    }
-
-    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-      ([idGym, idUser]) => {
-        if (idGym && idUser) {
-          this.idGym = idGym;
-          this.idUser = idUser;
-          this.listaTablas();
-          this.consultarAsistencia();
-          this.grafica1Visitas();
-          this.grafica2Visitas();
-          this.grafica1Quincena();
-          this.grafica2Quincena();
-          this.grafica1Mensualidad();
-          this.grafica2Mensualidad();
-          this.onSelect();
-          this.onSelectQuincena();
-          this.onSelectVisita();
-        }
-      }
-    );
-    */
-
-    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-      ([idGym, idUser]) => {
-        if (idGym && idUser) {
-          this.idGym = idGym;
-          this.idUser = idUser;
-          this.listaTablas();
-        }
-      }
-    );
-
-
-    // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-    //   ([idGym, idUser]) => {
-    //     if (idGym && idUser) {
-    //       this.idGym = idGym;
-    //       this.idUser = idUser;
-    //       this.listaTablas();
-    //     }
-    //   }
-    // );
-
-
-    // this.listaTablas();
-
-    // this.homeService.consultarHome(this.idGym).subscribe((respuesta) => {
-    //   this.homeCard = respuesta;
-    // });
-
-
-    // this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-    //   this.masVendidos = data;
-    //   console.log('MasVendidos: ', this.masVendidos);
-
-    //   this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
-    //   this.loadData();
-    // });
-
-
+    this.listaTablas();
   }
+
+  ngOnDestroy(): void {
+    // Limpiar estado al salir del componente
+    this.hasReloaded = false;
+    sessionStorage.removeItem('pageReloaded'); // Opción: Limpiar si es necesario
+  }
+
 
   /**LOCAL */
   getSSdata(data: any) {

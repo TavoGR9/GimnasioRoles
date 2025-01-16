@@ -170,6 +170,18 @@
       <br>
       <form [formGroup]="personaForm" class="example-form">
           <div class="row">
+            <div class="col-sm-16">
+              <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
+                  <mat-label>Clave:</mat-label>
+                  <input matInput placeholder="Clave del administrador" formControlName="clave" />
+                      <mat-error *ngIf="personaForm.get('clave')?.hasError('pattern') && !personaForm.get('clave')?.hasError('required')">
+                          <strong class="error-msg">**Formato no valido, (solo números)...</strong>
+                      </mat-error>
+                      <mat-error *ngIf="personaForm.get('clave')?.touched && personaForm.get('clave')?.hasError('required')">
+                          <strong class="error-msg">**Campo requerido</strong>
+                      </mat-error>
+              </mat-form-field>
+          </div>
               <div class="col-sm-6">
                   <mat-form-field class="example-full-width" appearance="outline" style="width: 95%;">
                       <mat-label>Nombre:</mat-label>
