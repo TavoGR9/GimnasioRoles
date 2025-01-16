@@ -271,7 +271,9 @@ export class HomeComponent implements OnInit {
           if (pedidos) {
             // console.log(res.Productos);
 
-            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null );
+            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+
+            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
             // Calculamos la suma de total_cantidad
              this.totalMesesCantidad = mensualidades.reduce(
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
@@ -316,8 +318,22 @@ export class HomeComponent implements OnInit {
           if (pedidos) {
             // console.log(res.Productos);
 
-            const quincenas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Quincenal" && membresia.id_promocion == null );
-            // Calculamos la suma de total_cantidad
+            const now = new Date(); // Obtener la fecha actual
+
+            const quincenas = pedidos.filter((membresia: any) => {
+              const fechaPedido = new Date(membresia.fecha_hora_pedido); // Convertir la fecha del pedido a objeto Date
+
+              // Comparar solo las fechas en formato local (YYYY-MM-DD)
+              const fechaActualLocal = now.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+              const fechaPedidoLocal = fechaPedido.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+
+              return (
+                membresia.nombreProducto === "Quincenal" &&
+                membresia.id_promocion === null &&
+                fechaPedidoLocal === fechaActualLocal
+              );
+            });
+             // Calculamos la suma de total_cantidad
              this.totalQuincenaCantidad = quincenas.reduce(
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
               0
@@ -362,7 +378,9 @@ export class HomeComponent implements OnInit {
           if (pedidos) {
             // console.log(res.Productos);
 
-            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null );
+            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+
+            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
             // Calculamos la suma de total_cantidad
              this.totalVisitaCantidad = visitas.reduce(
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
@@ -944,20 +962,20 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
 
 
 
-contarPorDia(clientes: { 
-  id_pedido: string; 
-  fecha_hora_pedido: string; 
-  id_bodega: string; 
-  id_promocion: string | null; 
-  nombrePromocion: string | null; 
-  membresia: string; 
-  productos: { 
-    id_producto: string; 
-    marca: string; 
-    nombreProducto: string; 
-    idBodPro: string; 
-    nombreCategoria: string; 
-  }[]; 
+contarPorDia(clientes: {
+  id_pedido: string;
+  fecha_hora_pedido: string;
+  id_bodega: string;
+  id_promocion: string | null;
+  nombrePromocion: string | null;
+  membresia: string;
+  productos: {
+    id_producto: string;
+    marca: string;
+    nombreProducto: string;
+    idBodPro: string;
+    nombreCategoria: string;
+  }[];
 }[]): { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } {
   const conteos: { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } = {};
 
