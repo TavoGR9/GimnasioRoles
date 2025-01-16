@@ -47,7 +47,6 @@ export class HomeComponent implements OnInit {
   detallesCaja: any[] = [];
   fechaFiltro: string = "";
   idGym: number = 0;
-  parametro: any;
   idUser: number = 0;
   fechaActual: Date = new Date();
   totalVentas: number = 0;
@@ -78,6 +77,7 @@ export class HomeComponent implements OnInit {
 
 
   dataSourceProductos: any;
+  parametro: any;
   displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
   masVendidos: any;
 
@@ -146,6 +146,14 @@ export class HomeComponent implements OnInit {
   año: number = 0;
   salesData: any;
   //visitsData_ any;
+
+  visitaTotal: number = 0;
+  total_meses: number = 0;
+  totalMesesCantidad: number = 0;
+  total_quincena: number = 0;
+  totalQuincenaCantidad: number = 0;
+  total_visita: number = 0;
+  totalVisitaCantidad: number = 0;
 
   constructor(
     private homeService: HomeService,
@@ -221,15 +229,15 @@ export class HomeComponent implements OnInit {
       this.listaTablas();
       this.cargarTarjetas();
       this.cargarTarjetas2();
-    
+
       const datos = {
         idGym: this.auth.idGym.getValue()
       };
-    
+
       const jsonData: string = JSON.stringify(datos);
       this.parametro = jsonData;
     });
-    
+
 
 
     // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
@@ -258,7 +266,184 @@ export class HomeComponent implements OnInit {
     //   this.loadData();
     // });
 
+    this.calculateVisitaTotal();
+    this.consultarMeses();
+    this.consultarQuincenas();
+    this.consultarVisitas();
 
+  }
+
+  consultarMeses(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS TOTAL',response.data)
+
+          if (pedidos) {
+            // console.log(res.Productos);
+
+            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+
+            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
+            // Calculamos la suma de total_cantidad
+             this.totalMesesCantidad = mensualidades.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('MENSUALIDADES: ', mensualidades);
+            this.total_meses = mensualidades.length;
+            console.log('TOTAL MENSUALIDADES: ', this.total_meses);
+            console.log('TOTAL CANTIDAD DE MENSUALIDADES: ', this.totalMesesCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresias para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
+        }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
+      }
+    );
+    }
+
+  consultarQuincenas(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS QUINCENAS TOTAL',response.data)
+
+          if (pedidos) {
+            // console.log(res.Productos);
+
+            const now = new Date(); // Obtener la fecha actual
+
+            const quincenas = pedidos.filter((membresia: any) => {
+              const fechaPedido = new Date(membresia.fecha_hora_pedido); // Convertir la fecha del pedido a objeto Date
+
+              // Comparar solo las fechas en formato local (YYYY-MM-DD)
+              const fechaActualLocal = now.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+              const fechaPedidoLocal = fechaPedido.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+
+              return (
+                membresia.nombreProducto === "Quincenal" &&
+                membresia.id_promocion === null &&
+                fechaPedidoLocal === fechaActualLocal
+              );
+            });
+             // Calculamos la suma de total_cantidad
+             this.totalQuincenaCantidad = quincenas.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('QUINCENAS: ', quincenas);
+            this.total_quincena = quincenas.length;
+            console.log('TOTAL QUINCENAS: ', this.total_quincena);
+            console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalQuincenaCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresia para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
+        }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
+      }
+    );
+    }
+
+
+  consultarVisitas(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS VISITAS TOTAL',response.data)
+
+          if (pedidos) {
+            // console.log(res.Productos);
+
+            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+
+            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
+            // Calculamos la suma de total_cantidad
+             this.totalVisitaCantidad = visitas.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('QUINCENAS: ', visitas);
+            this.total_visita = visitas.length;
+            console.log('TOTAL QUINCENAS: ', this.total_visita);
+            console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalVisitaCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresia para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
+        }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
+      }
+    );
+    }
+
+  calculateVisitaTotal(): void {
+    // // Verifica si salesChartDataVisita tiene contenido y estructura válida
+    // if (this.salesChartDataVisita.length > 0) {
+    //   console.log('Datos para calcular visita total:', this.salesChartDataVisita);
+
+    //   // Recorre cada serie y suma los valores
+    //   this.visitaTotal = this.salesChartDataVisita.reduce((total, dataset) => {
+    //     return total + dataset.series.reduce((sum, data) => sum + data.value, 0);
+    //   }, 0);
+
+    //   console.log('Visita total calculada:', this.visitaTotal);
+    // } else {
+    //   console.warn('salesChartDataVisita está vacío o no tiene la estructura esperada');
+    //   this.visitaTotal = 0;
+    // }
+
+    this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
 
   ngAfterViewInit() {
@@ -299,7 +484,7 @@ cargarTarjetas2(): void {
   );
 }
 
-  
+
   /**LOCAL */
   getSSdata(data: any) {
     this.auth.dataUser(data).subscribe({
@@ -575,7 +760,7 @@ cargarTarjetas2(): void {
     //   this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
-    // });    
+    // });
   }
 
 
@@ -586,8 +771,8 @@ cargarTarjetas2(): void {
       this.asistencia = respuesta;
       this.dataSource = new MatTableDataSource(this.asistencia);
       this.loadData();
-    });
-  }
+    });
+  }
 
   /**Roles**/
   isAdmin(): boolean {
@@ -763,7 +948,12 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       this.processSalesData();
       //this.processVisitsData();
       this.processSalesDataVisita();
+
+
       this.processSalesDataQuincenal();
+
+
+      //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
 
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
@@ -786,6 +976,9 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   clientes.forEach(cliente => {
     const idPedido = cliente.id_pedido;
 
+    console.log('AGRUPADOS: ', idPedido);
+
+
     if (!agrupadosPorPedido[idPedido]) {
       // Si no existe este `id_pedido` en el objeto agrupador, lo inicializamos.
       agrupadosPorPedido[idPedido] = {
@@ -795,9 +988,13 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
         id_promocion: cliente.id_promocion,
         nombrePromocion: cliente.nombrePromocion,
         membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-        total:cliente.total,
+        total_cantidad:cliente.total_cantidad,
         productos: [] // Inicializamos un array vacío para los productos.
       };
+
+      console.log('AQUI DESPUES', agrupadosPorPedido[idPedido]);
+
+
     }
 
     // Agregamos la información del producto al array `productos` correspondiente.
@@ -816,20 +1013,20 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
 
 
 
-contarPorDia(clientes: { 
-  id_pedido: string; 
-  fecha_hora_pedido: string; 
-  id_bodega: string; 
-  id_promocion: string | null; 
-  nombrePromocion: string | null; 
-  membresia: string; 
-  productos: { 
-    id_producto: string; 
-    marca: string; 
-    nombreProducto: string; 
-    idBodPro: string; 
-    nombreCategoria: string; 
-  }[]; 
+contarPorDia(clientes: {
+  id_pedido: string;
+  fecha_hora_pedido: string;
+  id_bodega: string;
+  id_promocion: string | null;
+  nombrePromocion: string | null;
+  membresia: string;
+  productos: {
+    id_producto: string;
+    marca: string;
+    nombreProducto: string;
+    idBodPro: string;
+    nombreCategoria: string;
+  }[];
 }[]): { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } {
   const conteos: { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } = {};
 
@@ -893,7 +1090,6 @@ contarPorDia(clientes: {
     }
   });
 
-
   return conteos;
 }
 
@@ -931,6 +1127,7 @@ currentMonthStr: string='';
 // Procesar los datos
 processSalesData() {
   // Obtener el mes y el año actual dinámicamente
+  console.log('hola');
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
@@ -1084,7 +1281,14 @@ processSalesDataVisita() {
       series: previousMonthSalesVisita,
     },
   ];
+
+  console.log('VALOR DEL DATO DE VISITAS', this.salesChartDataVisita);
+  console.log('VALOR DE LONGITUD DE VISITAS', this.salesChartDataVisita.length);
+
+   // Recalcula la visita total
+   this.calculateVisitaTotal();
 }
+
 /////////FIN VISITA///////////////////
 
 updateDate(): void {
@@ -1111,6 +1315,8 @@ updateSelectedProduct2(productName: string) {
   this.processSalesDataVisita();
 
 }
+
+
 
 ////////QUINCENA/////////////////////
 viewQuincenal: [number, number] = [900, 900]; // Tamaño del gráfico
@@ -1220,4 +1426,18 @@ obtenerVentasDelDia(pedidos: any[]): any[] {
     return fechaPedido >= inicioDia && fechaPedido <= finDia;
   });
 }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

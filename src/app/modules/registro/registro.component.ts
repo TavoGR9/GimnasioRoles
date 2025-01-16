@@ -65,7 +65,7 @@ export class RegistroComponent implements OnInit {
   password: string = "";
 
   /**CAMARA*/
-  public webcamImage: WebcamImage | null = null; 
+  public webcamImage: WebcamImage | null = null;
   public allowCameraSwitch = true;
   not_format: boolean = false;
   not_size: boolean = false;
@@ -133,7 +133,7 @@ export class RegistroComponent implements OnInit {
       Gimnasio_idGimnasio:[this.auth.idGym.getValue()],
       nombreArchivo: [''],
       base64textString: [''],
-      email: ['', Validators.compose([Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],  
+      email: ['', Validators.compose([Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
       pass: [''],
       user:[''],
       nombre:[''],
@@ -148,7 +148,7 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.auth.comprobar().subscribe((respuesta)=>{ 
+    this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
   }
@@ -207,7 +207,7 @@ export class RegistroComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = e => this.photoSelected = reader.result;
       reader.readAsDataURL(this.file);
-     
+
       if (files && file) {
         const newReader = new FileReader();
         newReader.onload = this._handleReaderLoaded.bind(this);
@@ -218,7 +218,7 @@ export class RegistroComponent implements OnInit {
       this.archivo.base64textString = '';
       this.archivo.nombreArchivo = '';
       return;
-    }  
+    }
   }
 
   // Codificar la imagen a base64
@@ -233,7 +233,7 @@ export class RegistroComponent implements OnInit {
       base64textString: this.webcamImage.imageAsBase64,
       nombreArchivo: this.archivo.nombreArchivo,
       fotoUrl: this.archivo.nombreArchivo
-    });  
+    });
   }
 
   _handleReaderLoaded(readerEvent: any) {
@@ -253,7 +253,7 @@ export class RegistroComponent implements OnInit {
       nombreArchivo: this.archivo.nombreArchivo,
       base64textString: this.archivo.base64textString
     });
-    
+
   }
 
   generarContraseña(longitud: number): string {
@@ -266,45 +266,46 @@ export class RegistroComponent implements OnInit {
       }
       return contraseña;
     } else {
-      return ''; 
+      return '';
     }
-  }  
-  
+  }
+
   enviarMensajeWhatsApp(telefono: string, correo: string, password: string) {
     if(telefono && correo){
       const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
       const url = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
       window.open(url, '_blank');
-    }  
+    }
   }
 
   cerrarDialogo(){
     this.dialogo.close(true);
   }
-  
+
   registrarUsuario() {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true; 
-    dialogConfig.data = 'Registro agregado correctamente.'; 
+    dialogConfig.disableClose = true;
+    dialogConfig.data = 'Registro agregado correctamente.';
     //this.spinner.show();
     this.password = this.generarContraseña(9);
     const direccionCompleta = `${this.form.get("calle")?.value} ${this.form.get("numExterno")?.value ? "Ext. " + this.form.get("numExterno")?.value: ""}, ${this.form.get("numInter")?.value ? "Int. " + this.form.get("numInter")?.value : ""}, ${this.form.get("colonia")?.value}, ${this.form.get("ciudad")?.value}, ${this.form.get("estado")?.value}, CP ${this.form.get("codigoPostal")?.value}`;
     const nombreCompleto = `${this.form.get("nombreU")?.value} ${this.form.get("apPaterno")?.value} ${this.form.get("apMaterno")?.value}`;
-  
+
     this.form.patchValue({
       direccion: direccionCompleta,
       nombre: nombreCompleto,
       user: nombreCompleto,
       pass: this.password,
-      fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png',
+      fotoUrl: this.form.get("fotoUrl")?.value || 
+      'https://cdn.pixabay.com/photo/2016/04/15/18/05/computer-1331579_640.png',
     });
-  
+
     if (this.form.valid) {
     console.log(this.form.value)
-      
+
    this.usuario.agregarUsuario(this.form.value).subscribe({
         next: (resultData) => {
-          
+
           console.log('Enviando peticion');
 
 
@@ -319,23 +320,23 @@ export class RegistroComponent implements OnInit {
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
               if (cerrarDialogo) {
                this.router.navigateByUrl(`/listaMembresias`);
-              
+
               }
-            }); 
+            });
           } else if (resultData.success == '2') {
-            
+
             this.dialogo.close(true);
             this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
-             
+
               if (cerrarDialogo) {
                this.router.navigateByUrl(`/listaMembresias`);
-              
-              } 
+
+              }
             });
-          
+
             console.log('va a home con erro de conexion');
-          } 
+          }
         },
         error: (error) => {
           this.toastr.error('Ocurrió un error al intentar agregar el cliente.', 'Error!!!');
@@ -362,7 +363,7 @@ export class RegistroComponent implements OnInit {
       }
     });
   }
-  
+
 
 
 

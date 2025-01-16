@@ -72,11 +72,115 @@
          </mat-card-content>
       </mat-card>
 
-      
+
 
 <!--GRÁFICAS A PARTIR DE AQUÍ-->
 <div style="margin-top: 60px;">
    <mat-card *ngIf="isAdmin() || isRecep()">
+
+    <div class="row">
+      <!-- Card para Visita -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center">{{ currentDate }}</h3>
+          </div>
+          <div class="card-body">
+            <ngx-charts-line-chart
+              [view]="[300,300]"
+              [scheme]="colorSchemeVisita"
+              [results]="salesChartDataVisita"
+              [gradient]="gradientVisita"
+              [xAxis]="showXAxisVisita"
+              [yAxis]="showYAxisVisita"
+              [showXAxisLabel]="showXAxisLabelVisita"
+              [showYAxisLabel]="showYAxisLabelVisita"
+              [xAxisLabel]="xAxisLabelVisita"
+              [yAxisLabel]="yAxisLabelVisita"
+              [timeline]="timelineVisita"
+              [legend]="true"
+              [animations]="false"
+              [legendTitle]="'Producto: Visita'"
+              (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+            <p class="text-center">Visita: {{ total_visita }}</p>
+            <p class="text-center">Total: {{ totalVisitaCantidad }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card para Quincenal -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center">{{ currentDate }}</h3>
+          </div>
+          <div class="card-body">
+            <ngx-charts-line-chart
+              [view]="[300, 300]"
+              [scheme]="colorSchemeQuincenal"
+              [results]="salesChartDataQuincenal"
+              [gradient]="gradientQuincenal"
+              [xAxis]="showXAxisQuincenal"
+              [yAxis]="showXAxisQuincenal"
+              [showXAxisLabel]="showXAxisLabelQuincenal"
+              [showYAxisLabel]="showYAxisLabelQuincenal"
+              [xAxisLabel]="yAxisLabelQuincenal"
+              [yAxisLabel]="yAxisLabelQuincenal"
+              [timeline]="timelineQuincenal"
+              [legend]="true"
+              [animations]="false"
+              [legendTitle]="'Quincenal'"
+              (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+            <p class="text-center">Quincena: {{ total_quincena }}</p>
+            <p class="text-center">Total: {{ totalQuincenaCantidad }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card para Mensualidades -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="text-center">{{ currentDate }}</h3>
+            <div class="col-12 d-flex justify-content-center align-items-center mb-3">
+               Input dinámico para seleccionar producto
+               <input
+                 type="text"
+                 [(ngModel)]="selectedProduct2"
+                 (input)="updateSelectedProduct2(selectedProduct2)"
+                 class="form-control w-50"
+                 placeholder="Escribe el nombre del producto (e.g., Mensualidad)"
+               />
+             </div>
+          </div>
+          <div class="card-body">
+            <ngx-charts-line-chart
+              [view]="[300, 300]"
+              [scheme]="colorScheme2"
+              [results]="salesChartData"
+              [gradient]="gradient2"
+              [xAxis]="showXAxis2"
+              [yAxis]="showYAxis2"
+              [showXAxisLabel]="showXAxisLabel2"
+              [showYAxisLabel]="showYAxisLabel2"
+              [xAxisLabel]="xAxisLabel2"
+              [yAxisLabel]="yAxisLabel2"
+              [timeline]="timeline2"
+              [legend]="true"
+              [legendTitle]="'Mes'"
+              [animations]="false"
+              (select)="onSelect($event)">
+            </ngx-charts-line-chart>
+            <p class="text-center">Mensualidades: {{ total_meses }}</p>
+            <p class="text-center">Total: {{ totalMesesCantidad }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--
       <mat-card-content>
          <table class="three-columns-table">
             <tr>
@@ -102,6 +206,9 @@
                   [legendTitle]="'Visita'"
                   (select)="onSelect($event)">
                 </ngx-charts-line-chart>
+                <p>Visita: {{ total_visita }}</p>
+                <p>Total: {{ totalVisitaCantidad }}</p>
+                <p></p>
                </div>
             </td>
             <td colspan="1" class="column">
@@ -127,6 +234,8 @@
                   (select)="onSelect($event)">
                   </ngx-charts-line-chart>
                </div>
+               <p>Quincena: {{ total_quincena }}</p>
+               <p>Total: {{ totalQuincenaCantidad }}</p>
             </td>
             <td colspan="1" class="column">
                <div class="chart-container">
@@ -164,10 +273,12 @@
                   (select)="onSelect($event)">
                   </ngx-charts-line-chart>
                </div>
+               <p>Mensualidades: {{ total_meses }}</p>
+               <p>Total: {{ totalMesesCantidad }}</p>
             </td>
             </tr>
          </table>
-      </mat-card-content>
+      </mat-card-content> -->
    </mat-card>
 </div>
 <!--CIERRE DE GRÁFICAS-->
