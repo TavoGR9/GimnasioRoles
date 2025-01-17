@@ -175,13 +175,17 @@
   <mat-paginator #paginatorHistorialMembre [pageSizeOptions]="[5, 10, 25, 50, 100]"
     showFirstLastButtons></mat-paginator>
 </div>
+
+<!--
 <div mat-dialog-actions fxLayoutAlign="center center">
-  <!--<button mat-button (click)="cerrarDialogo()">Capturar huella</button>-->
+  Comentado anteriornte < ! -- <button mat-button (click)="cerrarDialogo()">Capturar huella</button> -- >
   <a href="{{url}}">
-    <button mat-button (click)="capturarHuella()" style="background-color: #000000; color: white;">
-      <mat-icon>fingerprint</mat-icon> <!-- Icono de huella dactilar -->
+    <button mat-button (click)="abrirPuertoSerial(3)
+    " style="background-color: #000000; color: white;">
+      <mat-icon>fingerprint</mat-icon> < !-- Icono de huella dactilar -- >
       Capturar huella
     </button>
   </a>
 
 </div>
+-->

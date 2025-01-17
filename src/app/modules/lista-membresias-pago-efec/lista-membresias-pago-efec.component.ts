@@ -10,8 +10,11 @@ import { AuthService } from "../../service/auth.service";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { FormPagoEmergenteComponent } from "../form-pago-emergente/form-pago-emergente.component";
+import { NgxSpinnerService } from "ngx-spinner";
 
 import { RegistroComponent } from "../registro/registro.component";
+import { EmergenteAperturaPuertoSerialComponent } from "../emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component";
+import { NgZone } from "@angular/core";
 
 
 import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergente-info-cliente.component";
@@ -138,7 +141,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private toastr: ToastrService,
     private datePipe: DatePipe,
     private auth: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private spinner: NgxSpinnerService,
+    private zone: NgZone
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -596,18 +601,9 @@ agruparPorPedido(clientes: any[]): any[] {
 
           const respuestaApi = response.data;
 
-// Validar que respuestaApi es un array antes de aplicar filter
-if (!this.isAdmin()) {
-  this.Clientes = respuestaApi.filter(
-    (cliente: any) =>
-        (cliente.rol && cliente.rol === 'Cliente') || cliente.id_rol === 4
-);
+          this.Clientes=respuestaApi
 
-console.log('Ver filtrados Recepcionista', this.Clientes);
-} else {
-  this.Clientes=respuestaApi;
-console.log('else')
-}
+
           // Obtenemos la lista completa de clientes desde la respuesta.
           const Clientes =this.Clientes;
 
@@ -785,5 +781,43 @@ console.log('filteredData', filteredData);
       console.error('El usuario no tiene permisos suficientes.');
     }
   }
+
+  capturarHuella(idCliente: string|number ): void {
+    this.spinner.show();
+
+    setTimeout(() => {
+      this.abrirPuertoSerial(idCliente)
+      this.spinner.hide();
+    }, 10000);
+  }
+  
+ 
+/*
+capturarHuella(): void {
+  this.spinner.show();
+
+  this.zone.run(() => { // Asegura que Angular esté en su zona
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 10000);
+  });
+}*/
+
+    abrirPuertoSerial(data: any): void {
+      
+      this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
+        data: {
+          clienteID: `${data.idCliente}`
+        },
+      })
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+  
+        } else {
+  
+        }
+      });
+    }
 
 }
