@@ -223,19 +223,14 @@ reloadPage(): void {
     this.listaTablas();
     this.consultarAsistencia();
     this.cargarTarjetas();
-    this.cargarTarjetas2();
-    this.calculateVisitaTotal();
+      this.cargarTarjetas2();
+      this.calculateVisitaTotal();
     this.consultarMeses();
     this.consultarQuincenas();
     this.consultarVisitas();
     console.log(this.isLoading)
   }
 
-  ngAfterViewInit() {
-    if (this.dataSource) {
-      this.dataSource.paginator = this.paginator;
-    }
-  }
 
   ngOnDestroy(): void {
     // Limpiar estado al salir del componente
@@ -416,13 +411,13 @@ reloadPage(): void {
 
     this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
-/*
+
   ngAfterViewInit() {
     if (this.dataSource) {
       this.dataSource.paginator = this.paginator;
     }
   }
-    */
+
 
   cargarTarjetas(): void {
     this.homeService.consultarAsistenciasTotal(this.idGym).subscribe(
@@ -745,7 +740,6 @@ cargarTarjetas2(): void {
       this.asistencia = respuesta;
       this.dataSource = new MatTableDataSource(this.asistencia);
       this.loadData();
-
     });
   }
 
