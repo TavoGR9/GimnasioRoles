@@ -222,6 +222,12 @@ reloadPage(): void {
     this.startDateUpdater();
     this.listaTablas();
     this.consultarAsistencia();
+    this.cargarTarjetas();
+    this.cargarTarjetas2();
+    this.calculateVisitaTotal();
+    this.consultarMeses();
+    this.consultarQuincenas();
+    this.consultarVisitas();
     console.log(this.isLoading)
   }
 
@@ -410,14 +416,14 @@ reloadPage(): void {
 
     this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
-
-  /*
+/*
   ngAfterViewInit() {
     if (this.dataSource) {
       this.dataSource.paginator = this.paginator;
     }
   }
-*/
+    */
+
   cargarTarjetas(): void {
     this.homeService.consultarAsistenciasTotal(this.idGym).subscribe(
       (respuesta: any) => {
@@ -739,8 +745,9 @@ cargarTarjetas2(): void {
       this.asistencia = respuesta;
       this.dataSource = new MatTableDataSource(this.asistencia);
       this.loadData();
-    });
-  }
+
+    });
+  }
 
   /**Roles**/
   isAdmin(): boolean {
