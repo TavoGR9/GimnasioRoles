@@ -768,19 +768,28 @@ console.log('filteredData', filteredData);
       });
   }
 
-  Registro(): void {
-    console.log('Evaluando roles...');
-    if (this.isAdmin()) {
-      this.OpenAgregar();
-      console.log('Es Admin: Abriendo AltaColaboradoresComponent');
-
-    } else if (this.isRecep()) {
-      console.log('Es Recepcionista: Abriendo RegistroComponent');
-      this.AbrirRegistro();
+  Registro(option: string): void {
+    console.log('Evaluando opción seleccionada...');
+    
+    if (option === 'Trabajadores') {
+      if (this.isAdmin()) {
+        this.OpenAgregar(); // Método que abre el modal AltaColaboradores
+        console.log('Es Admin: Abriendo AltaColaboradoresComponent');
+      } else {
+        console.error('El usuario no tiene permisos suficientes para gestionar Trabajadores.');
+      }
+    } else if (option === 'Clientes') {
+      if (this.isAdmin() || this.isRecep()) {
+        this.AbrirRegistro(); // Método que abre el modal Registro
+        console.log('Es Admin o Recepcionista: Abriendo RegistroComponent');
+      } else {
+        console.error('El usuario no tiene permisos suficientes para gestionar Clientes.');
+      }
     } else {
-      console.error('El usuario no tiene permisos suficientes.');
+      console.error('Opción no válida.');
     }
   }
+  
 
   capturarHuella(idCliente: string|number ): void {
     this.spinner.show();
