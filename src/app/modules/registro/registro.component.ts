@@ -306,7 +306,7 @@ export class RegistroComponent implements OnInit {
         next: (resultData) => {
 
           console.log('Enviando peticion');
-
+          console.log('VER valores enviados',this.form.value)
 
           if (resultData.success == 0) {
             this.toastr.error(resultData.message, 'Error!!!');

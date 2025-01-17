@@ -113,25 +113,48 @@
 								<button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirEmergente(prod)" color="primary">
                   <mat-icon class="icon-size">edit</mat-icon>
                 </button>
-							</ng-container>
-							<ng-container *ngIf="column === 'Info Cliente'">
-								<button mat-icon-button [disabled]="!habilitarBoton" (click)="abrirInfoCliente(prod)" color="{{ prod.fotoUrl ? 'primary' : 'warn' }}">
-                  <mat-icon class="icon-size">info</mat-icon>
-                </button>
-							</ng-container>
-							<ng-container *ngIf="column === 'Huella'">
-								<div *ngIf="prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0'; else noHuella">
-									<label class="estatus-activo">
-                    <mat-icon>fingerprint</mat-icon>
-                    Registrada
-                  </label>
-								</div>
-								<ng-template #noHuella>
-									<div style="width: 100%;">
-										<label class="estatus-inactivo">Huella no registrada</label>
-									</div>
-								</ng-template>
-							</ng-container>
+			</ng-container>
+
+			<ng-container *ngIf="column === 'Info Cliente'">
+				<button 
+				  *ngIf="isAdmin() 
+				  || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
+				  mat-icon-button 
+				  [disabled]="!habilitarBoton" 
+				  (click)="abrirInfoCliente(prod)" 
+				  color="{{ prod.fotoUrl ? 'primary' : 'warn' }}">
+				  <mat-icon class="icon-size">info</mat-icon>
+				</button>
+			  </ng-container>
+
+				<ng-container *ngIf="column === 'Huella'">
+			
+					<button 
+					(click)="abrirPuertoSerial(prod.clave)"
+					*ngIf="isAdmin() || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
+					[ngClass]="{
+					  'estatus-activo': prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0',
+					  'estatus-inactivo': prod.huella === null || prod.huella === 'null' || prod.huella === '0'
+					}">
+					
+					
+				 
+					<div *ngIf="prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0'; else noHuella">
+
+						<label >
+						<mat-icon>fingerprint</mat-icon>
+						Registrada
+						</label>
+					</div>
+					<ng-template #noHuella>
+						<div style="width: 100%;">
+						<label >Huella no registrada</label>
+						</div>
+					</ng-template>
+				</button>
+				</ng-container>
+
+					
 							<ng-container *ngIf="column === 'Usuario'">
 								<span *ngIf="prod.rol === 'Cliente'; else notCliente">
                   <mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
