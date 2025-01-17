@@ -9,11 +9,28 @@
 		<div class="container mt-4">
 			<h2>LISTA DE CLIENTES Y PAGO DE MEMBRESÍA EN EFECTIVO</h2>
 			<div style="display: flex; justify-content: flex-end;">
-			<button mat-raised-button style="background-color: #fd9727; font-size: 16px;" *ngIf="isAdmin() || isRecep()" (click)="Registro()" class="mat-button">
-				<mat-icon>person</mat-icon>
-				Registro
-			</button>
-		</div>
+				<button 
+				  mat-raised-button 
+				  [matMenuTriggerFor]="menu" 
+				  style="background-color: #fd9727; font-size: 16px;" 
+				  *ngIf="isAdmin() || isRecep()" 
+				  class="mat-button">
+				  <mat-icon>person</mat-icon>
+				  Registro
+				</button>
+				
+				<mat-menu #menu="matMenu">
+				  <button mat-menu-item (click)="Registro('Trabajadores')">
+					<mat-icon>work</mat-icon>
+					Trabajadores
+				  </button>
+				  <button mat-menu-item (click)="Registro('Clientes')">
+					<mat-icon>person_outline</mat-icon>
+					Clientes
+				  </button>
+				</mat-menu>
+			</div>			  
+			  
 			<br>
 
 			<div class="grid-input-date">
