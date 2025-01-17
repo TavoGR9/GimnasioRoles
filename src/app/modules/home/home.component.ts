@@ -223,14 +223,19 @@ reloadPage(): void {
     this.listaTablas();
     this.consultarAsistencia();
     this.cargarTarjetas();
-      this.cargarTarjetas2();
-      this.calculateVisitaTotal();
+    this.cargarTarjetas2();
+    this.calculateVisitaTotal();
     this.consultarMeses();
     this.consultarQuincenas();
     this.consultarVisitas();
     console.log(this.isLoading)
   }
 
+  ngAfterViewInit() {
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }
 
   ngOnDestroy(): void {
     // Limpiar estado al salir del componente
@@ -412,11 +417,7 @@ reloadPage(): void {
     this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
 
-  ngAfterViewInit() {
-    if (this.dataSource) {
-      this.dataSource.paginator = this.paginator;
-    }
-  }
+
 
 
   cargarTarjetas(): void {
@@ -1066,7 +1067,7 @@ contarPorDia(clientes: {
 // Configuración de ngx-charts
 view2: [number, number] = [900, 900]; // Tamaño del gráfico
 colorScheme2: Color = {
-  domain: ["#FF8C00", "#000000"], // Colores
+  domain: ["#4CAF50", "#FF5722"], // Colores
   name: "cool",
   selectable: true,
   group: ScaleType.Ordinal,
