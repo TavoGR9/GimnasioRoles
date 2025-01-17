@@ -28,14 +28,149 @@
                       </mat-card-content>
                    </mat-card>
                 </div>
+                <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard3">
+                   <mat-card class="orange-card">
+                      <mat-card-header>
+                         <mat-card-title>{{card.titulo}}</mat-card-title>
+                      </mat-card-header>
+                      <mat-card-content>
+                         <!--col-8: Esta clase hace que la columna ocupe 8 de las 12 columnas disponibles en todos los tamaños de pantalla, desde el tamaño más pequeño hasta el más grande.-->
+                         <br>
+                         <div class="row">
+                            <div class="col-4 d-flex align-items-center justify-content-center">
+                               <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icnono" class="img-fluid card-image">
+                            </div>
+                            <div class="col-8">
+                               <br>
+                               <p style="color: rgb(0, 0, 0); font-size: 25px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
+                            </div>
+                         </div>
+                      </mat-card-content>
+                   </mat-card>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4" *ngFor="let card of homeCard4">
+                   <mat-card class="orange-card">
+                      <mat-card-header>
+                         <mat-card-title>{{card.titulo}}</mat-card-title>
+                      </mat-card-header>
+                      <mat-card-content>
+                         <!--col-8: Esta clase hace que la columna ocupe 8 de las 12 columnas disponibles en todos los tamaños de pantalla, desde el tamaño más pequeño hasta el más grande.-->
+                         <br>
+                         <div class="row">
+                            <div class="col-4 d-flex align-items-center justify-content-center">
+                               <img src="https://olympus.arvispace.com/olimpusGym/assets/img/{{card.icono}}" alt="icnono" class="img-fluid card-image">
+                            </div>
+                            <div class="col-8">
+                               <br>
+                               <p style="color: rgb(0, 0, 0); font-size: 25px; font-family:Verdana, Geneva, Tahoma, sans-serif; ">{{ card.cantidad }}</p>
+                            </div>
+                         </div>
+                      </mat-card-content>
+                   </mat-card>
+                </div>
              </div>
           </mat-card-content>
        </mat-card>
  
  
+ 
  <!--GRÁFICAS A PARTIR DE AQUÍ-->
  <div style="margin-top: 60px;">
     <mat-card *ngIf="isAdmin() || isRecep()">
+ 
+     <div class="row">
+       <!-- Card para Visita -->
+       <div class="col-md-4">
+         <div class="card">
+           <div class="card-header">
+             <h3 class="text-center">{{ currentDate }}</h3>
+           </div>
+           <div class="card-body">
+             <ngx-charts-line-chart
+               [view]="[300,300]"
+               [scheme]="colorSchemeVisita"
+               [results]="salesChartDataVisita"
+               [gradient]="gradientVisita"
+               [xAxis]="showXAxisVisita"
+               [yAxis]="showYAxisVisita"
+               [showXAxisLabel]="showXAxisLabelVisita"
+               [showYAxisLabel]="showYAxisLabelVisita"
+               [xAxisLabel]="xAxisLabelVisita"
+               [yAxisLabel]="yAxisLabelVisita"
+               [timeline]="timelineVisita"
+               [legend]="true"
+               [animations]="false"
+               [legendTitle]="'Producto: Visita'"
+               (select)="onSelect($event)">
+             </ngx-charts-line-chart>
+             <p class="text-center">Visita: {{ total_visita }}</p>
+             <p class="text-center">Total: {{ totalVisitaCantidad }}</p>
+           </div>
+         </div>
+       </div>
+ 
+       <!-- Card para Quincenal -->
+       <div class="col-md-4">
+         <div class="card">
+           <div class="card-header">
+             <h3 class="text-center">{{ currentDate }}</h3>
+           </div>
+           <div class="card-body">
+             <ngx-charts-line-chart
+               [view]="[300, 300]"
+               [scheme]="colorSchemeQuincenal"
+               [results]="salesChartDataQuincenal"
+               [gradient]="gradientQuincenal"
+               [xAxis]="showXAxisQuincenal"
+               [yAxis]="showXAxisQuincenal"
+               [showXAxisLabel]="showXAxisLabelQuincenal"
+               [showYAxisLabel]="showYAxisLabelQuincenal"
+               [xAxisLabel]="yAxisLabelQuincenal"
+               [yAxisLabel]="yAxisLabelQuincenal"
+               [timeline]="timelineQuincenal"
+               [legend]="true"
+               [animations]="false"
+               [legendTitle]="'Quincenal'"
+               (select)="onSelect($event)">
+             </ngx-charts-line-chart>
+             <p class="text-center">Quincena: {{ total_quincena }}</p>
+             <p class="text-center">Total: {{ totalQuincenaCantidad }}</p>
+           </div>
+         </div>
+       </div>
+ 
+       <!-- Card para Mensualidades -->
+       <div class="col-md-4">
+         <div class="card">
+           <div class="card-header">
+             <h3 class="text-center">{{ currentDate }}</h3>
+           </div>
+           <div class="card-body">
+             <ngx-charts-line-chart
+               [view]="[300, 300]"
+               [scheme]="colorScheme2"
+               [results]="salesChartData"
+               [gradient]="gradient2"
+               [xAxis]="showXAxis2"
+               [yAxis]="showYAxis2"
+               [showXAxisLabel]="showXAxisLabel2"
+               [showYAxisLabel]="showYAxisLabel2"
+               [xAxisLabel]="xAxisLabel2"
+               [yAxisLabel]="yAxisLabel2"
+               [timeline]="timeline2"
+               [legend]="true"
+               [legendTitle]="'Mes'"
+               [animations]="false"
+               (select)="onSelect($event)">
+             </ngx-charts-line-chart>
+             <p class="text-center">Mensualidades: {{ total_meses }}</p>
+             <p class="text-center">Total: {{ totalMesesCantidad }}</p>
+           </div>
+         </div>
+       </div>
+     </div>
+ 
+ <!--
        <mat-card-content>
           <table class="three-columns-table">
              <tr>
@@ -58,9 +193,12 @@
                    [timeline]="timelineVisita"
                    [legend]="true"
                    [animations]="false"
-                   [legendTitle]="'Producto: Visita'"
+                   [legendTitle]="'Visita'"
                    (select)="onSelect($event)">
                  </ngx-charts-line-chart>
+                 <p>Visita: {{ total_visita }}</p>
+                 <p>Total: {{ totalVisitaCantidad }}</p>
+                 <p></p>
                 </div>
              </td>
              <td colspan="1" class="column">
@@ -86,6 +224,8 @@
                    (select)="onSelect($event)">
                    </ngx-charts-line-chart>
                 </div>
+                <p>Quincena: {{ total_quincena }}</p>
+                <p>Total: {{ totalQuincenaCantidad }}</p>
              </td>
              <td colspan="1" class="column">
                 <div class="chart-container">
@@ -110,10 +250,12 @@
                    (select)="onSelect($event)">
                    </ngx-charts-line-chart>
                 </div>
+                <p>Mensualidades: {{ total_meses }}</p>
+                <p>Total: {{ totalMesesCantidad }}</p>
              </td>
              </tr>
           </table>
-       </mat-card-content>
+       </mat-card-content> -->
     </mat-card>
  </div>
  <!--CIERRE DE GRÁFICAS-->
@@ -159,7 +301,7 @@
        </mat-card-content>
        </mat-card>-->
     </mat-card>
-    <!-- <mat-card *ngIf="isAdmin() || isRecep()">
+    <mat-card *ngIf="isAdmin() || isRecep()">
        <mat-card-header>
           <h3 class="icon-title">
              <mat-icon class="icon">people</mat-icon>
@@ -192,13 +334,14 @@
           </table>
           <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20, 30,40,50,100,200,300,4000]" showFirstLastButtons></mat-paginator>
        </div>
-    </mat-card> -->
+    </mat-card>
  </div>
  <!--<div>
     <br>
     <button (click)="Sincronizar()">Sincronizar</button>
     </div>-->
  </div>
+ 
  
  <!-- <div class="container">
     <div class="row">
@@ -235,3 +378,4 @@
       </div>
     </div>
   </div> -->
+ 

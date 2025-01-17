@@ -10,11 +10,11 @@
         <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true">
            <p style="color: white" > Cargando... </p>
         </ngx-spinner>
-        <h2 class="mb-3">PLANES DISPONIBLES</h2>
+        <h2 class="mb-3">PROMOCIONES DISPONIBLES</h2>
         <div style="text-align: right;">
            <button mat-raised-button [disabled]="!habilitarBoton" style="background-color: #fd9727; font-size: 16px;" (click)="openDialog()">
               <mat-icon>add</mat-icon>
-              AGREGAR PLAN
+              AGREGA PROMOCIÓN
            </button>
         </div>
         <br/>
@@ -54,7 +54,7 @@
                     <div class="toggle-container">
                       <input type="checkbox" id="toggle{{item.id_promocion}}" class="toggle-checkbox" [checked]="item.estatus == 1" disabled>
                       <label for="toggle{{item.id_promocion}}" class="toggle-label"></label>
-                   </div>
+                   </div>
 
                     <button mat-icon-button color="warn" (click)="borrarPlan(item.id_promocion)">
                        <mat-icon>delete</mat-icon>

@@ -7,6 +7,7 @@ import { MatDrawerMode } from '@angular/material/sidenav';
 import { RegistroComponent } from '../registro/registro.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { combineLatest } from 'rxjs';
+import { VentasComponent } from '../ventas/ventas.component';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -143,5 +144,21 @@ export class SidebarComponent {
         }
       });
   }*/
+
+
+      abrirVentasModal(event: Event): void {
+        // Abrir el modal
+        const dialogRef = this.dialog.open(VentasComponent, {
+            width: '70%',
+            disableClose: true,
+        });
+
+        // Detener el comportamiento por defecto si es necesario
+        event.preventDefault();
+
+        dialogRef.afterClosed().subscribe(() => {
+            console.log('Modal cerrado');
+        });
+    }
 
 }

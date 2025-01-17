@@ -62,7 +62,7 @@
 
          </div>
          <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-2">
                <p>
                   <label class="text-left">Cantidad:</label>
                   <mat-form-field appearance="outline" style=" width: 100%;">
@@ -91,13 +91,36 @@
                   </mat-form-field>
                </p>
             </div>
+
             <div class="col-sm-3">
+              <p>
+                <label class="text-left">Precio Paquete:</label>
+                <mat-form-field appearance="outline" style="width: 100%;">
+                  <mat-label>Total</mat-label>
+                  <input
+                    matInput
+                    placeholder="$"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    autocomplete="off"
+                    formControlName="total"
+                    (input)="calcularPrecioCaja()"
+                  />
+                  <mat-error *ngIf="form.get('total')?.hasError('required')">
+                    <strong class="txt_msg">**Campo requerido</strong>
+                  </mat-error>
+                </mat-form-field>
+              </p>
+            </div>
+
+            <div class="col-sm-2">
                <p>
                   <label class="text-left">Precio compra:</label>
                   <mat-form-field appearance="outline"  style=" width: 100%;" required>
                      <mat-label>Precio de compra</mat-label>
                      <input
-                     (keydown)="handleEnterKey($event)"
+
                         matInput
                         placeholder="$"
                         type="number"

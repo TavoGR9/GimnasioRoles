@@ -94,7 +94,10 @@ export class EntradasComponent implements OnInit {
       fechaEntrada: [this.fechaRegistro],
       exis: ["", Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])],
       precciosucu: ["", Validators.compose([Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/)])],
-      precioCaja: ["", Validators.compose([Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/)])],
+      // precioCaja: ["", Validators.compose([Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/)])],
+      precioCaja: [{ value: "", disabled: true }],
+      total: ["", Validators.compose([Validators.required, Validators.pattern(/^\d+(\.\d{0,2})?$/)])]
+
     });
   }
 
@@ -134,6 +137,18 @@ export class EntradasComponent implements OnInit {
       this.isLoading = false;
       this.dataSource.paginator = this.paginator;
     }, 1000);
+  }
+
+  calcularPrecioCaja() {
+    const total = this.form.get('total')?.value || 0;
+    const exis = this.form.get('exis')?.value || 0;
+
+    if (exis > 0) {
+      const precioCaja = total / exis;
+      this.form.get('precioCaja')?.setValue(precioCaja.toFixed(2));
+    } else {
+      this.form.get('precioCaja')?.setValue(0);
+    }
   }
 
   getSSdata(data: any) {

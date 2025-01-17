@@ -15,6 +15,7 @@ import { combineLatest } from "rxjs";
 import { Color, ScaleType } from "@swimlane/ngx-charts";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 
+import { Router } from '@angular/router';
 interface Producto {
   id_producto: string;
   marca: string;
@@ -39,6 +40,7 @@ interface Cliente {
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.css"],
 })
+
 export class HomeComponent implements OnInit {
   currentUser: string = "";
   currentDate: string = '';
@@ -59,6 +61,8 @@ export class HomeComponent implements OnInit {
 
   homeCard: any;
   homeCard2: any;
+  homeCard3: any[]=[];
+  homeCard4: any[]=[];
   homeCardVisita: any[] = [];
   homeCardQuincena: any[] = [];
 
@@ -70,8 +74,11 @@ export class HomeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
   displayedColumns: string[] = ["title", "details", "price", "rol"];
+  //dataSource = new MatTableDataSource(); // Inicialización vacía
+
 
   dataSourceProductos: any;
+  parametro: any;
   displayedColumnsProductos: string[] = ["Producto", "TotalDeVentas"];
   masVendidos: any;
 
@@ -140,6 +147,15 @@ export class HomeComponent implements OnInit {
   año: number = 0;
   salesData: any;
   //visitsData_ any;
+  private hasReloaded = false;
+
+  visitaTotal: number = 0;
+  total_meses: number = 0;
+  totalMesesCantidad: number = 0;
+  total_quincena: number = 0;
+  totalQuincenaCantidad: number = 0;
+  total_visita: number = 0;
+  totalVisitaCantidad: number = 0;
 
   constructor(
     private homeService: HomeService,
@@ -151,101 +167,290 @@ export class HomeComponent implements OnInit {
     private http: ColaboradorService,
     public membresiaService: MembresiaService,
     private servicio: serviciosService,
-    private pagoService: PagoMembresiaEfectivoService
+    private pagoService: PagoMembresiaEfectivoService,
+    private router: Router
   ) {}
 
   fechaFormateada: string = "";
+
   ngOnInit(): void {
 
+  // Verificar si ya se ha recargado la página
+  if (!this.hasReloaded) {
+    this.hasReloaded = true; // Marcar como recargado
+    this.reloadPage();
+  } else {
+    this.loadData(); // Lógica normal de carga de datos
+  }
+}
+
+
+
+reloadPage(): void {
+  this.router.navigateByUrl('/home', { skipLocationChange: true }).then(() => {
+    // Navegar nuevamente a la ruta actual
+    this.router.navigate(['/home']).then(() => {
+      this.loadData(); // Cargar datos después de la recarga
+    });
+  });
+
+  this.inicializarDatos();
+
+  }
+
+  inicializarDatos(): void {
+    // Esperar a que idGym e idUser estén disponibles
+    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
+      ([idGym, idUser]) => {
+        if (idGym && idUser) {
+          this.idGym = idGym;
+          this.idUser = idUser;
+
+          // Una vez que los datos necesarios están listos, cargar el resto
+          this.cargarDatosIniciales();
+        }
+      }
+    );
+  }
+
+  cargarDatosIniciales(): void {
+    console.log('Cargando datos iniciales...');
+
+    // Ejecutar las funciones que dependen de idGym e idUser
     this.consultarMembresia();
     this.updateDate();
     this.startDateUpdater();
-    //this.processSalesData();
+    this.listaTablas();
+    this.consultarAsistencia();
+    this.cargarTarjetas();
+      this.cargarTarjetas2();
+      this.calculateVisitaTotal();
+    this.consultarMeses();
+    this.consultarQuincenas();
+    this.consultarVisitas();
     console.log(this.isLoading)
-    // this.auth.comprobar();
-    // this.homeService.comprobar();
-/*
-    const today = new Date();
-    const year = today.getFullYear();
-    let month = '' + (today.getMonth() + 1);
-    let day = '' + today.getDate();
+  }
 
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
+  ngAfterViewInit() {
+    if (this.dataSource) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }
 
-    this.fechaFormateada = [year, month, day].join('-');
-    this.año = year;
+  ngOnDestroy(): void {
+    // Limpiar estado al salir del componente
+    this.hasReloaded = false;
+    sessionStorage.removeItem('pageReloaded'); // Opción: Limpiar si es necesario
+  }
 
 
-    this.obtenerMesActual();
-    this.obtenerMesAnterior();
+  consultarMeses(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS TOTAL',response.data)
 
-    this.currentUser = this.auth.getCurrentUser();
-    if (this.currentUser) {
-      this.getSSdata(JSON.stringify(this.currentUser));
+          if (pedidos) {
+            // console.log(res.Productos);
 
+            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+
+            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
+            // Calculamos la suma de total_cantidad
+             this.totalMesesCantidad = mensualidades.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('MENSUALIDADES: ', mensualidades);
+            this.total_meses = mensualidades.length;
+            console.log('TOTAL MENSUALIDADES: ', this.total_meses);
+            console.log('TOTAL CANTIDAD DE MENSUALIDADES: ', this.totalMesesCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresias para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
+        }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
+      }
+    );
     }
 
-    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-      ([idGym, idUser]) => {
-        if (idGym && idUser) {
-          this.idGym = idGym;
-          this.idUser = idUser;
-          this.listaTablas();
-          this.consultarAsistencia();
-          this.grafica1Visitas();
-          this.grafica2Visitas();
-          this.grafica1Quincena();
-          this.grafica2Quincena();
-          this.grafica1Mensualidad();
-          this.grafica2Mensualidad();
-          this.onSelect();
-          this.onSelectQuincena();
-          this.onSelectVisita();
+  consultarQuincenas(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS QUINCENAS TOTAL',response.data)
+
+          if (pedidos) {
+            // console.log(res.Productos);
+
+            const now = new Date(); // Obtener la fecha actual
+
+            const quincenas = pedidos.filter((membresia: any) => {
+              const fechaPedido = new Date(membresia.fecha_hora_pedido); // Convertir la fecha del pedido a objeto Date
+
+              // Comparar solo las fechas en formato local (YYYY-MM-DD)
+              const fechaActualLocal = now.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+              const fechaPedidoLocal = fechaPedido.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+
+              return (
+                membresia.nombreProducto === "Quincenal" &&
+                membresia.id_promocion === null &&
+                fechaPedidoLocal === fechaActualLocal
+              );
+            });
+             // Calculamos la suma de total_cantidad
+             this.totalQuincenaCantidad = quincenas.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('QUINCENAS: ', quincenas);
+            this.total_quincena = quincenas.length;
+            console.log('TOTAL QUINCENAS: ', this.total_quincena);
+            console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalQuincenaCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresia para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
         }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
       }
     );
-    */
+    }
 
-    combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-      ([idGym, idUser]) => {
-        if (idGym && idUser) {
-          this.idGym = idGym;
-          this.idUser = idUser;
-          this.listaTablas();
+
+  consultarVisitas(){
+    //this.homeService.ConsultarPedidosMembresias(this)
+    this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
+      (response) => {
+        console.log(this.auth.idGym.getValue(),'id')
+        if (response.success === 1) {
+          const pedidos = response.data; // Almacenamos los datos de la respuesta
+          console.log('MEMBRESIAS VISITAS TOTAL',response.data)
+
+          if (pedidos) {
+            // console.log(res.Productos);
+
+            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+
+            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
+            // Calculamos la suma de total_cantidad
+             this.totalVisitaCantidad = visitas.reduce(
+              (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
+              0
+            );
+            console.log('QUINCENAS: ', visitas);
+            this.total_visita = visitas.length;
+            console.log('TOTAL QUINCENAS: ', this.total_visita);
+            console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalVisitaCantidad);
+
+
+
+          } else {
+            console.warn("No se encontraron membresia para el gimnasio especificado.");
+          }
+
+          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
+
+        } else {
+          const errorMessage = response.message; // Si hay un error, mostramos el mensaje
+          console.log(errorMessage)
         }
+
+      },
+      (error) => {
+
+        let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
+        console.error(error); // También lo mostramos en la consola
       }
     );
+    }
 
+  calculateVisitaTotal(): void {
+    // // Verifica si salesChartDataVisita tiene contenido y estructura válida
+    // if (this.salesChartDataVisita.length > 0) {
+    //   console.log('Datos para calcular visita total:', this.salesChartDataVisita);
 
-    // combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(
-    //   ([idGym, idUser]) => {
-    //     if (idGym && idUser) {
-    //       this.idGym = idGym;
-    //       this.idUser = idUser;
-    //       this.listaTablas();
-    //     }
-    //   }
-    // );
+    //   // Recorre cada serie y suma los valores
+    //   this.visitaTotal = this.salesChartDataVisita.reduce((total, dataset) => {
+    //     return total + dataset.series.reduce((sum, data) => sum + data.value, 0);
+    //   }, 0);
 
+    //   console.log('Visita total calculada:', this.visitaTotal);
+    // } else {
+    //   console.warn('salesChartDataVisita está vacío o no tiene la estructura esperada');
+    //   this.visitaTotal = 0;
+    // }
 
-    // this.listaTablas();
-
-    // this.homeService.consultarHome(this.idGym).subscribe((respuesta) => {
-    //   this.homeCard = respuesta;
-    // });
-
-
-    // this.homeService.getAnalyticsData(this.idGym).subscribe((data) => {
-    //   this.masVendidos = data;
-    //   console.log('MasVendidos: ', this.masVendidos);
-
-    //   this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
-    //   this.loadData();
-    // });
-
-
+    this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
+
+
+
+  cargarTarjetas(): void {
+    this.homeService.consultarAsistenciasTotal(this.idGym).subscribe(
+      (respuesta: any) => {
+        if (!Array.isArray(respuesta)) {
+          this.homeCard3 = [respuesta]; // Convierte el objeto en un array
+        } else {
+          this.homeCard3 = respuesta; // Si ya es un array, úsalo tal cual
+        }
+        console.log('Tarjetas cargadas:', this.homeCard3);
+      },
+      (error) => {
+        console.error('Error al cargar las tarjetas:', error);
+      }
+    );
+}
+
+cargarTarjetas2(): void {
+  this.homeService.consultarAsistenciasPersonal(this.idGym).subscribe(
+    (respuesta: any) => {
+      if (!Array.isArray(respuesta)) {
+        this.homeCard4 = [respuesta]; // Convierte el objeto en un array
+      } else {
+        this.homeCard4 = respuesta; // Si ya es un array, úsalo tal cual
+      }
+      console.log('Tarjetas cargadas:', this.homeCard4);
+    },
+    (error) => {
+      console.error('Error al cargar las tarjetas:', error);
+    }
+  );
+}
+
 
   /**LOCAL */
   getSSdata(data: any) {
@@ -407,7 +612,7 @@ export class HomeComponent implements OnInit {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCard21 = [respuesta];
         } else {
-          console.error("La respuesta no es un objeto válido:", respuesta);
+          //console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
@@ -422,7 +627,7 @@ export class HomeComponent implements OnInit {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCardVisita = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
         } else {
-          console.error("La respuesta no es un objeto válido:", respuesta);
+          //console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
@@ -458,7 +663,7 @@ export class HomeComponent implements OnInit {
       this.fechaMensualidad = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFecha(this.fechaMensualidad);
     } else {
-      console.warn("Nombre de mes no es una cadena válida:", event.series);
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
   }
 
@@ -476,7 +681,7 @@ export class HomeComponent implements OnInit {
       this.fechaQuincena = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFechaQuincena(this.fechaQuincena);
     } else {
-      console.warn("Nombre de mes no es una cadena válida:", event.series);
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
   }
 
@@ -508,7 +713,7 @@ export class HomeComponent implements OnInit {
 
     this.homeService.getAnalyticsData(this.idGym).subscribe(
       (data) => {
-        console.log('Datos recibidos en Angular:', data); // Verifica si hay errores o estructura inesperada
+        //console.log('Datos recibidos en Angular:', data); // Verifica si hay errores o estructura inesperada
         this.masVendidos = data;
         this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
         this.loadData();
@@ -523,7 +728,10 @@ export class HomeComponent implements OnInit {
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
     // });
+    console.log('Entraremos a asistencias');
+
   }
+
 
   /**ASISTENCIA */
 
@@ -532,8 +740,8 @@ export class HomeComponent implements OnInit {
       this.asistencia = respuesta;
       this.dataSource = new MatTableDataSource(this.asistencia);
       this.loadData();
-    });
-  }
+    });
+  }
 
   /**Roles**/
   isAdmin(): boolean {
@@ -689,19 +897,19 @@ consultarMembresia(){
 //this.homeService.ConsultarPedidosMembresias(this)
 this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   (response) => {
-    console.log(this.auth.idGym.getValue(),'id')
+    //console.log(this.auth.idGym.getValue(),'id')
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
-      console.log('API',response.data)
+      //console.log('API',response.data)
 
 
       const pedidosAgrupados = this.agruparPorPedido(pedidos);
-      console.log('Agrupados Por pedido',pedidosAgrupados);
+      //console.log('Agrupados Por pedido',pedidosAgrupados);
       const ventasDiaGym =this.obtenerVentasDelDia(pedidosAgrupados);
-      console.log('ventas del dia',ventasDiaGym)
+      //console.log('ventas del dia',ventasDiaGym)
 
       const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
-      console.log('Conteo por dias',pedidosConteoDia);
+      //console.log('Conteo por dias',pedidosConteoDia);
 
 
 
@@ -737,6 +945,9 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   clientes.forEach(cliente => {
     const idPedido = cliente.id_pedido;
 
+    console.log('AGRUPADOS: ', idPedido);
+
+
     if (!agrupadosPorPedido[idPedido]) {
       // Si no existe este `id_pedido` en el objeto agrupador, lo inicializamos.
       agrupadosPorPedido[idPedido] = {
@@ -746,9 +957,13 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
         id_promocion: cliente.id_promocion,
         nombrePromocion: cliente.nombrePromocion,
         membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-        total:cliente.total,
+        total_cantidad:cliente.total_cantidad,
         productos: [] // Inicializamos un array vacío para los productos.
       };
+
+      console.log('AQUI DESPUES', agrupadosPorPedido[idPedido]);
+
+
     }
 
     // Agregamos la información del producto al array `productos` correspondiente.
@@ -765,13 +980,35 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   return Object.values(agrupadosPorPedido);
 }
 
-contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } {
+
+
+contarPorDia(clientes: {
+  id_pedido: string;
+  fecha_hora_pedido: string;
+  id_bodega: string;
+  id_promocion: string | null;
+  nombrePromocion: string | null;
+  membresia: string;
+  productos: {
+    id_producto: string;
+    marca: string;
+    nombreProducto: string;
+    idBodPro: string;
+    nombreCategoria: string;
+  }[];
+}[]): { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } {
   const conteos: { [fecha: string]: { conteoProductos: any, conteoBodegas: any, conteoPromociones: any } } = {};
 
   clientes.forEach(cliente => {
-    const fecha = new Date(cliente.fecha_hora_pedido).toISOString().split('T')[0]; // Extraemos solo la fecha (YYYY-MM-DD)
+    const fechaLocal = new Date(cliente.fecha_hora_pedido).toLocaleDateString('es-MX', {
+      timeZone: 'America/Mexico_City',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
 
-    console.log(`Procesando cliente con fecha: ${fecha}`, cliente);
+    const [dia, mes, año] = fechaLocal.split('/');
+    const fecha = `${año}-${mes}-${dia}`;
 
     if (!conteos[fecha]) {
       conteos[fecha] = {
@@ -781,50 +1018,34 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       };
     }
 
-    // **Conteo de productos**
-    cliente.productos.forEach((producto, index) => {
-      const idProducto = producto.id_producto || `temp_${index}`; // ID temporal si falta
-      const nombreProducto = producto.nombreProducto || 'Producto desconocido';
+    if (cliente.id_promocion === null) {
+      cliente.productos.forEach((producto: { id_producto: string; marca: string; nombreProducto: string; idBodPro: string; nombreCategoria: string }, index: number) => {
+        const idProducto = producto.id_producto || `temp_${index}`;
+        const nombreProducto = producto.nombreProducto || 'Producto desconocido';
 
-      console.log(`Procesando producto:`, { idProducto, nombreProducto, fecha });
+        if (!conteos[fecha].conteoProductos[idProducto]) {
+          conteos[fecha].conteoProductos[idProducto] = {
+            nombreProducto: nombreProducto,
+            cantidad: 0
+          };
+        }
 
-      if (!conteos[fecha].conteoProductos[idProducto]) {
-        console.log(`Producto nuevo encontrado, inicializando conteo:`, { idProducto, nombreProducto });
-        conteos[fecha].conteoProductos[idProducto] = {
-          nombreProducto: nombreProducto,
-          cantidad: 0
-        };
-      }
+        conteos[fecha].conteoProductos[idProducto].cantidad += 1;
 
-      conteos[fecha].conteoProductos[idProducto].cantidad += 1;
-      console.log(`Producto actualizado:`, conteos[fecha].conteoProductos[idProducto]);
-    });
+        const idBodPro = producto.idBodPro || `temp_bodega_${index}`;
+        const marcaYProducto = `${producto.marca} - ${producto.nombreProducto}`;
 
-    // **Conteo de bodegas**
-    cliente.productos.forEach((producto, index) => {
-      const idBodPro = producto.idBodPro || `temp_bodega_${index}`;
-      const marcaYProducto = `${producto.marca} - ${producto.nombreProducto}`;
+        if (!conteos[fecha].conteoBodegas[idBodPro]) {
+          conteos[fecha].conteoBodegas[idBodPro] = {
+            marcaYProducto: marcaYProducto,
+            cantidad: 0
+          };
+        }
 
-      console.log(`Procesando bodega:`, { idBodPro, marcaYProducto, fecha });
-
-      if (!conteos[fecha].conteoBodegas[idBodPro]) {
-        console.log(`Bodega nueva encontrada, inicializando conteo:`, { idBodPro, marcaYProducto });
-        conteos[fecha].conteoBodegas[idBodPro] = {
-          marcaYProducto: marcaYProducto,
-          cantidad: 0
-        };
-      }
-
-      conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
-      console.log(`Bodega actualizada:`, conteos[fecha].conteoBodegas[idBodPro]);
-    });
-
-    // **Conteo de promociones**
-    if (cliente.id_promocion && cliente.nombrePromocion) {
-      console.log(`Procesando promoción:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion, fecha });
-
+        conteos[fecha].conteoBodegas[idBodPro].cantidad += 1;
+      });
+    } else {
       if (!conteos[fecha].conteoPromociones[cliente.id_promocion]) {
-        console.log(`Promoción nueva encontrada, inicializando conteo:`, { id_promocion: cliente.id_promocion, nombrePromocion: cliente.nombrePromocion });
         conteos[fecha].conteoPromociones[cliente.id_promocion] = {
           nombrePromocion: cliente.nombrePromocion,
           cantidad: 0
@@ -832,13 +1053,12 @@ contarPorDia(clientes: Cliente[]): { [fecha: string]: { conteoProductos: any, co
       }
 
       conteos[fecha].conteoPromociones[cliente.id_promocion].cantidad += 1;
-      console.log(`Promoción actualizada:`, conteos[fecha].conteoPromociones[cliente.id_promocion]);
     }
   });
 
-  console.log('Conteos finales:', conteos);
   return conteos;
 }
+
 
 
 
@@ -1027,6 +1247,12 @@ processSalesDataVisita() {
       series: previousMonthSalesVisita,
     },
   ];
+
+  console.log('VALOR DEL DATO DE VISITAS', this.salesChartDataVisita);
+  console.log('VALOR DE LONGITUD DE VISITAS', this.salesChartDataVisita.length);
+
+   // Recalcula la visita total
+   this.calculateVisitaTotal();
 }
 
 /////////FIN VISITA///////////////////
@@ -1038,7 +1264,7 @@ updateDate(): void {
   const day = today.getDate().toString().padStart(2, '0');
 
   this.currentDate = `${year}-${month}-${day}`;
-  console.log('Fecha actualizada:', this.currentDate);
+  //console.log('Fecha actualizada:', this.currentDate);
 }
 
 startDateUpdater(): void {
@@ -1086,7 +1312,6 @@ selectedProductQuincenal: string = 'Quincenal'; // Valor inicial
 // Procesar los datos
 processSalesDataQuincenal() {
   // Obtener el mes y el año actual dinámicamente
-  console.log('hola');
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'

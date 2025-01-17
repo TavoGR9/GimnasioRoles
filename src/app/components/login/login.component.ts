@@ -48,6 +48,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
+          console.log("dato de inicio sesion: ",resultData);
           if (resultData && resultData.rol !== 'No_acceso') {
 
             this.auth.loggedIn.next(true);
@@ -59,6 +60,7 @@ export class LoginComponent implements OnInit {
             this.auth.encryptedMail.next(resultData.encryptedMail);
             this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
             if(resultData.rol == 'SuperAdmin'){
+
               this.router.navigate(['/listaSucursales'],{ replaceUrl: true });
             }else if (resultData.rol == 'Administrador'){
               this.router.navigate(['/home'],{ replaceUrl: true });
