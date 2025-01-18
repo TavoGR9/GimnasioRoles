@@ -47,41 +47,50 @@ export class RoleGuard implements CanActivate {
     return of(null).pipe(
       delay(1000),
       switchMap(() => {
-        const userRole = this.authService.getRole();
-        const expectedRole = (route.data as { userRole: string }).userRole;
-
+        const userRole = this.authService.getRole(); // Obtiene el rol del usuario.
+        const expectedRole = (route.data as { userRole: string }).userRole; // Obtiene el rol esperado de la ruta.
+  
         if (!userRole) {
-          // Si el rol del usuario no está disponible, redirige a la página de inicio o a una página de acceso no autorizado.
+          // Si el rol del usuario no está disponible, redirige a la página de inicio.
           this.router.navigate(['/']);
           return of(false);
-        } else if (userRole === expectedRole) {
-          // Si el rol del usuario coincide con el rol requerido para la ruta, permite el acceso.
-          return of(true);
-        } else {
-          // Verifica si el usuario tiene acceso a las rutas compartidas entre "Administrador" y "Recepcionista"
-          if ((userRole === "Administrador" || userRole === "Recepcionista") &&
-              (expectedRole == "Administrador" || expectedRole == "Recepcionista")) {
-            return of(true);
-          }
-          // Verifica si el usuario es "SuperAdmin"
-          else if (userRole === "SuperAdmin" && expectedRole === "SuperAdmin") {
-            this.router.navigate(['/listaSucursales']);
-            return of(false);
-          }
-          // Si el rol del usuario no coincide con el rol requerido para la ruta, redirige a otra página.
-          else {
-            if(userRole === "Administrador" || userRole === "Recepcionista"){
-              this.router.navigate(['/home']);
-            }
-             else if (userRole === "SuperAdmin"){
-              this.router.navigate(['/listaSucursales']);
-            }
+        }
+  
+        if (userRole === 'SuperAdmin') {
+          // Si el usuario es SuperAdmin, verifica si la ruta es exclusivamente para ellos.
+          if (expectedRole === 'SuperAdmin') {
+            return of(true); // Permite el acceso a rutas de SuperAdmin.
+          } else {
+            this.router.navigate(['/listaSucursales']); // Redirige si intenta acceder a otras rutas.
             return of(false);
           }
         }
+  
+        // Permite el acceso si el rol del usuario coincide con el rol esperado.
+        if (userRole === expectedRole) {
+          return of(true);
+        }
+  
+        // Reglas adicionales para roles específicos.
+        if (expectedRole === 'Administrador' && userRole === 'Administrador') {
+          return of(true);
+        }
+  
+        if (expectedRole === 'Recepcionista' && (userRole === 'Administrador' || userRole === 'Recepcionista')) {
+          return of(true);
+        }
+  
+        // Redirige al home si no tiene acceso.
+        if (userRole === 'Administrador' || userRole === 'Recepcionista') {
+          this.router.navigate(['/home']);
+        } else if (userRole === 'SuperAdmin') {
+          this.router.navigate(['/listaSucursales']);
+        }
+        return of(false);
       })
     );
-}
+  }
+  
 
 }
 

@@ -68,14 +68,7 @@ const routes: Routes = [
           { path: 'plan', component:planComponent}, 
           { path: 'editar-plan', component:planEditarComponent},
   
-          { path: 'home', component: HomeComponent },
-          { path: 'listaMembresias', component: ListaMembresiasPagoEfecComponent},
-          { path: 'inventarios', component: InventariosComponent},
-          { path: 'registrar', component: RegistroComponent},
-          { path: 'Ventas', component: VentasComponent},
-          { path: 'verCorte', component: VerCorteComponent},
-          { path: 'AperturaManual', component: EmergenteAperturaPuertoSerialComponent},
-          { path: 'pagoMem', component: PagoMemComponent},
+
         ]
       },
       {
