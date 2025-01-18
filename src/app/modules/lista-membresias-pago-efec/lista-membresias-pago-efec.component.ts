@@ -416,32 +416,49 @@ verificarCambios(): void {
       });
   }
 
+  
+  
   eliminarCliente(prod: any) {
-    //const correo = prod.Correo;
-    const correo =prod.clave;
-
-
+    const clave = prod.clave; // Usar 'clave' como identificador del cliente
+  
     this.dialog
       .open(MensajeEliminarComponent, {
         data: `¿Desea eliminar a este usuario?`,
       })
       .afterClosed()
-
       .subscribe((confirmado: boolean) => {
         if (confirmado) {
-          this.pagoService.deleteServiceUsuario(correo).subscribe({
+          this.pagoService.deleteServiceUsuario(clave).subscribe({
             next: (respuesta) => {
-              console.log("Usuario eliminado exitosamente:", respuesta);
-              this.listaClientesData3();
+              if (respuesta.success === 1) {
+                console.log("Usuario eliminado exitosamente:", respuesta);
+                this.toastr.success('Registro eliminado exitosamente', 'Éxito', {
+                  positionClass: 'toast-bottom-left',
+                });
+                this.listaClientesData3(); // Actualizar lista de clientes
+              } else {
+                // Mostrar un Toast de error si la respuesta no es exitosa
+                this.toastr.error(
+                  'Ocurrió un error al eliminar el registro',
+                  'Error',
+                  { positionClass: 'toast-bottom-left' }
+                );
+              }
             },
             error: (error) => {
-              console.error("Error al eliminar el usuario:", error);
+        
+              // Mostrar un Toast en caso de error al comunicarse con el servicio
+              this.toastr.error(
+                'No se pudo procesar la solicitud. Intente de nuevo más tarde.',
+                'Error',
+                { positionClass: 'toast-bottom-left' }
+              );
             },
           });
         }
       });
   }
-
+  
 
 
 
@@ -670,9 +687,17 @@ agruparPorPedido(clientes: any[]): any[] {
 
   ///¿Como quitar del arreglo clientesSinPedidos aquellos registros donde coincidan clavesConPedido con el campo clave
 
-  const clientesSinPedidosFiltrados = clientesSinPedidos.filter((cliente: any) => {
+  const clientesSinPedidosFiltrados = clientesSinPedidos
+  .filter((cliente: any) => {
     // Verificamos si la clave del cliente está en el conjunto de claves con pedido
     return !clavesConPedido.has(cliente.clave);
+  })
+  .map((cliente: any) => {
+    // Agregamos el campo 'productos' como un arreglo vacío
+    return {
+      ...cliente,
+      productos: []  // Campo 'productos' vacío
+    };
   });
 
   console.log('clientesSinPedidosFiltrados', clientesSinPedidosFiltrados);
