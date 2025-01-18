@@ -95,8 +95,8 @@ export class ReportsComponent implements OnInit {
 
   obtenerDatosParaGrafico1() {
     if (this.form.value.p_inicial && this.form.value.p_final) {
-      let inicial = this.formatearFecha(this.form.value.p_inicial);
-      let final = this.formatearFecha(this.form.value.p_final);
+      let inicial = this.form.value.p_inicial;
+      let final = this.form.value.p_final;
       this.form.value.p_inicial = inicial;
       this.form.value.p_final = final;
 
@@ -133,8 +133,8 @@ export class ReportsComponent implements OnInit {
 
   obtenerDatosParaGrafico2() {
     if (this.form.value.p_inicial && this.form.value.p_final) {
-      let inicial = this.formatearFecha(this.form.value.p_inicial);
-      let final = this.formatearFecha(this.form.value.p_final);
+      let inicial = this.form.value.p_inicial;
+      let final = this.form.value.p_final;
       this.form.value.p_inicial = inicial;
       this.form.value.p_final = final;
 
@@ -178,8 +178,8 @@ export class ReportsComponent implements OnInit {
   }
 
   obtenerDatosParaGrafico5() {
-    const inicial = this.formatearFecha(this.form.value.p_inicial);
-    const final = this.formatearFecha(this.form.value.p_final);
+    const inicial = this.form.value.p_inicial;
+    const final = this.form.value.p_final;
     this.form.patchValue({ p_inicial: inicial, p_final: final });
     // Obtener datos del servicio
     this.auth.chart_sucursales(this.form.value).subscribe({
