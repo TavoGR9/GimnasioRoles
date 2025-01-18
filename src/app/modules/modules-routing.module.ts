@@ -34,11 +34,11 @@ const routes: Routes = [
     path: '',
     component: AdminDashboardComponent,
     children: [
-      
+
      // { path: '', redirectTo: 'home', pathMatch: 'full' },
       {
         path: '',
-        canActivate: [RoleGuard], 
+        canActivate: [RoleGuard],
         data: { userRole: 'SuperAdmin'},
         children: [
           { path: 'listaSucursales', component:SucursalListaComponent},
@@ -48,7 +48,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        canActivate: [RoleGuard], 
+        canActivate: [RoleGuard],
         data: { userRole: 'Administrador'},
         children: [
           { path: 'misMembresias', component: MembresiasComponent },
@@ -63,17 +63,17 @@ const routes: Routes = [
           { path: 'colaboradores', component: ColaboradoresComponent},
           { path: 'misServicios', component: ServiciosListaComponent},
           { path: 'alta-colaborador', component:AltaColaboradoresComponent},
-          { path: 'editar-colaborador', component:EditarColaboradorComponent}, 
-          { path: 'agregar-plan', component:planAgregarComponent}, 
-          { path: 'plan', component:planComponent}, 
+          { path: 'editar-colaborador', component:EditarColaboradorComponent},
+          { path: 'agregar-plan', component:planAgregarComponent},
+          { path: 'plan', component:planComponent},
           { path: 'editar-plan', component:planEditarComponent},
-  
+
 
         ]
       },
       {
         path: '',
-        canActivate: [RoleGuard], 
+        canActivate: [RoleGuard],
         data: { userRole: 'Recepcionista'},
         children: [
           { path: 'home', component: HomeComponent },
