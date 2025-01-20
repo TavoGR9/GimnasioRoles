@@ -90,6 +90,7 @@ import { MensajeAceptarComponent } from './mensaje-aceptar/mensaje-aceptar.compo
 import { CrearMarcaComponent } from './crear-marca/crear-marca.component';
 import { EditarMarcaComponent } from './editar-marca/editar-marca.component';
 import { AgregarProductoMembresiaComponent } from './agregar-producto-membresia/agregar-producto-membresia.component';
+import { CrearRolComponent } from './crear-rol/crear-rol.component';
 
 
 @NgModule({
@@ -144,7 +145,8 @@ import { AgregarProductoMembresiaComponent } from './agregar-producto-membresia/
     MensajeAceptarComponent,
     CrearMarcaComponent,
     EditarMarcaComponent,
-    AgregarProductoMembresiaComponent
+    AgregarProductoMembresiaComponent,
+    CrearRolComponent
   ],
   imports: [
     RouterModule,

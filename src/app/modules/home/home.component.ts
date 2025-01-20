@@ -419,6 +419,7 @@ reloadPage(): void {
 
 
 
+
   cargarTarjetas(): void {
     this.homeService.consultarAsistenciasTotal(this.idGym).subscribe(
       (respuesta: any) => {
@@ -728,8 +729,6 @@ cargarTarjetas2(): void {
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
     // });
-    console.log('Entraremos a asistencias');
-
   }
 
 
@@ -1066,7 +1065,7 @@ contarPorDia(clientes: {
 // Configuración de ngx-charts
 view2: [number, number] = [900, 900]; // Tamaño del gráfico
 colorScheme2: Color = {
-  domain: ["#FF8C00", "#000000"], // Colores
+  domain: ["#4CAF50", "#FF5722"], // Colores
   name: "cool",
   selectable: true,
   group: ScaleType.Ordinal,
