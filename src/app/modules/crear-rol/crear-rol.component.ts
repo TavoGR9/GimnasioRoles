@@ -59,33 +59,42 @@ export class CrearRolComponent implements OnInit {
       this.marcarCamposInvalidos(this.rolForm);
     } else {
       this.spinner.show();
-
+  
       const newRol = {
         ...this.rolForm.value,
-        idGimnasio: this.idGym  // Incluye el idGym en el objeto de la nueva marca
+        idGimnasio: this.idGym  // Incluye el idGym en el objeto del nuevo rol
       };
-      this.rolService.insertarRol(newRol).subscribe((respuesta) => { // Tipado aquí
-        if (respuesta) {
-          if (respuesta.success === '1') {
-            this.spinner.hide();
+  
+      this.rolService.insertarRol(newRol).subscribe(
+        (respuesta: any) => {
+          this.spinner.hide();
+  
+          if (respuesta && respuesta.ok) {
+            // Éxito
+            console.log('Rol agregado correctamente');
             const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
-              data: `Rol agregado con éxito!`,
+              data: `Rol agregado con éxito!`
             });
             dialogRefConfirm.afterClosed().subscribe(() => {
               this.dialogRef.close(respuesta);
             });
           } else {
-            this.spinner.hide();
-            this.toastr.error(respuesta.message || 'Hubo un error al agregar el rol.');
-            console.error("Error al agregar rol", respuesta);
+            // Manejo de errores desde el servidor
+            const mensajeError = respuesta.message || 'Hubo un error al agregar el rol.';
+            this.toastr.error(mensajeError);
+            console.error("Error al agregar rol:", respuesta);
           }
-        } else {
+        },
+        (error) => {
+          // Manejo de errores en la conexión
           this.spinner.hide();
           this.toastr.error('No se pudo conectar con el servidor.');
+          console.error("Error de conexión:", error);
         }
-      });
+      );
     }
   }
+  
 
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {

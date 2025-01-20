@@ -11,7 +11,7 @@ export class RolService {
   constructor(private http: HttpClient) {}
 
   insertarRol(rol: { usu: string }): Observable<any> {
-    const url = `${this.apiUrl}addRol.php?insertar`;
+    const url = `${this.apiUrl}addRol.php`;
     return this.http.post(url, rol); // Realiza la petición HTTP
   }
 }
