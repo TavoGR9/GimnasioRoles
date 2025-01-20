@@ -31,7 +31,7 @@ export class FormPagoEmergenteComponent implements OnInit {
   nombreMembresia: any;
   precio: any;
   duracion: any ;
-  moneyRecibido: number = 0;
+  receivedMoney: number = 0;
   fechaDeInicio: Date | null = null;
   fechaDeFin: Date | null = null;
   ticketInfo: any;
@@ -196,7 +196,7 @@ export class FormPagoEmergenteComponent implements OnInit {
   }
 
   succesDialog2() {
-    if (this.moneyRecibido >= this.precio) {
+    if (this.receivedMoney >= this.precio) {
       // Si el dinero recibido es suficiente, muestra el spinner y realiza la acción
       this.spinner.show();
       this.onMembresiaChange(); // Llama a la función para cambiar la membresía
@@ -219,7 +219,7 @@ export class FormPagoEmergenteComponent implements OnInit {
         .subscribe((confirmado: boolean) => {
           if (confirmado) {
 
-              const PrecioCalcular = this.moneyRecibido - this.precio;
+              const PrecioCalcular = this.receivedMoney - this.precio;
               console.log('PrecioCalcular', PrecioCalcular);
               this.dineroDevuelto =   PrecioCalcular;
 
@@ -235,10 +235,11 @@ export class FormPagoEmergenteComponent implements OnInit {
                 p_correo: this.data.correo, // Correo del cliente ---
                 p_bodega: this.data.idSucursal, // Ajusta la bodega según el contexto
                 p_total: this.precio, // Total pagado
-                p_pago: this.moneyRecibido, // Forma de pago
+                p_pago: this.receivedMoney, // Forma de pago
                 p_idProbob: this.idProbob, // ID del producto o servicio si lo tienes
                 p_claveUser: this.data.idCliente, // Clave del usuario
-                p_idPromo:  this.id_promocion, // El ID de la promoción si lo tienes
+                p_idPromo:  this.id_promocion,
+                p_idEmpleado:this.auth.idUser.getValue(), // El ID de la promoción si lo tienes
               };
 
 
@@ -278,8 +279,8 @@ const DatosTicket ={
   claveUser: this.data.idCliente,
   precio:  this.precio,
   precioLetra: this.convertirNumeroAPalabrasPesos(this.precio),
-  pago: this.moneyRecibido,
-  pagoLetra:this.convertirNumeroAPalabrasPesos(this.moneyRecibido),
+  pago: this.receivedMoney,
+  pagoLetra:this.convertirNumeroAPalabrasPesos(this.receivedMoney),
   dineroDevuelto: this.dineroDevuelto,
   dineroDevueltoLetra:this.convertirNumeroAPalabrasPesos(this.dineroDevuelto),
   idPromocion:this.id_promocion,
@@ -457,40 +458,7 @@ imprimirResumen(){
   }
 
 imprimirResumen3() {
-    // Calcular cambio
-    // Convertir precio a palabras
-    // Convertir pago a palabras
-    // Obtener datos
-    // clave
-    // fecha actual
-    // fecha fin
-    // producto
-    // precio y precio en número
-    // cambio y cambio en número
-    // hora actual
-    // logo
-    // dirección gym
-    // sucursal
-    // nombre sucursal
 
-    /*
-    if (this.precio <= this.moneyRecibido) {
-      const PrecioCalcular = this.moneyRecibido - this.precio;
-      this.membresiaService
-        .ticketPagoInfo(this.data.idCliente)
-        .subscribe((respuesta) => {
-          if (respuesta && respuesta.length > 0) {
-            const ticketInfo = respuesta[0];
-            const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.precio);
-            const totalEnPesosRecibido = this.convertirNumeroAPalabrasPesos(this.moneyRecibido);
-            const totalEnPesosCambio = this.convertirNumeroAPalabrasPesos(PrecioCalcular);
-
-            const fechaActual = new Date().toLocaleDateString("es-MX"); // Obtener solo la fecha en formato local de México
-            const horaActual = new Date().toLocaleTimeString("es-MX", {
-              hour: "2-digit",
-              minute: "2-digit",
-            }); // Obtener solo la hora en formato local de México
-    */
 
             console.log('Ver los datos del ticket',this.datosTicket);
             console.log(this.dataGym);

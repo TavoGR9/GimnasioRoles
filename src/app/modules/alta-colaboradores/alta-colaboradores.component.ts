@@ -9,6 +9,8 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emergentes.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 
+import { CrearRolComponent } from '../crear-rol/crear-rol.component';
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = formulario && formulario.submitted;
@@ -43,7 +45,7 @@ export class AltaColaboradoresComponent {
     private auth: AuthService,
     private http: ColaboradorService,
     private spinner: NgxSpinnerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) {
     this.form = this.fb.group({
       clave: ['', Validators.required],
@@ -189,5 +191,21 @@ export class AltaColaboradoresComponent {
     });
   }
 
+
+  abrirModalCrearRol(): void {
+    const dialogRef = this.dialog.open(CrearRolComponent, {
+      width: '400px', // Ancho del modal
+      disableClose: true // Evita cerrar el modal al hacer clic fuera
+    });
+
+    dialogRef.afterClosed().subscribe((resultado) => {
+      if (resultado) {
+        console.log('El rol fue creado con éxito.');
+        // Aquí puedes refrescar tu lista de roles, si es necesario
+      } else {
+        console.log('El usuario canceló la creación del rol.');
+      }
+    });
+  }
 
 }

@@ -146,19 +146,19 @@ export class SidebarComponent {
   }*/
 
 
-      abrirVentasModal(event: Event): void {
-        // Abrir el modal
-        const dialogRef = this.dialog.open(VentasComponent, {
-            width: '70%',
-            disableClose: true,
-        });
+  abrirVentasModal(event: Event): void {
+    const dialogRef = this.dialog.open(VentasComponent, {
+      width: '70%',
+      disableClose: true,
+    });
 
-        // Detener el comportamiento por defecto si es necesario
-        event.preventDefault();
+    // Detener el comportamiento por defecto si es necesario
+    event.preventDefault();
 
-        dialogRef.afterClosed().subscribe(() => {
-            console.log('Modal cerrado');
-        });
-    }
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('Modal cerrado');
+      this.router.navigate(['/verCorte']);
+    });
+  }
 
 }

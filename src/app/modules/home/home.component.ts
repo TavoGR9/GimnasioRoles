@@ -419,6 +419,7 @@ reloadPage(): void {
 
 
 
+
   cargarTarjetas(): void {
     this.homeService.consultarAsistenciasTotal(this.idGym).subscribe(
       (respuesta: any) => {

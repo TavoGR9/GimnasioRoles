@@ -10,8 +10,11 @@ import { AuthService } from "../../service/auth.service";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { FormPagoEmergenteComponent } from "../form-pago-emergente/form-pago-emergente.component";
+import { NgxSpinnerService } from "ngx-spinner";
 
 import { RegistroComponent } from "../registro/registro.component";
+import { EmergenteAperturaPuertoSerialComponent } from "../emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component";
+import { NgZone } from "@angular/core";
 
 
 import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergente-info-cliente.component";
@@ -138,7 +141,9 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private toastr: ToastrService,
     private datePipe: DatePipe,
     private auth: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private spinner: NgxSpinnerService,
+    private zone: NgZone
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -411,32 +416,49 @@ verificarCambios(): void {
       });
   }
 
+  
+  
   eliminarCliente(prod: any) {
-    //const correo = prod.Correo;
-    const correo =prod.clave;
-
-
+    const clave = prod.clave; // Usar 'clave' como identificador del cliente
+  
     this.dialog
       .open(MensajeEliminarComponent, {
         data: `¿Desea eliminar a este usuario?`,
       })
       .afterClosed()
-
       .subscribe((confirmado: boolean) => {
         if (confirmado) {
-          this.pagoService.deleteServiceUsuario(correo).subscribe({
+          this.pagoService.deleteServiceUsuario(clave).subscribe({
             next: (respuesta) => {
-              console.log("Usuario eliminado exitosamente:", respuesta);
-              this.listaClientesData3();
+              if (respuesta.success === 1) {
+                console.log("Usuario eliminado exitosamente:", respuesta);
+                this.toastr.success('Registro eliminado exitosamente', 'Éxito', {
+                  positionClass: 'toast-bottom-left',
+                });
+                this.listaClientesData3(); // Actualizar lista de clientes
+              } else {
+                // Mostrar un Toast de error si la respuesta no es exitosa
+                this.toastr.error(
+                  'Ocurrió un error al eliminar el registro',
+                  'Error',
+                  { positionClass: 'toast-bottom-left' }
+                );
+              }
             },
             error: (error) => {
-              console.error("Error al eliminar el usuario:", error);
+        
+              // Mostrar un Toast en caso de error al comunicarse con el servicio
+              this.toastr.error(
+                'No se pudo procesar la solicitud. Intente de nuevo más tarde.',
+                'Error',
+                { positionClass: 'toast-bottom-left' }
+              );
             },
           });
         }
       });
   }
-
+  
 
 
 
@@ -596,18 +618,9 @@ agruparPorPedido(clientes: any[]): any[] {
 
           const respuestaApi = response.data;
 
-// Validar que respuestaApi es un array antes de aplicar filter
-if (!this.isAdmin()) {
-  this.Clientes = respuestaApi.filter(
-    (cliente: any) =>
-        (cliente.rol && cliente.rol === 'Cliente') || cliente.id_rol === 4
-);
+          this.Clientes=respuestaApi
 
-console.log('Ver filtrados Recepcionista', this.Clientes);
-} else {
-  this.Clientes=respuestaApi;
-console.log('else')
-}
+
           // Obtenemos la lista completa de clientes desde la respuesta.
           const Clientes =this.Clientes;
 
@@ -674,9 +687,17 @@ console.log('else')
 
   ///¿Como quitar del arreglo clientesSinPedidos aquellos registros donde coincidan clavesConPedido con el campo clave
 
-  const clientesSinPedidosFiltrados = clientesSinPedidos.filter((cliente: any) => {
+  const clientesSinPedidosFiltrados = clientesSinPedidos
+  .filter((cliente: any) => {
     // Verificamos si la clave del cliente está en el conjunto de claves con pedido
     return !clavesConPedido.has(cliente.clave);
+  })
+  .map((cliente: any) => {
+    // Agregamos el campo 'productos' como un arreglo vacío
+    return {
+      ...cliente,
+      productos: []  // Campo 'productos' vacío
+    };
   });
 
   console.log('clientesSinPedidosFiltrados', clientesSinPedidosFiltrados);
@@ -794,5 +815,43 @@ console.log('filteredData', filteredData);
     }
   }
   
+
+  capturarHuella(idCliente: string|number ): void {
+    this.spinner.show();
+
+    setTimeout(() => {
+      this.abrirPuertoSerial(idCliente)
+      this.spinner.hide();
+    }, 10000);
+  }
+  
+ 
+/*
+capturarHuella(): void {
+  this.spinner.show();
+
+  this.zone.run(() => { // Asegura que Angular esté en su zona
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 10000);
+  });
+}*/
+
+    abrirPuertoSerial(data: any): void {
+      
+      this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
+        data: {
+          clienteID: `${data.idCliente}`
+        },
+      })
+      .afterClosed()
+      .subscribe((cerrarDialogo: Boolean) => {
+        if (cerrarDialogo) {
+  
+        } else {
+  
+        }
+      });
+    }
 
 }
