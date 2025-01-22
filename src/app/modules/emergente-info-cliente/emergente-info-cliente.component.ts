@@ -11,6 +11,9 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { AuthService } from '../../service/auth.service';
 import { ToastrService } from 'ngx-toastr';
+
+
+
 @Component({
   selector: 'app-emergente-info-cliente',
   templateUrl: './emergente-info-cliente.component.html',

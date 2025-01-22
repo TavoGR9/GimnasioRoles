@@ -7,6 +7,7 @@ import { ToastrService } from "ngx-toastr";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { AuthService } from '../../service/auth.service';
+import { NetworkService } from '../../service/network.service';
 
 @Component({
   selector: 'app-pago-mem',
@@ -28,6 +29,8 @@ export class PagoMemComponent implements OnInit{
   displayedColumns: string[] = [
     'clave','nombre'
   ];
+  isOnline = true;
+
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   clienteActivo: any;
@@ -36,7 +39,8 @@ export class PagoMemComponent implements OnInit{
     private pagoMem: PagoMembresiaEfectivoService,
     private datePipe: DatePipe,
     private toastr: ToastrService, 
-    private auth:AuthService){
+    private auth:AuthService,
+    private networkService: NetworkService){
       
       this.fechaInicio.setHours(0, 0, 0, 0);
      
@@ -44,7 +48,16 @@ export class PagoMemComponent implements OnInit{
 
   ngOnInit(): void {  
     this.verTabla();
-    console.log(this.fechaInicio,this.fechaFin)
+    console.log(this.fechaInicio,this.fechaFin);
+    
+      // Suscribirse al estado de conexión
+      this.networkService.isOnline$.subscribe((status) => {
+        this.isOnline = status;
+      });
+
+      console.log('Conexion',this.isOnline);
+
+    
   }
 
 
