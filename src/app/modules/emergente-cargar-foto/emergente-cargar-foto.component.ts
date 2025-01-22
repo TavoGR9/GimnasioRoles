@@ -140,25 +140,35 @@ export class EmergenteCargarFotoComponent implements OnInit{
   }
 
   uploadPhoto() {
-    if (this.archivo.base64textString === '' || this.archivo.nombreArchivo === '' || this.archivo.id === 0) {
+    if (
+      this.archivo.base64textString === '' || 
+      this.archivo.nombreArchivo === '' || 
+      this.archivo.id === 0
+    ) {
       this.toastr.error('Aún no haz seleccionado una imagen valida...', 'Error');
       return;
     }
+  
     this.ServiceCliente.updatePhoto(this.archivo).subscribe({
-      next: (resultData) => { 
-        this.toastr.success('Se guardó la foto exitosamente...', 'Éxito');
-        this.dialogo.close(true);
-      }, 
-      error: (error) => { 
-        console.log(error); 
-        if (error instanceof HttpErrorResponse) {
-          console.log(error.error); // Si el error es una instancia de HttpErrorResponse, imprime el error
+      next: (resultData: any) => {
+        if (resultData.success === 1) {
+          this.toastr.success(resultData.msg || 'Se guardó la foto exitosamente...', 'Éxito');
+          this.dialogo.close(true);
+        } else {
+          this.toastr.error(resultData.msg || 'Ocurrió un error al guardar la foto.', 'Error');
         }
-        this.toastr.error('Ocurrió un error al guardar la foto.', 'Error');
+      },
+      error: (error) => {
+       
+        if (error instanceof HttpErrorResponse && error.error?.msg) {
+          this.toastr.error(error.error.msg, 'Error');
+        } else {
+          this.toastr.error('Ocurrió un error al guardar la foto.', 'Error');
+        }
       }
-    }); 
+    });
   }
-
+  
   mostrarInformacion(boton: string): void {
     this.mostrarInfo = boton;
   }
