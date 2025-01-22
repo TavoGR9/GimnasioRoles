@@ -2,25 +2,15 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatDialog,MatDialogConfig } from "@angular/material/dialog";
-import { Router } from "@angular/router";
 import { DatePipe } from "@angular/common";
-import { FormBuilder, FormGroup} from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { AuthService } from "../../service/auth.service";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { FormPagoEmergenteComponent } from "../form-pago-emergente/form-pago-emergente.component";
-import { NgxSpinnerService } from "ngx-spinner";
-
 import { RegistroComponent } from "../registro/registro.component";
 import { EmergenteAperturaPuertoSerialComponent } from "../emergente-apertura-puerto-serial/emergente-apertura-puerto-serial.component";
-import { NgZone } from "@angular/core";
-
-
 import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergente-info-cliente.component";
-
-import { ChangeDetectorRef } from "@angular/core";
-import { AltaColaboradoresComponent } from "../alta-colaboradores/alta-colaboradores.component";
 import { NetworkService } from "../../service/network.service";
 import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
@@ -83,32 +73,31 @@ interface ClientesActivos {
   providers: [DatePipe],
 })
 export class ListaMembresiasPagoEfecComponent implements OnInit {
-  form: FormGroup;
+  
   cliente: any;
   clienteActivo: ClientesActivos[] = [];
   dataSourceActivos: MatTableDataSource<any>;
-  dataSourceReenovacion: any;
+
 
   id: any;
-  dineroRecibido: number = 0;
-  moneyRecibido: number = 0;
-  cash: number = 0;
+
+ 
+
   currentUser: string = "";
   idGym: number = 0;
-  totalVentas: number = 0;
+
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
   isLoading: boolean = true;
   habilitarBoton: boolean = false;
-  todosClientes: any;
+ 
   sortField: string = "";
   sortDirection: string = "asc";
   // @ViewChild("paginatorPagoOnline", { static: true }) paginator!: MatPaginator;
   @ViewChild("paginatorActivos") paginatorActivos!: MatPaginator;
   @ViewChild('paginatorActivos', { static: true }) paginator!: MatPaginator;
 
-  //@ViewChild("paginatorReenovacionMem", { static: true })
-  paginatorReenovacion!: MatPaginator;
+ 
   displayedColumnsActivos: string[] = [
     "ID",
     "Nombre",
@@ -139,32 +128,20 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   constructor(
     private pagoService: PagoMembresiaEfectivoService,
     public dialog: MatDialog,
-    private fb: FormBuilder,
-    private router: Router,
     private toastr: ToastrService,
-    private datePipe: DatePipe,
-    private auth: AuthService,
-    private cdr: ChangeDetectorRef,
-    private spinner: NgxSpinnerService,
-    private zone: NgZone,
+    private auth: AuthService, 
     private networkService: NetworkService,
     private eventCommunicationService: EventCommunicationServiceService
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-    //this.fechaInicio.setHours(0, 0, 0, 0);
-    //this.fechaFin.setHours(23, 59, 0, 0);
 
-    this.form = this.fb.group({
-      idUsuario: [""],
-      action: ["add"],
-    });
+
   }
 
   ngOnInit(): void {
-    // this.pagoService.comprobar();
-    // this.auth.comprobar();
-    
+  
+// Suscribirse para ver si el modal de carga de fotos se ha cerrado
 
     this.eventCommunicationService.eventTriggered$.subscribe(event => {
       console.log('Evento recibido:', event); // Verificar recepción
@@ -191,12 +168,10 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       this.getSSdata(JSON.stringify(this.currentUser));
     };
 
-          // Suscribirse al estado de conexión
-          this.networkService.isOnline$.subscribe((status) => {
-            this.isOnline = status;
-          });
-    
-          console.log('Conexion',this.isOnline);
+  // Suscribirse al estado de conexión
+ this.networkService.isOnline$.subscribe((status) => {this.isOnline = status;
+   });
+   console.log('Conexion',this.isOnline);
 
 
   
@@ -424,23 +399,6 @@ verificarCambios(): void {
     return this.auth.isRecepcion();
   }
 
-  eliminarUs(prod: any) {
-    const prueba = {
-      idUsuario: prod.ID,
-      correo: prod.email,
-    };
-    this.dialog
-      .open(MensajeEliminarComponent, {
-        data: `¿Desea eliminar a este usuario?`,
-      })
-      .afterClosed()
-      .subscribe((confirmado: boolean) => {
-        if (confirmado) {
-          this.listaClientesData3();
-        }
-      });
-  }
-
 
 
   eliminarCliente(prod: any) {
@@ -491,49 +449,6 @@ verificarCambios(): void {
 
 
 
-  procesarPedidos(pedidos: any[]): any[] {
-    // Filtrar solo los registros con estatus = 1
-    const pedidosFiltrados = pedidos.filter(pedido => pedido.estatus === '1');
-
-    // Agrupar pedidos por idProbob
-    const gruposPorUsuario: { [key: string]: any[] } = {};
-
-    pedidosFiltrados.forEach(pedido => {
-      if (!gruposPorUsuario[pedido.idProbob]) {
-        gruposPorUsuario[pedido.idProbob] = [];
-      }
-      gruposPorUsuario[pedido.idProbob].push(pedido);
-    });
-
-    // Ahora numeramos los pedidos por cada grupo de idProbob, ordenados por fecha_caducidad
-    Object.keys(gruposPorUsuario).forEach(idProbob => {
-      // Ordenar pedidos por fecha de caducidad
-      gruposPorUsuario[idProbob].sort((a, b) => {
-        const fechaA = new Date(a.fecha_caducidad);
-        const fechaB = new Date(b.fecha_caducidad);
-        return fechaA.getTime() - fechaB.getTime();
-      });
-
-      // Asignar el conteo de pedidos ascendente
-      gruposPorUsuario[idProbob].forEach((pedido, index) => {
-        pedido.conteoPedidos = index + 1; // Numeración ascendente
-      });
-    });
-
-    // Devolver la lista de pedidos con los conteos
-    return pedidos.map(pedido => {
-      const grupo = gruposPorUsuario[pedido.idProbob];
-      if (grupo) {
-        // Encontrar el pedido en el grupo y agregar el conteo
-        const pedidoConConteo = grupo.find(p => p.clave === pedido.clave);
-        if (pedidoConConteo) {
-          return { ...pedido, conteoPedidos: pedidoConConteo.conteoPedidos };
-        }
-      }
-      return pedido; // Si no está en el grupo, devolverlo tal cual.
-    });
-  }
-
 
 
   AbrirRegistro() {
@@ -553,84 +468,6 @@ verificarCambios(): void {
 
 
   }
-
-
-
-
-
-// Función para agrupar por pedido
-agruparPorPedido(clientes: any[]): any[] {
-  const agrupadosPorPedido: { [key: string]: any } = {};
-
-  clientes.forEach(cliente => {
-    const idPedido = cliente.id_pedido;
-
-    if (!agrupadosPorPedido[idPedido]) {
-      agrupadosPorPedido[idPedido] = {
-        clave: cliente.clave,
-        estafeta: cliente.estafeta,
-        telefono: cliente.telefono,
-        fotoUrl: cliente.fotoUrl,
-        Correo: cliente.Correo,
-        nombreCompleto: cliente.nombreCompleto,
-        fechaRegistro: cliente.fechaRegistro,
-        huella: cliente.huella,
-        rol: cliente.rol,
-        precioPedido: cliente.precioPedido,
-        total: cliente.total,
-        membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-        correoCliente: cliente.correoCliente,
-        id_pedido: cliente.id_pedido,
-        fecha_hora_pedido: cliente.fecha_hora_pedido,
-        id_bodega: cliente.id_bodega,
-        precioCompra: cliente.precioCompra,
-        conteoPedidos: cliente.conteoPedidos, // Inicia con el valor del primer producto
-        estatus: cliente.estatus, // Inicia con el valor del primer producto
-        fecha_inicio: cliente.fecha_inicio,
-        fecha_caducidad: cliente.fecha_caducidad, // Inicialmente tomamos la fecha
-        idPromocion: cliente.idPromocion,
-        nombrePromocion: cliente.nombrePromocion,
-        productos: [] // Inicializamos un array vacío para los productos
-      };
-    }
-
-    // Agregamos la información del producto al array productos correspondiente
-    agrupadosPorPedido[idPedido].productos.push({
-      id_producto: cliente.id_producto,
-      marca: cliente.marca,
-      nombreProducto: cliente.nombreProducto,
-      idProbob: cliente.idProbob,
-      estatus: cliente.estatus,
-      fecha_inicio: cliente.fecha_inicio,
-      fecha_caducidad: cliente.fecha_caducidad,
-      conteoPedidos: cliente.conteoPedidos
-    });
-
-    // Cambiar el valor de conteoPedidos si algún producto tiene conteoPedidos = 1
-    if (cliente.conteoPedidos === 1) {
-      agrupadosPorPedido[idPedido].conteoPedidos = 1;
-    }
-
-    // Cambiar el valor de estatus si algún producto tiene estatus = '1'
-    if (cliente.estatus === '1') {
-      agrupadosPorPedido[idPedido].estatus = '1';
-    }
-
-    // Comparar las fechas de caducidad para actualizar el valor más alto
-    const fechaCliente = new Date(cliente.fecha_caducidad);
-    if (!isNaN(fechaCliente.getTime())) {
-      const fechaMaxima = new Date(agrupadosPorPedido[idPedido].fecha_caducidad);
-      if (!isNaN(fechaMaxima.getTime()) && fechaCliente > fechaMaxima) {
-        agrupadosPorPedido[idPedido].fecha_caducidad = cliente.fecha_caducidad;
-      }
-    }
-  });
-
-  // Convertimos el objeto agrupado en un array
-  return Object.values(agrupadosPorPedido);
-}
-
-
 
 
     listaClientesData3(): void {
@@ -677,7 +514,7 @@ agruparPorPedido(clientes: any[]): any[] {
           console.log('clientesSinPedidos', clientesSinPedidos);
 
           // Agrupar los clientes con pedidos
-          const pedidosAgrupados = this.agruparPorPedido(clientesConPedidos);
+          const pedidosAgrupados = this.pagoService.agruparPorPedido(clientesConPedidos);
           console.log('pedidosAgrupados', pedidosAgrupados);
           console.log('clientesSinPedidos',clientesSinPedidos);
 
@@ -804,66 +641,10 @@ console.log('filteredData', filteredData);
   }
 
 
-/*
-  OpenAgregar() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '70%';
-    //dialogConfig.height = '90%';
-    dialogConfig.disableClose = true;
-    this.dialog.open(AltaColaboradoresComponent, dialogConfig)
-      .afterClosed()
-      .subscribe((cerrarDialogo: Boolean) => {
-        if (cerrarDialogo) {
-         this.listaClientesData3();
-        } else {
-        }
-      });
-  }
-
-  Registro(option: string): void {
-    console.log('Evaluando opción seleccionada...');
-
-    if (option === 'Trabajadores') {
-      if (this.isAdmin()) {
-        this.OpenAgregar(); // Método que abre el modal AltaColaboradores
-        console.log('Es Admin: Abriendo AltaColaboradoresComponent');
-      } else {
-        console.error('El usuario no tiene permisos suficientes para gestionar Trabajadores.');
-      }
-    } else if (option === 'Clientes') {
-      if (this.isAdmin() || this.isRecep()) {
-        this.AbrirRegistro(); // Método que abre el modal Registro
-        console.log('Es Admin o Recepcionista: Abriendo RegistroComponent');
-      } else {
-        console.error('El usuario no tiene permisos suficientes para gestionar Clientes.');
-      }
-    } else {
-      console.error('Opción no válida.');
-    }
-  }
-    */
 
 
-  capturarHuella(idCliente: string|number ): void {
-    this.spinner.show();
-
-    setTimeout(() => {
-      this.abrirPuertoSerial(idCliente)
-      this.spinner.hide();
-    }, 10000);
-  }
 
 
-/*
-capturarHuella(): void {
-  this.spinner.show();
-
-  this.zone.run(() => { // Asegura que Angular esté en su zona
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 10000);
-  });
-}*/
 
     abrirPuertoSerial(data: any): void {
 
@@ -884,7 +665,6 @@ capturarHuella(): void {
 
 
     actualizarDatos() {
-  
   
   this.loadData();
     }
