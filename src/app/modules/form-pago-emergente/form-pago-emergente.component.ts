@@ -1,9 +1,5 @@
 import { Component, OnInit, Inject, EventEmitter, Output } from "@angular/core";
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialog,
-} from "@angular/material/dialog";
+import {  MatDialogRef,  MAT_DIALOG_DATA,  MatDialog,} from "@angular/material/dialog";
 import { PagoMembresiaEfectivoService } from "../../service/pago-membresia-efectivo.service";
 import { MensajeEmergenteComponent } from "../mensaje-emergente/mensaje-emergente.component";
 import { ToastrService } from "ngx-toastr";
@@ -13,9 +9,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeAceptarComponent } from "../mensaje-aceptar/mensaje-aceptar.component";
 import { MatDialogConfig } from "@angular/material/dialog";
 
-// PARA LLAMAR PRODUCTOS EN LUGAR DE MEMBRESIAS
-import { ProductoService } from "../../service/producto.service";
-import { addDays } from 'date-fns'; //Calcular duración
+
 
 @Component({
   selector: "app-form-pago-emergente",
@@ -89,16 +83,7 @@ export class FormPagoEmergenteComponent implements OnInit {
       }
     );
   }
-/*
-  onMembresiaChange(): void {
-    this.membresiaService
-      .membresiasInfo(this.membresiaSeleccionada)
-      .subscribe((resultado) => {
-        this.duracion = resultado.Duracion;
-        this.precio = `${resultado.Precio}`;
-        this.nombreMembresia = `${resultado.Membresia}`;
-      });
-  } */
+
 
       onMembresiaChange(): void {
         if (!this.membresiaSeleccionada) {
@@ -134,25 +119,13 @@ export class FormPagoEmergenteComponent implements OnInit {
           });
 
           // Preparar datos para el procedimiento
-          this.ejecutarProcedimiento(id, esPromocion);
+         
         } else {
           console.warn('No se encontró la membresía o promoción seleccionada:', this.membresiaSeleccionada);
         }
       }
 
 
-      // Método para ejecutar el procedimiento
-      ejecutarProcedimiento(id: string, esPromocion: boolean): void {
-        if (esPromocion) {
-          console.log('Llamando procedimiento con id_promocion:', id);
-          // Aquí llamas tu procedimiento con `id_promocion`
-          // this.miServicio.llamarProcedimiento({ id_promocion: id });
-        } else {
-          console.log('Llamando procedimiento con idProbob:', id);
-          // Aquí llamas tu procedimiento con `idProbob`
-          // this.miServicio.llamarProcedimiento({ idProbob: id });
-        }
-      }
 
 
       cancelDialogo(): void {
@@ -346,9 +319,7 @@ console.log('');
 
 
 
-imprimirResumen(){
-  console.log("Imprimir resumen")
-}
+
 
 
 

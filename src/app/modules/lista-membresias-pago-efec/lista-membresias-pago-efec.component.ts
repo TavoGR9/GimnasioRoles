@@ -14,6 +14,7 @@ import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergen
 import { NetworkService } from "../../service/network.service";
 import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
+/*
 interface Producto {
   id_producto: string;
   marca: string;
@@ -50,7 +51,7 @@ interface Cliente {
   estatus: string;
   productos: Producto[]; // Asegúrate de que productos tenga el tipo Producto
 }
-
+*/
 
 
 interface ClientesActivos {
