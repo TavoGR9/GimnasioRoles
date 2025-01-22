@@ -433,11 +433,8 @@ verificarCambios(): void {
       });
   }
 
-  
-  
   eliminarCliente(prod: any) {
     const clave = prod.clave; // Usar 'clave' como identificador del cliente
-  
     this.dialog
       .open(MensajeEliminarComponent, {
         data: `¿Desea eliminar a este usuario?`,
@@ -463,7 +460,6 @@ verificarCambios(): void {
               }
             },
             error: (error) => {
-        
               // Mostrar un Toast en caso de error al comunicarse con el servicio
               this.toastr.error(
                 'No se pudo procesar la solicitud. Intente de nuevo más tarde.',
@@ -794,7 +790,7 @@ console.log('filteredData', filteredData);
   }
 
 
-
+/*
   OpenAgregar() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '70%';
@@ -812,7 +808,7 @@ console.log('filteredData', filteredData);
 
   Registro(option: string): void {
     console.log('Evaluando opción seleccionada...');
-    
+
     if (option === 'Trabajadores') {
       if (this.isAdmin()) {
         this.OpenAgregar(); // Método que abre el modal AltaColaboradores
@@ -831,7 +827,8 @@ console.log('filteredData', filteredData);
       console.error('Opción no válida.');
     }
   }
-  
+    */
+
 
   capturarHuella(idCliente: string|number ): void {
     this.spinner.show();
@@ -841,8 +838,8 @@ console.log('filteredData', filteredData);
       this.spinner.hide();
     }, 10000);
   }
-  
- 
+
+
 /*
 capturarHuella(): void {
   this.spinner.show();
@@ -855,7 +852,7 @@ capturarHuella(): void {
 }*/
 
     abrirPuertoSerial(data: any): void {
-      
+
       this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
         data: {
           clienteID: `${data.idCliente}`
@@ -864,9 +861,9 @@ capturarHuella(): void {
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-  
+
         } else {
-  
+
         }
       });
     }

@@ -11,24 +11,12 @@
 			<div style="display: flex; justify-content: flex-end;">
 				<button
 				  mat-raised-button
-				  [matMenuTriggerFor]="menu"
 				  style="background-color: #fd9727; font-size: 16px;"
-				  *ngIf="isAdmin() || isRecep()"
-				  class="mat-button">
+				  class="mat-button"
+          (click)="AbrirRegistro()">
 				  <mat-icon>person</mat-icon>
 				  Registro
 				</button>
-
-				<mat-menu #menu="matMenu">
-				  <button mat-menu-item *ngIf="isAdmin()" (click)="Registro('Trabajadores')">
-					<mat-icon>work</mat-icon>
-					Trabajadores
-				  </button>
-				  <button mat-menu-item *ngIf="isAdmin() || isRecep()" (click)="Registro('Clientes')">
-					<mat-icon>person_outline</mat-icon>
-					Clientes
-				  </button>
-				</mat-menu>
 			</div>
 
 			<br>
