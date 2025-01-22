@@ -22,7 +22,7 @@ import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergen
 import { ChangeDetectorRef } from "@angular/core";
 import { AltaColaboradoresComponent } from "../alta-colaboradores/alta-colaboradores.component";
 import { NetworkService } from "../../service/network.service";
-
+import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
 interface Producto {
   id_producto: string;
@@ -148,6 +148,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private zone: NgZone,
     private networkService: NetworkService,
+    private eventCommunicationService: EventCommunicationServiceService
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -163,6 +164,13 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   ngOnInit(): void {
     // this.pagoService.comprobar();
     // this.auth.comprobar();
+    
+
+    this.eventCommunicationService.eventTriggered$.subscribe(event => {
+      console.log('Evento recibido:', event); // Verificar recepción
+      this.actualizarDatos();
+    });
+
     this.loadData()
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
@@ -872,6 +880,13 @@ capturarHuella(): void {
 
         }
       });
+    }
+
+
+    actualizarDatos() {
+  
+  
+  this.loadData();
     }
 
 }
