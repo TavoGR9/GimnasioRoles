@@ -63,7 +63,7 @@
     width: 290px;
     height: 45px;
     margin: 10px 7px;
-    background: #FD9727; 
+    background: #FD9727;
     color: white;
     font-size: larger;
 }
@@ -97,17 +97,21 @@
   }
 
   .aceptar{
-    background-color: #fd9727; 
-    font-size: 20px; 
-    height: 40px; 
+    background-color: #fd9727;
+    font-size: 20px;
+    height: 40px;
     margin-right: 90px;
     width: 20%;
   }
 
   .cancelar{
-    background-color: #000000; 
-    font-size: 20px;  
+    background-color: #000000;
+    font-size: 20px;
     height: 40px;
-    color: white; 
+    color: white;
     width: 20%;
+  }
+
+  .small-text.link {
+    cursor: pointer;
   }

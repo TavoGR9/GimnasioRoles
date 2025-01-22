@@ -416,8 +416,6 @@ verificarCambios(): void {
       });
   }
 
-
-
   eliminarCliente(prod: any) {
     const clave = prod.clave; // Usar 'clave' como identificador del cliente
 
@@ -446,7 +444,6 @@ verificarCambios(): void {
               }
             },
             error: (error) => {
-
               // Mostrar un Toast en caso de error al comunicarse con el servicio
               this.toastr.error(
                 'No se pudo procesar la solicitud. Intente de nuevo más tarde.',
