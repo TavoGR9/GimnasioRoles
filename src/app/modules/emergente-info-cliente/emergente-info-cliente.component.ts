@@ -112,7 +112,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
   }
 
-  duracionCalculo2(fechaInicio: string, fechaFin: string) {
+  duracionCalculo2(fechaInicio: string, fechaFin: string) { 
     const fechaInicial = new Date(fechaInicio); // Fecha de inicio proporcionada
     const fechaFinal = new Date(fechaFin);     // Fecha de fin proporcionada
     const hoy = new Date();                    // Fecha actual
@@ -128,12 +128,22 @@ export class EmergenteInfoClienteComponent implements OnInit{
     // Calcular la diferencia de tiempo entre fechaFinal y fechaBase
     const diferenciaTiempo = fechaFinal.getTime() - fechaBase.getTime();
 
-    // Convertir la diferencia de milisegundos a días completos y redondear hacia arriba
-    const diferenciaDias = Math.ceil(diferenciaTiempo / (1000 * 3600 * 24));
+    // Convertir la diferencia de milisegundos a días
+    const diferenciaDias = diferenciaTiempo / (1000 * 3600 * 24);
 
-    // Si la diferencia es menor a 0, devolver 0
-    return diferenciaDias < 0 ? 0 : diferenciaDias;
-  }
+    // Aplicar la lógica de redondeo
+    let diasCalculados;
+    if (diferenciaDias > 0 && diferenciaDias < 1) {
+        diasCalculados = Math.ceil(diferenciaDias); // Redondear hacia arriba si está entre 0 y 1
+    } else if (diferenciaDias >= 1) {
+        diasCalculados = Math.floor(diferenciaDias); // Redondear hacia abajo si es mayor a 1
+    } else {
+        diasCalculados = 0; // Si la diferencia es negativa o 0
+    }
+
+    return diasCalculados;
+}
+
 
 
 
@@ -416,11 +426,17 @@ UserHIstorial(clave: string) {
         // Agrupamos los registros por id_pedido directamente (sin aplicar el filtro de conteoPedidos y estatus)
         const agrupadosPorPedido = this.agruparPorPedido(registrosConPedido);
 
+        const ordenar= this.ordenar(agrupadosPorPedido);
+
+        console.log('Mirar el test para ordernar',ordenar)
+
 
 
         // Asignamos los resultados a la variable de la tabla
-        this.membresiaHisto = agrupadosPorPedido;
+        this.membresiaHisto = ordenar;
         console.log("membresiaHisto final (agrupados por pedido):", this.membresiaHisto);
+
+
 
         // Actualizamos el DataSource de la tabla
         this.dataSource = new MatTableDataSource(this.membresiaHisto);
@@ -618,6 +634,27 @@ generarContraseña(longitud: number): void {
         // Si no es una URL completa, concatenarla con la base
         return this.imgBase + foto;
       }
+   
     }
+
+    ordenar(array: any[]) {
+      return array.sort((a, b) => {
+        // Condición 1: estatus 1 y conteoPedidos 1 primero
+        if (a.estatus === '1' && a.conteoPedidos === 1) return -1;
+        if (b.estatus === '1' && b.conteoPedidos === 1) return 1;
+  
+        // Condición 2: Solo estatus 1, ordenar por fecha_hora_pedido ascendente
+        if (a.estatus === '1' && b.estatus === '1') {
+          return new Date(a.fecha_hora_pedido).getTime() - new Date(b.fecha_hora_pedido).getTime();
+        }
+  
+        // Condición 3: Los demás, ordenar por fecha_hora_pedido descendente
+        return new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime();
+      });
+    }
+
+
+    
+
   }
 

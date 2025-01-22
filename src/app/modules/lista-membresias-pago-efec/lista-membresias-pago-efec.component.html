@@ -9,28 +9,29 @@
 		<div class="container mt-4">
 			<h2>LISTA DE CLIENTES Y PAGO DE MEMBRESÍA EN EFECTIVO</h2>
 			<div style="display: flex; justify-content: flex-end;">
-				<button 
-				  mat-raised-button 
-				  [matMenuTriggerFor]="menu" 
-				  style="background-color: #fd9727; font-size: 16px;" 
-				  *ngIf="isAdmin() || isRecep()" 
-				  class="mat-button">
+				<button
+				  mat-raised-button
+				  style="background-color: #fd9727; font-size: 16px;"
+				  class="mat-button"
+          (click)="AbrirRegistro()">
 				  <mat-icon>person</mat-icon>
 				  Registro
 				</button>
-				
+
+        <!--
 				<mat-menu #menu="matMenu">
-				  <button mat-menu-item (click)="Registro('Trabajadores')">
+				  <button mat-menu-item *ngIf="isAdmin()" (click)="Registro('Trabajadores')">
 					<mat-icon>work</mat-icon>
 					Trabajadores
 				  </button>
-				  <button mat-menu-item (click)="Registro('Clientes')">
+				  <button mat-menu-item *ngIf="isAdmin() || isRecep()" (click)="Registro('Clientes')">
 					<mat-icon>person_outline</mat-icon>
 					Clientes
 				  </button>
 				</mat-menu>
-			</div>			  
-			  
+        -->
+			</div>
+
 			<br>
 
 			<div class="grid-input-date">
@@ -116,29 +117,29 @@
 			</ng-container>
 
 			<ng-container *ngIf="column === 'Info Cliente'">
-				<button 
-				  *ngIf="isAdmin() 
+				<button
+				  *ngIf="isAdmin()
 				  || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
-				  mat-icon-button 
-				  [disabled]="!habilitarBoton" 
-				  (click)="abrirInfoCliente(prod)" 
+				  mat-icon-button
+				  [disabled]="!habilitarBoton"
+				  (click)="abrirInfoCliente(prod)"
 				  color="{{ prod.fotoUrl ? 'primary' : 'warn' }}">
 				  <mat-icon class="icon-size">info</mat-icon>
 				</button>
 			  </ng-container>
 
 				<ng-container *ngIf="column === 'Huella'">
-			
-					<button 
+
+					<button
 					(click)="abrirPuertoSerial(prod.clave)"
 					*ngIf="isAdmin() || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
 					[ngClass]="{
 					  'estatus-activo': prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0',
 					  'estatus-inactivo': prod.huella === null || prod.huella === 'null' || prod.huella === '0'
 					}">
-					
-					
-				 
+
+
+
 					<div *ngIf="prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0'; else noHuella">
 
 						<label >
@@ -154,7 +155,7 @@
 				</button>
 				</ng-container>
 
-					
+
 							<ng-container *ngIf="column === 'Usuario'">
 								<span *ngIf="prod.rol === 'Cliente'; else notCliente">
                   <mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>

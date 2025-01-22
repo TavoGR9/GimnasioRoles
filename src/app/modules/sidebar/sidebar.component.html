@@ -57,7 +57,7 @@
             Gestión de productos
         </button>
 
-        <button *ngIf="isAdmin() || isRecep()" routerLink="/verCorte" (click)="abrirVentasModal($event)" class="hover-orange transparent-button" [class.active]="isRouteActive('/verCorte')">
+        <button *ngIf="isAdmin() || isRecep()" (click)="abrirVentasModal($event)" class="hover-orange transparent-button" [class.active]="isRouteActive('/verCorte')">
             <mat-icon>attach_money</mat-icon>
             Ventas producto
         </button>

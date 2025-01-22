@@ -1,0 +1,35 @@
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-pulse-sync" [fullScreen]="true">
+  <p style="color: white">Cargando...</p>
+</ngx-spinner>
+
+<div class="title" mat-dialog-title>
+  <label>ROLES</label>
+</div>
+<div mat-dialog-content>
+ <form [formGroup]="rolForm" >
+    <br>
+    <div>
+       <div style="color:red">{{message}}</div>
+       <div >
+          <div class="row">
+             <div class="col-sm-12">
+                <mat-form-field appearance="outline" style="width: 95%;">
+                   <mat-label>Nombre del rol</mat-label>
+                   <input matInput formControlName="usu" placeholder="Nombre del rol"/>
+                   <mat-error >
+                      El nombre es requerido.
+                   </mat-error>
+                   <mat-error >
+                      Solo se aceptan letras.
+                   </mat-error>
+                </mat-form-field>
+             </div>
+          </div>
+       </div>
+    </div>
+ </form>
+</div>
+<div style="display: flex; justify-content: center;" mat-dialog-actions>
+  <button mat-stroked-button type="button" (click)="validaFormRol()" class="aceptar">Aceptar</button>
+  <button mat-stroked-button type="button" (click)="cancelar()" class="cancelar">Cancelar</button>
+</div>
