@@ -189,7 +189,9 @@ export class HorariosVistaComponent implements OnInit {
           Validators.pattern(/^(0|[1-9][0-9]*)$/)
         ]),
       ],
-
+      direccion:[''],
+      genero:[''],
+      fotoUrl:['https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png']
     });
   }
 

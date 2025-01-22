@@ -223,8 +223,8 @@ reloadPage(): void {
     this.listaTablas();
     this.consultarAsistencia();
     this.cargarTarjetas();
-      this.cargarTarjetas2();
-      this.calculateVisitaTotal();
+    this.cargarTarjetas2();
+    this.calculateVisitaTotal();
     this.consultarMeses();
     this.consultarQuincenas();
     this.consultarVisitas();
@@ -729,6 +729,10 @@ cargarTarjetas2(): void {
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
     // });
+
+    console.log('Entraremos a asistencias');
+
+
   }
 
 
