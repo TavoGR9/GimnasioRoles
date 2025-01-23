@@ -74,7 +74,7 @@ interface ClientesActivos {
   providers: [DatePipe],
 })
 export class ListaMembresiasPagoEfecComponent implements OnInit {
-  
+
   cliente: any;
   clienteActivo: ClientesActivos[] = [];
   dataSourceActivos: MatTableDataSource<any>;
@@ -82,7 +82,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   id: any;
 
- 
+
 
   currentUser: string = "";
   idGym: number = 0;
@@ -91,14 +91,14 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   private fechaFinAnterior: Date | null = null;
   isLoading: boolean = true;
   habilitarBoton: boolean = false;
- 
+
   sortField: string = "";
   sortDirection: string = "asc";
   // @ViewChild("paginatorPagoOnline", { static: true }) paginator!: MatPaginator;
   @ViewChild("paginatorActivos") paginatorActivos!: MatPaginator;
   @ViewChild('paginatorActivos', { static: true }) paginator!: MatPaginator;
 
- 
+
   displayedColumnsActivos: string[] = [
     "ID",
     "Nombre",
@@ -130,7 +130,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private pagoService: PagoMembresiaEfectivoService,
     public dialog: MatDialog,
     private toastr: ToastrService,
-    private auth: AuthService, 
+    private auth: AuthService,
     private networkService: NetworkService,
     private eventCommunicationService: EventCommunicationServiceService
   ) {
@@ -141,7 +141,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  
+
 // Suscribirse para ver si el modal de carga de fotos se ha cerrado
 
     this.eventCommunicationService.eventTriggered$.subscribe(event => {
@@ -153,7 +153,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
 
-       
+
 
 
     });
@@ -162,7 +162,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       this.habilitarBoton = respuesta.status;
     });
 
-    
+
 
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
@@ -175,7 +175,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
    console.log('Conexion',this.isOnline);
 
 
-  
+
 
   }
 
@@ -401,10 +401,8 @@ verificarCambios(): void {
   }
 
 
-
   eliminarCliente(prod: any) {
     const clave = prod.clave; // Usar 'clave' como identificador del cliente
-
 
     this.dialog
       .open(MensajeEliminarComponent, {
@@ -431,8 +429,6 @@ verificarCambios(): void {
               }
             },
             error: (error) => {
-
-
               // Mostrar un Toast en caso de error al comunicarse con el servicio
               this.toastr.error(
                 'No se pudo procesar la solicitud. Intente de nuevo más tarde.',
@@ -444,7 +440,7 @@ verificarCambios(): void {
         }
       });
   }
-  
+
 
 
 
@@ -666,7 +662,7 @@ console.log('filteredData', filteredData);
 
 
     actualizarDatos() {
-  
+
   this.loadData();
     }
 

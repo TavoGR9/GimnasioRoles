@@ -729,7 +729,6 @@ cargarTarjetas2(): void {
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
     // });
-    // console.log('Entraremos a asistencias');
   }
 
 

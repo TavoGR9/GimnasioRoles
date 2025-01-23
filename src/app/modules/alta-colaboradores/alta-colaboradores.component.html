@@ -42,7 +42,7 @@
                         </mat-error>
                      </mat-form-field>
                   </div>
- 
+
                   <div class="col-sm-6">
                      <mat-label>Puesto: </mat-label>
                      <mat-form-field appearance="outline" style="width: 100%;">
@@ -58,13 +58,13 @@
                           <mat-option *ngFor="let personal of filteredPersonal" [value]="personal">
                             {{ personal }}
                           </mat-option>
- 
+
                           <P class="small-text" (click)="abrirModalCrearRol()">Agregar otro rol</P>
- 
+
                         </mat-autocomplete>
                       </mat-form-field>
                   </div>
- 
+
                </div>
                <div class="row">
                   <div class="col-sm-6">

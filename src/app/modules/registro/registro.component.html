@@ -93,7 +93,7 @@
                                 formControlName="puesto"
                                 placeholder="Recepcionista"
                                 [matAutocomplete]="autoMarca"
-                                [disabled]="isRecepcion()"
+                                [readonly]="isRecepcion()"
                                 (input)="buscarPersonal()"
                               />
 
@@ -329,8 +329,8 @@
                       matInput
                       [type]="hide ? 'password' : 'text'"
                       placeholder="Asignar contraseña"
-                      formControlName="contra"
-                      id="contra"
+                      formControlName="pass"
+                      id="pass"
                       [errorStateMatcher]="matcher"
                     />
 
@@ -346,13 +346,13 @@
 
                     <mat-error
                       *ngIf="
-                        form.get('contra')?.hasError('minlength') &&
-                        !form.get('contra')?.hasError('required')
+                        form.get('pass')?.hasError('minlength') &&
+                        !form.get('pass')?.hasError('required')
                       "
                     >
                       <strong class="txt_msg">**Minimo 8 caracteres</strong>
                     </mat-error>
-                    <mat-error *ngIf="form.get('contra')?.hasError('required')">
+                    <mat-error *ngIf="form.get('pass')?.hasError('required')">
                       <strong class="txt_msg">**Campo requerido</strong>
                     </mat-error>
                   </mat-form-field>
