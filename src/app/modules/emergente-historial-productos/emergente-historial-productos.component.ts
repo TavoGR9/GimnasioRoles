@@ -61,7 +61,7 @@ export class EmergenteHistorialProductosComponent implements OnInit{
   ngOnInit(): void {
     this.updateDateLogs();
     this.idUsuarioo = this.auth.idUser.getValue();
-    console.log('idUsuario: ', this.idUsuarioo);
+    // console.log('idUsuario: ', this.idUsuarioo);
 
   }
 

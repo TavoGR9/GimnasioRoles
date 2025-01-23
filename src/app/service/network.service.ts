@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, fromEvent, merge, Observable } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { BehaviorSubject, fromEvent, merge, Observable, of, timer } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -8,21 +8,28 @@ import { mapTo } from 'rxjs/operators';
 export class NetworkService {
 
   private onlineSubject = new BehaviorSubject<boolean>(navigator.onLine);
-
   constructor() {
-    const online$ = fromEvent(window, 'online').pipe(mapTo(true));
-    const offline$ = fromEvent(window, 'offline').pipe(mapTo(false));
+    const online$ = fromEvent(window, 'online').pipe(map(() => true));
+    const offline$ = fromEvent(window, 'offline').pipe(map(() => false));
 
-    // Actualizar el estado cuando cambie la conexión
     merge(online$, offline$).subscribe(this.onlineSubject);
   }
 
-  // Obtener el estado actual como un Observable
+  // Verifica acceso real a un servidor
+  checkInternetAccess(): Observable<boolean> {
+    return timer(0, 30000).pipe( // Comprueba cada 30 segundos
+      switchMap(() => fetch('https://www.google.com', { method: 'HEAD' })
+        .then(() => true)
+        .catch(() => false)
+      ),
+      catchError(() => of(false))
+    );
+  }
+
   get isOnline$(): Observable<boolean> {
     return this.onlineSubject.asObservable();
   }
 
-  // Obtener el estado actual directamente
   get isOnline(): boolean {
     return this.onlineSubject.value;
   }

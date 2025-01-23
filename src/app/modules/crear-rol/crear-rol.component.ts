@@ -59,19 +59,19 @@ export class CrearRolComponent implements OnInit {
       this.marcarCamposInvalidos(this.rolForm);
     } else {
       this.spinner.show();
-  
+
       const newRol = {
         ...this.rolForm.value,
         idGimnasio: this.idGym  // Incluye el idGym en el objeto del nuevo rol
       };
-  
+
       this.rolService.insertarRol(newRol).subscribe(
         (respuesta: any) => {
           this.spinner.hide();
-  
+
           if (respuesta && respuesta.ok) {
             // Éxito
-            console.log('Rol agregado correctamente');
+            // console.log('Rol agregado correctamente');
             const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent, {
               data: `Rol agregado con éxito!`
             });
@@ -94,7 +94,7 @@ export class CrearRolComponent implements OnInit {
       );
     }
   }
-  
+
 
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {

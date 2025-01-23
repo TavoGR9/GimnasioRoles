@@ -5,6 +5,8 @@ import { ClienteService } from '../../service/cliente.service';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 import { Subject, Observable } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EventCommunicationServiceService } from '../../service/event-communication-service.service';
+
 @Component({
   selector: 'app-emergente-cargar-foto',
   templateUrl: './emergente-cargar-foto.component.html',
@@ -69,8 +71,10 @@ export class EmergenteCargarFotoComponent implements OnInit{
   }
    
   usuarioRegistrado: any[] = [];   
-  constructor( private toastr: ToastrService, private ServiceCliente: ClienteService, 
+  constructor( private toastr: ToastrService, 
+    private ServiceCliente: ClienteService, 
     public dialogo: MatDialogRef<EmergenteCargarFotoComponent>,
+    private eventCommunicationService: EventCommunicationServiceService, // Servicio inyectado
     @Inject(MAT_DIALOG_DATA) public data: any) { 
       this.photoSelected = null;
       this.file = new File([], 'defaultFileName');
@@ -153,7 +157,8 @@ export class EmergenteCargarFotoComponent implements OnInit{
       next: (resultData: any) => {
         if (resultData.success === 1) {
           this.toastr.success(resultData.msg || 'Se guardó la foto exitosamente...', 'Éxito');
-          this.dialogo.close(true);
+          
+          this.closeDialog();
         } else {
           this.toastr.error(resultData.msg || 'Ocurrió un error al guardar la foto.', 'Error');
         }
@@ -191,5 +196,17 @@ export class EmergenteCargarFotoComponent implements OnInit{
       }
     });
   }
+
+
+
+  closeDialog(): void {
+    const modalId = 'ModalCargarFoto'; // Identificador único del modal
+    const data = { clienteId: this.data.clienteID }; // Datos opcionales
+    console.log('Emitir evento desde el modal', modalId, data); // Log para verificar
+    this.eventCommunicationService.triggerEvent(modalId, data); // Emitir evento
+    this.dialogo.close(true); // Cerrar modal
+  }
+  
+
 
 }
