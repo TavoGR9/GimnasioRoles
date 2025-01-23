@@ -129,7 +129,7 @@ export class ColaboradorService {
     agregarUsuario(datosEmpleado: any): Observable<any> {
       console.log("Enviando solicitud HTTP...");
 
-        return this.clienteHttp.post(this.API + "registrarUsuarioCliente2.php", datosEmpleado).pipe(
+        return this.clienteHttp.post(this.API + "registrarUsuarioCliente3.php", datosEmpleado).pipe(
 
             tap(dataResponse => {
            console.log(dataResponse)

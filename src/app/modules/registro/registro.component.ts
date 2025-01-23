@@ -156,7 +156,7 @@ export class RegistroComponent implements OnInit {
       nombreArchivo: [''],
       base64textString: [''],
       email: ['', Validators.compose([Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
-      pass: [''],
+      pass: ['', [Validators.required, Validators.minLength(8)]],
       user:[''],
       nombre:[''],
       id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
@@ -167,7 +167,7 @@ export class RegistroComponent implements OnInit {
       idUser:[this.auth.idUser.getValue()],
 
       puesto:['', Validators.compose([ Validators.required])],
-      contra: ['', [Validators.required, Validators.minLength(8)]],
+      //contra: ['', [Validators.required, Validators.minLength(8)]],
     });
 
     // Escucha los cambios del puesto
@@ -184,7 +184,7 @@ export class RegistroComponent implements OnInit {
       this.actualizarValidaciones('Cliente');
 
       // Deshabilitar el campo de puesto
-      this.form.get('puesto')?.disable();
+
     }
 
     this.auth.comprobar().subscribe((respuesta)=>{
@@ -234,7 +234,7 @@ export class RegistroComponent implements OnInit {
 
   actualizarValidaciones(puesto: string): void {
     const emailControl = this.form.get('email');
-    const contraControl = this.form.get('contra');
+    const contraControl = this.form.get('pass');
     const telefonoControl = this.form.get('fon');
 
     if (puesto === 'Cliente') {
@@ -391,6 +391,7 @@ export class RegistroComponent implements OnInit {
       dialogConfig.disableClose = true;
       dialogConfig.data = 'Registro agregado correctamente.';
 
+
       if (formulario.puesto === 'Cliente'){
         console.log("PASA CLIENTE");
 
@@ -402,6 +403,8 @@ export class RegistroComponent implements OnInit {
           pass: this.password,
           fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png',
         });
+
+        console.log("DATOS: ",this.form.value);
 
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
@@ -446,7 +449,7 @@ export class RegistroComponent implements OnInit {
           nombre:nombreCompleto,
           puesto:formulario.puesto,
           email:formulario.email,
-          pass:formulario.contra,
+          pass:formulario.pass,
           celular:formulario.fon,
           idGym:formulario.idGym,
           estatus:1,

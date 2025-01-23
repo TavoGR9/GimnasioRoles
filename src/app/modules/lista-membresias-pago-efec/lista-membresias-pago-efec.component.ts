@@ -21,6 +21,7 @@ import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergen
 
 import { ChangeDetectorRef } from "@angular/core";
 import { AltaColaboradoresComponent } from "../alta-colaboradores/alta-colaboradores.component";
+import { NetworkService } from "../../service/network.service";
 
 
 interface Producto {
@@ -131,6 +132,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   fechaInicio: Date | null = null;
   fechaFin: Date | null = null;
   Clientes: any;
+  isOnline = true;
+
 
 
   constructor(
@@ -143,7 +146,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private auth: AuthService,
     private cdr: ChangeDetectorRef,
     private spinner: NgxSpinnerService,
-    private zone: NgZone
+    private zone: NgZone,
+    private networkService: NetworkService,
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -163,6 +167,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
 
+       
+
 
     });
 
@@ -170,11 +176,22 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
       this.habilitarBoton = respuesta.status;
     });
 
+    
+
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
-    }
+    };
 
+          // Suscribirse al estado de conexión
+          this.networkService.isOnline$.subscribe((status) => {
+            this.isOnline = status;
+          });
+    
+          console.log('Conexion',this.isOnline);
+
+
+  
 
   }
 
