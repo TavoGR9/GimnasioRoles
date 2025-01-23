@@ -24,6 +24,9 @@
                                  id="codigoBarra"
                                  formControlName="codigoBarra"
                                  autocomplete="off"
+                                 minlength="1"
+                                 maxlength="15"
+                                 (input)="onInputCodigoBarra($event)"
                                  (blur)="vercodigoBarras()"
                                  />
                            </mat-form-field>
@@ -41,6 +44,8 @@
                                  id="codigoBarra"
                                  formControlName="codigoBarra"
                                  autocomplete="off"
+                                 minlength="1"
+                                 maxlength="15"
                                  />
                            </mat-form-field>
                         </p>

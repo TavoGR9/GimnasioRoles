@@ -75,7 +75,7 @@ export class ProductosComponent implements OnInit {
   listaTabla(){
     this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
       //this.productos = resultData
-      console.log('Resultados: ', resultData);
+      // console.log('Resultados: ', resultData);
 
       this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios' && producto.activo == 1);
 
@@ -160,7 +160,7 @@ export class ProductosComponent implements OnInit {
   }
 
   deleteProducto(id: any) {
-    console.log('IDProbob: ', id);
+    // console.log('IDProbob: ', id);
     this.dialog.open(MensajeEliminarComponent,{
       data: `¿Desea eliminar este producto?`,
     })

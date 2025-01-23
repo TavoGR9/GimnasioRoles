@@ -64,7 +64,7 @@ export class SucursalListaComponent implements OnInit {
       }
     this.gimnasioService.obtenerPlan().subscribe(
       (response) => {
-        console.log('Datos de sucursales:', response.data);  // Verifica que `data` existe
+        // console.log('Datos de sucursales:', response.data);  // Verifica que `data` existe
         this.dataSource.data = response.data;  // Asigna la propiedad `data` a `dataSource`
         this.isLoading = false;
         this.loadData();
@@ -91,7 +91,7 @@ export class SucursalListaComponent implements OnInit {
   }*/
 
   onToggle(event: Event, idGimnasio: any, estatus: any) {
-    console.log("Id Gym: ",idGimnasio);
+    // console.log("Id Gym: ",idGimnasio);
     const nuevoEstatus = estatus == 1 ? 0 : 1;
     const mensaje =
       nuevoEstatus == 1
@@ -109,7 +109,7 @@ export class SucursalListaComponent implements OnInit {
             (response) => {
               if (response && response.success === 1) {
                 this.gimnasioService.obtenerPlan().subscribe((data) => {
-                  console.log('Datos obtenidos del servicio:', data);
+                  // console.log('Datos obtenidos del servicio:', data);
                   this.gimnasio = Array.isArray(data) ? data : data?.data || [];
                   this.dataSource = new MatTableDataSource(this.gimnasio);
                   this.dataSource.paginator = this.paginator;
@@ -191,9 +191,9 @@ export class SucursalListaComponent implements OnInit {
       //   this.dataSource.paginator = this.paginator;
       // });
       this.gimnasioService.obtenerPlan().subscribe((data) => {
-        console.log("DATOS RESPUESTA: ",data);
+        // console.log("DATOS RESPUESTA: ",data);
         if (data) {
-          console.log('Datos obtenidos del servicio:', data);
+          // console.log('Datos obtenidos del servicio:', data);
           this.gimnasio = Array.isArray(data) ? data : data?.data || [];
           this.dataSource = new MatTableDataSource(this.gimnasio);
           this.dataSource.paginator = this.paginator;
@@ -205,7 +205,7 @@ export class SucursalListaComponent implements OnInit {
   }
 
   editarSucursal(idGimnasio: number) {
-    console.log("Id del gym: ",idGimnasio);
+    // console.log("Id del gym: ",idGimnasio);
     this.gimnasioService.gimnasioSeleccionado.next(idGimnasio);
     //const id = idGimnasio;
     this.gimnasioService.optionSelected.next(3);
@@ -227,9 +227,9 @@ export class SucursalListaComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(() => {
       this.gimnasioService.obtenerPlan().subscribe((data) => {
-        console.log("DATOS RESPUESTA: ",data);
+        // console.log("DATOS RESPUESTA: ",data);
         if (data) {
-          console.log('Datos obtenidos del servicio:', data);
+          // console.log('Datos obtenidos del servicio:', data);
           this.gimnasio = Array.isArray(data) ? data : data?.data || [];
           this.dataSource = new MatTableDataSource(this.gimnasio);
           this.dataSource.paginator = this.paginator;
