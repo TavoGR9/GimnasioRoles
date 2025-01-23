@@ -84,7 +84,7 @@ export class CrearProductoComponent implements OnInit {
       marcaP: ["", Validators.required],
       activo: [1],
       // ItemNumber: [0],
-      codigoBarra: ["", Validators.required],
+      codigoBarra: ['', [Validators.required, Validators.maxLength(15)]],
       // ieps: [0],
       // iva: [0],
       // sat: [0],
@@ -257,6 +257,13 @@ export class CrearProductoComponent implements OnInit {
       },
     });
   }
+
+  onInputCodigoBarra(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.value.length > 15) {
+       input.value = input.value.slice(0, 15); // Limita los caracteres
+    }
+ }
 
   vercodigoBarras() {
     const codigo = this.form.get("codigoBarra")?.value;

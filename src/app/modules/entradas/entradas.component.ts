@@ -716,6 +716,22 @@ todosClientes: any;
             return;
           }
 
+          // Agrupar por 'descripcion' y sumar las 'existencias'
+          const agrupados = this.todosClientes.reduce((acc: any, item: any) => {
+            const clave = item.descripcion;
+            if (!acc[clave]) {
+              // Iniciar el grupo, asegurándonos que las existencias sean un número
+              acc[clave] = { ...item, existencias: Number(item.existencias) };
+            } else {
+              // Sumar existencias correctamente como números
+              acc[clave].existencias += Number(item.existencias);
+            }
+            return acc;
+          }, {});
+
+          // Convertir el objeto agrupado a un array de los valores
+          const datosAgrupados = Object.values(agrupados);
+
           const fechaInicioFormateada = this.datePipe.transform(
             this.fechaInicio,
             "dd/MM/yyyy"
@@ -741,7 +757,7 @@ todosClientes: any;
               "Codigo de barras",
 
             ],
-            ...this.todosClientes.map((activos: any) => [
+            ...datosAgrupados.map((activos: any) => [
               activos.descripcion,
               activos.detalleCompra,
               activos.marca,
