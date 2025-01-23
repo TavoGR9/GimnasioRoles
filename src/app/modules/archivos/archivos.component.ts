@@ -139,7 +139,7 @@ export class ArchivosComponent implements OnInit{
 
         // Generar nombre único del ZIP basado en la fecha y bodega
         const fechaActual = new Date();
-        console.log('fechaActual: ', fechaActual);
+        // console.log('fechaActual: ', fechaActual);
 
         // const fechaFormateada = `${fechaActual.getFullYear()}-${(fechaActual.getMonth() + 1)
         //   .toString()

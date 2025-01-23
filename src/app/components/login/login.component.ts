@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.auth.loginBS(this.loginForm.value).subscribe({
         next: (resultData) => {
-          console.log("dato de inicio sesion: ",resultData);
+          // console.log("dato de inicio sesion: ",resultData);
           if (resultData && resultData.rol !== 'No_acceso') {
 
             this.auth.loggedIn.next(true);

@@ -156,7 +156,7 @@ export class SidebarComponent {
     event.preventDefault();
 
     dialogRef.afterClosed().subscribe(() => {
-      console.log('Modal cerrado');
+      // console.log('Modal cerrado');
       this.router.navigate(['/verCorte']);
     });
   }

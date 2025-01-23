@@ -171,14 +171,14 @@ export class EntradasComponent implements OnInit {
   listaTablas() {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
-        console.log("Resultado de listaProductos:", resultData);
+        // console.log("Resultado de listaProductos:", resultData);
 
         // Filtrar las subcategorías excluyendo aquellas donde
         this.productosFiltrados = resultData.productos.filter(
           (productos: any) => productos.servicio != "1"
         );
 
-        console.log("Productos después del filtro:", this.productosFiltrados);
+        // console.log("Productos después del filtro:", this.productosFiltrados);
 
 
       //   // Asignar datos filtrados a la tabla
@@ -198,7 +198,7 @@ export class EntradasComponent implements OnInit {
     const marcaIngresado = this.form.get("idProbob")?.value;
     this.entrada.listaProductos().subscribe({
       next: (respuesta) => {
-        console.log('respuesta: ', respuesta);
+        // console.log('respuesta: ', respuesta);
 
          // Filtrar las subcategorías excluyendo aquellas donde
          const productosFiltrados = respuesta.productos.filter(
@@ -237,7 +237,7 @@ export class EntradasComponent implements OnInit {
 
     this.productoService.consultarProductosId(product.idProd, this.auth.idGym.getValue()).subscribe(respuesta => {
       this.resultadoData = respuesta;
-      console.log('resultData: ', respuesta);
+      // console.log('resultData: ', respuesta);
 
       if (respuesta.length > 0 ) {
         // patchValue: Actualiza solo los campos necesarios
@@ -676,7 +676,7 @@ export class EntradasComponent implements OnInit {
       )
       .subscribe((respuesta) => {
         this.compras = respuesta.data;
-        console.log('compras ver: ', this.compras);
+        // console.log('compras ver: ', this.compras);
 
         this.dataSource = new MatTableDataSource(this.compras);
         this.loadData();

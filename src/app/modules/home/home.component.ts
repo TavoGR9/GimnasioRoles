@@ -251,7 +251,7 @@ reloadPage(): void {
         console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
-          console.log('MEMBRESIAS TOTAL',response.data)
+          // console.log('MEMBRESIAS TOTAL',response.data)
 
           if (pedidos) {
             // console.log(res.Productos);
@@ -264,10 +264,10 @@ reloadPage(): void {
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
               0
             );
-            console.log('MENSUALIDADES: ', mensualidades);
+            // console.log('MENSUALIDADES: ', mensualidades);
             this.total_meses = mensualidades.length;
-            console.log('TOTAL MENSUALIDADES: ', this.total_meses);
-            console.log('TOTAL CANTIDAD DE MENSUALIDADES: ', this.totalMesesCantidad);
+            // console.log('TOTAL MENSUALIDADES: ', this.total_meses);
+            // console.log('TOTAL CANTIDAD DE MENSUALIDADES: ', this.totalMesesCantidad);
 
 
 
@@ -298,7 +298,7 @@ reloadPage(): void {
         console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
-          console.log('MEMBRESIAS QUINCENAS TOTAL',response.data)
+          // console.log('MEMBRESIAS QUINCENAS TOTAL',response.data)
 
           if (pedidos) {
             // console.log(res.Productos);
@@ -323,10 +323,10 @@ reloadPage(): void {
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
               0
             );
-            console.log('QUINCENAS: ', quincenas);
+            // console.log('QUINCENAS: ', quincenas);
             this.total_quincena = quincenas.length;
-            console.log('TOTAL QUINCENAS: ', this.total_quincena);
-            console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalQuincenaCantidad);
+            // console.log('TOTAL QUINCENAS: ', this.total_quincena);
+            // console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalQuincenaCantidad);
 
 
 
@@ -358,7 +358,7 @@ reloadPage(): void {
         console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
-          console.log('MEMBRESIAS VISITAS TOTAL',response.data)
+          // console.log('MEMBRESIAS VISITAS TOTAL',response.data)
 
           if (pedidos) {
             // console.log(res.Productos);
@@ -371,10 +371,10 @@ reloadPage(): void {
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
               0
             );
-            console.log('QUINCENAS: ', visitas);
+            // console.log('QUINCENAS: ', visitas);
             this.total_visita = visitas.length;
-            console.log('TOTAL QUINCENAS: ', this.total_visita);
-            console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalVisitaCantidad);
+            // console.log('TOTAL QUINCENAS: ', this.total_visita);
+            // console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalVisitaCantidad);
 
 
 
@@ -428,7 +428,7 @@ reloadPage(): void {
         } else {
           this.homeCard3 = respuesta; // Si ya es un array, úsalo tal cual
         }
-        console.log('Tarjetas cargadas:', this.homeCard3);
+        // console.log('Tarjetas cargadas:', this.homeCard3);
       },
       (error) => {
         console.error('Error al cargar las tarjetas:', error);
@@ -444,7 +444,7 @@ cargarTarjetas2(): void {
       } else {
         this.homeCard4 = respuesta; // Si ya es un array, úsalo tal cual
       }
-      console.log('Tarjetas cargadas:', this.homeCard4);
+      // console.log('Tarjetas cargadas:', this.homeCard4);
     },
     (error) => {
       console.error('Error al cargar las tarjetas:', error);
@@ -729,14 +729,7 @@ cargarTarjetas2(): void {
     //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
     //   );
     // });
-<<<<<<< HEAD
-    console.log('Entraremos a asistencias');
-=======
-
-    console.log('Entraremos a asistencias');
-
-
->>>>>>> 19a60fa0c446446d9bc8d1488f41e3b9286266ec
+    // console.log('Entraremos a asistencias');
   }
 
 
@@ -1255,8 +1248,8 @@ processSalesDataVisita() {
     },
   ];
 
-  console.log('VALOR DEL DATO DE VISITAS', this.salesChartDataVisita);
-  console.log('VALOR DE LONGITUD DE VISITAS', this.salesChartDataVisita.length);
+  // console.log('VALOR DEL DATO DE VISITAS', this.salesChartDataVisita);
+  // console.log('VALOR DE LONGITUD DE VISITAS', this.salesChartDataVisita.length);
 
    // Recalcula la visita total
    this.calculateVisitaTotal();
