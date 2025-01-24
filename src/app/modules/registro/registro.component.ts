@@ -493,6 +493,7 @@ console.log('Validaciones con cliente')
           estatus:1,
           direccion:direccionCompleta,
           genero:formulario.genero,
+          base64textString:formulario.base64textString,
           fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png'
         }
         //console.log("DATOS PARA OTROS: ",datos2)
