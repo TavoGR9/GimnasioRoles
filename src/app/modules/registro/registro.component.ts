@@ -86,7 +86,7 @@ export class RegistroComponent implements OnInit {
   //Contraseña
   hide: boolean = true;
   matcher = new MyErrorStateMatcher();
-  mostrarContra: boolean = true;
+  mostrarContra: boolean = false;
 
 
   /**CAMARA*/
@@ -118,6 +118,7 @@ export class RegistroComponent implements OnInit {
 
   asentamientosUnicos: Set<string> = new Set<string>();
   staffList: any;
+  isCustomerRegistration: boolean = false;
 
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
@@ -161,7 +162,7 @@ export class RegistroComponent implements OnInit {
       nombreArchivo: [''],
       base64textString: [''],
       email: ['', Validators.compose([Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
-      pass: ['', [Validators.required, Validators.minLength(8)]],
+      pass: [''],
       user:[''],
       nombre:[''],
       id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
@@ -223,13 +224,20 @@ export class RegistroComponent implements OnInit {
 
 
 
-  actualizarValidaciones(puesto: string): void {
+  actualizarValidaciones(): void {
+ 
     const emailControl = this.form.get('email');
     const contraControl = this.form.get('pass');
     const telefonoControl = this.form.get('fon');
-    
 
-    if (puesto === 'Cliente') {
+    const formulario = this.form.value;
+
+  const puesto =this.isCustomerRegistration;
+    console.log('Puestoooo',puesto)
+
+    if (puesto ) {
+console.log('Validaciones con cliente')
+
       // El correo no es obligatorio
       emailControl?.clearValidators();
       emailControl?.updateValueAndValidity();
@@ -244,6 +252,8 @@ export class RegistroComponent implements OnInit {
       telefonoControl?.updateValueAndValidity();
 
     } else {
+      console.log('Validaciones con cualquier otro')
+
       // El correo es obligatorio
       emailControl?.setValidators([
         Validators.required,
@@ -376,21 +386,30 @@ export class RegistroComponent implements OnInit {
     this.dialogo.close(true);
   }
 
+
   onPuestoSeleccionado(id: string): boolean {
-    // Encuentra si el puesto corresponde a un cliente
-    const selectedValue = this.personalCompleto.find(personal => personal.id_personal === id)?.usu;
+    // 1. Setear el valor del id en el formulario
+    this.form.get('puesto')?.setValue(id);
+
   
-    const esCliente = selectedValue === 'Cliente';
-  
-    // Aplica las validaciones y actualiza el formulario
-    if (esCliente) {
-      this.actualizarValidaciones('Cliente');
-    }
-    this.form.get('puesto')?.setValue(id); // Asigna el id_personal al formulario
-  
-    // Retorna si es cliente o no
+    // 2. Guardar el valor seteado en una constante
+    const valorSeleccionado = this.form.get('puesto')?.value;
+
+    console.log('Valor seleccionado:', valorSeleccionado);
+
+    // 3. Buscar si el id corresponde al puesto de "Cliente"
+    const esCliente = this.personalCompleto.some(personal => 
+        personal.id_personal === valorSeleccionado && personal.usu === 'Cliente'
+    );
+
+    console.log('Es cliente:', esCliente)
+
+    this.isCustomerRegistration = esCliente;
+    this.actualizarValidaciones();
+    // 4. Retornar si coincide con el puesto "Cliente"
     return esCliente;
-  }
+    
+}
 
   registrarUsuario() {
     if (this.form.valid){
@@ -627,7 +646,7 @@ export class RegistroComponent implements OnInit {
       if (cliente) {
         this.form.get('puesto')?.setValue(cliente.id_personal);
       }
-      this.actualizarValidaciones('Cliente');
+      //this.actualizarValidaciones('Cliente');
     }
   }
 
