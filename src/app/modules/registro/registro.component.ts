@@ -78,6 +78,10 @@ export class RegistroComponent implements OnInit {
   //PUESTO
   filteredPersonal: string[] = [];
   personal: string[] = [];
+  personalCompleto: any[] = []; // Para guardar toda la respuesta de la API
+ 
+  
+
 
   //Contraseña
   hide: boolean = true;
@@ -113,6 +117,7 @@ export class RegistroComponent implements OnInit {
 
 
   asentamientosUnicos: Set<string> = new Set<string>();
+  staffList: any;
 
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
@@ -170,22 +175,13 @@ export class RegistroComponent implements OnInit {
       //contra: ['', [Validators.required, Validators.minLength(8)]],
     });
 
-    // Escucha los cambios del puesto
-    this.form.get('puesto')?.valueChanges.subscribe((puesto) => {
-    this.actualizarValidaciones(puesto);
-  });
 
   }
 
   ngOnInit(): void {
-    if (this.isRecepcion()) {
-      // Asignar automáticamente el puesto "Cliente"
-      this.form.get('puesto')?.setValue('Cliente');
-      this.actualizarValidaciones('Cliente');
 
-      // Deshabilitar el campo de puesto
 
-    }
+    this.buscarPersonal();
 
     this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
@@ -225,17 +221,13 @@ export class RegistroComponent implements OnInit {
   }
 
 
-  onPuestoSeleccionado(puesto: string): void {
-    this.form.get('puesto')?.setValue(puesto);
-    console.log('Puesto seleccionado:', puesto); // Verifica el valor
-    this.actualizarValidaciones(puesto); // Actualiza las validaciones dinámicas
-  }
 
 
   actualizarValidaciones(puesto: string): void {
     const emailControl = this.form.get('email');
     const contraControl = this.form.get('pass');
     const telefonoControl = this.form.get('fon');
+    
 
     if (puesto === 'Cliente') {
       // El correo no es obligatorio
@@ -277,6 +269,11 @@ export class RegistroComponent implements OnInit {
   //Es recepcionista
   isRecepcion(): boolean{
     return this.auth.isRecepcion();
+  }
+
+  isAdmin():boolean{
+
+    return this.auth.isAdmin()
   }
 
 
@@ -379,6 +376,22 @@ export class RegistroComponent implements OnInit {
     this.dialogo.close(true);
   }
 
+  onPuestoSeleccionado(id: string): boolean {
+    // Encuentra si el puesto corresponde a un cliente
+    const selectedValue = this.personalCompleto.find(personal => personal.id_personal === id)?.usu;
+  
+    const esCliente = selectedValue === 'Cliente';
+  
+    // Aplica las validaciones y actualiza el formulario
+    if (esCliente) {
+      this.actualizarValidaciones('Cliente');
+    }
+    this.form.get('puesto')?.setValue(id); // Asigna el id_personal al formulario
+  
+    // Retorna si es cliente o no
+    return esCliente;
+  }
+
   registrarUsuario() {
     if (this.form.valid){
       const formulario = this.form.value;
@@ -390,9 +403,10 @@ export class RegistroComponent implements OnInit {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = true;
       dialogConfig.data = 'Registro agregado correctamente.';
-
-
-      if (formulario.puesto === 'Cliente'){
+      
+// Determinar si se esta regustrando un cliente o un empleadoa
+     const isCustomerRegistration=this.onPuestoSeleccionado(formulario.puesto);
+      if (isCustomerRegistration){
         console.log("PASA CLIENTE");
 
         this.password = this.generarContraseña(9);
@@ -554,32 +568,36 @@ export class RegistroComponent implements OnInit {
     );
   }
 
+  esClienteDisponible(): boolean {
+    // Verifica si la opción "Cliente" está disponible en personalCompleto
+    return this.personalCompleto.some((p) => p.usu === 'Cliente');
+    
+  }
 
-  verPersonal(){
-      this.usuario.getPersonal().subscribe(respuesta =>{
-      });
-    };
+
+
+
+
+
+
 
     buscarPersonal() {
-      const personalIngresado = this.form.get("puesto")?.value;
+  
+  
       this.usuario.getPersonal().subscribe({
         next: (respuesta) => {
-          //console.log("DATO: ", respuesta);
-          const puesto = new Set(
-            respuesta.map((persona: any) => persona.usu)
-          );
-          this.personal = Array.from(puesto) as string[];
-          this.filteredPersonal = this.personal.filter(
-            (persona) =>
-              !personalIngresado ||
-              persona.toLowerCase().includes(personalIngresado.toLowerCase())
-          );
+          console.log("Personalllll: ", respuesta);
+          this.personalCompleto = respuesta; // Guardar toda la respuesta de la API
+          this.esClienteDisponible();
+          this.preseleccionarRolSiEsRecepcionista();
+  
         },
         error: (error) => {
           console.error("Error al obtener el personal:", error);
         },
       });
     }
+  
 
 
     abrirModalCrearRol(): void {
@@ -597,6 +615,21 @@ export class RegistroComponent implements OnInit {
         }
       });
     }
+
+
+  preseleccionarRolSiEsRecepcionista(): void {
+    if (this.isRecepcion()) {
+      // Filtra las opciones para que solo aparezca "Cliente"
+      this.personalCompleto = this.personalCompleto.filter((p) => p.usu === 'Cliente');
+  
+      // Preselecciona el rol "Cliente" si existe
+      const cliente = this.personalCompleto.find((p) => p.usu === 'Cliente');
+      if (cliente) {
+        this.form.get('puesto')?.setValue(cliente.id_personal);
+      }
+      this.actualizarValidaciones('Cliente');
+    }
+  }
 
 
 
