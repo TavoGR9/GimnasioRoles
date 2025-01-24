@@ -15,6 +15,7 @@ import { PostalCodeService } from "../../service/cp.service";
 
 import { CrearRolComponent } from '../crear-rol/crear-rol.component';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
 interface Food {
   value: string;
@@ -141,6 +142,7 @@ export class RegistroComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public dialogo: MatDialogRef<RegistroComponent>,
     private postalCodeService: PostalCodeService,
+    private eventCommunicationService: EventCommunicationServiceService
 
   ) {
     this.form = this.fb.group({
@@ -180,7 +182,10 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.eventCommunicationService.eventTriggered$.subscribe(event => {
+      console.log('Evento recibido:', event); // Verificar recepción
+      this.buscarPersonal();
+    });
 
     this.buscarPersonal();
 
