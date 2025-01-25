@@ -188,7 +188,7 @@ export class EmergenteCargarFotoComponent implements OnInit{
     this.ServiceCliente.updatePhoto2(this.archivo).subscribe({
       next: (response) => {
         this.toastr.success('Se guardó la foto exitosamente...', 'Éxito');
-        this.dialogo.close(true); // Cerrar el diálogo si se guarda correctamente
+       this.closeDialog();
       },
       error: (error) => {
         console.error('Error al guardar la imagen:', error);

@@ -15,6 +15,7 @@ import { PostalCodeService } from "../../service/cp.service";
 
 import { CrearRolComponent } from '../crear-rol/crear-rol.component';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
 interface Food {
   value: string;
@@ -78,11 +79,15 @@ export class RegistroComponent implements OnInit {
   //PUESTO
   filteredPersonal: string[] = [];
   personal: string[] = [];
+  personalCompleto: any[] = []; // Para guardar toda la respuesta de la API
+ 
+  
+
 
   //Contraseña
   hide: boolean = true;
   matcher = new MyErrorStateMatcher();
-  mostrarContra: boolean = true;
+  mostrarContra: boolean = false;
 
 
   /**CAMARA*/
@@ -113,6 +118,8 @@ export class RegistroComponent implements OnInit {
 
 
   asentamientosUnicos: Set<string> = new Set<string>();
+  staffList: any;
+  isCustomerRegistration: boolean = false;
 
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
@@ -135,6 +142,7 @@ export class RegistroComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public dialogo: MatDialogRef<RegistroComponent>,
     private postalCodeService: PostalCodeService,
+    private eventCommunicationService: EventCommunicationServiceService
 
   ) {
     this.form = this.fb.group({
@@ -156,7 +164,7 @@ export class RegistroComponent implements OnInit {
       nombreArchivo: [''],
       base64textString: [''],
       email: ['', Validators.compose([Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)])],
-      pass: ['', [Validators.required, Validators.minLength(8)]],
+      pass: [''],
       user:[''],
       nombre:[''],
       id: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
@@ -170,22 +178,16 @@ export class RegistroComponent implements OnInit {
       //contra: ['', [Validators.required, Validators.minLength(8)]],
     });
 
-    // Escucha los cambios del puesto
-    this.form.get('puesto')?.valueChanges.subscribe((puesto) => {
-    this.actualizarValidaciones(puesto);
-  });
 
   }
 
   ngOnInit(): void {
-    if (this.isRecepcion()) {
-      // Asignar automáticamente el puesto "Cliente"
-      this.form.get('puesto')?.setValue('Cliente');
-      this.actualizarValidaciones('Cliente');
+    this.eventCommunicationService.eventTriggered$.subscribe(event => {
+      console.log('Evento recibido:', event); // Verificar recepción
+      this.buscarPersonal();
+    });
 
-      // Deshabilitar el campo de puesto
-
-    }
+    this.buscarPersonal();
 
     this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
@@ -225,19 +227,22 @@ export class RegistroComponent implements OnInit {
   }
 
 
-  onPuestoSeleccionado(puesto: string): void {
-    this.form.get('puesto')?.setValue(puesto);
-    console.log('Puesto seleccionado:', puesto); // Verifica el valor
-    this.actualizarValidaciones(puesto); // Actualiza las validaciones dinámicas
-  }
 
 
-  actualizarValidaciones(puesto: string): void {
+  actualizarValidaciones(): void {
+ 
     const emailControl = this.form.get('email');
     const contraControl = this.form.get('pass');
     const telefonoControl = this.form.get('fon');
 
-    if (puesto === 'Cliente') {
+    const formulario = this.form.value;
+
+  const puesto =this.isCustomerRegistration;
+    console.log('Puestoooo',puesto)
+
+    if (puesto ) {
+console.log('Validaciones con cliente')
+
       // El correo no es obligatorio
       emailControl?.clearValidators();
       emailControl?.updateValueAndValidity();
@@ -252,6 +257,8 @@ export class RegistroComponent implements OnInit {
       telefonoControl?.updateValueAndValidity();
 
     } else {
+      console.log('Validaciones con cualquier otro')
+
       // El correo es obligatorio
       emailControl?.setValidators([
         Validators.required,
@@ -277,6 +284,11 @@ export class RegistroComponent implements OnInit {
   //Es recepcionista
   isRecepcion(): boolean{
     return this.auth.isRecepcion();
+  }
+
+  isAdmin():boolean{
+
+    return this.auth.isAdmin()
   }
 
 
@@ -379,6 +391,31 @@ export class RegistroComponent implements OnInit {
     this.dialogo.close(true);
   }
 
+
+  onPuestoSeleccionado(id: string): boolean {
+    // 1. Setear el valor del id en el formulario
+    this.form.get('puesto')?.setValue(id);
+
+  
+    // 2. Guardar el valor seteado en una constante
+    const valorSeleccionado = this.form.get('puesto')?.value;
+
+    console.log('Valor seleccionado:', valorSeleccionado);
+
+    // 3. Buscar si el id corresponde al puesto de "Cliente"
+    const esCliente = this.personalCompleto.some(personal => 
+        personal.id_personal === valorSeleccionado && personal.usu === 'Cliente'
+    );
+
+    console.log('Es cliente:', esCliente)
+
+    this.isCustomerRegistration = esCliente;
+    this.actualizarValidaciones();
+    // 4. Retornar si coincide con el puesto "Cliente"
+    return esCliente;
+    
+}
+
   registrarUsuario() {
     if (this.form.valid){
       const formulario = this.form.value;
@@ -390,9 +427,10 @@ export class RegistroComponent implements OnInit {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = true;
       dialogConfig.data = 'Registro agregado correctamente.';
-
-
-      if (formulario.puesto === 'Cliente'){
+      
+// Determinar si se esta regustrando un cliente o un empleadoa
+     const isCustomerRegistration=this.onPuestoSeleccionado(formulario.puesto);
+      if (isCustomerRegistration){
         console.log("PASA CLIENTE");
 
         this.password = this.generarContraseña(9);
@@ -455,6 +493,7 @@ export class RegistroComponent implements OnInit {
           estatus:1,
           direccion:direccionCompleta,
           genero:formulario.genero,
+          base64textString:formulario.base64textString,
           fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png'
         }
         //console.log("DATOS PARA OTROS: ",datos2)
@@ -554,32 +593,36 @@ export class RegistroComponent implements OnInit {
     );
   }
 
+  esClienteDisponible(): boolean {
+    // Verifica si la opción "Cliente" está disponible en personalCompleto
+    return this.personalCompleto.some((p) => p.usu === 'Cliente');
+    
+  }
 
-  verPersonal(){
-      this.usuario.getPersonal().subscribe(respuesta =>{
-      });
-    };
+
+
+
+
+
+
 
     buscarPersonal() {
-      const personalIngresado = this.form.get("puesto")?.value;
+  
+  
       this.usuario.getPersonal().subscribe({
         next: (respuesta) => {
-          //console.log("DATO: ", respuesta);
-          const puesto = new Set(
-            respuesta.map((persona: any) => persona.usu)
-          );
-          this.personal = Array.from(puesto) as string[];
-          this.filteredPersonal = this.personal.filter(
-            (persona) =>
-              !personalIngresado ||
-              persona.toLowerCase().includes(personalIngresado.toLowerCase())
-          );
+          console.log("Personalllll: ", respuesta);
+          this.personalCompleto = respuesta; // Guardar toda la respuesta de la API
+          this.esClienteDisponible();
+          this.preseleccionarRolSiEsRecepcionista();
+  
         },
         error: (error) => {
           console.error("Error al obtener el personal:", error);
         },
       });
     }
+  
 
 
     abrirModalCrearRol(): void {
@@ -597,6 +640,21 @@ export class RegistroComponent implements OnInit {
         }
       });
     }
+
+
+  preseleccionarRolSiEsRecepcionista(): void {
+    if (this.isRecepcion()) {
+      // Filtra las opciones para que solo aparezca "Cliente"
+      this.personalCompleto = this.personalCompleto.filter((p) => p.usu === 'Cliente');
+  
+      // Preselecciona el rol "Cliente" si existe
+      const cliente = this.personalCompleto.find((p) => p.usu === 'Cliente');
+      if (cliente) {
+        this.form.get('puesto')?.setValue(cliente.id_personal);
+      }
+      //this.actualizarValidaciones('Cliente');
+    }
+  }
 
 
 
