@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { EmergenteCargarFotoComponent } from '../emergente-cargar-foto/emergente-cargar-foto.component';
 import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
@@ -11,6 +11,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { AuthService } from '../../service/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { RestablecerContraComponent } from '../restablecer-contra/restablecer-contra.component';
 
 
 
@@ -138,11 +139,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     return diasCalculados;
 }
 
-
-
-
- 
-
   abrirDialogFoto(data: any): void {
     this.dialogo.close(true);
     this.dialog.open(EmergenteCargarFotoComponent, {
@@ -161,9 +157,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
-
-
-
   //Se usa para acceder al puerto serial sin ebargo se quito de este componetne 
   abrirPuertoSerial(data: any): void {
     this.dialogo.close(true);
@@ -181,11 +174,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
       }
     });
   }
-
-
-
-
-
 
   borrarSucursal(id: any) {
     console.log(id);
@@ -220,15 +208,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
-
-
-
-
-
-
-
-
-
   UserHIstorial(clave: string): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (respuesta: any) => {
@@ -245,14 +224,9 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
         console.log('Mirar el test para ordernar',ordenar)
 
-
-
         // Asignamos los resultados a la variable de la tabla
         this.membresiaHisto = ordenar;
         console.log("membresiaHisto final (agrupados por pedido):", this.membresiaHisto);
-
-
-
         // Actualizamos el DataSource de la tabla
         this.dataSource = new MatTableDataSource(this.membresiaHisto);
         this.dataSource.paginator = this.paginator;
@@ -339,9 +313,25 @@ agruparPorPedido(clientes: any[]): any[] {
 
 */
 
+OpenRestablecer(empleados: any) {
+        if (!empleados || !empleados.id_empleado) {
+          console.error("El objeto empleados no contiene id_empleado:", empleados);
+          return;
+        }
 
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.width = '70%';
+        dialogConfig.disableClose = true;
+        dialogConfig.data = empleados;
+        this.dialog.open(RestablecerContraComponent, dialogConfig)
+          .afterClosed()
+          .subscribe((cerrarDialogo: Boolean) => {
+            if (cerrarDialogo) {
+            }
+          });
+      }
 
-
+      
 
   actualizarCliente2(): void {
 
@@ -429,9 +419,6 @@ generarContraseña(longitud: number): void {
   }
 }
 
-
-
-
   enviarMensajeWhatsApp(telefono: string, correo: string, password: string) {
     if(telefono && correo){
       const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
@@ -439,7 +426,6 @@ generarContraseña(longitud: number): void {
       window.open(url, '_blank');
     }
   }
-
 
     // Método para formatear la cadena
     formatUrl(foto: string): string {
