@@ -225,7 +225,7 @@ export class AuthService {
   }
 
   dataUser(data: any): Observable<any> {
-    console.log("datos: ",data)
+    //console.log("datos: ",data)
     return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
       tap(dataResponse => {
         //console.log("DATOS: ",dataResponse);
