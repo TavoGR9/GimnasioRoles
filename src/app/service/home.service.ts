@@ -18,7 +18,8 @@ export class HomeService {
   // API: String = '';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string ='http://localhost/serviciosGym/';
+  // API: string ='http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
   API2: string ='http://localhost/serviciosGimnasio/';
 
 

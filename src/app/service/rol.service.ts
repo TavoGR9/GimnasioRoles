@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RolService {
-  private apiUrl = 'http://localhost/serviciosGym/'; // Reemplaza con tu URL real
+  // private apiUrl = 'http://localhost/serviciosGym/'; // Reemplaza con tu URL real
+  private apiUrl = 'http://localhost/gimnasioServicios/'
 
   constructor(private http: HttpClient) {}
 

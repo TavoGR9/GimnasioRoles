@@ -171,7 +171,7 @@ export class EntradasComponent implements OnInit {
   listaTablas() {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
-        // console.log("Resultado de listaProductos:", resultData);
+        console.log("Resultado de listaProductos:", resultData);
 
         // Filtrar las subcategorías excluyendo aquellas donde
         this.productosFiltrados = resultData.productos.filter(
@@ -676,7 +676,7 @@ export class EntradasComponent implements OnInit {
       )
       .subscribe((respuesta) => {
         this.compras = respuesta.data;
-        // console.log('compras ver: ', this.compras);
+        console.log('compras ver: ', this.compras);
 
         this.dataSource = new MatTableDataSource(this.compras);
         this.loadData();

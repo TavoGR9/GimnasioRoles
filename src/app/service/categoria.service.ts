@@ -19,7 +19,8 @@ export class CategoriaService {
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // API: string = 'http://localhost/serviciosGimnasio/';
-  API: string = 'http://localhost/serviciosGym/';
+  // API: string = 'http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
 
   public confirmButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);

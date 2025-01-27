@@ -17,7 +17,9 @@ export class PostalCodeService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
-    API: string = 'http://localhost/serviciosGym/';
+    // API: string = 'http://localhost/serviciosGym/';
+    API: string = 'http://localhost/gimnasioServicios/'
+
 
   constructor(private http: HttpClient, private connectivityService: ConnectivityService) { }
 
@@ -37,5 +39,5 @@ export class PostalCodeService {
     return this.http.get<any>(url);
   }
 
-  
+
 }
