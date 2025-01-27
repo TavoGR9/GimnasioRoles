@@ -216,13 +216,12 @@ export class planAgregarComponent {
     });
 
     dialogRef.afterClosed().subscribe((nuevoServicio) => {
-      if (nuevoServicio.registroInsertado) {
-        if (!Array.isArray(this.plan)) {
-          this.plan = [];
-        }
-        this.plan.push(nuevoServicio.registroInsertado);
-        this.formulariodePlan.get("servicioseleccionado")?.setValue(this.plan);
-      }
+      this.productoService.obternerInventario(this.idGym)
+        .subscribe((respuesta) => {
+          if (respuesta )
+          this.plan = this.aplicarFiltro(respuesta);
+        console.log("datos membresia: ",this.plan);
+        });
     });
   }
 }
