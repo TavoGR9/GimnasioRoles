@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { EmergenteCargarFotoComponent } from '../emergente-cargar-foto/emergente-cargar-foto.component';
 import { PagoMembresiaEfectivoService } from '../../service/pago-membresia-efectivo.service';
 import { MatPaginator } from '@angular/material/paginator'; //para paginacion en la tabla
@@ -11,6 +11,10 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
 import { AuthService } from '../../service/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { RestablecerContraComponent } from '../restablecer-contra/restablecer-contra.component';
+
+
+
 @Component({
   selector: 'app-emergente-info-cliente',
   templateUrl: './emergente-info-cliente.component.html',
@@ -88,29 +92,20 @@ export class EmergenteInfoClienteComponent implements OnInit{
     console.log('data de lista mebresias:',this.data)
 
   }
-// en desuhso
-  estaEnRango(fechaInicio: string, fechaFin: string): boolean {
-    const fechaInicioDate = this.parseFecha(fechaInicio);
-    const fechaFinDate = this.parseFecha(fechaFin);
-    return this.currentDate >= fechaInicioDate && this.currentDate <= fechaFinDate;
+
+  isAdmin(): boolean {
+    return this.auth.isAdmin();
   }
 
-  duracionCalculo(fechaFin: string){
-    const fechaFinal= new Date (fechaFin)
-    const hoy = new Date();  // Fecha actual
-    hoy.setHours(0, 0, 0, 0); // Establecer a las 00:00 para evitar que las horas afecten el cálculo
-    fechaFinal.setHours(0, 0, 0, 0);
-
-    const diferenciaTiempo = fechaFinal.getTime() - hoy.getTime();  // Diferencia en milisegundos
-
-    // Convertir la diferencia de milisegundos a días completos
-    const diferenciaDias = Math.floor(diferenciaTiempo / (1000 * 3600 * 24));  // Redondear hacia abajo
-
-    // Si la diferencia es menor a 0, devolver 0
-    return diferenciaDias < 0 ? 0 : diferenciaDias;
-
-
+  isSupadmin(): boolean {
+    return this.auth.isSupadmin();
   }
+
+  isRecep(): boolean {
+    return this.auth.isRecepcion();
+  }
+
+
 
   duracionCalculo2(fechaInicio: string, fechaFin: string) { 
     const fechaInicial = new Date(fechaInicio); // Fecha de inicio proporcionada
@@ -144,16 +139,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     return diasCalculados;
 }
 
-
-
-
-  //En desuhso
-  private parseFecha(fecha: string): Date {
-    const partes = fecha.split('/');
-    const fechaLocal = new Date(+partes[2], +partes[1] - 1, +partes[0]);
-    return new Date(fechaLocal.getTime() + fechaLocal.getTimezoneOffset() * 60000);
-  }
-
   abrirDialogFoto(data: any): void {
     this.dialogo.close(true);
     this.dialog.open(EmergenteCargarFotoComponent, {
@@ -172,13 +157,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
-
-  // NO se USA o lo dejaron incompleto (borrar)
-  abrirDialogCapturarHuella(data: any): void {
-  }
-
-
-  //No se usa para nada  (borrar)
+  //Se usa para acceder al puerto serial sin ebargo se quito de este componetne 
   abrirPuertoSerial(data: any): void {
     this.dialogo.close(true);
     this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
@@ -194,128 +173,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
       }
     });
-  }
-
-
-  actualizar(): void {
-    if(!this.form.valid){
-      return;
-    }
-    this.spinner.show();
-    console.log(this.form.value);
-    this.pagoService.actualizaDatosCliente(this.form.value).subscribe({
-      next: (resultData) => {
-        this.spinner.hide();
-        this.cerrarDialogo();
-        this.dialog.open(MensajeEmergenteComponent, {
-          data: `Datos actualizados satisfacoriamente`,
-        })
-        .afterClosed()
-        .subscribe((cerrarDialogo: Boolean) => {
-          if (cerrarDialogo) {
-
-          } else {
-
-          }
-        });
-      }, error: (error) => { console.log(error); }
-    });
-  }
-
-    actualizarCliente(): void {
-      console.log(this.form.value);
-      this.spinner.show();
-
-
-      if (!this.form.valid) {
-        console.log("Formulario no válido");
-        return;
-      }
-
-      // Mostrar spinner mientras se procesa la solicitud
-
-
-      // Capturar los valores del formulario
-
-
-      // Llamar al servicio para actualizar los datos del cliente
-      this.pagoService.actualizaDatosCliente(this.form.value).subscribe({
-        next: (resultData) => {
-
-          console.log(resultData);
-
-          // Verificar el estado de la respuesta del servidor
-          if (resultData?.success === 1) {
-            console.log(1)
-            // Caso exitoso: Datos actualizados satisfactoriamente
-           // this.dialog.open(MensajeEmergenteComponent, {
-             // data: resultData.Mensaje || `Datos actualizados satisfactoriamente`,
-            //});
-
-            // this.cerrarDialogo();
-
-
-            const estado = resultData.data?.Estado;
-
-            if (estado === 1) {
-
-              this.spinner.hide();
-              this.cerrarDialogo();
-              this.dialog.open(MensajeEmergenteComponent, {
-                data: `Datos actualizados satisfacoriamente`,
-              })
-              .afterClosed()
-              .subscribe((cerrarDialogo: Boolean) => {
-                if (cerrarDialogo) {
-
-                } else {
-
-                }
-              });
-
-
-
-              console.log("Actualizacion con exito");
-            } else {
-              this.spinner.hide();
-              this.dialog.open(MensajeEmergenteComponent, {
-                data: `Clave existente o sin cambios`,
-                })
-
-              console.log("Clave existente o sin cambios");
-            }
-
-          } else {
-
-            console.log('error')
-            // Otro caso de error lógico
-            //this.dialog.open(MensajeEmergenteComponent, {
-              //data: resultData?.Mensaje || `Hubo un problema al actualizar los datos.`,
-            //});
-          }
-        },
-        error: (error) => {
-          // Ocultar el spinner y manejar errores de conexión
-          this.spinner.hide();
-          console.error(error);
-
-          // Mostrar mensaje de error genérico
-         this.dialog.open(MensajeEmergenteComponent, {
-           data: `Ocurrió un error al procesar la solicitud. Por favor, intenta nuevamente.`,
-          });
-        },
-      });
-    }
-
-
-// no hace nada (borrar) (hacer)
-
-  capturarHuella(): void {
-    this.spinner.show();
-
-    setTimeout(() => {
-      this.spinner.hide();
-    }, 550);
   }
 
   borrarSucursal(id: any) {
@@ -351,69 +208,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
-
-
-  isAdmin(): boolean {
-    return this.auth.isAdmin();
-  }
-
-  isSupadmin(): boolean {
-    return this.auth.isSupadmin();
-  }
-
-  isRecep(): boolean {
-    return this.auth.isRecepcion();
-  }
-/*
-  UserHIstorial(clave: string) {
-    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
-      (respuesta: any) => {
-
-          const datosFiltrados = respuesta.data.filter((item: any) => item.clave === clave);
-          this.membresiaHisto = datosFiltrados;
-          console.log("Datos filtrados:", this.membresiaHisto);
-
-
-
-        this.dataSource = new MatTableDataSource(this.membresiaHisto);
-        this.dataSource.paginator = this.paginator;
-      },
-      (error: any) => {
-        console.error("Error al obtener activos:", error);
-      }
-    );
-  }
-
-
-
-
-
-/*
-UserHIstorial(clave: string) {
-  this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
-    (respuesta: any) => {
-      // Filtrar por la clave proporcionada
-      const datosFiltrados = respuesta.filter((item: any) => item.clave === clave);
-
-      // Guardar el resultado filtrado en la variable deseada
-      this.membresiaHisto = datosFiltrados;
-
-
-
-
-      // Si necesitas usar MatTableDataSource, puedes descomentar las líneas
-      // this.dataSource = new MatTableDataSource(this.membresiaHisto);
-      // this.dataSource.paginator = this.paginator;
-
-      console.log("Datos filtrados:", this.membresiaHisto);
-    },
-    (error: any) => {
-      console.error("Error al obtener activos:", error);
-    }
-  );
-} */
-
-
   UserHIstorial(clave: string): void {
     this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (respuesta: any) => {
@@ -424,20 +218,15 @@ UserHIstorial(clave: string) {
          const registrosConPedido = datosFiltrados.filter((item: any) => item.id_pedido);
 
         // Agrupamos los registros por id_pedido directamente (sin aplicar el filtro de conteoPedidos y estatus)
-        const agrupadosPorPedido = this.agruparPorPedido(registrosConPedido);
+        const agrupadosPorPedido = this.pagoService.agruparPorPedido(registrosConPedido);
 
         const ordenar= this.ordenar(agrupadosPorPedido);
 
         console.log('Mirar el test para ordernar',ordenar)
 
-
-
         // Asignamos los resultados a la variable de la tabla
         this.membresiaHisto = ordenar;
         console.log("membresiaHisto final (agrupados por pedido):", this.membresiaHisto);
-
-
-
         // Actualizamos el DataSource de la tabla
         this.dataSource = new MatTableDataSource(this.membresiaHisto);
         this.dataSource.paginator = this.paginator;
@@ -450,7 +239,8 @@ UserHIstorial(clave: string) {
   }
 
   
-// Función para agrupar por pedido
+// Función para agrupar por pedido se paso "pago-membresia-efectivo"en toeria es lo mimso se puede borrar
+/*
 agruparPorPedido(clientes: any[]): any[] {
   const agrupadosPorPedido: { [key: string]: any } = {};
 
@@ -521,11 +311,27 @@ agruparPorPedido(clientes: any[]): any[] {
   return Object.values(agrupadosPorPedido);
 }
 
+*/
 
+OpenRestablecer(empleados: any) {
+        if (!empleados || !empleados.id_empleado) {
+          console.error("El objeto empleados no contiene id_empleado:", empleados);
+          return;
+        }
 
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.width = '70%';
+        dialogConfig.disableClose = true;
+        dialogConfig.data = empleados;
+        this.dialog.open(RestablecerContraComponent, dialogConfig)
+          .afterClosed()
+          .subscribe((cerrarDialogo: Boolean) => {
+            if (cerrarDialogo) {
+            }
+          });
+      }
 
-
-
+      
 
   actualizarCliente2(): void {
 
@@ -613,9 +419,6 @@ generarContraseña(longitud: number): void {
   }
 }
 
-
-
-
   enviarMensajeWhatsApp(telefono: string, correo: string, password: string) {
     if(telefono && correo){
       const mensaje = `Correo: ${correo}, Contraseña: ${password}`;
@@ -623,7 +426,6 @@ generarContraseña(longitud: number): void {
       window.open(url, '_blank');
     }
   }
-
 
     // Método para formatear la cadena
     formatUrl(foto: string): string {

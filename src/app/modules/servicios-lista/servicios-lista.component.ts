@@ -68,7 +68,6 @@ export class ServiciosListaComponent implements OnInit{
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       // console.log('ID GYM: ',this.idGym);
-      //  this.listaTabla();
       this.listaTablaMarca();
     });
   }

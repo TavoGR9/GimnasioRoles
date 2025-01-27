@@ -84,7 +84,7 @@ export class CrearProductoComponent implements OnInit {
       marcaP: ["", Validators.required],
       activo: [1],
       // ItemNumber: [0],
-      codigoBarra: ["", Validators.required],
+      codigoBarra: ['', [Validators.required, Validators.maxLength(15)]],
       // ieps: [0],
       // iva: [0],
       // sat: [0],
@@ -159,7 +159,7 @@ export class CrearProductoComponent implements OnInit {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria2().subscribe({
       next: (respuesta) => {
-        console.log('TODAS LAS CATEGORIAS: ', respuesta);
+        // console.log('TODAS LAS CATEGORIAS: ', respuesta);
 
         // Filtrar las categorías excluyendo aquellas donde nombreCategoria sea "Servicios"
         const categoriasFiltradas = respuesta.filter(
@@ -207,7 +207,7 @@ export class CrearProductoComponent implements OnInit {
     const subCIngresado = this.form.get("nomsubcate")?.value;
     this.categoriaService.obtenerSubCategoria2(idCategoriaGuardada).subscribe({
       next: (respuesta) => {
-        console.log('TODAS LAS SUBCATEGORIAS: ', respuesta);
+        // console.log('TODAS LAS SUBCATEGORIAS: ', respuesta);
 
         // // Filtrar las subcategorías excluyendo aquellas donde
         // const subCategoriasFiltradas = respuesta.filter(
@@ -242,7 +242,7 @@ export class CrearProductoComponent implements OnInit {
           (marca: any) => marca.servicio != "1"
         );
 
-        console.log('TODAS LAS MARCAS FILTRADAS: ', respuesta);
+        // console.log('TODAS LAS MARCAS FILTRADAS: ', respuesta);
 
 
         const marcasU = new Set(
@@ -258,13 +258,20 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
+  onInputCodigoBarra(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.value.length > 15) {
+       input.value = input.value.slice(0, 15); // Limita los caracteres
+    }
+ }
+
   vercodigoBarras() {
     const codigo = this.form.get("codigoBarra")?.value;
-    console.log('codigoBarra: ', codigo);
+    // console.log('codigoBarra: ', codigo);
     this.productoService
       .verProductoCodigoBarras2(codigo)
       .subscribe((respuesta: any) => {
-        console.log('respuesta: ', respuesta);
+        // console.log('respuesta: ', respuesta);
         if (respuesta.success == 0) {
         } else {
           this.form.setValue({
@@ -308,20 +315,20 @@ export class CrearProductoComponent implements OnInit {
       this.spinner.show();
       ///********** Verifica si la categoria ya existe */
       const codigo = this.form.get("codigoBarra")?.value;
-      console.log('Formulario:', this.form.value);  // Verifica que los valores estén bien
+      // console.log('Formulario:', this.form.value);  // Verifica que los valores estén bien
       this.productoService
         .verProductoCodigoBarras2(codigo)
         .subscribe((respuesta: any) => {
-          console.log('verCodigoBarras: ', respuesta);
+          // console.log('verCodigoBarras: ', respuesta);
 
           if (respuesta.success == 0) {
-            console.log('CODIGO BARRAS NO EXISTE');
+            // console.log('CODIGO BARRAS NO EXISTE');
 
             this.categoriaService
               .obtenerCategoriaPorNombre2(this.form.value.nombreCategoriaP)
               .subscribe((categoriaExistente) => {
-                console.log('CATEGORIA: ', categoriaExistente);
-                console.log('CATEGORIA ECISTENTE?: ', categoriaExistente.success);
+                // console.log('CATEGORIA: ', categoriaExistente);
+                // console.log('CATEGORIA ECISTENTE?: ', categoriaExistente.success);
                 if (categoriaExistente.success == 1) {
                   ///********** Verifica si la subcategoria ya existe */
                   this.categoriaService
@@ -330,13 +337,13 @@ export class CrearProductoComponent implements OnInit {
                       categoriaExistente.categoria.id_categoria
                     )
                     .subscribe((subCategoriaExistente) => {
-                      console.log("SUBCATEGORIA EXISTENTE: ", subCategoriaExistente);
+                      // console.log("SUBCATEGORIA EXISTENTE: ", subCategoriaExistente);
                       if (subCategoriaExistente.success == 1) {
                         ///********** Verifica si la marca ya existe */
                         this.categoriaService
                           .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                           .subscribe((marcaExistente) => {
-                            console.log('MARCA EXISTENTE: ', marcaExistente);
+                            // console.log('MARCA EXISTENTE: ', marcaExistente);
 
                             if (marcaExistente.success == 1) {
                               const formularioP = {
@@ -360,14 +367,14 @@ export class CrearProductoComponent implements OnInit {
                                 cantidadMayoreo:this.form.value.cantidadMayoreo,
                                 //idUsuario: this.auth.idUser.getValue(),
                               };
-                              console.log('Form enviado: ', formularioP);
+                              // console.log('Form enviado: ', formularioP);
 
 
                               this.productoService
                                 .creaProductoMemb(formularioP)
                                 .subscribe({
                                   next: (respuesta) => {
-                                    console.log('Respuesta: ', respuesta);
+                                    // console.log('Respuesta: ', respuesta);
 
                                     if (respuesta.success) {
                                       this.spinner.hide();
@@ -405,18 +412,18 @@ export class CrearProductoComponent implements OnInit {
                                   },
                                 });
                             } else {
-                              console.log('NO EXISTE LA MARCA');
+                              // console.log('NO EXISTE LA MARCA');
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
                                 idGimnasio: 0,
                                 servicio: 0
                               };
-                              console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                              // console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
                               this.categoriaService
                                 .agregarMarca2(formMarca)
                                 .subscribe((respuestaMarca) => {
-                                  console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
-                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                  // console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  // console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                   const formularioP = {
                                     idProducto:
                                       subCategoriaExistente.producto
@@ -442,14 +449,14 @@ export class CrearProductoComponent implements OnInit {
                                       //idUsuario: this.auth.idUser.getValue(),
                                   };
 
-                                  console.log('Form enviado: ', formularioP);
+                                  // console.log('Form enviado: ', formularioP);
 
 
                                   this.productoService
                                     .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
-                                        console.log('Respuesta: ', respuesta);
+                                        // console.log('Respuesta: ', respuesta);
 
                                         if (respuesta.success) {
                                           this.spinner.hide();
@@ -494,7 +501,7 @@ export class CrearProductoComponent implements OnInit {
                           });
                       } else {
                         ///********** Si la sub no existe */
-                        console.log('No existe la subcategoria');
+                        // console.log('No existe la subcategoria');
 
                         const formSub = {
                           idcatte: categoriaExistente.categoria.id_categoria,
@@ -502,17 +509,17 @@ export class CrearProductoComponent implements OnInit {
                           duracion: 0,
                           membresia: 0
                         };
-                        console.log('Datos a enviar de la sub: ', formSub);
+                        // console.log('Datos a enviar de la sub: ', formSub);
                         this.categoriaService
                           .agregarSubCategoria2(formSub)
                           .subscribe((respuestaSub) => {
-                            console.log('NUEVA SUBCATEGORIA AGREGADA: ', respuestaSub);
+                            // console.log('NUEVA SUBCATEGORIA AGREGADA: ', respuestaSub);
 
                             ///********** Verifica si la marca ya existe */
                             this.categoriaService
                               .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
-                                console.log('Marca existente: ', marcaExistente);
+                                // console.log('Marca existente: ', marcaExistente);
 
                                 if (marcaExistente.success == 1) {
                                   this.spinner.hide();
@@ -541,14 +548,14 @@ export class CrearProductoComponent implements OnInit {
                                       this.form.value.cantidadMayoreo,
                                       //idUsuario: this.auth.idUser.getValue(),
                                   };
-                                  console.log('form enviado: ', formularioP);
+                                  // console.log('form enviado: ', formularioP);
 
 
                                   this.productoService
                                     .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
-                                        console.log('respuesta: ', respuesta);
+                                        // console.log('respuesta: ', respuesta);
 
                                         if (respuesta.success) {
                                           this.spinner.hide();
@@ -589,20 +596,20 @@ export class CrearProductoComponent implements OnInit {
                                       },
                                     });
                                 } else {
-                                  console.log('NO EXISTE LA MARCA');
+                                  // console.log('NO EXISTE LA MARCA');
 
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
                                     idGimnasio: 0,
                                     servicio: 0
                                   };
-                                  console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                                  // console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
 
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
                                     .subscribe((respuestaMarca) => {
-                                      console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
-                                      console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                      // console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                      // console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                       const formularioP = {
                                         idProducto: respuestaSub.id_producto,
                                         // detalleUnidadMedida: "pza",
@@ -628,14 +635,14 @@ export class CrearProductoComponent implements OnInit {
                                           this.form.value.cantidadMayoreo,
                                           //idUsuario: this.auth.idUser.getValue(),
                                       };
-                                      console.log('form enviado: ', formularioP);
+                                      // console.log('form enviado: ', formularioP);
 
 
                                       this.productoService
                                         .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
-                                            console.log('respuesta: ', respuesta);
+                                            // console.log('respuesta: ', respuesta);
 
                                             if (respuesta.success) {
                                               this.spinner.hide();
@@ -687,19 +694,19 @@ export class CrearProductoComponent implements OnInit {
                       }
                     });
                 } else {
-                  console.log("La categoría no existe, creando nueva...");
+                  // console.log("La categoría no existe, creando nueva...");
                   // Si la categoría no existe, se agrega
                   this.categoriaService
                     .agregarCategoria2(this.form.value)
                     .subscribe((respuesta) => {
                       // nombreCategoriaP
-                      console.log('valor de la subcategoria: ', respuesta);
+                      // console.log('valor de la subcategoria: ', respuesta);
 
 
                       if (respuesta.success === 1) {
-                      console.log('TODO EL FORMULARIO: ', this.form.value);
-                      console.log('Nombre de la nueva categoria: ', this.form.value.nombreCategoriaP)
-                      console.log('Categoría agregada:', respuesta);  // Verifica la respuesta
+                      // console.log('TODO EL FORMULARIO: ', this.form.value);
+                      // console.log('Nombre de la nueva categoria: ', this.form.value.nombreCategoriaP)
+                      // console.log('Categoría agregada:', respuesta);  // Verifica la respuesta
                       ///********** Verifica si la subcategoria ya existe */
                       this.categoriaService
                         .obtenerSubCategoriaPorNombre2(
@@ -708,13 +715,13 @@ export class CrearProductoComponent implements OnInit {
                         )
 
                         .subscribe((subCategoriaExistente) => {
-                          console.log('subcategoria existente: ', subCategoriaExistente);
+                          // console.log('subcategoria existente: ', subCategoriaExistente);
 
                           if (subCategoriaExistente.success == 1) {
                             this.categoriaService
                               .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                               .subscribe((marcaExistente) => {
-                                console.log('marca: ', marcaExistente);
+                                // console.log('marca: ', marcaExistente);
 
                                 if (marcaExistente.success == 1) {
                                   //agregar producto
@@ -744,14 +751,14 @@ export class CrearProductoComponent implements OnInit {
                                       this.form.value.cantidadMayoreo,
                                       //idUsuario: this.auth.idUser.getValue(),
                                   };
-                                  console.log('Form enviado: ', formularioP);
+                                  // console.log('Form enviado: ', formularioP);
 
 
                                   this.productoService
                                     .creaProductoMemb(formularioP)
                                     .subscribe({
                                       next: (respuesta) => {
-                                        console.log('Respuesta: ', respuesta);
+                                        // console.log('Respuesta: ', respuesta);
 
                                         if (respuesta.success) {
                                           this.spinner.hide();
@@ -792,20 +799,20 @@ export class CrearProductoComponent implements OnInit {
                                       },
                                     });
                                 } else {
-                                  console.log('NO EXISTE LA MARCA');
+                                  // console.log('NO EXISTE LA MARCA');
 
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
                                     idGimnasio: 0,
                                     servicio: 0
                                   };
-                                  console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                                  // console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
 
                                   this.categoriaService
                                     .agregarMarca2(formMarca)
                                     .subscribe((respuestaMarca) => {
-                                      console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
-                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                  //     console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  // console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
                                       const formularioP = {
                                         idProducto:
                                           subCategoriaExistente.producto
@@ -833,14 +840,14 @@ export class CrearProductoComponent implements OnInit {
                                           this.form.value.cantidadMayoreo,
                                           //idUsuario: this.auth.idUser.getValue(),
                                       };
-                                      console.log('Form enviado: ', formularioP);
+                                      // console.log('Form enviado: ', formularioP);
 
 
                                       this.productoService
                                         .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
-                                            console.log('Respuesta: ', respuesta);
+                                            // console.log('Respuesta: ', respuesta);
 
                                             if (respuesta.success) {
                                               this.spinner.hide();
@@ -888,7 +895,7 @@ export class CrearProductoComponent implements OnInit {
                                 }
                               });
                           } else {
-                            console.log('NO EXISTE LA subcategoria');
+                            // console.log('NO EXISTE LA subcategoria');
                             // Si la subcategoría no existe, agregarla
                             const formSub = {
                               idcatte: respuesta.id_categoria,
@@ -896,19 +903,19 @@ export class CrearProductoComponent implements OnInit {
                               duracion: 0,
                               membresia: 0
                             };
-                            console.log('valor de la nueva subcategoria: ', formSub);
+                            // console.log('valor de la nueva subcategoria: ', formSub);
 
 
                             this.categoriaService
                               .agregarSubCategoria2(formSub)
                               .subscribe((respuestaSub) => {
-                                console.log('no existe categoriaExistente, creando: ', respuestaSub);
+                                // console.log('no existe categoriaExistente, creando: ', respuestaSub);
 
                                 ///********** Verifica si la marca ya existe */
                                 this.categoriaService
                                   .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
                                   .subscribe((marcaExistente) => {
-                                    console.log('MARCA EXISTENTE: ', marcaExistente);
+                                    // console.log('MARCA EXISTENTE: ', marcaExistente);
 
                                     if (marcaExistente.success == 1) {
                                       const formularioP = {
@@ -938,13 +945,13 @@ export class CrearProductoComponent implements OnInit {
                                           this.form.value.cantidadMayoreo,
                                           //idUsuario: this.auth.idUser.getValue(),
                                       };
-                                      console.log('Form enviado: ', formularioP);
+                                      // console.log('Form enviado: ', formularioP);
 
                                       this.productoService
                                         .creaProductoMemb(formularioP)
                                         .subscribe({
                                           next: (respuesta) => {
-                                            console.log('Respuesta: ', respuesta);
+                                            // console.log('Respuesta: ', respuesta);
 
                                             if (respuesta.success) {
                                               this.spinner.hide();
@@ -988,20 +995,20 @@ export class CrearProductoComponent implements OnInit {
                                           },
                                         });
                                     } else {
-                                      console.log('NO EXISTE LA MARCA');
+                                      // console.log('NO EXISTE LA MARCA');
 
                                       const formMarca = {
                                         marcaP: this.form.value.marcaP,
                                         idGimnasio: 0,
                                         servicio: 0
                                       };
-                                      console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
+                                      // console.log('VALOR DE LA NUEVA MARCA: ',formMarca);
 
                                       this.categoriaService
                                         .agregarMarca2(formMarca)
                                         .subscribe((respuestaMarca) => {
-                                          console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
-                                  console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
+                                  //         console.log('NUEVA MARCA AGREGADA: ', respuestaMarca);
+                                  // console.log('ID DE LA NUEVA MARCA: ', respuestaMarca.data.id_marcas);
 
                                           const formularioP = {
                                             idProducto:
@@ -1031,14 +1038,14 @@ export class CrearProductoComponent implements OnInit {
                                               this.form.value.cantidadMayoreo,
                                               //idUsuario: this.auth.idUser.getValue(),
                                           };
-                                          console.log('Form enviado: ', formularioP);
+                                          // console.log('Form enviado: ', formularioP);
 
 
                                           this.productoService
                                             .creaProductoMemb(formularioP)
                                             .subscribe({
                                               next: (respuesta) => {
-                                                console.log('Respuesta: ', respuesta);
+                                                // console.log('Respuesta: ', respuesta);
 
                                                 if (respuesta.success) {
                                                   this.spinner.hide();

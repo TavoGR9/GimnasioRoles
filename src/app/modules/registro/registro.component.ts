@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, OnInit} from "@angular/core";
-import { FormBuilder, Validators, FormGroup} from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emergentes.component";
 import { ToastrService } from "ngx-toastr";
@@ -12,9 +12,21 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 import { NgxSpinnerService } from "ngx-spinner";
 import { ColaboradorService } from "../../service/colaborador.service";
 import { PostalCodeService } from "../../service/cp.service";
+
+import { CrearRolComponent } from '../crear-rol/crear-rol.component';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
+
 interface Food {
   value: string;
   viewValue: string;
+}
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, formulario: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = formulario && formulario.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
 }
 
 @Component({
@@ -64,6 +76,20 @@ export class RegistroComponent implements OnInit {
   habilitarBoton: boolean = false;
   password: string = "";
 
+  //PUESTO
+  filteredPersonal: string[] = [];
+  personal: string[] = [];
+  personalCompleto: any[] = []; // Para guardar toda la respuesta de la API
+ 
+  
+
+
+  //Contraseña
+  hide: boolean = true;
+  matcher = new MyErrorStateMatcher();
+  mostrarContra: boolean = false;
+
+
   /**CAMARA*/
   public webcamImage: WebcamImage | null = null;
   public allowCameraSwitch = true;
@@ -92,6 +118,8 @@ export class RegistroComponent implements OnInit {
 
 
   asentamientosUnicos: Set<string> = new Set<string>();
+  staffList: any;
+  isCustomerRegistration: boolean = false;
 
   public get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
@@ -113,7 +141,9 @@ export class RegistroComponent implements OnInit {
     private auth: AuthService,
     private spinner: NgxSpinnerService,
     public dialogo: MatDialogRef<RegistroComponent>,
-    private postalCodeService: PostalCodeService
+    private postalCodeService: PostalCodeService,
+    private eventCommunicationService: EventCommunicationServiceService
+
   ) {
     this.form = this.fb.group({
       nombreU: ['', Validators.compose([ Validators.required, Validators.pattern(/^[A-Za-zñÑáéíóú ]*[A-Za-z][A-Za-zñÑáéíóú ]*$/)])],
@@ -143,11 +173,22 @@ export class RegistroComponent implements OnInit {
       codigoPromotor:[0],
       genero:[''],
       idUser:[this.auth.idUser.getValue()],
-    })
+
+      puesto:['', Validators.compose([ Validators.required])],
+      //contra: ['', [Validators.required, Validators.minLength(8)]],
+    });
+
 
   }
 
   ngOnInit(): void {
+    this.eventCommunicationService.eventTriggered$.subscribe(event => {
+      console.log('Evento recibido:', event); // Verificar recepción
+      this.buscarPersonal();
+    });
+
+    this.buscarPersonal();
+
     this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
@@ -182,7 +223,75 @@ export class RegistroComponent implements OnInit {
     if (option === 'take') {
       this.showWebcam = true;
     }
+
   }
+
+
+
+
+  actualizarValidaciones(): void {
+ 
+    const emailControl = this.form.get('email');
+    const contraControl = this.form.get('pass');
+    const telefonoControl = this.form.get('fon');
+
+    const formulario = this.form.value;
+
+  const puesto =this.isCustomerRegistration;
+    console.log('Puestoooo',puesto)
+
+    if (puesto ) {
+console.log('Validaciones con cliente')
+
+      // El correo no es obligatorio
+      emailControl?.clearValidators();
+      emailControl?.updateValueAndValidity();
+
+      // La contraseña no es obligatoria y se desactiva
+      contraControl?.clearValidators();
+      //contraControl?.disable();
+      contraControl?.updateValueAndValidity();
+      this.mostrarContra = false;
+
+      telefonoControl?.clearValidators();
+      telefonoControl?.updateValueAndValidity();
+
+    } else {
+      console.log('Validaciones con cualquier otro')
+
+      // El correo es obligatorio
+      emailControl?.setValidators([
+        Validators.required,
+        Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/),
+      ]);
+      emailControl?.updateValueAndValidity();
+
+      // La contraseña es obligatoria y se activa
+      contraControl?.setValidators([Validators.required, Validators.minLength(8)]);
+      //contraControl?.enable();
+      contraControl?.updateValueAndValidity();
+      this.mostrarContra = true;
+
+      //telefono
+      telefonoControl?.setValidators([
+        Validators.required,
+        Validators.pattern(/^(0|[1-9][0-9]*)$/), // Validación de formato numérico
+      ]);
+      telefonoControl?.updateValueAndValidity();
+    }
+  }
+
+  //Es recepcionista
+  isRecepcion(): boolean{
+    return this.auth.isRecepcion();
+  }
+
+  isAdmin():boolean{
+
+    return this.auth.isAdmin()
+  }
+
+
 
   onPhotoSelected(event: any): void {
     if (event.target.files && event.target.files[0]) {
@@ -282,73 +391,160 @@ export class RegistroComponent implements OnInit {
     this.dialogo.close(true);
   }
 
+
+  onPuestoSeleccionado(id: string): boolean {
+    // 1. Setear el valor del id en el formulario
+    this.form.get('puesto')?.setValue(id);
+
+  
+    // 2. Guardar el valor seteado en una constante
+    const valorSeleccionado = this.form.get('puesto')?.value;
+
+    console.log('Valor seleccionado:', valorSeleccionado);
+
+    // 3. Buscar si el id corresponde al puesto de "Cliente"
+    const esCliente = this.personalCompleto.some(personal => 
+        personal.id_personal === valorSeleccionado && personal.usu === 'Cliente'
+    );
+
+    console.log('Es cliente:', esCliente)
+
+    this.isCustomerRegistration = esCliente;
+    this.actualizarValidaciones();
+    // 4. Retornar si coincide con el puesto "Cliente"
+    return esCliente;
+    
+}
+
   registrarUsuario() {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.disableClose = true;
-    dialogConfig.data = 'Registro agregado correctamente.';
-    //this.spinner.show();
-    this.password = this.generarContraseña(9);
-    const direccionCompleta = `${this.form.get("calle")?.value} ${this.form.get("numExterno")?.value ? "Ext. " + this.form.get("numExterno")?.value: ""}, ${this.form.get("numInter")?.value ? "Int. " + this.form.get("numInter")?.value : ""}, ${this.form.get("colonia")?.value}, ${this.form.get("ciudad")?.value}, ${this.form.get("estado")?.value}, CP ${this.form.get("codigoPostal")?.value}`;
-    const nombreCompleto = `${this.form.get("nombreU")?.value} ${this.form.get("apPaterno")?.value} ${this.form.get("apMaterno")?.value}`;
+    if (this.form.valid){
+      const formulario = this.form.value;
+      console.log("datos: ",formulario);
 
-    this.form.patchValue({
-      direccion: direccionCompleta,
-      nombre: nombreCompleto,
-      user: nombreCompleto,
-      pass: this.password,
-      fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png',
-    });
+      const direccionCompleta = `${this.form.get("calle")?.value} ${this.form.get("numExterno")?.value ? "Ext. " + this.form.get("numExterno")?.value: ""}, ${this.form.get("numInter")?.value ? "Int. " + this.form.get("numInter")?.value : ""}, ${this.form.get("colonia")?.value}, ${this.form.get("ciudad")?.value}, ${this.form.get("estado")?.value}, CP ${this.form.get("codigoPostal")?.value}`;
+      const nombreCompleto = `${this.form.get("nombreU")?.value} ${this.form.get("apPaterno")?.value} ${this.form.get("apMaterno")?.value}`;
 
-    if (this.form.valid) {
-    console.log(this.form.value)
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = true;
+      dialogConfig.data = 'Registro agregado correctamente.';
+      
+// Determinar si se esta regustrando un cliente o un empleadoa
+     const isCustomerRegistration=this.onPuestoSeleccionado(formulario.puesto);
+      if (isCustomerRegistration){
+        console.log("PASA CLIENTE");
 
-   this.usuario.agregarUsuario(this.form.value).subscribe({
-        next: (resultData) => {
+        this.password = this.generarContraseña(9);
+        this.form.patchValue({
+          direccion: direccionCompleta,
+          nombre: nombreCompleto,
+          user: nombreCompleto,
+          pass: this.password,
+          fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png',
+        });
 
-          console.log('Enviando peticion');
-          console.log('VER valores enviados',this.form.value)
+        console.log("DATOS: ",this.form.value);
 
-          if (resultData.success == 0) {
-            this.toastr.error(resultData.message, 'Error!!!');
-            this.spinner.hide();
-          } else if (resultData.success == '1') {
-            this.dialogo.close(true)
-            this.spinner.hide();
-            this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
-           console.log('va a home');
-            this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
-              if (cerrarDialogo) {
-               this.router.navigateByUrl(`/listaMembresias`);
+        this.usuario.agregarUsuario(this.form.value).subscribe({
+          next: (resultData) => {
+            console.log('Enviando peticion');
+            console.log('VER valores enviados',this.form.value)
+            if (resultData.success == 0) {
+              this.toastr.error(resultData.message, 'Error!!!');
+              this.spinner.hide();
+            } else if (resultData.success == '1') {
+              this.dialogo.close(true)
+              this.spinner.hide();
+              this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
+              console.log('va a home');
+              this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
+            if (cerrarDialogo) {
+              this.router.navigateByUrl(`/listaMembresias`);
+            }
+          });
 
-              }
-            });
           } else if (resultData.success == '2') {
-
             this.dialogo.close(true);
             this.spinner.hide();
             this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
 
-              if (cerrarDialogo) {
-               this.router.navigateByUrl(`/listaMembresias`);
-
-              }
-            });
-
-            console.log('va a home con erro de conexion');
+            if (cerrarDialogo) {
+              this.router.navigateByUrl(`/listaMembresias`);
+            }
+          });
+          console.log('va a home con erro de conexion');
+            }
+          },
+            error: (error) => {
+            this.toastr.error('Ocurrió un error al intentar agregar el cliente.', 'Error!!!');
           }
-        },
-        error: (error) => {
-          this.toastr.error('Ocurrió un error al intentar agregar el cliente.', 'Error!!!');
+        });
+
+
+      } else {
+        console.log("No es cliente");
+        const datos2 = {
+          clave: formulario.id,
+          nombre:nombreCompleto,
+          puesto:formulario.puesto,
+          email:formulario.email,
+          pass:formulario.pass,
+          celular:formulario.fon,
+          idGym:formulario.idGym,
+          estatus:1,
+          direccion:direccionCompleta,
+          genero:formulario.genero,
+          base64textString:formulario.base64textString,
+          fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png'
         }
-      });
+        //console.log("DATOS PARA OTROS: ",datos2)
+
+        const datos = {
+          email : formulario.email,
+          clave: formulario.id,
+          idGym: formulario.idGym
+        }
+
+        this.usuario.correoEmpleado(datos).subscribe((respuesta) => {
+          if(respuesta.ok === false){
+            if(respuesta.message.includes('Correo')){
+              this.toastr.error('El correo electrónico ya existe.', 'Error!!!');
+            } else if (respuesta.message.includes('estafeta')) {
+              this.toastr.error('La clave ya está registrada.', 'Error!!!');
+            } else {
+              this.toastr.error('Error al verificar los datos.', 'Error!!!');
+            }
+
+          } else {
+            this.usuario.agregarPersonal(datos2).subscribe((respuesta) => {
+
+              if(respuesta.ok === true){
+                this.dialogo.close(true);
+                this.spinner.hide();
+                this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
+                  if (cerrarDialogo) {
+                    this.router.navigateByUrl(`/listaMembresias`);
+                  }
+                });
+              } else {
+              this.toastr.error('ocorruio un error al guardar los datos', 'Error!!!');
+              }
+            })
+          }
+        })
+
+      }
+
     } else {
       this.spinner.hide();
       this.toastr.error('Complete los campos requeridos', 'Error', {
-        positionClass: 'toast-bottom-left',
+      positionClass: 'toast-bottom-left',
       });
       this.marcarCamposInvalidos(this.form);
+
     }
   }
+
+
 
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
@@ -362,9 +558,6 @@ export class RegistroComponent implements OnInit {
       }
     });
   }
-
-
-
 
   consultarCodigoPostal(): void {
     const codigoPostal = this.form.get("codigoPostal")?.value;
@@ -398,6 +591,69 @@ export class RegistroComponent implements OnInit {
         // Manejar errores si es necesario
       }
     );
+  }
+
+  esClienteDisponible(): boolean {
+    // Verifica si la opción "Cliente" está disponible en personalCompleto
+    return this.personalCompleto.some((p) => p.usu === 'Cliente');
+    
+  }
+
+
+
+
+
+
+
+
+    buscarPersonal() {
+  
+  
+      this.usuario.getPersonal().subscribe({
+        next: (respuesta) => {
+          console.log("Personalllll: ", respuesta);
+          this.personalCompleto = respuesta; // Guardar toda la respuesta de la API
+          this.esClienteDisponible();
+          this.preseleccionarRolSiEsRecepcionista();
+  
+        },
+        error: (error) => {
+          console.error("Error al obtener el personal:", error);
+        },
+      });
+    }
+  
+
+
+    abrirModalCrearRol(): void {
+      const dialogRef = this.dialog.open(CrearRolComponent, {
+        width: '400px', // Ancho del modal
+        disableClose: true // Evita cerrar el modal al hacer clic fuera
+      });
+
+      dialogRef.afterClosed().subscribe((resultado) => {
+        if (resultado) {
+          console.log('El rol fue creado con éxito.');
+          // Aquí puedes refrescar tu lista de roles, si es necesario
+        } else {
+          console.log('El usuario canceló la creación del rol.');
+        }
+      });
+    }
+
+
+  preseleccionarRolSiEsRecepcionista(): void {
+    if (this.isRecepcion()) {
+      // Filtra las opciones para que solo aparezca "Cliente"
+      this.personalCompleto = this.personalCompleto.filter((p) => p.usu === 'Cliente');
+  
+      // Preselecciona el rol "Cliente" si existe
+      const cliente = this.personalCompleto.find((p) => p.usu === 'Cliente');
+      if (cliente) {
+        this.form.get('puesto')?.setValue(cliente.id_personal);
+      }
+      //this.actualizarValidaciones('Cliente');
+    }
   }
 
 

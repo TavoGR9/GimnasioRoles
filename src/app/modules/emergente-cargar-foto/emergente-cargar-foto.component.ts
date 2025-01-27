@@ -5,6 +5,8 @@ import { ClienteService } from '../../service/cliente.service';
 import { WebcamImage, WebcamInitError } from 'ngx-webcam';
 import { Subject, Observable } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EventCommunicationServiceService } from '../../service/event-communication-service.service';
+
 @Component({
   selector: 'app-emergente-cargar-foto',
   templateUrl: './emergente-cargar-foto.component.html',
@@ -69,8 +71,10 @@ export class EmergenteCargarFotoComponent implements OnInit{
   }
    
   usuarioRegistrado: any[] = [];   
-  constructor( private toastr: ToastrService, private ServiceCliente: ClienteService, 
+  constructor( private toastr: ToastrService, 
+    private ServiceCliente: ClienteService, 
     public dialogo: MatDialogRef<EmergenteCargarFotoComponent>,
+    private eventCommunicationService: EventCommunicationServiceService, // Servicio inyectado
     @Inject(MAT_DIALOG_DATA) public data: any) { 
       this.photoSelected = null;
       this.file = new File([], 'defaultFileName');
@@ -140,25 +144,36 @@ export class EmergenteCargarFotoComponent implements OnInit{
   }
 
   uploadPhoto() {
-    if (this.archivo.base64textString === '' || this.archivo.nombreArchivo === '' || this.archivo.id === 0) {
+    if (
+      this.archivo.base64textString === '' || 
+      this.archivo.nombreArchivo === '' || 
+      this.archivo.id === 0
+    ) {
       this.toastr.error('Aún no haz seleccionado una imagen valida...', 'Error');
       return;
     }
+  
     this.ServiceCliente.updatePhoto(this.archivo).subscribe({
-      next: (resultData) => { 
-        this.toastr.success('Se guardó la foto exitosamente...', 'Éxito');
-        this.dialogo.close(true);
-      }, 
-      error: (error) => { 
-        console.log(error); 
-        if (error instanceof HttpErrorResponse) {
-          console.log(error.error); // Si el error es una instancia de HttpErrorResponse, imprime el error
+      next: (resultData: any) => {
+        if (resultData.success === 1) {
+          this.toastr.success(resultData.msg || 'Se guardó la foto exitosamente...', 'Éxito');
+          
+          this.closeDialog();
+        } else {
+          this.toastr.error(resultData.msg || 'Ocurrió un error al guardar la foto.', 'Error');
         }
-        this.toastr.error('Ocurrió un error al guardar la foto.', 'Error');
+      },
+      error: (error) => {
+       
+        if (error instanceof HttpErrorResponse && error.error?.msg) {
+          this.toastr.error(error.error.msg, 'Error');
+        } else {
+          this.toastr.error('Ocurrió un error al guardar la foto.', 'Error');
+        }
       }
-    }); 
+    });
   }
-
+  
   mostrarInformacion(boton: string): void {
     this.mostrarInfo = boton;
   }
@@ -173,7 +188,7 @@ export class EmergenteCargarFotoComponent implements OnInit{
     this.ServiceCliente.updatePhoto2(this.archivo).subscribe({
       next: (response) => {
         this.toastr.success('Se guardó la foto exitosamente...', 'Éxito');
-        this.dialogo.close(true); // Cerrar el diálogo si se guarda correctamente
+       this.closeDialog();
       },
       error: (error) => {
         console.error('Error al guardar la imagen:', error);
@@ -181,5 +196,17 @@ export class EmergenteCargarFotoComponent implements OnInit{
       }
     });
   }
+
+
+
+  closeDialog(): void {
+    const modalId = 'ModalCargarFoto'; // Identificador único del modal
+    const data = { clienteId: this.data.clienteID }; // Datos opcionales
+    console.log('Emitir evento desde el modal', modalId, data); // Log para verificar
+    this.eventCommunicationService.triggerEvent(modalId, data); // Emitir evento
+    this.dialogo.close(true); // Cerrar modal
+  }
+  
+
 
 }

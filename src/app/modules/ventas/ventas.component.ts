@@ -124,7 +124,7 @@ export class VentasComponent implements OnInit {
     this.ubicacion = this.auth.nombreGym.getValue();
     this.idGym = this.auth.idGym.getValue();
     this.idUsuarioo = this.auth.idUser.getValue();
-    console.log('idUsuario: ', this.idUsuarioo);
+    // console.log('idUsuario: ', this.idUsuarioo);
 
     // console.log('idgym: ', this.idGym);
     // console.log('UBICACION? ',this.ubicacion);
@@ -140,7 +140,7 @@ export class VentasComponent implements OnInit {
     //Obtener productos de la bodega
     this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      console.log('ProductosV: ', this.productData);
+      // console.log('ProductosV: ', this.productData);
 
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator;
@@ -347,7 +347,7 @@ export class VentasComponent implements OnInit {
     const productoIngresado = this.form.get("producto")?.value;
       this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
-          console.log('PRODUCTOS POR NOMBRE: ', respuesta);
+          // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
 
            // Filtrar las subcategorías excluyendo aquellas donde
         const productosFiltrados = respuesta.nombreproducto.filter(
@@ -436,10 +436,10 @@ export class VentasComponent implements OnInit {
                     idPromocion: ''
                   };
                 });
-                console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
+                // console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
                 this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe(
                   (response) => {
-                    console.log('Detalle Pedido insertado correctamente:', response);
+                    // console.log('Detalle Pedido insertado correctamente:', response);
                     if (response.success === 1) {
                       //Actualizamos existencias
                       const existencias = this.selectedProducts.map((producto) => {
