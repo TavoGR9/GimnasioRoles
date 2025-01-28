@@ -7,6 +7,7 @@ import { MensajeEmergentesComponent } from '../mensaje-emergentes/mensaje-emerge
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, of } from 'rxjs';
+import { EventCommunicationServiceService } from '../../service/event-communication-service.service';
 
 @Component({
   selector: 'app-crear-rol',
@@ -27,7 +28,8 @@ export class CrearRolComponent implements OnInit {
     private rolService: RolService,
     private dialogRef: MatDialogRef<CrearRolComponent>,
     private spinner: NgxSpinnerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private eventCommunicationService: EventCommunicationServiceService, // Servicio inyectado
   ) {
     this.rolForm = this.fb.group({
       idPersonal: [0],
@@ -78,6 +80,7 @@ export class CrearRolComponent implements OnInit {
             dialogRefConfirm.afterClosed().subscribe(() => {
               this.dialogRef.close(respuesta);
             });
+            this.closeDialog();
           } else {
             // Manejo de errores desde el servidor
             const mensajeError = respuesta.message || 'Hubo un error al agregar el rol.';
@@ -108,5 +111,13 @@ export class CrearRolComponent implements OnInit {
   cancelar() {
     this.dialogRef.close();
   }
+
+  closeDialog(): void {
+    const modalId = 'Crear Rol Component'; // Identificador único del modal
+    console.log('Emitir evento desde el modal', modalId); // Log para verificar
+    this.eventCommunicationService.triggerEvent(modalId); // Emitir evento
+    this.dialogRef.close(true); // Cerrar modal
+  }
+  
 
 }

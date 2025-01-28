@@ -7,61 +7,89 @@
 
 <div mat-dialog-content>
   <br>
-<div class="row">
-  <div class="col-sm-5">
-    <img [src]="photo" class="size_image" alt="Imagen del Cliente no disponible" style="width: 90%;">
-    <button mat-button (click)="abrirDialogFoto(data)" style="background-color: #000000; color: white;">
-      <mat-icon>camera_alt</mat-icon> <!-- Icono de cámara -->
-      Tomar Foto
-    </button>    
-  </div>
-  <div class="col-sm-7">
-    <form [formGroup]="form">
-      <div class="row">
-        <div class="col-sm-4">
-          <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
-            <mat-label>Clave:</mat-label>
-            <input id="estafeta" formControlName="estafeta" type="text" matInput autocomplete="off" placeholder="Clave" />
-          </mat-form-field>
+  <br>
+  <div class="row">
+    <div class="col-sm-5">
+      <img [src]="photo" class="size_image" alt="Imagen del Cliente no disponible" style="width: 90%;">
+      <button mat-button (click)="abrirDialogFoto(data)" style="background-color: #000000; color: white;">
+        <mat-icon>camera_alt</mat-icon> <!-- Icono de cámara -->
+        Tomar Foto
+      </button>
+    </div>
+
+    <div class="col-sm-7">
+      <form [formGroup]="form">
+        <!-- Clave y Teléfono -->
+        <div class="row">
+          <div class="col-sm-4">
+            <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
+              <mat-label>Clave:</mat-label>
+              <input id="estafeta" formControlName="estafeta" type="text" matInput autocomplete="off" placeholder="Clave" />
+            </mat-form-field>
+          </div>
+          <div class="col-sm-8">
+            <mat-form-field appearance="outline" class="formInputs" style="width: 92%;">
+              <mat-label>Teléfono:</mat-label>
+              <input id="telefono" formControlName="telefono" type="text" matInput autocomplete="off" placeholder="Teléfono" />
+            </mat-form-field>
+          </div>
         </div>
-        <div class="col-sm-8">
-          <mat-form-field appearance="outline" class="formInputs" style="width: 92%;">
-            <mat-label>Telefono:</mat-label>
-            <input id="telefono" formControlName="telefono" type="text" matInput autocomplete="off" placeholder="Telefono" />
-          </mat-form-field>
-        </div>
-      </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 95%;">
-          <mat-label>Nombre:</mat-label>
-          <input id="nombre" formControlName="nombre" type="text" matInput autocomplete="off" placeholder="nombre" />
-        </mat-form-field>
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="col-sm-12">
-        <mat-form-field appearance="outline" class="formInputs" style="width: 95%;">
-          <mat-label>Correo electronico.</mat-label>
-          <input id="email" formControlName="correo" type="text" matInput autocomplete="off" placeholder="Correo electronico" />
-        </mat-form-field>
-      </div>
-    </div>
 
-    <div class="row">
-      <div class="col-sm-12">
-        <div style="display: flex; justify-content: center;">
-          <button mat-raised-button (click)="actualizarCliente2()" style="background-color: #fd9727; font-size: 15px;  height: 40px;">Actualizar información</button>
-       </div>
-      </div>
+        <!-- Nombre -->
+        <div class="row">
+          <div class="col-sm-12">
+            <mat-form-field appearance="outline" class="formInputs" style="width: 95%;">
+              <mat-label>Nombre:</mat-label>
+              <input id="nombre" formControlName="nombre" type="text" matInput autocomplete="off" placeholder="Nombre" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Correo -->
+        <div class="row">
+          <div class="col-sm-12">
+            <mat-form-field appearance="outline" class="formInputs" style="width: 95%;">
+              <mat-label>Correo electrónico:</mat-label>
+              <input id="email" formControlName="correo" type="text" matInput autocomplete="off" placeholder="Correo electrónico" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Botones Estatus y Restablecer -->
+        <div class="row" style="margin-top: 20px;">
+          <div class="col-sm-6" *ngIf="mostrarEstatus">
+            <!-- Botón Estatus -->
+            <div style="display: flex; justify-content: center;">
+              <mat-slide-toggle
+              [checked]="isActive"
+              (change)="onToggle($event, this.data.id_empleado)">
+                Estatus
+              </mat-slide-toggle>
+            </div>
+          </div>
+
+          <div class="col-sm-6" *ngIf="mostrarRestablecer">
+            <!-- Botón Restablecer -->
+            <div style="display: flex; justify-content: center;">
+              <button mat-icon-button color="primary" (click)="OpenRestablecer(this.data.id_empleado)">
+                <mat-icon>lock_reset</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón Actualizar Información -->
+        <div class="row" style="margin-top: 20px;">
+          <div class="col-sm-12">
+            <div style="display: flex; justify-content: center;">
+              <button mat-raised-button (click)="actualizarCliente2()" style="background-color: #fd9727; font-size: 15px; height: 40px;">Actualizar información</button>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
-    </form>
   </div>
 
-
-
-</div>
 <br><br>
   <div class="grid">
 
@@ -78,15 +106,15 @@
       </ng-container>
     </div>
 
-  
-    
+
+
     <div class="column">
       <ng-container>
         <h3 style="font-weight: bold;">Información de la membresia:</h3>
         <ul>
           <li *ngFor="let producto of productos">
             <ng-container *ngIf="duracionCalculo2(producto.fecha_inicio, producto.fecha_caducidad) > 0">
-              {{ producto.marca }} -  {{ producto.nombreProducto }}  
+              {{ producto.marca }} -  {{ producto.nombreProducto }}
               - Duración: {{ duracionCalculo2(producto.fecha_inicio, producto.fecha_caducidad) }} días
             </ng-container>
           </li>
@@ -127,7 +155,7 @@
               <!-- Aquí puedes mostrar el resultado de la evaluación -->
                 {{duracionCalculo2(memCli.fecha_inicio,memCli.fecha_caducidad)}}
             </div>
-            
+
           </ng-container>
           <ng-container *ngIf="column === 'Fecha Inicio'">
             {{ memCli.fecha_inicio | date:'dd/MM/yyyy' || null  }}
@@ -136,17 +164,12 @@
             {{ memCli.fecha_caducidad | date:'dd/MM/yyyy' || null  }}
           </ng-container>
 
-          
-
-          <!--<ng-container *ngIf="column === 'Status'">
-                {{ memCli.Status }}
-              </ng-container>-->
               <ng-container *ngIf="column === 'Status'">
                 <!-- Mostrar el texto del estatus con estilos condicionales -->
                 <p [ngClass]="{'estatus-activo': memCli.estatus === '1', 'estatus-inactivo': memCli.estatus !== '1'}">
                   {{ memCli.estatus === '1' ? 'Activo' : 'Inactivo' }}
                 </p>
-                
+
                 <!-- Mostrar íconos según el estatus -->
                 <ng-container *ngIf="memCli.estatus === '1'">
                   <mat-icon style="color:green">timer</mat-icon>
@@ -175,17 +198,3 @@
   <mat-paginator #paginatorHistorialMembre [pageSizeOptions]="[5, 10, 25, 50, 100]"
     showFirstLastButtons></mat-paginator>
 </div>
-
-<!--
-<div mat-dialog-actions fxLayoutAlign="center center">
-  Comentado anteriornte < ! -- <button mat-button (click)="cerrarDialogo()">Capturar huella</button> -- >
-  <a href="{{url}}">
-    <button mat-button (click)="abrirPuertoSerial(3)
-    " style="background-color: #000000; color: white;">
-      <mat-icon>fingerprint</mat-icon> < !-- Icono de huella dactilar -- >
-      Capturar huella
-    </button>
-  </a>
-
-</div>
--->

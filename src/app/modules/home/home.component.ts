@@ -74,7 +74,6 @@ export class HomeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource: any;
   displayedColumns: string[] = ["title", "details", "price", "rol"];
-  //dataSource = new MatTableDataSource(); // Inicialización vacía
 
 
   dataSourceProductos: any;
@@ -214,8 +213,6 @@ reloadPage(): void {
   }
 
   cargarDatosIniciales(): void {
-    console.log('Cargando datos iniciales...');
-
     // Ejecutar las funciones que dependen de idGym e idUser
     this.consultarMembresia();
     this.updateDate();
@@ -228,7 +225,6 @@ reloadPage(): void {
     this.consultarMeses();
     this.consultarQuincenas();
     this.consultarVisitas();
-    console.log(this.isLoading)
   }
 
   ngAfterViewInit() {
@@ -245,17 +241,12 @@ reloadPage(): void {
 
 
   consultarMeses(){
-    //this.homeService.ConsultarPedidosMembresias(this)
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
-        console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
-          // console.log('MEMBRESIAS TOTAL',response.data)
 
           if (pedidos) {
-            // console.log(res.Productos);
-
             const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
 
             const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
@@ -264,18 +255,10 @@ reloadPage(): void {
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
               0
             );
-            // console.log('MENSUALIDADES: ', mensualidades);
             this.total_meses = mensualidades.length;
-            // console.log('TOTAL MENSUALIDADES: ', this.total_meses);
-            // console.log('TOTAL CANTIDAD DE MENSUALIDADES: ', this.totalMesesCantidad);
-
-
 
           } else {
-            console.warn("No se encontraron membresias para el gimnasio especificado.");
           }
-
-          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
 
         } else {
           const errorMessage = response.message; // Si hay un error, mostramos el mensaje
@@ -292,16 +275,12 @@ reloadPage(): void {
     }
 
   consultarQuincenas(){
-    //this.homeService.ConsultarPedidosMembresias(this)
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
-        console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
-          // console.log('MEMBRESIAS QUINCENAS TOTAL',response.data)
 
           if (pedidos) {
-            // console.log(res.Productos);
 
             const now = new Date(); // Obtener la fecha actual
 
@@ -323,19 +302,9 @@ reloadPage(): void {
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
               0
             );
-            // console.log('QUINCENAS: ', quincenas);
             this.total_quincena = quincenas.length;
-            // console.log('TOTAL QUINCENAS: ', this.total_quincena);
-            // console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalQuincenaCantidad);
 
-
-
-          } else {
-            console.warn("No se encontraron membresia para el gimnasio especificado.");
           }
-
-          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
-
         } else {
           const errorMessage = response.message; // Si hay un error, mostramos el mensaje
           console.log(errorMessage)
@@ -352,17 +321,12 @@ reloadPage(): void {
 
 
   consultarVisitas(){
-    //this.homeService.ConsultarPedidosMembresias(this)
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
-        console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
-          // console.log('MEMBRESIAS VISITAS TOTAL',response.data)
 
           if (pedidos) {
-            // console.log(res.Productos);
-
             const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
 
             const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
@@ -371,18 +335,11 @@ reloadPage(): void {
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
               0
             );
-            // console.log('QUINCENAS: ', visitas);
             this.total_visita = visitas.length;
-            // console.log('TOTAL QUINCENAS: ', this.total_visita);
-            // console.log('TOTAL CANTIDAD DE QUINCENAS: ', this.totalVisitaCantidad);
 
 
 
-          } else {
-            console.warn("No se encontraron membresia para el gimnasio especificado.");
           }
-
-          //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
 
         } else {
           const errorMessage = response.message; // Si hay un error, mostramos el mensaje
@@ -399,21 +356,6 @@ reloadPage(): void {
     }
 
   calculateVisitaTotal(): void {
-    // // Verifica si salesChartDataVisita tiene contenido y estructura válida
-    // if (this.salesChartDataVisita.length > 0) {
-    //   console.log('Datos para calcular visita total:', this.salesChartDataVisita);
-
-    //   // Recorre cada serie y suma los valores
-    //   this.visitaTotal = this.salesChartDataVisita.reduce((total, dataset) => {
-    //     return total + dataset.series.reduce((sum, data) => sum + data.value, 0);
-    //   }, 0);
-
-    //   console.log('Visita total calculada:', this.visitaTotal);
-    // } else {
-    //   console.warn('salesChartDataVisita está vacío o no tiene la estructura esperada');
-    //   this.visitaTotal = 0;
-    // }
-
     this.visitaTotal = (this.salesChartDataVisita.length * 70)
   }
 
@@ -428,10 +370,9 @@ reloadPage(): void {
         } else {
           this.homeCard3 = respuesta; // Si ya es un array, úsalo tal cual
         }
-        // console.log('Tarjetas cargadas:', this.homeCard3);
       },
       (error) => {
-        console.error('Error al cargar las tarjetas:', error);
+        //console.error('Error al cargar las tarjetas:', error);
       }
     );
 }
@@ -444,10 +385,9 @@ cargarTarjetas2(): void {
       } else {
         this.homeCard4 = respuesta; // Si ya es un array, úsalo tal cual
       }
-      // console.log('Tarjetas cargadas:', this.homeCard4);
     },
     (error) => {
-      console.error('Error al cargar las tarjetas:', error);
+      //console.error('Error al cargar las tarjetas:', error);
     }
   );
 }
@@ -613,11 +553,10 @@ cargarTarjetas2(): void {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCard21 = [respuesta];
         } else {
-          //console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
-        console.error("Error al obtener datos:", error);
+        //console.error("Error al obtener datos:", error);
       }
     );
   }
@@ -628,11 +567,10 @@ cargarTarjetas2(): void {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCardVisita = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
         } else {
-          //console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
-        console.error("Error al obtener datos:", error);
+        //console.error("Error al obtener datos:", error);
       }
     );
   }
@@ -642,12 +580,10 @@ cargarTarjetas2(): void {
       (respuesta: any) => {
         if (typeof respuesta === "object" && respuesta !== null) {
           this.homeCardQuincena = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
-        } else {
-          console.error("La respuesta no es un objeto válido:", respuesta);
         }
       },
       (error) => {
-        console.error("Error al obtener datos:", error);
+       // console.error("Error al obtener datos:", error);
       }
     );
   }
@@ -660,7 +596,6 @@ cargarTarjetas2(): void {
     else if (typeof event.series === "string") {
       // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
       const numeroMes = this.meses[event.series as keyof typeof this.meses];
-      //this.fechaMensualidad = this.año + "-" + numeroMes + "-" + event.name;
       this.fechaMensualidad = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFecha(this.fechaMensualidad);
     } else {
@@ -677,7 +612,6 @@ cargarTarjetas2(): void {
     else if (typeof event.series === "string") {
       // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
       const numeroMes = this.meses[event.series as keyof typeof this.meses];
-     // this.fechaQuincena = this.año + "-" + numeroMes + "-" + event.name;
      // Dentro de tu componente
       this.fechaQuincena = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFechaQuincena(this.fechaQuincena);
@@ -694,11 +628,10 @@ cargarTarjetas2(): void {
     else if (typeof event.series === "string") {
       // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
       const numeroMes = this.meses[event.series as keyof typeof this.meses];
-      //this.fechaVisita = this.año + "-" + numeroMes + "-" + event.name;
       this.fechaVisita = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
       this.graficasFechaVisita(this.fechaVisita);
     } else {
-      console.warn("Nombre de mes no es una cadena válida:", event.series);
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
     }
   }
 
@@ -708,27 +641,17 @@ cargarTarjetas2(): void {
       this.homeCard = respuesta;
     });
 
-    // this.homeService.consultarHome2(this.idGym).subscribe((respuesta) => {
-    //   this.homeCard2 = respuesta;
-    // });
-
     this.homeService.getAnalyticsData(this.idGym).subscribe(
       (data) => {
-        //console.log('Datos recibidos en Angular:', data); // Verifica si hay errores o estructura inesperada
         this.masVendidos = data;
         this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
         this.loadData();
       },
       (error) => {
-        console.error('Error al obtener datos:', error); // Captura cualquier error
+        //console.error('Error al obtener datos:', error); // Captura cualquier error
       }
     );
 
-    // this.homeService.getARecientesVentas(this.idGym).subscribe((data) => {
-    //   this.tablaHTMLVentas = this.sanitizer.bypassSecurityTrustHtml(
-    //     `<table class="mi-tabla">${data.tablaHTMLVentas}</table>`
-    //   );
-    // });
   }
 
 
@@ -756,7 +679,6 @@ cargarTarjetas2(): void {
   }
 
   /**OFLINE */
-
   Sincronizar() {
     this.indexedDBService
       .getAgregarEmpleadoData("AgregarEmpleado")
@@ -893,35 +815,21 @@ cargarTarjetas2(): void {
   }
 
 consultarMembresia(){
-//this.homeService.ConsultarPedidosMembresias(this)
 this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
   (response) => {
-    //console.log(this.auth.idGym.getValue(),'id')
     if (response.success === 1) {
       const pedidos = response.data; // Almacenamos los datos de la respuesta
-      //console.log('API',response.data)
 
 
       const pedidosAgrupados = this.agruparPorPedido(pedidos);
-      //console.log('Agrupados Por pedido',pedidosAgrupados);
       const ventasDiaGym =this.obtenerVentasDelDia(pedidosAgrupados);
-      //console.log('ventas del dia',ventasDiaGym)
-
       const pedidosConteoDia= this.contarPorDia(pedidosAgrupados);
-      //console.log('Conteo por dias',pedidosConteoDia);
-
-
 
       this.salesData= pedidosConteoDia
       this.processSalesData();
-      //this.processVisitsData();
       this.processSalesDataVisita();
-
-
       this.processSalesDataQuincenal();
 
-
-      //this.salesChartData4 = this.procesarVentas(pedidos,'Mensualidad');
 
     } else {
       const errorMessage = response.message; // Si hay un error, mostramos el mensaje
@@ -930,7 +838,6 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
 
   },
   (error) => {
-
     let errorMessage = 'Hubo un error al obtener los pedidos de membresía.'; // Mensaje de error
     console.error(error); // También lo mostramos en la consola
   }
@@ -943,9 +850,6 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
 
   clientes.forEach(cliente => {
     const idPedido = cliente.id_pedido;
-
-    console.log('AGRUPADOS: ', idPedido);
-
 
     if (!agrupadosPorPedido[idPedido]) {
       // Si no existe este `id_pedido` en el objeto agrupador, lo inicializamos.
@@ -960,7 +864,6 @@ this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
         productos: [] // Inicializamos un array vacío para los productos.
       };
 
-      console.log('AQUI DESPUES', agrupadosPorPedido[idPedido]);
 
 
     }
@@ -1092,7 +995,7 @@ currentMonthStr: string='';
 // Procesar los datos
 processSalesData() {
   // Obtener el mes y el año actual dinámicamente
-  console.log('hola');
+
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = (today.getMonth() + 1).toString().padStart(2, '0'); // Formato 'MM'
@@ -1247,9 +1150,6 @@ processSalesDataVisita() {
     },
   ];
 
-  // console.log('VALOR DEL DATO DE VISITAS', this.salesChartDataVisita);
-  // console.log('VALOR DE LONGITUD DE VISITAS', this.salesChartDataVisita.length);
-
    // Recalcula la visita total
    this.calculateVisitaTotal();
 }
@@ -1263,7 +1163,6 @@ updateDate(): void {
   const day = today.getDate().toString().padStart(2, '0');
 
   this.currentDate = `${year}-${month}-${day}`;
-  //console.log('Fecha actualizada:', this.currentDate);
 }
 
 startDateUpdater(): void {

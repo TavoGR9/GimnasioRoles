@@ -33,16 +33,9 @@ export class AuthService {
 
   isConnected: boolean = true;
 
-  //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
-  //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-
   API: string = 'http://localhost/serviciosGym/'
 
-  // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  // APIv3: string = 'http://localhost/olimpusGym/conf/';
-  // API: String = '';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -72,7 +65,6 @@ export class AuthService {
 
   loginBS(data: User): Observable<any> {
   const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;
-  console.log("datas: ",url);
   return this.clienteHttp.request('GET', url, {responseType:'json'})
       .pipe(
         catchError((err: any) => {
@@ -103,8 +95,6 @@ export class AuthService {
         this.role.next('');
         this.clearCurrentUser();  // Borrar informacion de usuario en sesion storage
         this.router.navigate(['login'], { replaceUrl: true });
-      }else {
-        console.log("Cierre de sesión cancelado");
       }
     })
 
@@ -225,10 +215,8 @@ export class AuthService {
   }
 
   dataUser(data: any): Observable<any> {
-    console.log("datos: ",data)
     return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
       tap(dataResponse => {
-        //console.log("DATOS: ",dataResponse);
         this.saveDataToIndexedDB(dataResponse);
       }),
       catchError(error => {

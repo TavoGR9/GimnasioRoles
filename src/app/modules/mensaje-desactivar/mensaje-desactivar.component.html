@@ -1,9 +1,11 @@
-<h1 mat-dialog-title>Confirmación</h1>
-<div mat-dialog-content>
-    <p>{{data.mensaje}}</p>
+<h1 mat-dialog-title style="text-align: center;">
+  <mat-icon style="font-size: 48px; color: #ff9800; vertical-align: middle;">warning</mat-icon>
+  Confirmación
+</h1>
+<div mat-dialog-content style="text-align: center;">
+    <p style="font-size: 18px; margin-top: 15px;">{{data.mensaje}}</p>
 </div>
 <div mat-dialog-actions fxLayoutAlign="center center">
-    <button  mat-button (click)="cerrarDialogo()" >Cancelar</button>
-    <button mat-button (click)="confirmado()" cdkFocusInitial>Aceptar</button>
+    <button mat-button (click)="cerrarDialogo()">Cancelar</button>
+    <button mat-raised-button color="warn" (click)="confirmado()" cdkFocusInitial>Aceptar</button>
 </div>
-

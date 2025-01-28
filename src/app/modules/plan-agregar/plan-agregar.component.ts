@@ -58,7 +58,6 @@ export class planAgregarComponent {
         PrecioPaquete: ["", Validators.required],
         existencias: ["", Validators.required],
         idGym: [this.auth.idGym.getValue(), Validators.required],
-
         membresias: [[], Validators.required],
         preciopv: [1],
         plataforma: ["Web"]
@@ -78,7 +77,7 @@ export class planAgregarComponent {
         .subscribe((respuesta) => {
           if (respuesta )
           this.plan = this.aplicarFiltro(respuesta);
-        console.log("datos membresia: ",this.plan);
+        //console.log("datos membresia: ",this.plan);
         });
     });
 
@@ -148,7 +147,6 @@ export class planAgregarComponent {
             }
           })
         } else {
-          console.log("la respuesta que trae API: " +respuesta);
           this.toastr.error(
             'El plan ya existe, por favor elige otro nombre',
             'Error');
@@ -220,7 +218,6 @@ export class planAgregarComponent {
         .subscribe((respuesta) => {
           if (respuesta )
           this.plan = this.aplicarFiltro(respuesta);
-        console.log("datos membresia: ",this.plan);
         });
     });
   }

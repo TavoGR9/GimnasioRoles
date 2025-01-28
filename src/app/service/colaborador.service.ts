@@ -259,19 +259,10 @@ export class ColaboradorService {
         }
 
 
-     /* ActualizarContrasenia(p_idUsuario: number, p_contrasenia: string) {
-        // Define headers and params for the request
-        const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-        const params = new HttpParams()
-            .set('p_idUsuario', p_idUsuario.toString())
-            .set('p_contrasenia', p_contrasenia);
-
-        // Perform the POST request
-        return this.clienteHttp.post(this.API + 'updateContrasenia.php', params.toString(), { headers });
-    }*/
-        ActualizarContrasenia(idempleado: number, contrasenia: string) {
+      ActualizarContrasenia(idempleado: number, contrasenia: string) {
           const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
           const body = { idempleado, contrasenia };
+          console.log('Datos contraseña: ',body)
           return this.clienteHttp.post(this.API + 'updateContrasenia.php', body, { headers });
       }
 

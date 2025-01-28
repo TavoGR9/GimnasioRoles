@@ -100,13 +100,13 @@ export class PromocionService {
 
     return this.clienteHttp.post(this.API + "addPromocionPaquete.php", datosAEnviar).pipe(
       tap(dataResponse => {
-        console.log("Respuesta de la API:", dataResponse);
+        //console.log("Respuesta de la API:", dataResponse);
       }),
       catchError(error => {
-        console.error("Error en la solicitud:", error);
+        //console.error("Error en la solicitud:", error);
         this.saveDataToIndexedDBP(datosPlan);
         const resultData = { success: '0' };
-        console.log("Respuesta del error: ", resultData);
+       // console.log("Respuesta del error: ", resultData);
         return of(resultData);
       })
     );
@@ -138,13 +138,13 @@ export class PromocionService {
 
     return this.clienteHttp.post(this.API + "updatePromocion.php", datosAEnviar).pipe(
       tap(dataResponse => {
-        console.log("Respuesta de la API:", dataResponse);
+        //console.log("Respuesta de la API:", dataResponse);
       }),
       catchError(error => {
-        console.error("Error en la solicitud:", error);
+        //console.error("Error en la solicitud:", error);
         this.saveDataToIndexedDBP(datosPlan);
         const resultData = { success: '0' };
-        console.log("Respuesta del error: ", resultData);
+       // console.log("Respuesta del error: ", resultData);
         return of(resultData);
       })
     );
@@ -166,15 +166,7 @@ export class PromocionService {
       status: estado.status
     };
 
-    return this.clienteHttp.post<any>(`${this.API}deletePromocion.php?estado`, body, httpOptions).pipe(
-      tap(dataResponse => {
-        console.log("Respuesta de la API:", dataResponse);
-      }),
-      catchError(error => {
-        console.log("Respuesta del error: ", error);
-        return of(error);
-      })
-    );
+    return this.clienteHttp.post<any>(`${this.API}deletePromocion.php?estado`, body, httpOptions);
   }
 
 
@@ -190,15 +182,7 @@ export class PromocionService {
       params: new HttpParams().set('delete', id.toString()) // Parámetro para la solicitud GET
     };
 
-    return this.clienteHttp.post<any>(`${this.API}deletePromocion.php`, { idProm: id }, httpOptions).pipe(
-      tap(dataResponse => {
-        console.log("Respuesta de la API:", dataResponse);
-      }),
-      catchError(error => {
-        console.log("Respuesta del error: ", error);
-        return of(error);
-      })
-    );
+    return this.clienteHttp.post<any>(`${this.API}deletePromocion.php`, { idProm: id }, httpOptions);
   }
 
   //EDICION DE PLANES

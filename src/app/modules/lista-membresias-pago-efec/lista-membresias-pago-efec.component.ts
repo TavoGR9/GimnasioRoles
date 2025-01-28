@@ -1,3 +1,4 @@
+import { RolService } from './../../service/rol.service';
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
@@ -323,6 +324,8 @@ verificarCambios(): void {
         data: {
           idCliente: `${prod.clave}`,
           nombre: `${prod.nombreCompleto}`,
+          rol: `${prod.rol}`,
+          id_empleado:`${prod.id_empleado}`,
           telefono: `${prod.telefono}`,
           email: `${prod.Correo}`,
           peso: `${prod.peso}`,

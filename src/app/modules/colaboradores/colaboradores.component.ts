@@ -44,7 +44,6 @@ export class ColaboradoresComponent {
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      //console.log('Dato', this.idGym);
       this.listaTabla();
 
 
@@ -55,7 +54,6 @@ export class ColaboradoresComponent {
 
       const jsonData: string = JSON.stringify(datos);
       this.parametro = jsonData
-      /*console.log('que paso', this.parametro)*/
 
     });
   }
@@ -73,14 +71,10 @@ export class ColaboradoresComponent {
     if (this.isSupadmin()) {
         this.http.listaColaboradores().subscribe({
             next: (resultData) => {
-                //console.log('Datos obtenidos para Supadmin:', this.empleados);
                 this.empleados = resultData;
                 this.dataSource = new MatTableDataSource(this.empleados);
                 this.loadData();
 
-            },
-            error: (error) => {
-                //console.error('Error al obtener colaboradores:', error);
             }
         });
     }

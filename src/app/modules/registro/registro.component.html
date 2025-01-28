@@ -83,30 +83,34 @@
                   <br>
                   <br>
                   <br>
-                    <div class="row">
-                        <div class="col-sm-12">
-                          <p>
-                            <mat-form-field appearance="outline" class="inputs_properties">
-                              <mat-label>Puesto</mat-label>
-                              <input
-                                matInput
-                                formControlName="puesto"
-                                placeholder="Recepcionista"
-                                [matAutocomplete]="autoMarca"
-                                [readonly]="isRecepcion()"
-                                (input)="buscarPersonal()"
-                              />
-
-                              <mat-autocomplete #autoMarca="matAutocomplete" (optionSelected)="onPuestoSeleccionado($event.option.value)">
-                                <mat-option *ngFor="let personal of filteredPersonal" [value]="personal">
-                                  {{ personal }}
-                                </mat-option>
-                                <p class="small-text" (click)="abrirModalCrearRol()">Agregar otro rol</p>
-                              </mat-autocomplete>
-                            </mat-form-field>
-                          </p>
-
-
+                    <div class="row"  >
+                        <div class="col-sm-12" >
+                           <p>
+                              <mat-form-field appearance="outline" class="inputs_properties">
+                                <mat-label>Puesto</mat-label>
+                                <mat-select
+                                
+                                  formControlName="puesto"
+                                  [disabled]="isRecepcion()"
+                                  (selectionChange)="onPuestoSeleccionado($event.value)"
+                                >
+                                
+                                <mat-option 
+                                *ngFor="let personal of personalCompleto"
+                                [value]="personal.id_personal"
+                              >
+                                {{ personal.usu }}
+                              </mat-option>
+                              
+                              <!-- Opción adicional -->
+                              <mat-option *ngIf="isAdmin()" (click)="abrirModalCrearRol()">
+                                 Agregar otro rol
+                               </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </p>
+                            
+                            
                         </div>
 
                         <div class="col-sm-6">

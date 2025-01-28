@@ -24,7 +24,6 @@ import { EditarMarcaComponent } from "../editar-marca/editar-marca.component";
 export class ServiciosListaComponent implements OnInit{
 
   services: any[] = [];
-  // dataSource: any;
   idGym: number = 0;
   seleccionado: number = 0;
   message: string = "";
@@ -67,7 +66,6 @@ export class ServiciosListaComponent implements OnInit{
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      // console.log('ID GYM: ',this.idGym);
       this.listaTablaMarca();
     });
   }
@@ -104,24 +102,17 @@ export class ServiciosListaComponent implements OnInit{
   //REEMPLAZAR POR MARCAS
   listaTablaMarca() {
     this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe((res) => {
-      // console.log('res: ', res);
-      // console.log('resProductos: ', res.Productos);
-
 
       if (res.Productos) {
-        // console.log(res.Productos);
-
         this.marcas = res.Productos.filter((marca: any) => marca.servicio !== null && marca.servicio !== 0 && marca.fk_idGimnasio == this.idGym);
         this.dataSourceDos = new MatTableDataSource(this.marcas);
       } else {
         this.marcas = [];
         this.dataSourceDos = new MatTableDataSource(this.marcas);
-        console.warn("No se encontraron marcas para el gimnasio especificado.");
       }
       this.dataSourceDos.paginator = this.paginator;
       this.isLoading = false;
     }, (error) => {
-      console.error("Error al obtener marcas:", error);
       this.marcas = [];
       this.dataSourceDos = new MatTableDataSource(this.marcas);
       this.isLoading = false;
