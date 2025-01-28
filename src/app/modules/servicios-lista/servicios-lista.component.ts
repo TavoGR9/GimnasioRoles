@@ -155,23 +155,23 @@ export class ServiciosListaComponent implements OnInit{
 
   }
 
-  borrarMarca(id_marcas: any) {
-    this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar este servicio?`,
-    })
-    .afterClosed()
-    .subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        this.categoriaService.deleteMarcaServ(id_marcas).subscribe(
-          (respuesta) => {
-            this.listaTablaMarca();
-            this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
-              positionClass: 'toast-bottom-left',
-            });
-          }
-        );
-      }
-    });
-  }
+  // borrarMarca(id_marcas: any) {
+  //   this.dialog.open(MensajeEliminarComponent,{
+  //     data: `¿Desea eliminar este servicio?`,
+  //   })
+  //   .afterClosed()
+  //   .subscribe((confirmado: boolean) => {
+  //     if (confirmado) {
+  //       this.categoriaService.deleteMarcaServ(id_marcas).subscribe(
+  //         (respuesta) => {
+  //           this.listaTablaMarca();
+  //           this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
+  //             positionClass: 'toast-bottom-left',
+  //           });
+  //         }
+  //       );
+  //     }
+  //   });
+  // }
 
 }

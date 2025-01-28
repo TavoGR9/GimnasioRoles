@@ -53,10 +53,10 @@ export class ColaboradorService {
     }
 
    agregarPersonal(datos: any): Observable<any> {
-      console.log("datos: ",datos)
+      // console.log("datos: ",datos)
       return this.clienteHttp.post(this.API + "empleado.php?insertar", datos).pipe(
         tap(dataResponse => {
-          console.log("datos: ",dataResponse)
+          // console.log("datos: ",dataResponse)
         }),
         catchError(error => {
           this.saveDataToIndexedDB(datos);
@@ -110,7 +110,7 @@ export class ColaboradorService {
       console.log(datos);
         return this.clienteHttp.post<any>(this.API + "empleado.php?comprobar", datos).pipe(
           tap(dataResponse => {
-          console.log(dataResponse)
+          // console.log(dataResponse)
           }),
           catchError(error => {
             console.error('Error en la solicitud HTTP:', error);
@@ -128,12 +128,12 @@ export class ColaboradorService {
     }
 
     agregarUsuario(datosEmpleado: any): Observable<any> {
-      console.log("Enviando solicitud HTTP...");
+      // console.log("Enviando solicitud HTTP...");
 
         return this.clienteHttp.post(this.API + "registrarUsuarioCliente3.php", datosEmpleado).pipe(
 
             tap(dataResponse => {
-           console.log(dataResponse)
+          //  console.log(dataResponse)
             }),
             catchError(error => {
               //this.saveDataToIndexedDBC(datosEmpleado);
@@ -149,9 +149,9 @@ export class ColaboradorService {
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuarioBodega", datosEmpleado);
     }
 
-    agregarBodegaEmpleado(datosEmpleado: any): Observable<any> {
-        return this.clienteHttp.post(this.API + "BodegaEmpleado.php?insertar=1", datosEmpleado);
-    }
+    // agregarBodegaEmpleado(datosEmpleado: any): Observable<any> {
+    //     return this.clienteHttp.post(this.API + "BodegaEmpleado.php?insertar=1", datosEmpleado);
+    // }
 
     comboDatosAllGym(){
         return this.clienteHttp.get(this.API+"empleado.php?nomAllGym");
@@ -290,7 +290,7 @@ export class ColaboradorService {
         }),
       };
 
-      console.log('Datos enviados desde Angular al backend (body):', body);
+      // console.log('Datos enviados desde Angular al backend (body):', body);
 
       // Incluimos `options` en la llamada
       return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php',body, options);

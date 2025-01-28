@@ -125,7 +125,7 @@ export class VerCorteComponent implements OnInit  {
     this.joinDetalleVentaService.consultarProductosVentasBodega(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
-        console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
+        // console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.loadData();
         this.dataSource.data = this.detallesCaja;
@@ -268,7 +268,7 @@ export class VerCorteComponent implements OnInit  {
 
     // Copiar los datos filtrados
     const datosFiltrados = [...this.dataSource.filteredData];
-    console.log('datosFiltrados: ', datosFiltrados);
+    // console.log('datosFiltrados: ', datosFiltrados);
 
 
     // Agregar una fila al final con el total

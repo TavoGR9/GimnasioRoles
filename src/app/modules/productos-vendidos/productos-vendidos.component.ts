@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, DoCheck} from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator'; 
-import { MatTableDataSource } from '@angular/material/table'; 
+import { Component, OnInit, ViewChild} from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -26,16 +26,16 @@ interface Producto {
   providers: [DatePipe],
 })
 
-export class ProductosVendidosComponent implements OnInit, DoCheck{
+export class ProductosVendidosComponent implements OnInit{
   fechaInicio: Date = new Date(); // Inicializa como una nueva fecha
-  fechaFin: Date = new Date();    
+  fechaFin: Date = new Date();
   idGym: number = 0;
   currentUser: string = '';
   productosVendidos: Producto[] = [];
-  dataSource: any; 
+  dataSource: any;
   private fechaInicioAnterior: Date | null = null;
   private fechaFinAnterior: Date | null = null;
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns: string[] = [
     'Producto',
@@ -45,12 +45,12 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     'Fecha venta',
     'Total'
   ];
-  
-  constructor(private prodVendidosService: ProductoService, 
-    private datePipe: DatePipe, 
+
+  constructor(private prodVendidosService: ProductoService,
+    private datePipe: DatePipe,
     private toastr: ToastrService,
     private auth: AuthService,){}
-  
+
   ngOnInit(): void{
     // this.prodVendidosService.comprobar();
     // this.auth.comprobar();
@@ -60,47 +60,47 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      this.updateDateLogs(); 
-    }); 
+      // this.updateDateLogs();
+    });
   }
 
-  private updateDateLogs(): void {
-    this.fechaInicioAnterior = this.fechaInicio;
-    this.fechaFinAnterior = this.fechaFin;
-    this.prodVendidosService.obtenerListaProduct(
-      this.formatDate(this.fechaInicio),
-      this.formatDate(this.fechaFin),
-      this.idGym
-    ).subscribe(
-      response => {
-        if (response) {
-          this.productosVendidos = response;
-          this.dataSource = new MatTableDataSource(this.productosVendidos);
-          this.loadData();
-        } else {
-          this.productosVendidos = [];
-          this.dataSource = new MatTableDataSource(this.productosVendidos);
-          this.loadData();
-        }
-      },
-      error => {
-        console.error('Error en la solicitud:', error);
-        this.productosVendidos = [];
-        this.dataSource = new MatTableDataSource(this.productosVendidos);
-        this.loadData();
-      }
-    );
-  }
-  
+  // private updateDateLogs(): void {
+  //   this.fechaInicioAnterior = this.fechaInicio;
+  //   this.fechaFinAnterior = this.fechaFin;
+  //   this.prodVendidosService.obtenerListaProduct(
+  //     this.formatDate(this.fechaInicio),
+  //     this.formatDate(this.fechaFin),
+  //     this.idGym
+  //   ).subscribe(
+  //     response => {
+  //       if (response) {
+  //         this.productosVendidos = response;
+  //         this.dataSource = new MatTableDataSource(this.productosVendidos);
+  //         this.loadData();
+  //       } else {
+  //         this.productosVendidos = [];
+  //         this.dataSource = new MatTableDataSource(this.productosVendidos);
+  //         this.loadData();
+  //       }
+  //     },
+  //     error => {
+  //       console.error('Error en la solicitud:', error);
+  //       this.productosVendidos = [];
+  //       this.dataSource = new MatTableDataSource(this.productosVendidos);
+  //       this.loadData();
+  //     }
+  //   );
+  // }
+
   loadData() {
     setTimeout(() => {
-      this.isLoading = false; 
+      this.isLoading = false;
       if (this.dataSource) {
         this.dataSource.paginator = this.paginator;
       }
-    }, 1000); 
+    }, 1000);
   }
-  
+
 
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
@@ -116,11 +116,11 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     });
   }
 
-  ngDoCheck(): void {
-    if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
-      this.updateDateLogs();
-    }
-  }
+  // ngDoCheck(): void {
+  //   if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
+  //     this.updateDateLogs();
+  //   }
+  // }
 
   onFechaInicioChange(event: any): void {
   }
@@ -178,17 +178,17 @@ export class ProductosVendidosComponent implements OnInit, DoCheck{
     ];
     // Añadir la hoja de datos al libro de Excel
     XLSX.utils.book_append_sheet(workbook, hojaDatos, 'Datos');
-  
+
     // Crear un Blob con el contenido del libro de Excel
     const blob = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
-  
+
     // Convertir el Blob a un array de bytes
     const arrayBuffer = new ArrayBuffer(blob.length);
     const view = new Uint8Array(arrayBuffer);
     for (let i = 0; i < blob.length; i++) {
       view[i] = blob.charCodeAt(i) & 0xFF;
     }
-  
+
     // Crear un Blob con el array de bytes y guardarlo como archivo
     const newBlob = new Blob([arrayBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(newBlob, 'Productos Vendidos.xlsx');

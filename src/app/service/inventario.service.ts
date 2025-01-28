@@ -36,29 +36,29 @@ export class inventarioService {
   //   });
   // }
 
-  obtenerProductoPorId(id: any, idGimnasio: any): Observable<any> {
-    let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
-    return this.clienteHttp.get(this.API+"producto_bod.php", { params: params });
-  }
+  // obtenerProductoPorId(id: any, idGimnasio: any): Observable<any> {
+  //   let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
+  //   return this.clienteHttp.get(this.API+"producto_bod.php", { params: params });
+  // }
 
 
-  buscarProductoPorNombre( idGym: number): Observable<any> {
-    // Crear los parámetros de la solicitud
-    const params = new HttpParams()
-      .set('idGym', idGym);
+  // buscarProductoPorNombre( idGym: number): Observable<any> {
+  //   // Crear los parámetros de la solicitud
+  //   const params = new HttpParams()
+  //     .set('idGym', idGym);
 
-    return this.clienteHttp.get<any>(this.API+"producto_bod.php", { params });
-  }
+  //   return this.clienteHttp.get<any>(this.API+"producto_bod.php", { params });
+  // }
 
 
   //Lista Historial
   HistorialInventario(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
     const url = `${this.API}verHistorialPedido.php`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
-    console.log("DATOS ENVIADOS AL API: ",body);
+    // console.log("DATOS ENVIADOS AL API: ",body);
     return this.clienteHttp.post(url, body).pipe(
       tap(dataResponse => {
-        console.log('RESPUESTA DE LA API: ', dataResponse);
+        // console.log('RESPUESTA DE LA API: ', dataResponse);
 
       }),
       catchError(error => {

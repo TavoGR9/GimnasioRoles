@@ -73,7 +73,7 @@ export class AuthService {
 
   loginBS(data: User): Observable<any> {
   const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;
-  console.log("datas: ",url);
+  // console.log("datas: ",url);
   return this.clienteHttp.request('GET', url, {responseType:'json'})
       .pipe(
         catchError((err: any) => {
@@ -134,9 +134,9 @@ export class AuthService {
 
   //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
   //Traer lista de sucursales
-  list_sucursales():Observable<any> {
-    return this.clienteHttp.get<listaSucursal>(this.API + 'sucursales.php');
-  }
+  // list_sucursales():Observable<any> {
+  //   return this.clienteHttp.get<listaSucursal>(this.API + 'sucursales.php');
+  // }
 
   //Consultar informacion de sucursales
   chart_sucursales(data: any):Observable<any> {
@@ -226,7 +226,7 @@ export class AuthService {
   }
 
   dataUser(data: any): Observable<any> {
-    console.log("datos: ",data)
+    // console.log("datos: ",data)
     return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
       tap(dataResponse => {
         //console.log("DATOS: ",dataResponse);

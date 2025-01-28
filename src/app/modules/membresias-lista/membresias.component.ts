@@ -103,57 +103,57 @@ export class MembresiasComponent implements OnInit {
     this.dataSourceDos.filter = filterValue.trim().toLowerCase();
   }
 
-  toggleCheckbox(idMem: number, status: number) {
-    const estadoOriginal = status;
-    const dialogRef = this.dialog.open(MensajeEliminarComponent, {
-      data: `¿Desea cambiar el estatus de la categoría?`,
-    });
+  // toggleCheckbox(idMem: number, status: number) {
+  //   const estadoOriginal = status;
+  //   const dialogRef = this.dialog.open(MensajeEliminarComponent, {
+  //     data: `¿Desea cambiar el estatus de la categoría?`,
+  //   });
 
-    dialogRef.afterClosed().subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        const nuevoEstado = status == 1 ? { status: 0 } : { status: 1 };
-        this.actualizarEstatusMembresia(idMem, nuevoEstado);
-      } else {
-      }
-    });
-  }
+  //   dialogRef.afterClosed().subscribe((confirmado: boolean) => {
+  //     if (confirmado) {
+  //       const nuevoEstado = status == 1 ? { status: 0 } : { status: 1 };
+  //       this.actualizarEstatusMembresia(idMem, nuevoEstado);
+  //     } else {
+  //     }
+  //   });
+  // }
 
-  actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
-    this.membresiaService.updateMembresiaStatus(idMem, estado).subscribe(
-      (respuesta) => {
-        this.membresiaActiva = estado.status == 1;
-      },
-      (error) => {
-        console.error("Error al actualizar la membresía:", error);
-      }
-    );
-  }
+  // actualizarEstatusMembresia(idMem: number, estado: { status: number }) {
+  //   this.membresiaService.updateMembresiaStatus(idMem, estado).subscribe(
+  //     (respuesta) => {
+  //       this.membresiaActiva = estado.status == 1;
+  //     },
+  //     (error) => {
+  //       console.error("Error al actualizar la membresía:", error);
+  //     }
+  //   );
+  // }
 
-  openDialog(): void {
-    this.membresiaService.optionShow.next(1);
-    this.membresiaService.optionShow.subscribe((option) => {});
-    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-      width: "70%",
-      disableClose: true,
-      data: { name: "¿Para quién es esta membresía?" },
-    });
+  // openDialog(): void {
+  //   this.membresiaService.optionShow.next(1);
+  //   this.membresiaService.optionShow.subscribe((option) => {});
+  //   const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+  //     width: "70%",
+  //     disableClose: true,
+  //     data: { name: "¿Para quién es esta membresía?" },
+  //   });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
-        (respuesta) => {
-          if (respuesta) {
-            this.plan = respuesta;
-            this.dataSource = new MatTableDataSource(this.plan);
-            this.dataSource.paginator = this.paginator;
-          } else {
-          }
-        },
-        (error) => {
-          console.error('Error al obtener los datos del servicio:', error);
-        }
-      );
-    });
-  }
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     this.membresiaService.consultarPlanIdMem(this.idGym).subscribe(
+  //       (respuesta) => {
+  //         if (respuesta) {
+  //           this.plan = respuesta;
+  //           this.dataSource = new MatTableDataSource(this.plan);
+  //           this.dataSource.paginator = this.paginator;
+  //         } else {
+  //         }
+  //       },
+  //       (error) => {
+  //         console.error('Error al obtener los datos del servicio:', error);
+  //       }
+  //     );
+  //   });
+  // }
 
   openDialogService(idMem: number, tipo_membresia: number) {
     this.membresiaService.optionShow.next(2);
@@ -166,23 +166,23 @@ export class MembresiasComponent implements OnInit {
     });
   }
 
-  openDialogEdit(idMem: number, tipo_membresia: number) {
-    this.membresiaService.optionShow.next(3);
-    this.membresiaService.optionShow.subscribe((option) => {});
-    this.membresiaService.setDataToupdate(idMem, tipo_membresia);
-    const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
-      width: "70%",
-      disableClose: true,
-      data: { name: "Editar membresia", id: idMem },
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      this.membresiaService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
-        this.plan = respuesta;
-        this.dataSource = new MatTableDataSource(this.plan);
-        this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
-      });
-    });
-  }
+  // openDialogEdit(idMem: number, tipo_membresia: number) {
+  //   this.membresiaService.optionShow.next(3);
+  //   this.membresiaService.optionShow.subscribe((option) => {});
+  //   this.membresiaService.setDataToupdate(idMem, tipo_membresia);
+  //   const dialogRef = this.dialog.open(DialogSelectMembershipComponent, {
+  //     width: "70%",
+  //     disableClose: true,
+  //     data: { name: "Editar membresia", id: idMem },
+  //   });
+  //   dialogRef.afterClosed().subscribe((result) => {
+  //     this.membresiaService.consultarPlanIdMem(this.idGym).subscribe((respuesta) => {
+  //       this.plan = respuesta;
+  //       this.dataSource = new MatTableDataSource(this.plan);
+  //       this.dataSource.paginator = this.paginator; // Asigna el paginador a tu dataSource
+  //     });
+  //   });
+  // }
 
   openDialogAddServices() {
     this.membresiaService.optionShow.next(4);

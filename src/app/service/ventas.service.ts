@@ -37,17 +37,17 @@ export class VentasService {
   //   });
   // }
 
-  obternerVentas(){
-    return this.clienteHttp.get(this.API+"venta_detalleVenta.php")
-  }
+  // obternerVentas(){
+  //   return this.clienteHttp.get(this.API+"venta_detalleVenta.php")
+  // }
 
-  agregarVentas(Ventas: Ventas):Observable<any>{
-    return this.clienteHttp.post(this.API+"venta_detalleVenta.php?insertarVentas=1", Ventas);
-  }
+  // agregarVentas(Ventas: Ventas):Observable<any>{
+  //   return this.clienteHttp.post(this.API+"venta_detalleVenta.php?insertarVentas=1", Ventas);
+  // }
 
-  consultarVentas(id:any):Observable<any>{
-    return this.clienteHttp.get(this.API+"venta_detalleVenta.php?consultar="+id);
-  }
+  // consultarVentas(id:any):Observable<any>{
+  //   return this.clienteHttp.get(this.API+"venta_detalleVenta.php?consultar="+id);
+  // }
 
    //PARA AGREGAR PEDIDOS
    agregarVentaPedido(Ventas: any): Observable<any> {

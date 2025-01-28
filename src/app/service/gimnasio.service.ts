@@ -50,19 +50,19 @@ export class GimnasioService {
   }
 
 
-  obternerPlan(){
-    return this.clienteHttp.get<any[]>(this.API+"getBodega.php").pipe(
-      tap(dataResponse => {
-       // console.log("Respuesta de la API: ",dataResponse);
-          this.saveDataToIndexedDB1(dataResponse);
-      }),
-      catchError(error => {
-          // Intenta obtener los datos de IndexedDB en caso de error
-          //console.error("DATOS NO OBTENIDOS: ",error);
-          return this.getDataFromIndexedDB();
-      })
-    );
-  }
+  // obternerPlan(){
+  //   return this.clienteHttp.get<any[]>(this.API+"getBodega.php").pipe(
+  //     tap(dataResponse => {
+  //      // console.log("Respuesta de la API: ",dataResponse);
+  //         this.saveDataToIndexedDB1(dataResponse);
+  //     }),
+  //     catchError(error => {
+  //         // Intenta obtener los datos de IndexedDB en caso de error
+  //         //console.error("DATOS NO OBTENIDOS: ",error);
+  //         return this.getDataFromIndexedDB();
+  //     })
+  //   );
+  // }
 
   private saveDataToIndexedDB1(data: any) {
     // Guarda los datos en IndexedDB
@@ -172,7 +172,7 @@ getDataFromIndexedDB() {
       status: estatus
     };
 
-    console.log("DATOS A ENVIAR, ESTATUS: ",body);
+    // console.log("DATOS A ENVIAR, ESTATUS: ",body);
 
     return this.clienteHttp.post<any>(`${this.API}updateBodega.php?estatus`,body, httpOptions).pipe(
       tap(dataResponse => {
@@ -185,33 +185,33 @@ getDataFromIndexedDB() {
     );
   }
 
-  getAllServices(): Observable<any> {
-    return this.clienteHttp.get(this.API+"serviciosGym.php");
-  }
+  // getAllServices(): Observable<any> {
+  //   return this.clienteHttp.get(this.API+"serviciosGym.php");
+  // }
 
-  getServicesForId(id: any): Observable<any> {
-    return this.clienteHttp.post(this.API + "serviciosGym.php", { id: id }).pipe(
-      tap(dataResponse => {
+  // getServicesForId(id: any): Observable<any> {
+  //   return this.clienteHttp.post(this.API + "serviciosGym.php", { id: id }).pipe(
+  //     tap(dataResponse => {
 
-        this.saveDataToIndexedDB(dataResponse);
-      }),
-      catchError(error => {
+  //       this.saveDataToIndexedDB(dataResponse);
+  //     }),
+  //     catchError(error => {
 
-        return this.getServiceDatos();
-      /*  const resultData = { success: '2' }; // Objeto que indica éxito
-        return forkJoin([
-          this.getServiceDatos().pipe(
-            filter(data => data !== null) // Ignora el observable si es null
-          ),
-          this.getServiceDatosInsert().pipe(
-            filter((data: any) => Array.isArray(data)), // Filtra solo los arrays
-            map((data: any[]) => data.map(item => item.data)) // Obtén solo los datos de cada elemento del array
-          ),
-          of(resultData) // Convierte el objeto en un observable
-        ]);*/
-      })
-    );
-  }
+  //       return this.getServiceDatos();
+  //     /*  const resultData = { success: '2' }; // Objeto que indica éxito
+  //       return forkJoin([
+  //         this.getServiceDatos().pipe(
+  //           filter(data => data !== null) // Ignora el observable si es null
+  //         ),
+  //         this.getServiceDatosInsert().pipe(
+  //           filter((data: any) => Array.isArray(data)), // Filtra solo los arrays
+  //           map((data: any[]) => data.map(item => item.data)) // Obtén solo los datos de cada elemento del array
+  //         ),
+  //         of(resultData) // Convierte el objeto en un observable
+  //       ]);*/
+  //     })
+  //   );
+  // }
 
   private saveDataToIndexedDB(data: any) {
     // Guarda los datos en IndexedDB
