@@ -38,7 +38,8 @@ export class AuthService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-  API: string = 'http://localhost/serviciosGym/'
+  // API: string = 'http://localhost/serviciosGym/'
+  API: string = 'http://localhost/gimnasioServicios/'
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -72,7 +73,7 @@ export class AuthService {
 
   loginBS(data: User): Observable<any> {
   const url = `${this.API}login.php?email=${data.email}&pass=${data.pass}`;
-  console.log("datas: ",url);
+  // console.log("datas: ",url);
   return this.clienteHttp.request('GET', url, {responseType:'json'})
       .pipe(
         catchError((err: any) => {
@@ -225,7 +226,7 @@ export class AuthService {
   }
 
   dataUser(data: any): Observable<any> {
-    //console.log("datos: ",data)
+    // console.log("datos: ",data)
     return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders }).pipe(
       tap(dataResponse => {
         //console.log("DATOS: ",dataResponse);

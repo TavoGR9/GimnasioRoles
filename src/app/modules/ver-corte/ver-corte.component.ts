@@ -268,7 +268,7 @@ export class VerCorteComponent implements OnInit  {
 
     // Copiar los datos filtrados
     const datosFiltrados = [...this.dataSource.filteredData];
-    console.log('datosFiltrados: ', datosFiltrados);
+    // console.log('datosFiltrados: ', datosFiltrados);
 
 
     // Agregar una fila al final con el total

@@ -17,7 +17,8 @@ export class PromocionService {
   data: any = {};
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string = 'http://localhost/serviciosGym/';
+  // API: string = 'http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
   }
@@ -96,17 +97,17 @@ export class PromocionService {
       membresias: membresiaIds, // Enviar los IDs procesados
     };
 
-    console.log("Datos que se envían a la API agregar:", datosAEnviar);
+    // console.log("Datos que se envían a la API agregar:", datosAEnviar);
 
     return this.clienteHttp.post(this.API + "addPromocionPaquete.php", datosAEnviar).pipe(
       tap(dataResponse => {
-        console.log("Respuesta de la API:", dataResponse);
+        // console.log("Respuesta de la API:", dataResponse);
       }),
       catchError(error => {
         console.error("Error en la solicitud:", error);
         this.saveDataToIndexedDBP(datosPlan);
         const resultData = { success: '0' };
-        console.log("Respuesta del error: ", resultData);
+        // console.log("Respuesta del error: ", resultData);
         return of(resultData);
       })
     );
@@ -134,17 +135,17 @@ export class PromocionService {
       membresias: membresiaIds, // Enviar los IDs procesados
     };
 
-    console.log("Datos que se envían a la API edicion:", datosAEnviar);
+    // console.log("Datos que se envían a la API edicion:", datosAEnviar);
 
     return this.clienteHttp.post(this.API + "updatePromocion.php", datosAEnviar).pipe(
       tap(dataResponse => {
-        console.log("Respuesta de la API:", dataResponse);
+        // console.log("Respuesta de la API:", dataResponse);
       }),
       catchError(error => {
         console.error("Error en la solicitud:", error);
         this.saveDataToIndexedDBP(datosPlan);
         const resultData = { success: '0' };
-        console.log("Respuesta del error: ", resultData);
+        // console.log("Respuesta del error: ", resultData);
         return of(resultData);
       })
     );
@@ -152,7 +153,7 @@ export class PromocionService {
 
   // Método para actualizar el estado de una promoción
   updateStatus(idProm: number, estado: { status: number }): Observable<any> {
-    console.log("ID PARA ACTUALIZAR: ", idProm, " Nuevo estado: ", estado);
+    // console.log("ID PARA ACTUALIZAR: ", idProm, " Nuevo estado: ", estado);
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -168,10 +169,10 @@ export class PromocionService {
 
     return this.clienteHttp.post<any>(`${this.API}deletePromocion.php?estado`, body, httpOptions).pipe(
       tap(dataResponse => {
-        console.log("Respuesta de la API:", dataResponse);
+        // console.log("Respuesta de la API:", dataResponse);
       }),
       catchError(error => {
-        console.log("Respuesta del error: ", error);
+        // console.log("Respuesta del error: ", error);
         return of(error);
       })
     );
@@ -180,7 +181,7 @@ export class PromocionService {
 
   //ELIMINACION DE PLAN
   deletePlan(id: number): Observable<any> {
-    console.log("ID PARA ELIMINAR: ", id);
+    // console.log("ID PARA ELIMINAR: ", id);
 
     // Configuración de las opciones HTTP
     const httpOptions = {
@@ -192,10 +193,10 @@ export class PromocionService {
 
     return this.clienteHttp.post<any>(`${this.API}deletePromocion.php`, { idProm: id }, httpOptions).pipe(
       tap(dataResponse => {
-        console.log("Respuesta de la API:", dataResponse);
+        // console.log("Respuesta de la API:", dataResponse);
       }),
       catchError(error => {
-        console.log("Respuesta del error: ", error);
+        // console.log("Respuesta del error: ", error);
         return of(error);
       })
     );

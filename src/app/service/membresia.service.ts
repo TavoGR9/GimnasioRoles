@@ -16,7 +16,8 @@ export class MembresiaService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
-  API: string = 'http://localhost/serviciosGym/';
+  // API: string = 'http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -201,7 +202,7 @@ export class MembresiaService {
    }
 
   getDataToUpdate(): Observable<any> {
-    console.log("IDS: ",this.dataToUpdate);
+    // console.log("IDS: ",this.dataToUpdate);
     return this.dataToUpdate.asObservable();
 
   }
@@ -231,7 +232,7 @@ export class MembresiaService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-console.log("datos emnviado en servico",data);
+// console.log("datos emnviado en servico",data);
     return this.clienteHttp.post<any>(this.API+"Pago_Membresias_Efectivo.php", JSON.stringify(data), {headers});
   }
 

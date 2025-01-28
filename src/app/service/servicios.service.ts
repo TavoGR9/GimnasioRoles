@@ -12,7 +12,8 @@ export class serviciosService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
-  API: string = 'http://localhost/serviciosGym/';
+  // API: string = 'http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
   isConnected: boolean = true;
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';

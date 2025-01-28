@@ -19,7 +19,8 @@ export class PagoMembresiaEfectivoService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
-  API: string = 'http://localhost/serviciosGym/';
+  // API: string = 'http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
@@ -141,7 +142,7 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.API+"getProductosGym.php?id_bodega=", { params }).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
-       // console.log('params',params)
+        // console.log('params',params)
       }),
       catchError(error => {
         return this.getDataFromIndexedDB();
@@ -321,7 +322,6 @@ deleteMembresia(id: any): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-///console.log("datos emnviado en servico",data);
     return this.clienteHttp.post<any>(this.API+"Pago_Membresias_Efectivo2.php", JSON.stringify(data), { headers });
   }
 

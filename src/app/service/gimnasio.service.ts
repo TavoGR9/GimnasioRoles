@@ -27,7 +27,8 @@ export class GimnasioService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
-    API: string = 'http://localhost/serviciosGym/';
+    // API: string = 'http://localhost/serviciosGym/';
+    API: string = 'http://localhost/gimnasioServicios/'
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -171,7 +172,7 @@ getDataFromIndexedDB() {
       status: estatus
     };
 
-    console.log("DATOS A ENVIAR, ESTATUS: ",body);
+    // console.log("DATOS A ENVIAR, ESTATUS: ",body);
 
     return this.clienteHttp.post<any>(`${this.API}updateBodega.php?estatus`,body, httpOptions).pipe(
       tap(dataResponse => {

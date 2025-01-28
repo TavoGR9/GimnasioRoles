@@ -248,7 +248,7 @@ reloadPage(): void {
     //this.homeService.ConsultarPedidosMembresias(this)
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
-        console.log(this.auth.idGym.getValue(),'id')
+        // console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
           // console.log('MEMBRESIAS TOTAL',response.data)
@@ -295,7 +295,7 @@ reloadPage(): void {
     //this.homeService.ConsultarPedidosMembresias(this)
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
-        console.log(this.auth.idGym.getValue(),'id')
+        // console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
           // console.log('MEMBRESIAS QUINCENAS TOTAL',response.data)
@@ -355,7 +355,7 @@ reloadPage(): void {
     //this.homeService.ConsultarPedidosMembresias(this)
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
-        console.log(this.auth.idGym.getValue(),'id')
+        // console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
           // console.log('MEMBRESIAS VISITAS TOTAL',response.data)

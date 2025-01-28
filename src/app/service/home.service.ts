@@ -18,7 +18,8 @@ export class HomeService {
   // API: String = '';
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string ='http://localhost/serviciosGym/';
+  // API: string ='http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
   API2: string ='http://localhost/serviciosGimnasio/';
 
 
@@ -53,7 +54,7 @@ export class HomeService {
     const data = { idGim: idGym }; // Formato esperado por el backend
     return this.clienteHttp.post(this.API + "ObtenerAsistenciasFechaActualTotal.php", data).pipe(
       tap((dataResponse) => {
-        console.log('Datos recibidos del backend:', dataResponse);
+        // console.log('Datos recibidos del backend:', dataResponse);
         this.saveDataToIndexedDB(dataResponse); // Si estás manejando un IndexedDB
       }),
       catchError((error) => {
@@ -67,7 +68,7 @@ consultarAsistenciasPersonal(idGym: number): Observable<any> {
   const data = { idGim: idGym }; // Formato esperado por el backend
   return this.clienteHttp.post(this.API + "ObtenerAsistenciasRol.php", data).pipe(
     tap((dataResponse) => {
-      console.log('Datos recibidos del backend:', dataResponse);
+      // console.log('Datos recibidos del backend:', dataResponse);
       this.saveDataToIndexedDB(dataResponse); // Si estás manejando un IndexedDB
     }),
     catchError((error) => {

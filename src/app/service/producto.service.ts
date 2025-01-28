@@ -21,7 +21,8 @@ export class ProductoService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string ='http://localhost/serviciosGym/';
+  // API: string ='http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
     }
@@ -267,11 +268,11 @@ export class ProductoService {
     // actualiza el producto en caso de ser necesario en el componente crearProducto
     actualizarProducto2(datosP: any): Observable<any> {
       const url = `${this.API}updateProbod.php?actualizarP`;
-      console.log('datos: ', datosP);
+      // console.log('datos: ', datosP);
 
       return this.clienteHttp.post(url, datosP).pipe(
         tap(dataResponse => {
-          console.log('que manda: ', dataResponse);
+          // console.log('que manda: ', dataResponse);
         }),
         catchError(error => {
           console.log(error);

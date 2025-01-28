@@ -14,7 +14,8 @@ export class ConnectivityService {
    checkInternetConnectivity(): Observable<boolean> {
      //return this.http.get('https://olympus.arvispace.com/olimpusGym/conf/status.php', { observe: 'response' }).pipe(
     //return this.http.get('http://localhost/serviciosGimnasio/status.php', { observe: 'response' }).pipe(
-      return this.http.get('http://localhost/serviciosGym/status.php', { observe: 'response' }).pipe(
+      // return this.http.get('http://localhost/serviciosGym/status.php', { observe: 'response' }).pipe(
+      return this.http.get('http://localhost/gimnasioServicios/status.php', {observe: 'response' }).pipe(
       timeout(3000), // Timeout de 5 segundos
       map(response => response.status === 200),
       catchError(error => of(false))
