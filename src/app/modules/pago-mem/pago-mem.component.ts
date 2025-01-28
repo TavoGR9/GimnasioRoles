@@ -48,14 +48,14 @@ export class PagoMemComponent implements OnInit{
 
   ngOnInit(): void {  
     this.verTabla();
-    console.log(this.fechaInicio,this.fechaFin);
+    
     
       // Suscribirse al estado de conexión
       this.networkService.isOnline$.subscribe((status) => {
         this.isOnline = status;
       });
 
-      console.log('Conexion',this.isOnline);
+      
 
     
   }
@@ -279,7 +279,7 @@ export class PagoMemComponent implements OnInit{
 
             this.clienteActivo = agrupadosConPedidos;
 
-            console.log("clienteActivo final (solo con pedidos agrupados):", this.clienteActivo);
+       
 
             // Actualizamos el DataSource de la tabla.
             this.dataSource = new MatTableDataSource(this.clienteActivo);
@@ -290,7 +290,7 @@ export class PagoMemComponent implements OnInit{
             console.error("Error al obtener activos:", error);
         }
     );
-    console.log('executed');
+ 
 }
 
 
@@ -358,7 +358,7 @@ verificarCambios(): void {
     !isNaN(new Date(this.fechaFin).getTime()) && // Verificar que la fechaFin sea válida
     (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior)
   ) {
-       console.log(this.fechaFin,this.fechaInicio);
+
 
     // Actualizar los valores anteriores
     this.fechaInicioAnterior = this.fechaInicio;
@@ -371,15 +371,15 @@ verificarCambios(): void {
 
 
 descargarExcel(): void {
-  console.log("Iniciando la exportación...");
+  
 
   // Obtener los datos de la tabla
   const datosTabla = this.dataSource.filteredData || this.dataSource.data;
-  console.log("Datos de la tabla obtenidos:", datosTabla);
+
 
   // Verificar si hay datos para exportar
   if (!datosTabla || datosTabla.length === 0) {
-      console.error("No hay datos para exportar.");
+    
       this.toastr.error("No hay datos para exportar.", "Error!!!");
       return;
   }
@@ -387,7 +387,7 @@ descargarExcel(): void {
   // Formatear las fechas
   const fechaInicioFormateada = this.datePipe.transform(this.fechaInicio, "dd/MM/yyyy");
   const fechaFinFormateada = this.datePipe.transform(this.fechaFin, "dd/MM/yyyy");
-  console.log("Fechas formateadas:", { fechaInicioFormateada, fechaFinFormateada });
+
 
   // Crear la estructura de datos para el archivo Excel
   const datos = [
@@ -407,7 +407,7 @@ descargarExcel(): void {
           "Creado por",
       ],
       ...datosTabla.map((cliente: any) => {
-          console.log("Procesando cliente:", cliente);
+       
           return [
               cliente.estafeta || "N/A",
               cliente.nombreCompleto || "N/A",
@@ -423,15 +423,12 @@ descargarExcel(): void {
       }),
   ];
 
-  console.log("Datos estructurados para el Excel:", datos);
 
   // Crear un objeto de libro de Excel
   const workbook = XLSX.utils.book_new();
-  console.log("Libro de Excel creado.");
 
   // Crear la hoja con los datos
   const hojaDatos = XLSX.utils.aoa_to_sheet(datos);
-  console.log("Hoja de datos creada:", hojaDatos);
 
   // Establecer propiedades de formato para las columnas (todas las columnas a 50)
   hojaDatos["!cols"] = [
@@ -446,28 +443,27 @@ descargarExcel(): void {
       { wch: 15 },  // Estatus
       { wch: 50 },  // Creado por
   ];
-  console.log("Anchos de columna establecidos:", hojaDatos["!cols"]);
+
 
   // Añadir la hoja de datos al libro
   XLSX.utils.book_append_sheet(workbook, hojaDatos, "Reporte");
-  console.log("Hoja de datos añadida al libro.");
+ 
 
   // Escribir el libro en formato array
   const wbout = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array", // Cambiar a "array"
   });
-  console.log("Libro de Excel escrito en formato array.");
+
 
   // Crear un Blob con el contenido del libro de Excel
   const newBlob = new Blob([wbout], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
-  console.log("Blob creado correctamente:", newBlob);
 
   // Guardar el archivo Excel con el nombre "Clientes.xlsx"
   saveAs(newBlob, "Clientes.xlsx");
-  console.log("Archivo guardado como 'Clientes.xlsx'");
+
 }
 
 }

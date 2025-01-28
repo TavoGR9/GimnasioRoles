@@ -94,9 +94,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     const dato = this.auth.idUser.getValue();
     const dato2 = Number(this.data.idCliente);
     const rol = this.data.rol;
-  console.log("dato user: ",dato);
-  console.log("dato user: ",dato2);
-  console.log("dato user: ",rol);
 
     this.mostrarEstatus = dato !== dato2 && !this.isRecep() && rol !== 'Cliente';
     this.mostrarRestablecer = !this.isRecep() && rol !== 'Cliente';
@@ -111,8 +108,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
       this.dataSource.paginator = this.paginator;
     }); */
     this.UserHIstorial(this.data.idCliente);
-    console.log('idCliente', this.data.idCliente);
-    console.log('data de lista mebresias:',this.data)
+
 
 
   }
@@ -181,7 +177,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
-  //Se usa para acceder al puerto serial sin ebargo se quito de este componetne
   abrirPuertoSerial(data: any): void {
     this.dialogo.close(true);
     this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
@@ -200,7 +195,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
   }
 
   borrarSucursal(id: any) {
-    console.log(id);
+
     this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea eliminar la membresía de tu socio?`,
     })
@@ -245,27 +240,19 @@ export class EmergenteInfoClienteComponent implements OnInit{
         const agrupadosPorPedido = this.pagoService.agruparPorPedido(registrosConPedido);
 
         const ordenar= this.ordenar(agrupadosPorPedido);
-
-        console.log('Mirar el test para ordernar',ordenar)
-
-        // Asignamos los resultados a la variable de la tabla
-        this.membresiaHisto = ordenar;
-        console.log("membresiaHisto final (agrupados por pedido):", this.membresiaHisto);
-        // Actualizamos el DataSource de la tabla
         this.dataSource = new MatTableDataSource(this.membresiaHisto);
         this.dataSource.paginator = this.paginator;
       },
       (error: any) => {
-        console.error("Error al obtener activos:", error);
+
       }
     );
-    console.log('executed');
+
+
   }
 
 
 OpenRestablecer(empleados: any) {
-        console.log("EMPLEADOS;", empleados);
-
         const dialogConfig = new MatDialogConfig();
         dialogConfig.width = '70%';
         dialogConfig.disableClose = true;
@@ -284,8 +271,6 @@ OpenRestablecer(empleados: any) {
 
           const mensaje = '¿Deseas desactivar este usuario? Ten en cuenta que, si lo desactivas, no podrás volver a activarlo.';
 
-          console.log('Mensaje del diálogo:', mensaje);
-
           const dialogRef = this.dialog.open(MensajeDesactivarComponent, {
             data: { mensaje: mensaje, idEmpleado: idEmpleado },
           });
@@ -294,22 +279,18 @@ OpenRestablecer(empleados: any) {
 
           dialogRef.afterClosed().subscribe((result) => {
             if (result) {
-              console.log('Actualizando estatus...', { idEmpleado, nuevoEstatus });
               this.http.actualizarEstatus(Number(idEmpleado), nuevoEstatus).subscribe((response) => {
-                console.log('Respuesta del servidor:', response);
                 this.cerrarDialogo();
               });
             } else {
               // Si cancela, restablecer el toggle a true
               event.source.checked = true;
-              console.log('El usuario canceló la acción. El toggle vuelve a activarse.');
             }
           });
         } else {
-          console.log('El estatus no ha sido cambiado a 0 ya que el toggle está activado.');
+          //console.log('El estatus no ha sido cambiado a 0 ya que el toggle está activado.');
         }
       }
-
 
 
 
@@ -318,14 +299,14 @@ OpenRestablecer(empleados: any) {
     this.spinner.show();
 
     if (!this.form.valid) {
-      console.log("Formulario no válido");
+
       this.toastr.error("El formulario contiene errores. Por favor, revísalo.");
       this.spinner.hide(); // Asegúrate de ocultar el spinner en este caso
       return;
     }
     this.generarContraseña(9);
 
-    console.log(this.form.value);
+
 
     const clienteData = {
       id_cliente: this.form.value.id_cliente,
@@ -339,13 +320,13 @@ OpenRestablecer(empleados: any) {
 
     this.pagoService.actualizaDatosCliente2(clienteData).subscribe({
       next: (resultData) => {
-        console.log(resultData);
+
 
         if (resultData?.Estado === 1) {
-          console.log("Actualización exitosa");
+
 
           if (resultData.Mensaje === 'Actualización de datos exitosa\nContraseña actualizada correctamente.') {
-            console.log("Enviando WhatsApp");
+
             this.enviarMensajeWhatsApp(this.form.value.telefono, this.form.value.correo, this.form.value.password);
           }
 
@@ -361,12 +342,12 @@ OpenRestablecer(empleados: any) {
         } else {
           this.spinner.hide();
           this.toastr.error(resultData.Mensaje || 'Hubo un error al actualizar los datos.');
-          console.log("Error: " + resultData.Mensaje);
+
         }
       },
       error: (error) => {
         this.spinner.hide();
-        console.error(error);
+
 
         this.toastr.error('Ocurrió un error al procesar la solicitud. Por favor, intenta nuevamente.');
       },
@@ -440,4 +421,3 @@ generarContraseña(longitud: number): void {
 
 
   }
-

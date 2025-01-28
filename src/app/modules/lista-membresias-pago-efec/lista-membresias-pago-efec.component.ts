@@ -146,7 +146,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 // Suscribirse para ver si el modal de carga de fotos se ha cerrado
 
     this.eventCommunicationService.eventTriggered$.subscribe(event => {
-      console.log('Evento recibido:', event); // Verificar recepción
+     
       this.actualizarDatos();
     });
 
@@ -173,7 +173,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   // Suscribirse al estado de conexión
  this.networkService.isOnline$.subscribe((status) => {this.isOnline = status;
    });
-   console.log('Conexion',this.isOnline);
+  
 
 
 
@@ -195,7 +195,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         //console.log(' this.dataUser=', this.dataUser)
       },
       error: (error) => {
-        console.log(error);
+       this.toastr.error('Ocurrió un error al obtener los datos del usuario', 'Error');
       },
     });
   }
@@ -417,7 +417,7 @@ verificarCambios(): void {
           this.pagoService.deleteServiceUsuario(clave).subscribe({
             next: (respuesta) => {
               if (respuesta.success === 1) {
-                console.log("Usuario eliminado exitosamente:", respuesta);
+            
                 this.toastr.success('Registro eliminado exitosamente', 'Éxito', {
                   positionClass: 'toast-bottom-left',
                 });
@@ -471,7 +471,7 @@ verificarCambios(): void {
 
 
     listaClientesData3(): void {
-      console.log(this.fechaInicio, this.fechaFin);
+   
       this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
         (response: any) => {
 
@@ -489,14 +489,12 @@ verificarCambios(): void {
           const Clientes =this.Clientes;
 
 
-          console.log('Datos originales Api', Clientes);
+       
 
           // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
           const fechaInicio = this.fechaInicio ? new Date(this.fechaInicio) : new Date('2000-01-01');
           const fechaFin = this.fechaFin ? new Date(this.fechaFin) : new Date();
           fechaFin.setHours(23, 59, 0); // Ajustamos hora fin del día.
-
-          console.log('const', fechaInicio, fechaFin);
 
           // Filtramos los clientes dentro del rango de fechas.
           const filtradosPorFecha = Clientes.filter((cliente: any) => {
@@ -504,19 +502,17 @@ verificarCambios(): void {
             return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
           });
 
-          console.log('filtradosPorFecha', filtradosPorFecha);
+        
 
           // Separar los clientes en dos grupos: con pedidos (id_pedido != null) y sin pedidos (id_pedido == null)
           const clientesConPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido != null);
           const clientesSinPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido == null);
 
-          console.log('clientesConPedidos', clientesConPedidos);
-          console.log('clientesSinPedidos', clientesSinPedidos);
+     
 
           // Agrupar los clientes con pedidos
           const pedidosAgrupados = this.pagoService.agruparPorPedido(clientesConPedidos);
-          console.log('pedidosAgrupados', pedidosAgrupados);
-          console.log('clientesSinPedidos',clientesSinPedidos);
+
 
 
 
@@ -537,7 +533,7 @@ verificarCambios(): void {
             return acc; // Retornamos el objeto acumulador.
           }, {});
 
-          console.log('pedidosPorUsuario', pedidosPorUsuario);
+      
 
      ///////////////////// HASTA AQUI VA BIEN////////////////////////
 
@@ -546,8 +542,6 @@ verificarCambios(): void {
       Object.values(pedidosPorUsuario).flat().map(pedido => pedido.clave)
     );
 
-    console.log('Claves con pedido',clavesConPedido);
-    console.log('clientesSinPedidos',clientesSinPedidos);
 
   ///¿Como quitar del arreglo clientesSinPedidos aquellos registros donde coincidan clavesConPedido con el campo clave
 
@@ -564,12 +558,10 @@ verificarCambios(): void {
     };
   });
 
-  console.log('clientesSinPedidosFiltrados', clientesSinPedidosFiltrados);
+  
 
 
 
-
-console.log('ver pedidos por ususario',pedidosPorUsuario)
 
 
 
@@ -584,7 +576,6 @@ console.log('ver pedidos por ususario',pedidosPorUsuario)
             pedidos.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())[0] // Ordena por fecha descendente y toma el último
           );
 
-        console.log('pedidosCaducados', pedidosCaducados);
 
 ///Implementarse aqui///
 
@@ -599,7 +590,7 @@ console.log('ver pedidos por ususario',pedidosPorUsuario)
     )
   );
 
-console.log('filteredData', filteredData);
+
 
 
 
@@ -626,7 +617,7 @@ console.log('filteredData', filteredData);
             return fechaB - fechaA; // Ascendente (de más antiguo a más reciente)
           });
 
-          console.log("clienteActivo final (agrupados y sin pedidos):", this.clienteActivo);
+          // console.log("clienteActivo final (agrupados y sin pedidos):", this.clienteActivo);
 
           // Actualizamos el DataSource de la tabla
           this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -634,10 +625,10 @@ console.log('filteredData', filteredData);
 
         },
         (error: any) => {
-          console.error("Error al obtener activos:", error);
+         this.toastr.error('Ocurrió un error al obtener los datos de los clientes', 'Error');
         }
       );
-      console.log('executed');
+   
   }
 
 

@@ -139,7 +139,7 @@ export class ProductosComponent implements OnInit {
       width: '70%',
       disableClose: true,
     });
-    console.log('idProbob: ', idProducto);
+    // console.log('idProbob: ', idProducto);
 
     dialogRef.afterClosed().subscribe(() => {
       this.listaTabla();

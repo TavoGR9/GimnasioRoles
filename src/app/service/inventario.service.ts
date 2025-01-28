@@ -16,7 +16,8 @@ export class inventarioService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // API: string = 'http://localhost/serviciosGimnasio/';
-  API: string ='http://localhost/serviciosGym/';
+  // API: string ='http://localhost/serviciosGym/';
+  API: string = 'http://localhost/gimnasioServicios/'
 
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
@@ -54,10 +55,10 @@ export class inventarioService {
   HistorialInventario(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
     const url = `${this.API}verHistorialPedido.php`;
     const body = {id_bodega_param: idGym, fechaInicio_param: dateInicio, fechaFin_param: dateFin};
-    console.log("DATOS ENVIADOS AL API: ",body);
+    // console.log("DATOS ENVIADOS AL API: ",body);
     return this.clienteHttp.post(url, body).pipe(
       tap(dataResponse => {
-        console.log('RESPUESTA DE LA API: ', dataResponse);
+        // console.log('RESPUESTA DE LA API: ', dataResponse);
 
       }),
       catchError(error => {

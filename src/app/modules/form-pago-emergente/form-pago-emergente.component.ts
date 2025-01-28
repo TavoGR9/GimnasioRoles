@@ -61,7 +61,7 @@ export class FormPagoEmergenteComponent implements OnInit {
   ngOnInit(): void {
     this.precio = 0;
     this.getMembresiasLista(this.data.idSucursal);
-    console.log('DATA.sucusal',this.data.idSucursal);
+ 
     if (this.data) {
       this.membresiaSeleccionada = this.data.idMem;
       this.nombreCompleto = this.data.nombre;
@@ -75,11 +75,11 @@ export class FormPagoEmergenteComponent implements OnInit {
     this.membresiaService.membresiasLista(idgimnasio).subscribe(
       (data) => {
         this.membresias = data;
-        console.log('respuesta en componente',data)
-        console.log('idGimnasio',idgimnasio)
+   
       },
       (error) => {
         console.error("Error al obtener la lista de membresías:", error);
+        this.toastr.error('No se encontratron membresias');
       }
     );
   }
@@ -107,16 +107,9 @@ export class FormPagoEmergenteComponent implements OnInit {
           this.IspromocionPaquete = resultado.promocionPaquete;
           this.id_promocion = resultado.id_promocion;
           this.idProbob = resultado.idProbob;
-          console.log('id_prom',this.id_promocion, 'idPRobob',this.idProbob);
+   
 
-          console.log('Datos seleccionados:', {
-            duracion: this.duracion,
-            precio: this.precio,
-            nombreMembresia: this.nombreMembresia,
-            id_promocion: this.id_promocion,
-            idProbob: this.idProbob
-
-          });
+     
 
           // Preparar datos para el procedimiento
          
@@ -131,15 +124,14 @@ export class FormPagoEmergenteComponent implements OnInit {
       cancelDialogo(): void {
         this.dialogo.close(true);
         this.idSucursal=this.data.idSucursal;
-        console.log(this.idSucursal);
-        console.log('data form',this.data)
+       
       }
 
   obtenerFoto() {
     this.GimnasioService.getInfoBodega(this.auth.idGym.getValue()).subscribe(
       (respuesta: any[]) => {  // Asignamos cualquier arreglo
 
-        console.log('Obtener',respuesta)
+      
         if (respuesta && respuesta[0] && respuesta[0].foto) {
           let fotoUrl = respuesta[0].foto;
 
@@ -162,7 +154,7 @@ export class FormPagoEmergenteComponent implements OnInit {
         }
       },
       (error) => {
-        console.error("Error al obtener la foto:", error);
+      
         this.fotoUrl = null;
       }
     );
@@ -193,14 +185,14 @@ export class FormPagoEmergenteComponent implements OnInit {
           if (confirmado) {
 
               const PrecioCalcular = this.receivedMoney - this.precio;
-              console.log('PrecioCalcular', PrecioCalcular);
+            
               this.dineroDevuelto =   PrecioCalcular;
 
               let fechaVencimiento = new Date(); // Duración de la membresía (mensual, anual, etc.)
               let fechaInicioMembresia ='';
               let fechaVencimientoMembresia =''
 
-              console.log(fechaVencimiento)
+          
               // calcular fechas
               //hacer solicitud post
               const dataPromo = {
@@ -226,12 +218,10 @@ export class FormPagoEmergenteComponent implements OnInit {
               //this.imprimirResumen3();
 
 
-              console.log("data",this.data);
-              console.log ('dataPromo',dataPromo);
-
+             
               this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
                 response => {
-                  console.log('Respuesta de la API de promociones:', response);
+       
                   const apiResponse = response
 
                 // Si la compra es exitosa
@@ -240,8 +230,7 @@ export class FormPagoEmergenteComponent implements OnInit {
                   this.fechaInicioMembresia = response.Fecha_inicio;  // '2025-06-15'
                   this.fechaVencimientoMembresia = response.Fecha_Fin.split(' ')[0];  // '2025-07-14'  // '2025-07-14'
 
-                  console.log('fechaVencimientoMembresia');
-                  console.log('responseFechaFin',response.Fecha_Fin);
+               
 const DatosTicket ={
 
   fechaVencimiento:this.fechaVencimientoMembresia,
@@ -270,10 +259,8 @@ nombreCompleto:this.nombreCompleto
 
 this.datosTicket= DatosTicket;
 
-console.log('ticket',DatosTicket);
 
-console.log('fechaVencimietno',this.fechaVencimientoMembresia);
-console.log('');
+
                   this.dialog.open(MensajeEmergenteComponent, {
                    
                     data: `Pago exitoso, el cambio es de: $${this.dineroDevuelto}`, // Ajusta el mensaje con el precio calculado
@@ -431,9 +418,7 @@ console.log('');
 imprimirResumen3() {
 
 
-            console.log('Ver los datos del ticket',this.datosTicket);
-            console.log(this.dataGym);
-            console.log(this.dataGym.direccion)
+
             //fechaInicioMembresia
             //fechaVencimientoMembresia
 

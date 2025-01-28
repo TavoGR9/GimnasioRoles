@@ -191,7 +191,7 @@ export class EmergenteCargarFotoComponent implements OnInit{
        this.closeDialog();
       },
       error: (error) => {
-        console.error('Error al guardar la imagen:', error);
+  
         this.toastr.error('Ocurrió un error al guardar la foto.', 'Error');
       }
     });
@@ -202,7 +202,7 @@ export class EmergenteCargarFotoComponent implements OnInit{
   closeDialog(): void {
     const modalId = 'ModalCargarFoto'; // Identificador único del modal
     const data = { clienteId: this.data.clienteID }; // Datos opcionales
-    console.log('Emitir evento desde el modal', modalId, data); // Log para verificar
+
     this.eventCommunicationService.triggerEvent(modalId, data); // Emitir evento
     this.dialogo.close(true); // Cerrar modal
   }

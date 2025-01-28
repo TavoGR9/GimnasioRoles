@@ -1106,7 +1106,7 @@ export class CrearProductoComponent implements OnInit {
                 }
               });
           } else {
-            console.log('Existe el codigo barras');
+            // console.log('Existe el codigo barras');
 
             this.form.get("nomsubcate")?.enable();
             this.categoriaService

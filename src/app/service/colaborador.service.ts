@@ -26,7 +26,8 @@ export class ColaboradorService {
     // API: String = '';
     //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
     //API: string = 'http://localhost/serviciosGimnasio/'
-      API: string = 'http://localhost/serviciosGym/'
+      // API: string = 'http://localhost/serviciosGym/'
+      API: string = 'http://localhost/gimnasioServicios/'
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
         //this.comprobar();
@@ -52,10 +53,10 @@ export class ColaboradorService {
     }
 
    agregarPersonal(datos: any): Observable<any> {
-      console.log("datos: ",datos)
+      // console.log("datos: ",datos)
       return this.clienteHttp.post(this.API + "empleado.php?insertar", datos).pipe(
         tap(dataResponse => {
-          console.log("datos: ",dataResponse)
+          // console.log("datos: ",dataResponse)
         }),
         catchError(error => {
           this.saveDataToIndexedDB(datos);
@@ -106,13 +107,12 @@ export class ColaboradorService {
 
 
     correoEmpleado(datos: any): Observable<any> {
-      console.log(datos);
+      //console.log(datos);
         return this.clienteHttp.post<any>(this.API + "empleado.php?comprobar", datos).pipe(
           tap(dataResponse => {
-          console.log(dataResponse)
           }),
           catchError(error => {
-            console.error('Error en la solicitud HTTP:', error);
+
             return of(error);
           })
         );
@@ -127,13 +127,9 @@ export class ColaboradorService {
     }
 
     agregarUsuario(datosEmpleado: any): Observable<any> {
-      console.log("Enviando solicitud HTTP...");
-
         return this.clienteHttp.post(this.API + "registrarUsuarioCliente3.php", datosEmpleado).pipe(
 
-            tap(dataResponse => {
-           console.log(dataResponse)
-            }),
+            tap(dataResponse => { }),
             catchError(error => {
               //this.saveDataToIndexedDBC(datosEmpleado);
               console.error('Error en la solicitud HTTP:', error);
@@ -279,9 +275,6 @@ export class ColaboradorService {
           'Content-Type': 'application/json', // Cabecera para enviar JSON
         }),
       };
-
-      console.log('Datos enviados desde Angular al backend (body):', body);
-
       // Incluimos `options` en la llamada
       return this.clienteHttp.post(this.API + 'Status_Bodega_Empleado.php',body, options);
     }
