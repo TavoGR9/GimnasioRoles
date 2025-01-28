@@ -134,9 +134,9 @@ export class AuthService {
 
   //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
   //Traer lista de sucursales
-  // list_sucursales():Observable<any> {
-  //   return this.clienteHttp.get<listaSucursal>(this.API + 'sucursales.php');
-  // }
+  list_sucursales():Observable<any> {
+    return this.clienteHttp.get<listaSucursal>(this.API + 'sucursales.php');
+  }
 
   //Consultar informacion de sucursales
   chart_sucursales(data: any):Observable<any> {

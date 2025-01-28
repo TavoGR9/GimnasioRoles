@@ -149,9 +149,9 @@ export class ColaboradorService {
         return this.clienteHttp.post(this.API + "empleado.php?insertarUsuarioBodega", datosEmpleado);
     }
 
-    // agregarBodegaEmpleado(datosEmpleado: any): Observable<any> {
-    //     return this.clienteHttp.post(this.API + "BodegaEmpleado.php?insertar=1", datosEmpleado);
-    // }
+    agregarBodegaEmpleado(datosEmpleado: any): Observable<any> {
+        return this.clienteHttp.post(this.API + "BodegaEmpleado.php?insertar=1", datosEmpleado);
+    }
 
     comboDatosAllGym(){
         return this.clienteHttp.get(this.API+"empleado.php?nomAllGym");

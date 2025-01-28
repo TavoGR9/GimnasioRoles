@@ -76,29 +76,29 @@ export class DialogSelectMembershipComponent implements OnInit {
 
   ngOnInit(): void {
     this.getIdGym();
-    // this.getServices();
+    this.getServices();
     this.tipo_membresia = 1;
     this.membresiaService.optionShow.subscribe((respuesta) => {
       if (respuesta) {
         this.optionToShow = respuesta;
         if (this.optionToShow == 1) {
-          // this.getServices();
+          this.getServices();
         } else if (this.optionToShow == 2) {
           this.membresiaService.getDataToUpdate().subscribe((respuesta) => {
             if (respuesta) {
               this.dataToUpdate = respuesta;
               if (this.dataToUpdate.id != undefined) {
-                // this.membresiaService
-                //   .consultarPlanGym(this.dataToUpdate.id)
-                //   .subscribe((respuesta) => {
-                //     if (respuesta) {
-                //       if (this.dataToUpdate.id == respuesta[0].idMem) {
-                //         this.sucursalServices = respuesta;
-                //         this.dataSource = this.sucursalServices[0].servicios
-                //       } else {
-                //       }
-                //     }
-                //   });
+                this.membresiaService
+                  .consultarPlanGym(this.dataToUpdate.id)
+                  .subscribe((respuesta) => {
+                    if (respuesta) {
+                      if (this.dataToUpdate.id == respuesta[0].idMem) {
+                        this.sucursalServices = respuesta;
+                        this.dataSource = this.sucursalServices[0].servicios
+                      } else {
+                      }
+                    }
+                  });
               }
             } else {
             }
@@ -109,42 +109,42 @@ export class DialogSelectMembershipComponent implements OnInit {
               this.dataToUpdate = respuesta;
             }
           });
-          // this.GimnasioService.getServicesForId(this.idGym).subscribe(
-          //   (respuesta) => {
-          //     this.servicios = respuesta;
-          //     this.membresiaService
-          //       .consultarPlanGym(this.dataToUpdate.id)
-          //       .subscribe((respuesta) => {
-          //         if (respuesta) {
-          //           this.plan = respuesta;
-          //           const serviciosPlan = this.plan[0].servicios.map(
-          //             (servicio: any) => servicio.nombre_servicio
-          //           );
-          //           const serviciosCoincidentes = this.servicios.filter(
-          //             (servicio) =>
-          //               serviciosPlan.includes(servicio.nombre_servicio)
-          //           );
-          //           let servicioSeleccionado = this.servicios.find(
-          //             (servicio) =>
-          //               servicio.nombre_servicio ===
-          //               this.plan[0].servicios[0].nombre_servicio
-          //           );
-          //           this.formPlan.setValue({
-          //             idMem: 0,
-          //             titulo: this.plan[0].titulo,
-          //             duracion: this.plan[0].duracion,
-          //             precio: this.plan[0].precio,
-          //             detalles: this.plan[0].detalles,
-          //             servicioseleccionado: servicioSeleccionado, // Aquí estableces "Gym" como valor por defecto en un array
-          //             status: this.plan[0].status,
-          //             tipo_membresia: 1,
-          //             Gimnasio_idGimnasio: this.plan[0].Gimnasio_idGimnasio,
-          //             created_by: this.plan[0].created_by
-          //           });
-          //         }
-          //       });
-          //   }
-          // );
+          this.GimnasioService.getServicesForId(this.idGym).subscribe(
+            (respuesta) => {
+              this.servicios = respuesta;
+              this.membresiaService
+                .consultarPlanGym(this.dataToUpdate.id)
+                .subscribe((respuesta) => {
+                  if (respuesta) {
+                    this.plan = respuesta;
+                    const serviciosPlan = this.plan[0].servicios.map(
+                      (servicio: any) => servicio.nombre_servicio
+                    );
+                    const serviciosCoincidentes = this.servicios.filter(
+                      (servicio) =>
+                        serviciosPlan.includes(servicio.nombre_servicio)
+                    );
+                    let servicioSeleccionado = this.servicios.find(
+                      (servicio) =>
+                        servicio.nombre_servicio ===
+                        this.plan[0].servicios[0].nombre_servicio
+                    );
+                    this.formPlan.setValue({
+                      idMem: 0,
+                      titulo: this.plan[0].titulo,
+                      duracion: this.plan[0].duracion,
+                      precio: this.plan[0].precio,
+                      detalles: this.plan[0].detalles,
+                      servicioseleccionado: servicioSeleccionado, // Aquí estableces "Gym" como valor por defecto en un array
+                      status: this.plan[0].status,
+                      tipo_membresia: 1,
+                      Gimnasio_idGimnasio: this.plan[0].Gimnasio_idGimnasio,
+                      created_by: this.plan[0].created_by
+                    });
+                  }
+                });
+            }
+          );
         } else if (this.optionToShow == 4) {
         }
       }
@@ -167,7 +167,7 @@ export class DialogSelectMembershipComponent implements OnInit {
     this.formTittle = "Plan";
     this.formPlan.patchValue({ tipo_membresia: this.tipo_membresia });
     if (this.idGym != null) {
-      // this.getServices();
+      this.getServices();
     }
   }
 
@@ -220,20 +220,20 @@ export class DialogSelectMembershipComponent implements OnInit {
         ) {
           formValue.servicioseleccionado = [formValue.servicioseleccionado];
         }
-        // this.membresiaService.agregarMem(formValue).subscribe((respuesta) => {
-        //   if (respuesta) {
-        //     if (respuesta.success == 1) {
-        //       this.spinner.hide();
-        //       const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
-        //         data: "La membresía se ha insertado correctamente",
-        //       });
-        //       dialogRef.afterClosed().subscribe((result) => {
-        //         this.ServiciosService.confirmButton.next(true);
-        //         this.dialogo.close(respuesta);
-        //       });
-        //     }
-        //   }
-        // });
+        this.membresiaService.agregarMem(formValue).subscribe((respuesta) => {
+          if (respuesta) {
+            if (respuesta.success == 1) {
+              this.spinner.hide();
+              const dialogRef = this.dialog.open(MensajeEmergentesComponent, {
+                data: "La membresía se ha insertado correctamente",
+              });
+              dialogRef.afterClosed().subscribe((result) => {
+                this.ServiciosService.confirmButton.next(true);
+                this.dialogo.close(respuesta);
+              });
+            }
+          }
+        });
       }
       if (this.optionToShow == 3) {
         this.formPlan.setValue({
@@ -249,27 +249,27 @@ export class DialogSelectMembershipComponent implements OnInit {
           created_by: this.AuthService.idUser.getValue()
         });
         if (this.formPlan.valid) {
-          // this.membresiaService
-          //   .updateMembresia(this.formPlan.value)
-          //   .subscribe((respuesta) => {
-          //     if (respuesta) {
-          //       this.spinner.hide();
-          //       if (respuesta.success == 1) {
-          //         this.spinner.hide();
-          //         const dialogRef = this.dialog.open(
-          //           MensajeEmergentesComponent,
-          //           {
-          //             width: "300px",
-          //             height: "200px",
-          //             data: "La membresía se ha actualizado correctamente",
-          //           }
-          //         );
-          //         dialogRef.afterClosed().subscribe((result) => {
-          //           this.dialogo.close(true);
-          //         });
-          //       }
-          //     }
-          //   });
+          this.membresiaService
+            .updateMembresia(this.formPlan.value)
+            .subscribe((respuesta) => {
+              if (respuesta) {
+                this.spinner.hide();
+                if (respuesta.success == 1) {
+                  this.spinner.hide();
+                  const dialogRef = this.dialog.open(
+                    MensajeEmergentesComponent,
+                    {
+                      width: "300px",
+                      height: "200px",
+                      data: "La membresía se ha actualizado correctamente",
+                    }
+                  );
+                  dialogRef.afterClosed().subscribe((result) => {
+                    this.dialogo.close(true);
+                  });
+                }
+              }
+            });
         }
       }
     }
@@ -286,15 +286,15 @@ export class DialogSelectMembershipComponent implements OnInit {
         precio: this.formService.value.precio,
         gimnasio: this.idGym,
       });
-      // this.ServiciosService
-      //   .newService(this.formService.value)
-      //   .subscribe((respuesta) => {
-      //     if (respuesta) {
-      //       if (respuesta.message == "Insertado con exito") {
-      //       }
-      //     } else {
-      //     }
-      //   });
+      this.ServiciosService
+        .newService(this.formService.value)
+        .subscribe((respuesta) => {
+          if (respuesta) {
+            if (respuesta.message == "Insertado con exito") {
+            }
+          } else {
+          }
+        });
     }
   }
 
@@ -315,9 +315,9 @@ export class DialogSelectMembershipComponent implements OnInit {
     }
   }
 
-  // getServices() {
-  //   this.GimnasioService.getServicesForId(this.idGym).subscribe((respuesta) => {
-  //       this.servicios = respuesta;
-  //   });
-  // }
+  getServices() {
+    this.GimnasioService.getServicesForId(this.idGym).subscribe((respuesta) => {
+        this.servicios = respuesta;
+    });
+  }
 }

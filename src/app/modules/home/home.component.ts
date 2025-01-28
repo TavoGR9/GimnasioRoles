@@ -523,47 +523,47 @@ cargarTarjetas2(): void {
     this.mesAnterior = meses[mesIndex];
   }
 
-  // grafica1Visitas(): void {
-  //   this.homeService.graficas1Visita(this.idGym).subscribe((respuesta) => {
-  //     this.mes1visitas = respuesta as any[];
-  //     this.updateChart();
-  //   });
-  // }
+  grafica1Visitas(): void {
+    this.homeService.graficas1Visita(this.idGym).subscribe((respuesta) => {
+      this.mes1visitas = respuesta as any[];
+      this.updateChart();
+    });
+  }
 
-  // grafica2Visitas(): void {
-  //   this.homeService.graficas2Visita(this.idGym).subscribe((respuesta) => {
-  //     this.mes2visitas = respuesta as any[];
-  //     this.updateChart();
-  //   });
-  // }
+  grafica2Visitas(): void {
+    this.homeService.graficas2Visita(this.idGym).subscribe((respuesta) => {
+      this.mes2visitas = respuesta as any[];
+      this.updateChart();
+    });
+  }
 
-  // grafica1Quincena(): void {
-  //   this.homeService.graficas1Quincena(this.idGym).subscribe((respuesta) => {
-  //     this.mes1quincenas = respuesta as any[];
-  //     this.updateChart();
-  //   });
-  // }
+  grafica1Quincena(): void {
+    this.homeService.graficas1Quincena(this.idGym).subscribe((respuesta) => {
+      this.mes1quincenas = respuesta as any[];
+      this.updateChart();
+    });
+  }
 
-  // grafica2Quincena(): void {
-  //   this.homeService.graficas2Quincena(this.idGym).subscribe((respuesta) => {
-  //     this.mes2quincenas = respuesta as any[];
-  //     this.updateChart();
-  //   });
-  // }
+  grafica2Quincena(): void {
+    this.homeService.graficas2Quincena(this.idGym).subscribe((respuesta) => {
+      this.mes2quincenas = respuesta as any[];
+      this.updateChart();
+    });
+  }
 
-  // grafica1Mensualidad(): void {
-  //   this.homeService.graficas(this.idGym).subscribe((respuesta) => {
-  //     this.mes1Mensualidad = respuesta as any[];
-  //     this.updateChart();
-  //   });
-  // }
+  grafica1Mensualidad(): void {
+    this.homeService.graficas(this.idGym).subscribe((respuesta) => {
+      this.mes1Mensualidad = respuesta as any[];
+      this.updateChart();
+    });
+  }
 
-  // grafica2Mensualidad(): void {
-  //   this.homeService.graficas2(this.idGym).subscribe((respuesta) => {
-  //     this.mes2Mensualidad = respuesta as any[];
-  //     this.updateChart();
-  //   });
-  // }
+  grafica2Mensualidad(): void {
+    this.homeService.graficas2(this.idGym).subscribe((respuesta) => {
+      this.mes2Mensualidad = respuesta as any[];
+      this.updateChart();
+    });
+  }
 
   updateChart(): void {
     if (
@@ -607,100 +607,100 @@ cargarTarjetas2(): void {
     }
   }
 
-  // graficasFecha(fecha: any): void {
-  //   this.homeService.consultasFechaMensualidad(this.idGym, fecha).subscribe(
-  //     (respuesta: any) => {
-  //       if (typeof respuesta === "object" && respuesta !== null) {
-  //         this.homeCard21 = [respuesta];
-  //       } else {
-  //         //console.error("La respuesta no es un objeto válido:", respuesta);
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error("Error al obtener datos:", error);
-  //     }
-  //   );
-  // }
+  graficasFecha(fecha: any): void {
+    this.homeService.consultasFechaMensualidad(this.idGym, fecha).subscribe(
+      (respuesta: any) => {
+        if (typeof respuesta === "object" && respuesta !== null) {
+          this.homeCard21 = [respuesta];
+        } else {
+          //console.error("La respuesta no es un objeto válido:", respuesta);
+        }
+      },
+      (error) => {
+        console.error("Error al obtener datos:", error);
+      }
+    );
+  }
 
-  // graficasFechaVisita(fecha: any): void {
-  //   this.homeService.consultasFechaVisita(this.idGym, fecha).subscribe(
-  //     (respuesta: any) => {
-  //       if (typeof respuesta === "object" && respuesta !== null) {
-  //         this.homeCardVisita = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
-  //       } else {
-  //         //console.error("La respuesta no es un objeto válido:", respuesta);
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error("Error al obtener datos:", error);
-  //     }
-  //   );
-  // }
+  graficasFechaVisita(fecha: any): void {
+    this.homeService.consultasFechaVisita(this.idGym, fecha).subscribe(
+      (respuesta: any) => {
+        if (typeof respuesta === "object" && respuesta !== null) {
+          this.homeCardVisita = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
+        } else {
+          //console.error("La respuesta no es un objeto válido:", respuesta);
+        }
+      },
+      (error) => {
+        console.error("Error al obtener datos:", error);
+      }
+    );
+  }
 
-  // graficasFechaQuincena(fecha: any): void {
-  //   this.homeService.consultasFechaQuincena(this.idGym, fecha).subscribe(
-  //     (respuesta: any) => {
-  //       if (typeof respuesta === "object" && respuesta !== null) {
-  //         this.homeCardQuincena = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
-  //       } else {
-  //         console.error("La respuesta no es un objeto válido:", respuesta);
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error("Error al obtener datos:", error);
-  //     }
-  //   );
-  // }
+  graficasFechaQuincena(fecha: any): void {
+    this.homeService.consultasFechaQuincena(this.idGym, fecha).subscribe(
+      (respuesta: any) => {
+        if (typeof respuesta === "object" && respuesta !== null) {
+          this.homeCardQuincena = [respuesta]; // Convierte el objeto respuesta en un array con un solo elemento
+        } else {
+          console.error("La respuesta no es un objeto válido:", respuesta);
+        }
+      },
+      (error) => {
+        console.error("Error al obtener datos:", error);
+      }
+    );
+  }
 
-  // onSelect(event?: any): void {
-  //   if (event == undefined) {
-  //     this.fechaMensualidad = this.fechaFormateada;
-  //     this.graficasFecha(this.fechaFormateada);
-  //   }
-  //   else if (typeof event.series === "string") {
-  //     // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
-  //     const numeroMes = this.meses[event.series as keyof typeof this.meses];
-  //     //this.fechaMensualidad = this.año + "-" + numeroMes + "-" + event.name;
-  //     this.fechaMensualidad = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
-  //     this.graficasFecha(this.fechaMensualidad);
-  //   } else {
-  //     //console.warn("Nombre de mes no es una cadena válida:", event.series);
-  //   }
-  // }
+  onSelect(event?: any): void {
+    if (event == undefined) {
+      this.fechaMensualidad = this.fechaFormateada;
+      this.graficasFecha(this.fechaFormateada);
+    }
+    else if (typeof event.series === "string") {
+      // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
+      const numeroMes = this.meses[event.series as keyof typeof this.meses];
+      //this.fechaMensualidad = this.año + "-" + numeroMes + "-" + event.name;
+      this.fechaMensualidad = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
+      this.graficasFecha(this.fechaMensualidad);
+    } else {
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
+    }
+  }
 
 
-  // onSelectQuincena(event?: any): void {
-  //   if (event == undefined) {
-  //     this.fechaQuincena = this.fechaFormateada;
-  //     this.graficasFechaQuincena(this.fechaFormateada);
-  //   }
-  //   else if (typeof event.series === "string") {
-  //     // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
-  //     const numeroMes = this.meses[event.series as keyof typeof this.meses];
-  //    // this.fechaQuincena = this.año + "-" + numeroMes + "-" + event.name;
-  //    // Dentro de tu componente
-  //     this.fechaQuincena = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
-  //     this.graficasFechaQuincena(this.fechaQuincena);
-  //   } else {
-  //     //console.warn("Nombre de mes no es una cadena válida:", event.series);
-  //   }
-  // }
+  onSelectQuincena(event?: any): void {
+    if (event == undefined) {
+      this.fechaQuincena = this.fechaFormateada;
+      this.graficasFechaQuincena(this.fechaFormateada);
+    }
+    else if (typeof event.series === "string") {
+      // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
+      const numeroMes = this.meses[event.series as keyof typeof this.meses];
+     // this.fechaQuincena = this.año + "-" + numeroMes + "-" + event.name;
+     // Dentro de tu componente
+      this.fechaQuincena = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
+      this.graficasFechaQuincena(this.fechaQuincena);
+    } else {
+      //console.warn("Nombre de mes no es una cadena válida:", event.series);
+    }
+  }
 
-  // onSelectVisita(event?: any): void {
-  //   if (event == undefined) {
-  //     this.fechaVisita = this.fechaFormateada;
-  //     this.graficasFechaVisita(this.fechaFormateada);
-  //   }
-  //   else if (typeof event.series === "string") {
-  //     // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
-  //     const numeroMes = this.meses[event.series as keyof typeof this.meses];
-  //     //this.fechaVisita = this.año + "-" + numeroMes + "-" + event.name;
-  //     this.fechaVisita = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
-  //     this.graficasFechaVisita(this.fechaVisita);
-  //   } else {
-  //     console.warn("Nombre de mes no es una cadena válida:", event.series);
-  //   }
-  // }
+  onSelectVisita(event?: any): void {
+    if (event == undefined) {
+      this.fechaVisita = this.fechaFormateada;
+      this.graficasFechaVisita(this.fechaFormateada);
+    }
+    else if (typeof event.series === "string") {
+      // Accede a this.meses utilizando una aserción de tipo o verificación de existencia
+      const numeroMes = this.meses[event.series as keyof typeof this.meses];
+      //this.fechaVisita = this.año + "-" + numeroMes + "-" + event.name;
+      this.fechaVisita = `${this.año}-${numeroMes}-${event.name < 10 ? '0' + event.name : event.name}`;
+      this.graficasFechaVisita(this.fechaVisita);
+    } else {
+      console.warn("Nombre de mes no es una cadena válida:", event.series);
+    }
+  }
 
   /**LISTA PRODUCTOS */
   listaTablas() {
@@ -778,9 +778,9 @@ cargarTarjetas2(): void {
         if (data && data.length > 0) {
           let maxId = -1;
           let lastData: any;
-          // data.forEach((record: any) => {
-          //   this.servicio.newService(record.data).subscribe({});
-          // });
+          data.forEach((record: any) => {
+            this.servicio.newService(record.data).subscribe({});
+          });
           this.indexedDBService.VaciarAgregarServicioData();
         } else {
         }
@@ -793,7 +793,7 @@ cargarTarjetas2(): void {
           let maxId = -1;
           let lastData: any;
           data.forEach((record: any) => {
-            // this.membresiaService.agregarMem(record.data).subscribe({});
+            this.membresiaService.agregarMem(record.data).subscribe({});
           });
           this.indexedDBService.VaciarAgregarMembresiaData();
         } else {
@@ -805,7 +805,7 @@ cargarTarjetas2(): void {
         let maxId = -1;
         let lastData: any;
         data.forEach((record: any) => {
-          // this.membresiaService.agregarPlan(record.data).subscribe({});
+          this.membresiaService.agregarPlan(record.data).subscribe({});
         });
         this.indexedDBService.VaciarAgregarPlanData();
       } else {

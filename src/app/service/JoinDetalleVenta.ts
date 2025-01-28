@@ -35,18 +35,18 @@ export class JoinDetalleVentaService {
   //   });
   // }
 
-  // consultarProductosVentas(Gimnasio_idGimnasio: number | null): Observable<any> {
-  //   const body = { Gimnasio_idGimnasio };
-  //   const url = `${this.API}venta_detalleVenta.php?ventasDetalle`;
-  //   return this.clienteHttp.post(url, body).pipe(
-  //     tap(dataResponse => {
-  //       this.saveDataToIndexedDB(dataResponse);
-  //     }),
-  //     catchError(error => {
-  //       return this.getServiceDatos();
-  //     })
-  //   );
-  // }
+  consultarProductosVentas(Gimnasio_idGimnasio: number | null): Observable<any> {
+    const body = { Gimnasio_idGimnasio };
+    const url = `${this.API}venta_detalleVenta.php?ventasDetalle`;
+    return this.clienteHttp.post(url, body).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB(dataResponse);
+      }),
+      catchError(error => {
+        return this.getServiceDatos();
+      })
+    );
+  }
 
   private saveDataToIndexedDB(data: any) {
     // Guarda los datos en IndexedDB
@@ -80,10 +80,10 @@ export class JoinDetalleVentaService {
 
 
 
-  // consultarProductosGimnasio(idGimnasio: number | null): Observable<any[]> {
-  //   const url = `${this.API}venta_detalleVenta.php?consultar=true&Gimnasio_idGimnasio=${idGimnasio}`;
-  //   return this.clienteHttp.get<any[]>(url);
-  // }
+  consultarProductosGimnasio(idGimnasio: number | null): Observable<any[]> {
+    const url = `${this.API}venta_detalleVenta.php?consultar=true&Gimnasio_idGimnasio=${idGimnasio}`;
+    return this.clienteHttp.get<any[]>(url);
+  }
 
   //VER-CORTE
   // llamada HTTP a la API REST, para obtener detalles de pedidos realizados

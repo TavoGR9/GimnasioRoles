@@ -37,9 +37,9 @@ export class DetalleVentaService {
   //   });
   // }
 
-  // obternerVentaDetalle(){
-  //   return this.clienteHttp.get(this.API+"venta_detalleVenta.php")
-  // }
+  obternerVentaDetalle(){
+    return this.clienteHttp.get(this.API+"venta_detalleVenta.php")
+  }
 
   /*agregarVentaDetalle(datosVentaDetalle: detalleVenta[]): Observable<any> {
     return forkJoin(
@@ -49,17 +49,17 @@ export class DetalleVentaService {
     );
   }*/
 
-  // agregarVentaDetalle(datosVentaDetalle: any[]): Observable<any> {
-  //   return this.clienteHttp.post(this.API + 'venta_detalleVenta.php?insertar=1', datosVentaDetalle);
-  // }
+  agregarVentaDetalle(datosVentaDetalle: any[]): Observable<any> {
+    return this.clienteHttp.post(this.API + 'venta_detalleVenta.php?insertar=1', datosVentaDetalle);
+  }
 
-  // consultarVentaDetalle(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"venta_detalleVenta.php?consultar="+id);
-  // }
+  consultarVentaDetalle(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"venta_detalleVenta.php?consultar="+id);
+  }
 
-  // updateExistencias(data:any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"producto_bod.php?updateExistencias",data)
-  // }
+  updateExistencias(data:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"producto_bod.php?updateExistencias",data)
+  }
 
 
 

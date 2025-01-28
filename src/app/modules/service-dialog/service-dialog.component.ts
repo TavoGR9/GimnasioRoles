@@ -52,21 +52,21 @@ export class ServiceDialogComponent implements OnInit {
           this.ServiciosService.idService.subscribe((id) => {
             if (id) {
               this.idService = id;
-              // this.ServiciosService.getService(this.idService).subscribe((res) => {
-              //   if (res) {
-              //     this.service = res;
-              //     if (this.service) {
-              //       this.serviceForm.setValue({
-              //         id_servicios_individuales:this.service.id_servicios_individuales,
-              //         nombre_servicio: this.service.nombre_servicio,
-              //         detalles: this.service.detalles,
-              //         precio_unitario: this.service.precio_unitario,
-              //         fk_idGimnasio: this.idGym,
-              //         created_by: this.service.created_by,
-              //       });
-              //     }
-              //   }
-              // });
+              this.ServiciosService.getService(this.idService).subscribe((res) => {
+                if (res) {
+                  this.service = res;
+                  if (this.service) {
+                    this.serviceForm.setValue({
+                      id_servicios_individuales:this.service.id_servicios_individuales,
+                      nombre_servicio: this.service.nombre_servicio,
+                      detalles: this.service.detalles,
+                      precio_unitario: this.service.precio_unitario,
+                      fk_idGimnasio: this.idGym,
+                      created_by: this.service.created_by,
+                    });
+                  }
+                }
+              });
             }
           });
         }
@@ -84,32 +84,32 @@ export class ServiceDialogComponent implements OnInit {
         id_servicios_individuales: 0,
         fk_idGimnasio: this.idGym,
       });
-      // this.ServiciosService.newService(this.serviceForm.value).subscribe((respuesta) => {
-      //   if (respuesta) {
-      //     if (respuesta.success == '1') {
-      //       this.spinner.hide();
-      //       const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent,{ data: `¡Servicio agregado con éxito!`});
-      //       dialogRefConfirm.afterClosed().subscribe((result) => {
-      //         this.dialogRef.close(respuesta);
-      //       });
-      //     }
-      //   }
-      // });
+      this.ServiciosService.newService(this.serviceForm.value).subscribe((respuesta) => {
+        if (respuesta) {
+          if (respuesta.success == '1') {
+            this.spinner.hide();
+            const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent,{ data: `¡Servicio agregado con éxito!`});
+            dialogRefConfirm.afterClosed().subscribe((result) => {
+              this.dialogRef.close(respuesta);
+            });
+          }
+        }
+      });
     }
   }
 
   actualizarForm() {
     this.spinner.show();
-    // this.ServiciosService.updateService(this.serviceForm.value).subscribe((res) => {
-    //   if (res) {
-    //     this.spinner.hide();
-    //     const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent,{data: `¡Servicio actualizado con éxito!`});
-    //     dialogRefConfirm.afterClosed().subscribe((result) => {
-    //       this.ServiciosService.confirmButton.next(true);
-    //       this.dialogRef.close();
-    //     });
-    //   }
-    // });
+    this.ServiciosService.updateService(this.serviceForm.value).subscribe((res) => {
+      if (res) {
+        this.spinner.hide();
+        const dialogRefConfirm = this.dialog.open(MensajeEmergentesComponent,{data: `¡Servicio actualizado con éxito!`});
+        dialogRefConfirm.afterClosed().subscribe((result) => {
+          this.ServiciosService.confirmButton.next(true);
+          this.dialogRef.close();
+        });
+      }
+    });
   }
 
   marcarCamposInvalidos(formGroup: FormGroup) {

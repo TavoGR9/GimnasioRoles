@@ -79,16 +79,16 @@ consultarAsistenciasPersonal(idGym: number): Observable<any> {
 }
 
 
-  // consultarHome2(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHomeDos="+id);
-  //     /*tap(dataResponse => {
-  //       this.saveDataToIndexedDB(dataResponse);
-  //     }),
-  //     catchError(error => {
-  //       console.log(error, "error");
-  //      // return this.getServiceDatos();
-  //     })*/
-  // }
+  consultarHome2(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultasHomeDos="+id);
+      /*tap(dataResponse => {
+        this.saveDataToIndexedDB(dataResponse);
+      }),
+      catchError(error => {
+        console.log(error, "error");
+       // return this.getServiceDatos();
+      })*/
+  }
 
   private saveDataToIndexedDB(data: any) {
     // Guarda los datos en IndexedDB
@@ -159,16 +159,16 @@ consultarAsistenciasPersonal(idGym: number): Observable<any> {
     });
   }
 
-  // getARecientesVentas(sucursalId: any): Observable<any> {
-  //   return this.clienteHttp.get(this.API+"ConsultasHome.php?consultarVentasVendidas="+sucursalId).pipe(
-  //     tap(dataResponse => {
-  //       this.saveDataToIndexedDB3(dataResponse);
-  //     }),
-  //     catchError(error => {
-  //       return this.getServiceDatos3();
-  //     })
-  //   );
-  // }
+  getARecientesVentas(sucursalId: any): Observable<any> {
+    return this.clienteHttp.get(this.API+"ConsultasHome.php?consultarVentasVendidas="+sucursalId).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB3(dataResponse);
+      }),
+      catchError(error => {
+        return this.getServiceDatos3();
+      })
+    );
+  }
 
   private saveDataToIndexedDB3(data: any) {
     // Guarda los datos en IndexedDB
@@ -204,59 +204,59 @@ consultarAsistenciasPersonal(idGym: number): Observable<any> {
     return this.clienteHttp.post(this.API + "ObtenerAsistenciasFechaActual.php", data);
   }
 
-  // graficas(idGim:any){
-  //   return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1="+idGim);
-  // }
+  graficas(idGim:any){
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1="+idGim);
+  }
 
-  // graficas2(idGim:any){
-  //   return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2="+idGim);
-  // }
+  graficas2(idGim:any){
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2="+idGim);
+  }
 
-  // graficas1Visita(idGim:any){
-  //   return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1Visita="+idGim);
-  // }
+  graficas1Visita(idGim:any){
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1Visita="+idGim);
+  }
 
-  // graficas2Visita(idGim:any){
-  //   return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2Visita="+idGim);
-  // }
+  graficas2Visita(idGim:any){
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2Visita="+idGim);
+  }
 
-  // graficas1Quincena(idGim:any){
-  //   return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1Quincena="+idGim);
-  // }
+  graficas1Quincena(idGim:any){
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes1Quincena="+idGim);
+  }
 
-  // graficas2Quincena(idGim:any){
-  //   return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2Quincena="+idGim);
-  // }
+  graficas2Quincena(idGim:any){
+    return this.clienteHttp.get(this.API+"ConsultaGraficas.php?mes2Quincena="+idGim);
+  }
 
-  // consultasFechaMensualidad(idGim: any, fecha: any) {
-  //   return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
-  //       params: {
-  //           idGim: idGim,
-  //           fecha: fecha
-  //       }
-  //   });
-  // }
+  consultasFechaMensualidad(idGim: any, fecha: any) {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
+        params: {
+            idGim: idGim,
+            fecha: fecha
+        }
+    });
+  }
 
-  // consultasFechaVisita(idGim: any, fecha: any) {
-  //   return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
-  //       params: {
-  //         idGimVisita: idGim,
-  //         fechaVisita: fecha
-  //       }
-  //   });
-  // }
+  consultasFechaVisita(idGim: any, fecha: any) {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
+        params: {
+          idGimVisita: idGim,
+          fechaVisita: fecha
+        }
+    });
+  }
 
-  // consultasFechaQuincena(idGim: any, fecha: any) {
-  //   return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
-  //       params: {
-  //           idGimQuincena: idGim,
-  //           fechaQuincena: fecha
-  //       }
-  //   });
-  // }
+  consultasFechaQuincena(idGim: any, fecha: any) {
+    return this.clienteHttp.get(this.API2 + "ConsultasHome.php", {
+        params: {
+            idGimQuincena: idGim,
+            fechaQuincena: fecha
+        }
+    });
+  }
 
-// ConsultarPedidosMembresias(id_bodega: any ){
-//   return  this.clienteHttp.get(this.API+'pedidosMembresias.php?id_bodega='+ id_bodega)
-// }
+ConsultarPedidosMembresias(id_bodega: any ){
+  return  this.clienteHttp.get(this.API+'pedidosMembresias.php?id_bodega='+ id_bodega)
+}
 
 }

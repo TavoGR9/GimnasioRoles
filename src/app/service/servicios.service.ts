@@ -43,37 +43,37 @@ export class serviciosService {
 
   ///************************SERVICIOS */
 
-  // newService(data: any): Observable<any> {
-  //   return this.clienteHttp.post(this.API+"servicesMembresia.php?insertarservicio", data).pipe(
-  //     tap(dataResponse => {
-  //     }),
-  //     catchError(error => {
-  //       this.saveDataToIndexedDB(data);
-  //       const resultData = { success: '2' };
-  //       return of(resultData);
-  //     })
-  //   );
-  // }
+  newService(data: any): Observable<any> {
+    return this.clienteHttp.post(this.API+"servicesMembresia.php?insertarservicio", data).pipe(
+      tap(dataResponse => {
+      }),
+      catchError(error => {
+        this.saveDataToIndexedDB(data);
+        const resultData = { success: '2' };
+        return of(resultData);
+      })
+    );
+  }
 
   private saveDataToIndexedDB(data: any) {
     this.indexedDBService.saveAgregarServicioData('AgregarServicio', data);
   }
 
-  // updateService(data: any): Observable<any> {
-  //   return this.clienteHttp.post(this.API+"servicesMembresia.php?actualizarServicio", data);
-  // }
+  updateService(data: any): Observable<any> {
+    return this.clienteHttp.post(this.API+"servicesMembresia.php?actualizarServicio", data);
+  }
 
-  // deleteService(id: any): Observable<any> {
-  //   const data = { id_servicio: id}
-  //   return this.clienteHttp.post(this.API+"servicesMembresia.php?eliminarServicio", data);
-  // }
+  deleteService(id: any): Observable<any> {
+    const data = { id_servicio: id}
+    return this.clienteHttp.post(this.API+"servicesMembresia.php?eliminarServicio", data);
+  }
 
-  // getService(id: number): Observable<any> {
-  //   return this.clienteHttp.get(this.API+"servicesMembresia.php?getServicio="+id);
-  // }
+  getService(id: number): Observable<any> {
+    return this.clienteHttp.get(this.API+"servicesMembresia.php?getServicio="+id);
+  }
 
-  // agregarServicios(datoService: any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"servicesMembresia.php?insertar", datoService);
-  // }
+  agregarServicios(datoService: any):Observable<any>{
+    return this.clienteHttp.post(this.API+"servicesMembresia.php?insertar", datoService);
+  }
 
 }

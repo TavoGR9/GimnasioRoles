@@ -41,9 +41,9 @@ export class PagoMembresiaEfectivoService {
   //   });
   // }
 
-  // ticketPagoInfo(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"Usuario.php?infoTicketMembresia="+id);
-  // }
+  ticketPagoInfo(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"Usuario.php?infoTicketMembresia="+id);
+  }
 
   obtenerActivos(id:any):Observable<any>{
     return this.clienteHttp.get(this.API+"getClientes3.php?bodegaId="+id).pipe(
@@ -52,9 +52,9 @@ export class PagoMembresiaEfectivoService {
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
-        // console.log('Error en API:', error.message || error);
-        // console.log('Código de estado:', error.status);
-        // console.log('Cargando datos desde IndexedDB debido a error en API:', error);
+        console.log('Error en API:', error.message || error);
+        console.log('Código de estado:', error.status);
+        console.log('Cargando datos desde IndexedDB debido a error en API:', error);
         return this.getServiceDatos();
 
         /*const resultData = { success: '2' }; // Objeto que indica éxito
@@ -77,7 +77,7 @@ export class PagoMembresiaEfectivoService {
   private saveDataToIndexedDB2(data: any) {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveObtenerActivosData('ObtenerActivos', data);
-    // console.log("Datos obtenidos")
+    console.log("Datos obtenidos")
   }
 
   getServiceDatos() {
@@ -116,23 +116,23 @@ export class PagoMembresiaEfectivoService {
 }
 
 
-  // obtenerClientes(inicioDate: any, finDate: any, idGym: any): Observable<any> {
-  //   const params = {
-  //     GYMid: idGym,
-  //     fechaInicio: inicioDate,
-  //     fechaFin: finDate
-  //   };
-  //   return this.clienteHttp.get(this.API + 'Usuario.php', { params });
-  // }
+  obtenerClientes(inicioDate: any, finDate: any, idGym: any): Observable<any> {
+    const params = {
+      GYMid: idGym,
+      fechaInicio: inicioDate,
+      fechaFin: finDate
+    };
+    return this.clienteHttp.get(this.API + 'Usuario.php', { params });
+  }
 
-  // obtenerTodosLosClientes(inicioDate: any, finDate: any, idGym: any): Observable<any> {
-  //   const params = {
-  //     idGimnasio: idGym,
-  //     fechaInicio: inicioDate,
-  //     fechaFin: finDate
-  //   };
-  //   return this.clienteHttp.get(this.API + 'Usuario.php', { params });
-  // }
+  obtenerTodosLosClientes(inicioDate: any, finDate: any, idGym: any): Observable<any> {
+    const params = {
+      idGimnasio: idGym,
+      fechaInicio: inicioDate,
+      fechaFin: finDate
+    };
+    return this.clienteHttp.get(this.API + 'Usuario.php', { params });
+  }
 
   membresiasLista(idSucu: any):Observable<any>{
     const params = {
@@ -179,31 +179,31 @@ export class PagoMembresiaEfectivoService {
     this.indexedDBService.saveMembresiaIdData('AgregarMemId', data);
   }
 
-  // membresiasInfo(idMemb: any):Observable<any>{
-  //   const params = {
-  //     id_mem: idMemb
-  //   };
-  //   return this.clienteHttp.get(this.API+"Usuario.php?infoMembre=", { params });
-  // }
+  membresiasInfo(idMemb: any):Observable<any>{
+    const params = {
+      id_mem: idMemb
+    };
+    return this.clienteHttp.get(this.API+"Usuario.php?infoMembre=", { params });
+  }
 
-  // actualizacionMemebresia(idCli:any,idMem:any, fecha: any, detMemID: any, precio: any, fechaFormateadaFin: any, created_by: any):Observable<any>{
-  //   const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fecha).set('detMemID',detMemID).set('precio',precio).set('fechaFormateadaFin',fechaFormateadaFin).set('created_by',created_by);
-  //   return this.clienteHttp.get(this.API+"Usuario.php", { params });
-  // }
+  actualizacionMemebresia(idCli:any,idMem:any, fecha: any, detMemID: any, precio: any, fechaFormateadaFin: any, created_by: any):Observable<any>{
+    const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fecha).set('detMemID',detMemID).set('precio',precio).set('fechaFormateadaFin',fechaFormateadaFin).set('created_by',created_by);
+    return this.clienteHttp.get(this.API+"Usuario.php", { params });
+  }
 
-  // histoClienteMemb(id:any):Observable<any>{
-  //   const params = {
-  //     idCliente: id
-  //   };
-  //   return this.clienteHttp.get(this.API+"Usuario.php?histoCliente=", { params });
-  // }
+  histoClienteMemb(id:any):Observable<any>{
+    const params = {
+      idCliente: id
+    };
+    return this.clienteHttp.get(this.API+"Usuario.php?histoCliente=", { params });
+  }
 
-  // deleteMem(id:any):Observable<any>{
-  //   const params = {
-  //     idMem: id
-  //   };
-  //   return this.clienteHttp.get(this.API+"Usuario.php?deleteMembresia=", { params });
-  // }
+  deleteMem(id:any):Observable<any>{
+    const params = {
+      idMem: id
+    };
+    return this.clienteHttp.get(this.API+"Usuario.php?deleteMembresia=", { params });
+  }
 
 deleteMembresia(id: any): Observable<any> {
   const params = { id_pedido: id };
@@ -217,15 +217,15 @@ deleteMembresia(id: any): Observable<any> {
 }
 
 
-  // actualizaDatosCliente(data: any): Observable<any> {
-  //   return this.clienteHttp.post<msgResult>(this.API + "updateCliente_Gym2.php", data).pipe(
-  //     catchError(error => {
-  //       // Manejo del error
-  //       console.error('Error en la actualización de cliente:', error);
-  //       return throwError(() => new Error('Hubo un problema al actualizar los datos del cliente.'));
-  //     })
-  //   );
-  // }
+  actualizaDatosCliente(data: any): Observable<any> {
+    return this.clienteHttp.post<msgResult>(this.API + "updateCliente_Gym2.php", data).pipe(
+      catchError(error => {
+        // Manejo del error
+        console.error('Error en la actualización de cliente:', error);
+        return throwError(() => new Error('Hubo un problema al actualizar los datos del cliente.'));
+      })
+    );
+  }
 
   actualizaDatosCliente2(data: any): Observable<any> {
     const url = `${this.API}test_update.php`; // Asegúrate de que this.API esté correctamente configurado
@@ -242,9 +242,9 @@ deleteMembresia(id: any): Observable<any> {
   }
 
 
-  // deleteService(datos: any): Observable<any>{
-  //   return this.clienteHttp.post(this.API+"Usuario.php?eliminarServicio", datos);
-  // }
+  deleteService(datos: any): Observable<any>{
+    return this.clienteHttp.post(this.API+"Usuario.php?eliminarServicio", datos);
+  }
 
 
   // Alternativa con correo
@@ -282,46 +282,46 @@ deleteMembresia(id: any): Observable<any> {
   //   return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedidoMem=1", datos);
   // }
 
-  // obtenerPedidosActivos(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"UsuarioProds.php?obtenerVista="+id);
-  // }
+  obtenerPedidosActivos(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"UsuarioProds.php?obtenerVista="+id);
+  }
 
-  // ticketPagoInfoPed(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"UsuarioProds.php?infoTicketMembresia="+id);
-  // }
+  ticketPagoInfoPed(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"UsuarioProds.php?infoTicketMembresia="+id);
+  }
 
-  // agregarPedidoConDetalles(pedido: any, detalles: any[]): Observable<any> {
-  //   const datos = {
-  //     pedido,
-  //     detalles
-  //   };
-  //   return this.clienteHttp.post(this.API + "UsuarioProds.php?insertarPedidoConDetalles", datos).pipe(
-  //     catchError(error => {
-  //       console.error('Error al registrar el pedido: ', error);
-  //       return throwError(error);
-  //     })
-  //   );
-  // }
+  agregarPedidoConDetalles(pedido: any, detalles: any[]): Observable<any> {
+    const datos = {
+      pedido,
+      detalles
+    };
+    return this.clienteHttp.post(this.API + "UsuarioProds.php?insertarPedidoConDetalles", datos).pipe(
+      catchError(error => {
+        console.error('Error al registrar el pedido: ', error);
+        return throwError(error);
+      })
+    );
+  }
 
-  // actualizacionMemebresiaProd(idCli:any,idMem:any, fechaActual: any, detMemID: any, precio: any, fechaFormateadaFin: any, created_by: any):Observable<any>{
-  //   const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fechaActual).set('detMemID',detMemID).set('precio',precio).set('fechaFormateadaFin',fechaFormateadaFin).set('created_by',created_by);
-  //   return this.clienteHttp.get(this.API+"UsuarioProds.php", { params });
-  // }
+  actualizacionMemebresiaProd(idCli:any,idMem:any, fechaActual: any, detMemID: any, precio: any, fechaFormateadaFin: any, created_by: any):Observable<any>{
+    const params = new HttpParams().set('consultClienteId', idCli).set('consultMemId', idMem).set('fechaActual',fechaActual).set('detMemID',detMemID).set('precio',precio).set('fechaFormateadaFin',fechaFormateadaFin).set('created_by',created_by);
+    return this.clienteHttp.get(this.API+"UsuarioProds.php", { params });
+  }
 
-  // agregarPedido(datos: any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedido", datos).pipe(
-  //     catchError(error => {
-  //       console.error('Error al enviar la solicitud: ', error)
-  //       return throwError(error);
-  //     })
-  //   );
-  // }
+  agregarPedido(datos: any):Observable<any>{
+    return this.clienteHttp.post(this.API+"UsuarioProds.php?insertarPedido", datos).pipe(
+      catchError(error => {
+        console.error('Error al enviar la solicitud: ', error)
+        return throwError(error);
+      })
+    );
+  }
 
   checkPromoPaquete(data: any): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-console.log("datos emnviado en servico",data);
+// console.log("datos emnviado en servico",data);
     return this.clienteHttp.post<any>(this.API+"Pago_Membresias_Efectivo2.php", JSON.stringify(data), { headers });
   }
 

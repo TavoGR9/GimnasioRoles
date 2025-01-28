@@ -45,29 +45,29 @@ export class MembresiaService {
     this.indexedDBService.saveAgregarMembresiaData('AgregarMembresia', data);
   }
 
-  // agregarMem(datosPlan:any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"membresias.php?insertar",datosPlan).pipe(
-  //     tap(dataResponse => {
-  //     }),
-  //     catchError(error => {
-  //       this.saveDataToIndexedDBM(datosPlan);
-  //       const resultData = { success: '2' };
-  //       return of(resultData);
-  //     })
-  //   );
-  // }
+  agregarMem(datosPlan:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"membresias.php?insertar",datosPlan).pipe(
+      tap(dataResponse => {
+      }),
+      catchError(error => {
+        this.saveDataToIndexedDBM(datosPlan);
+        const resultData = { success: '2' };
+        return of(resultData);
+      })
+    );
+  }
 
-  // updateMembresia(formData: any): Observable<any>{
-  //   return this.clienteHttp.put(this.API+"membresias.php", formData);
-  // }
+  updateMembresia(formData: any): Observable<any>{
+    return this.clienteHttp.put(this.API+"membresias.php", formData);
+  }
 
-  // updateMembresiaStatus(id: number, estado: { status: number }): Observable<any> {
-  //   return this.clienteHttp.post(this.API+"membresias.php?actualizarEstatus="+id,estado);
-  // }
+  updateMembresiaStatus(id: number, estado: { status: number }): Observable<any> {
+    return this.clienteHttp.post(this.API+"membresias.php?actualizarEstatus="+id,estado);
+  }
 
-  // consultarPlanGym(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"membresias.php?consultarMembresia="+id);
-  // }
+  consultarPlanGym(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"membresias.php?consultarMembresia="+id);
+  }
 
   //////////******************PLAN */
   public optionShow: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -79,40 +79,40 @@ export class MembresiaService {
     this.indexedDBService.saveAgregarPlanData('AgregarPlan', data);
   }
 
-  // agregarPlan(datosPlan:membresia):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"Promociones.php?insertarPromocion",datosPlan).pipe(
-  //     tap(dataResponse => {
-  //     }),
-  //     catchError(error => {
-  //       this.saveDataToIndexedDBP(datosPlan);
-  //       const resultData = { success: '1' };
-  //       return of(resultData);
-  //     })
-  //   );
-  // }
+  agregarPlan(datosPlan:membresia):Observable<any>{
+    return this.clienteHttp.post(this.API+"Promociones.php?insertarPromocion",datosPlan).pipe(
+      tap(dataResponse => {
+      }),
+      catchError(error => {
+        this.saveDataToIndexedDBP(datosPlan);
+        const resultData = { success: '1' };
+        return of(resultData);
+      })
+    );
+  }
 
-  // consultarPlanIdMem(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"membresias.php?consultarGYMMem="+id).pipe(
-  //     tap(dataResponse => {
-  //       this.saveDataToIndexedDB(dataResponse);
-  //     }),
-  //     catchError(error => {
-  //       return this.getMembresiaDatos();
-  //       //return this.getMembresiaDatos();
-  //       /*const resultData = { success: '2' }; // Objeto que indica éxito
-  //       return forkJoin([
-  //         this.getMembresiaDatos().pipe(
-  //           filter(data => data !== null) // Ignora el observable si es null
-  //         ),
-  //         this.getMemDatosInsert().pipe(
-  //           filter((data: any) => Array.isArray(data)), // Filtra solo los arrays
-  //           map((data: any[]) => data.map(item => item.data)) // Obtén solo los datos de cada elemento del array
-  //         ),
-  //         of(resultData) // Convierte el objeto en un observable
-  //       ]);*/
-  //     })
-  //   );
-  // }
+  consultarPlanIdMem(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMMem="+id).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB(dataResponse);
+      }),
+      catchError(error => {
+        return this.getMembresiaDatos();
+        //return this.getMembresiaDatos();
+        /*const resultData = { success: '2' }; // Objeto que indica éxito
+        return forkJoin([
+          this.getMembresiaDatos().pipe(
+            filter(data => data !== null) // Ignora el observable si es null
+          ),
+          this.getMemDatosInsert().pipe(
+            filter((data: any) => Array.isArray(data)), // Filtra solo los arrays
+            map((data: any[]) => data.map(item => item.data)) // Obtén solo los datos de cada elemento del array
+          ),
+          of(resultData) // Convierte el objeto en un observable
+        ]);*/
+      })
+    );
+  }
 
   private saveDataToIndexedDB(data: any) {
     this.indexedDBService.saveMembresiaData('membresia', data);
@@ -152,16 +152,16 @@ export class MembresiaService {
     });
   }
 
-  // consultarPlanIdPlan2(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"membresias.php?consultarGYMPlanT="+id).pipe(
-  //     tap(dataResponse => {
-  //       this.saveDataToIndexedDB2(dataResponse);
-  //     }),
-  //     catchError(error => {
-  //       return this.getServiceDatos();
-  //     })
-  //   );
-  // }
+  consultarPlanIdPlan2(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"membresias.php?consultarGYMPlanT="+id).pipe(
+      tap(dataResponse => {
+        this.saveDataToIndexedDB2(dataResponse);
+      }),
+      catchError(error => {
+        return this.getServiceDatos();
+      })
+    );
+  }
 
   private saveDataToIndexedDB2(data: any) {
     // Guarda los datos en IndexedDB
@@ -202,37 +202,37 @@ export class MembresiaService {
    }
 
   getDataToUpdate(): Observable<any> {
-    console.log("IDS: ",this.dataToUpdate);
+    // console.log("IDS: ",this.dataToUpdate);
     return this.dataToUpdate.asObservable();
 
   }
 
-  // consultarPlan(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"membresias.php?consultarPlanes="+id);
-  // }
+  consultarPlan(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"membresias.php?consultarPlanes="+id);
+  }
 
-  // agregarPlanMem(datosPlanM:any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"Promociones.php?insertarPlanM",datosPlanM);
-  // }
+  agregarPlanMem(datosPlanM:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"Promociones.php?insertarPlanM",datosPlanM);
+  }
 
-  // consultarPlanId(id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"membresias.php?consultarGYM="+id);
-  // }
+  consultarPlanId(id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"membresias.php?consultarGYM="+id);
+  }
 
-  // actualizarPlan(id:any,datosPlan:any):Observable<any>{
+  actualizarPlan(id:any,datosPlan:any):Observable<any>{
 
-  //   return this.clienteHttp.post(this.API+"membresias.php?actualizarPlan="+id,datosPlan);
-  // }
+    return this.clienteHttp.post(this.API+"membresias.php?actualizarPlan="+id,datosPlan);
+  }
 
-  // deletePlan(id: any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"membresias.php?borrar="+id);
-  // }
+  deletePlan(id: any):Observable<any>{
+    return this.clienteHttp.get(this.API+"membresias.php?borrar="+id);
+  }
 
   checkPromoPaquete(data: any): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-console.log("datos emnviado en servico",data);
+// console.log("datos emnviado en servico",data);
     return this.clienteHttp.post<any>(this.API+"Pago_Membresias_Efectivo.php", JSON.stringify(data), {headers});
   }
 

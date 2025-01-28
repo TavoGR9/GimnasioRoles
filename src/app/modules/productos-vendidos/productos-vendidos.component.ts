@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild, DoCheck} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { DatePipe } from '@angular/common';
@@ -26,7 +26,7 @@ interface Producto {
   providers: [DatePipe],
 })
 
-export class ProductosVendidosComponent implements OnInit{
+export class ProductosVendidosComponent implements OnInit, DoCheck{
   fechaInicio: Date = new Date(); // Inicializa como una nueva fecha
   fechaFin: Date = new Date();
   idGym: number = 0;
@@ -60,37 +60,37 @@ export class ProductosVendidosComponent implements OnInit{
     }
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
-      // this.updateDateLogs();
+      this.updateDateLogs();
     });
   }
 
-  // private updateDateLogs(): void {
-  //   this.fechaInicioAnterior = this.fechaInicio;
-  //   this.fechaFinAnterior = this.fechaFin;
-  //   this.prodVendidosService.obtenerListaProduct(
-  //     this.formatDate(this.fechaInicio),
-  //     this.formatDate(this.fechaFin),
-  //     this.idGym
-  //   ).subscribe(
-  //     response => {
-  //       if (response) {
-  //         this.productosVendidos = response;
-  //         this.dataSource = new MatTableDataSource(this.productosVendidos);
-  //         this.loadData();
-  //       } else {
-  //         this.productosVendidos = [];
-  //         this.dataSource = new MatTableDataSource(this.productosVendidos);
-  //         this.loadData();
-  //       }
-  //     },
-  //     error => {
-  //       console.error('Error en la solicitud:', error);
-  //       this.productosVendidos = [];
-  //       this.dataSource = new MatTableDataSource(this.productosVendidos);
-  //       this.loadData();
-  //     }
-  //   );
-  // }
+  private updateDateLogs(): void {
+    this.fechaInicioAnterior = this.fechaInicio;
+    this.fechaFinAnterior = this.fechaFin;
+    this.prodVendidosService.obtenerListaProduct(
+      this.formatDate(this.fechaInicio),
+      this.formatDate(this.fechaFin),
+      this.idGym
+    ).subscribe(
+      response => {
+        if (response) {
+          this.productosVendidos = response;
+          this.dataSource = new MatTableDataSource(this.productosVendidos);
+          this.loadData();
+        } else {
+          this.productosVendidos = [];
+          this.dataSource = new MatTableDataSource(this.productosVendidos);
+          this.loadData();
+        }
+      },
+      error => {
+        console.error('Error en la solicitud:', error);
+        this.productosVendidos = [];
+        this.dataSource = new MatTableDataSource(this.productosVendidos);
+        this.loadData();
+      }
+    );
+  }
 
   loadData() {
     setTimeout(() => {
@@ -116,11 +116,11 @@ export class ProductosVendidosComponent implements OnInit{
     });
   }
 
-  // ngDoCheck(): void {
-  //   if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
-  //     this.updateDateLogs();
-  //   }
-  // }
+  ngDoCheck(): void {
+    if (this.fechaInicio !== this.fechaInicioAnterior || this.fechaFin !== this.fechaFinAnterior) {
+      this.updateDateLogs();
+    }
+  }
 
   onFechaInicioChange(event: any): void {
   }

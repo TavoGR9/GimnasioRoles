@@ -36,19 +36,19 @@ export class inventarioService {
   //   });
   // }
 
-  // obtenerProductoPorId(id: any, idGimnasio: any): Observable<any> {
-  //   let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
-  //   return this.clienteHttp.get(this.API+"producto_bod.php", { params: params });
-  // }
+  obtenerProductoPorId(id: any, idGimnasio: any): Observable<any> {
+    let params = new HttpParams().set('consultar', id).set('idGimnasio', idGimnasio);
+    return this.clienteHttp.get(this.API+"producto_bod.php", { params: params });
+  }
 
 
-  // buscarProductoPorNombre( idGym: number): Observable<any> {
-  //   // Crear los parámetros de la solicitud
-  //   const params = new HttpParams()
-  //     .set('idGym', idGym);
+  buscarProductoPorNombre( idGym: number): Observable<any> {
+    // Crear los parámetros de la solicitud
+    const params = new HttpParams()
+      .set('idGym', idGym);
 
-  //   return this.clienteHttp.get<any>(this.API+"producto_bod.php", { params });
-  // }
+    return this.clienteHttp.get<any>(this.API+"producto_bod.php", { params });
+  }
 
 
   //Lista Historial

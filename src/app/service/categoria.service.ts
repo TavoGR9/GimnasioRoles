@@ -49,51 +49,51 @@ export class CategoriaService {
   //   });
   // }
 
-  // agregarSubCategoria(datosSubCategoria:any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"categoria.php?insertarSubC=1",datosSubCategoria).pipe(
-  //     tap(dataResponse => {
-  //     }),
-  //     catchError(error => {
-  //       this.saveDataToIndexedDB(datosSubCategoria);
-  //       const resultData = { success: '2' };
-  //       return of(resultData);
-  //     })
-  //   );
-  // }
+  agregarSubCategoria(datosSubCategoria:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"categoria.php?insertarSubC=1",datosSubCategoria).pipe(
+      tap(dataResponse => {
+      }),
+      catchError(error => {
+        this.saveDataToIndexedDB(datosSubCategoria);
+        const resultData = { success: '2' };
+        return of(resultData);
+      })
+    );
+  }
 
   private saveDataToIndexedDB(data: any) {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveAgregarCategoriaData('AgregarCategoria', data);
   }
 
-  // agregarCategoria(datosCategoria:any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"categoria.php?insertar=1",datosCategoria);
-  // }
+  agregarCategoria(datosCategoria:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"categoria.php?insertar=1",datosCategoria);
+  }
 
 
-  // agregarMarca(datosMarca:any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"categoria.php?insertarMarca=1",datosMarca);
-  // }
+  agregarMarca(datosMarca:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"categoria.php?insertarMarca=1",datosMarca);
+  }
 
-  // agregarMarcaSer(datosMarca:any):Observable<any>{
-  //   return this.clienteHttp.post(this.API+"categoria.php?insertarMarcaSer=1",datosMarca);
-  // }
+  agregarMarcaSer(datosMarca:any):Observable<any>{
+    return this.clienteHttp.post(this.API+"categoria.php?insertarMarcaSer=1",datosMarca);
+  }
 
-  // obtenerCategoria():Observable<any>{
-  //   return this.clienteHttp.get(this.API+"categoria.php?consultarCategorias");
-  // }
+  obtenerCategoria():Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?consultarCategorias");
+  }
 
-  // obtenerSubCategoria(id: any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"categoria.php?consultarSubCategorias="+id);
-  // }
+  obtenerSubCategoria(id: any):Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?consultarSubCategorias="+id);
+  }
 
-  // obtenerMarcas():Observable<any>{
-  //   return this.clienteHttp.get(this.API+"categoria.php?consultarMarcas");
-  // }
+  obtenerMarcas():Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?consultarMarcas");
+  }
 
-  // obtenerMarcasSer():Observable<any>{
-  //   return this.clienteHttp.get(this.API+"categoria.php?consultarMarcasSer");
-  // }
+  obtenerMarcasSer():Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?consultarMarcasSer");
+  }
 
 
   // obtenerMarcasServiciosIdGym(idGym: string | number): Observable<any> {
@@ -113,32 +113,32 @@ export class CategoriaService {
   //   );
   // }
 
-  // updateMarcaService(data: any): Observable<any> {
-  //   // Llamada POST al archivo PHP para actualizar marca y servicio
-  //   return this.clienteHttp.post(this.API + "categoria.php?updateMarcaServ=true", data).pipe(
-  //     catchError((error) => {
-  //       console.error('Error al actualizar la marca y servicio:', error);
-  //       return of({ success: 0, message: 'Error al actualizar la marca y servicio' });
-  //     })
-  //   );
-  // }
+  updateMarcaService(data: any): Observable<any> {
+    // Llamada POST al archivo PHP para actualizar marca y servicio
+    return this.clienteHttp.post(this.API + "categoria.php?updateMarcaServ=true", data).pipe(
+      catchError((error) => {
+        console.error('Error al actualizar la marca y servicio:', error);
+        return of({ success: 0, message: 'Error al actualizar la marca y servicio' });
+      })
+    );
+  }
 
-//   getMarcaService(id: number): Observable<any> {
-//     return this.clienteHttp.get(`${this.API}categoria.php?getMarcaServicio=${id}`);
-// }
+  getMarcaService(id: number): Observable<any> {
+    return this.clienteHttp.get(`${this.API}categoria.php?getMarcaServicio=${id}`);
+}
 
 
-  // obtenerCategoriaPorNombre(nombre:string):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"categoria.php?categoriaName="+nombre);
-  // }
+  obtenerCategoriaPorNombre(nombre:string):Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?categoriaName="+nombre);
+  }
 
-  // obtenerSubCategoriaPorNombre(nombre:string, id:any):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"categoria.php?SubcategoriaName="+nombre+"&id="+id);
-  // }
+  obtenerSubCategoriaPorNombre(nombre:string, id:any):Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?SubcategoriaName="+nombre+"&id="+id);
+  }
 
-  // obtenerMarcaPorNombre(nombre:string):Observable<any>{
-  //   return this.clienteHttp.get(this.API+"categoria.php?marcaName="+nombre);
-  // }
+  obtenerMarcaPorNombre(nombre:string):Observable<any>{
+    return this.clienteHttp.get(this.API+"categoria.php?marcaName="+nombre);
+  }
 
 
   // REEMPLAZAR POR MARCAS
@@ -172,11 +172,11 @@ export class CategoriaService {
   updateMarcaService2(data: any): Observable<any> {
     return this.clienteHttp.post(this.API + "updateMarcaServ.php?updateMarcaServ=1", data);
   }
-  // // eliminar marca
-  // deleteMarcaServ(idM: any): Observable<any> {
-  //   const data ={id: idM}
-  //   return this.clienteHttp.post(this.API+"deleteMarcaServ.php?eliminarMarcaServ", data);
-  // }
+  // eliminar marca
+  deleteMarcaServ(idM: any): Observable<any> {
+    const data ={id: idM}
+    return this.clienteHttp.post(this.API+"deleteMarcaServ.php?eliminarMarcaServ", data);
+  }
 
 
   // PARA LA SECCION DE PRODUCTOS(MEMBRESIAS) y PRODUCTOS

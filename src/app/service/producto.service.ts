@@ -40,30 +40,30 @@ export class ProductoService {
     //   });
     // }
 
-    // creaProducto(datosFormulario: any): Observable<any> {
-    //   return this.clienteHttp.post(this.API + 'producto_bod.php?insertar', datosFormulario).pipe(
-    //     catchError(error => {
-    //       console.error('Error al enviar la solicitud:', error);
-    //       return throwError(error);
-    //     })
-    //   );
-    // }
+    creaProducto(datosFormulario: any): Observable<any> {
+      return this.clienteHttp.post(this.API + 'producto_bod.php?insertar', datosFormulario).pipe(
+        catchError(error => {
+          console.error('Error al enviar la solicitud:', error);
+          return throwError(error);
+        })
+      );
+    }
 
-    // verProductoCodigoBarras(codigo: any) {
-    //   const data = { codigo: codigo };
-    //   return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?consultarProductoPorCodigo", data);
+    verProductoCodigoBarras(codigo: any) {
+      const data = { codigo: codigo };
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?consultarProductoPorCodigo", data);
 
-    // }
+    }
 
-    // consultarProductoId(id: any): Observable<any[]> {
-    //   const data = { id_bodega_param: id }; // Crear el objeto de datos a enviar
-    //   return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?consultarProductoBodega", data)
-    //     .pipe(
-    //       tap((nuevosProductos: any[]) => {
-    //         this.productoSubject.next(nuevosProductos);
-    //       })
-    //     );
-    // }
+    consultarProductoId(id: any): Observable<any[]> {
+      const data = { id_bodega_param: id }; // Crear el objeto de datos a enviar
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?consultarProductoBodega", data)
+        .pipe(
+          tap((nuevosProductos: any[]) => {
+            this.productoSubject.next(nuevosProductos);
+          })
+        );
+    }
 
 
     private saveDataToIndexedDB(data: any) {
@@ -94,17 +94,17 @@ export class ProductoService {
       });
     }
 
-    // actualizarProducto(datosP: any): Observable<any> {
-    //   const url = `${this.API}producto_bod.php?actualizarP`;
-    //   return this.clienteHttp.post(url, datosP).pipe(
-    //     tap(dataResponse => {
-    //     }),
-    //     catchError(error => {
-    //       console.log(error);
-    //       return error;
-    //    })
-    //   );
-    // }
+    actualizarProducto(datosP: any): Observable<any> {
+      const url = `${this.API}producto_bod.php?actualizarP`;
+      return this.clienteHttp.post(url, datosP).pipe(
+        tap(dataResponse => {
+        }),
+        catchError(error => {
+          console.log(error);
+          return error;
+       })
+      );
+    }
 
 
 
@@ -114,15 +114,15 @@ export class ProductoService {
     // }
 
     // Aqui obtengo el id de la bodega en un json
-    // obternerProductos(id:any):Observable<any>{
-    //   const data = { id_bodega_param: id };
-    //   return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoIDBodega=",data);
-    // }
+    obternerProductos(id:any):Observable<any>{
+      const data = { id_bodega_param: id };
+      return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoIDBodega=",data);
+    }
 
-    // obternerProductosV(id:any):Observable<any>{
-    //   const data = { id_bodega_param: id };
-    //   return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodegaVenta=",data);
-    // }
+    obternerProductosV(id:any):Observable<any>{
+      const data = { id_bodega_param: id };
+      return this.clienteHttp.post(this.API+"producto_bod.php?consultarProductoBodegaVenta=",data);
+    }
 
 
 
@@ -174,29 +174,29 @@ export class ProductoService {
 
 
 
-    // updateProductoStatus(id: number, estado: { estatus: number }): Observable<any> {
-    //   return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
-    // }
+    updateProductoStatus(id: number, estado: { estatus: number }): Observable<any> {
+      return this.clienteHttp.post(this.API+"?actualizarEstatus="+id,estado);;
+    }
 
-    // consultarProductosJ(idProducto: number | null, idBodega: number | null): Observable<any[]> {
-    //   const url = `${this.API}producto_bod.php?consultarProductoId`;
-    //   return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto, id_bodega: idBodega });
-    // }
+    consultarProductosJ(idProducto: number | null, idBodega: number | null): Observable<any[]> {
+      const url = `${this.API}producto_bod.php?consultarProductoId`;
+      return this.clienteHttp.post<any[]>(url, { id_pro_param: idProducto, id_bodega: idBodega });
+    }
 
 
 
-    // obtenerListaProduct(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
-    //   const url = `${this.API}producto_bod.php?consultarVentasPorFecha`;
-    //   const body = { gimnasioId: idGym, fechaInicioParam: dateInicio, fechaFinParam: dateFin };
-    //   return this.clienteHttp.post(url, body).pipe(
-    //     tap(dataResponse => {
-    //       this.saveDataToIndexedDB2(dataResponse);
-    //     }),
-    //     catchError(error => {
-    //       return this.getServiceDatos();
-    //     })
-    //   );
-    // }
+    obtenerListaProduct(dateInicio: any, dateFin: any, idGym: any): Observable<any> {
+      const url = `${this.API}producto_bod.php?consultarVentasPorFecha`;
+      const body = { gimnasioId: idGym, fechaInicioParam: dateInicio, fechaFinParam: dateFin };
+      return this.clienteHttp.post(url, body).pipe(
+        tap(dataResponse => {
+          this.saveDataToIndexedDB2(dataResponse);
+        }),
+        catchError(error => {
+          return this.getServiceDatos();
+        })
+      );
+    }
 
     private saveDataToIndexedDB2(data: any) {
       // Guarda los datos en IndexedDB
@@ -235,19 +235,19 @@ export class ProductoService {
 
 
     //Metodo utilizado para consultar productos(membresias) de un gimnasio
-    // consultarAllProducto(id: any): Observable<any[]> {
-    //   const data = { id_pro_param: id };
-    //   return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?getAllProductosMemb", data)
-    //     .pipe(
-    //       tap((nuevosProductos: any[]) => {
-    //         this.productoSubject.next(nuevosProductos);
-    //         this.saveDataToIndexedDB(nuevosProductos);
-    //       }),
-    //       catchError(error => {
-    //         return this.getServiceDatos2();
-    //       })
-    //     ) as Observable<any[]>; // Añadir una conversión de tipo
-    // }
+    consultarAllProducto(id: any): Observable<any[]> {
+      const data = { id_pro_param: id };
+      return this.clienteHttp.post<any[]>(this.API + "producto_bod.php?getAllProductosMemb", data)
+        .pipe(
+          tap((nuevosProductos: any[]) => {
+            this.productoSubject.next(nuevosProductos);
+            this.saveDataToIndexedDB(nuevosProductos);
+          }),
+          catchError(error => {
+            return this.getServiceDatos2();
+          })
+        ) as Observable<any[]>; // Añadir una conversión de tipo
+    }
 
     // REEMPLAZAR MEMBRESIAS POR PRODUCTOS
     // lista de productos(membresias) y productos de un gimnasio
