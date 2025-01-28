@@ -88,8 +88,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
       this.dataSource.paginator = this.paginator;
     }); */
     this.UserHIstorial(this.data.idCliente);
-    console.log('idCliente', this.data.idCliente);
-    console.log('data de lista mebresias:',this.data)
+   
 
   }
 
@@ -176,7 +175,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
   }
 
   borrarSucursal(id: any) {
-    console.log(id);
+   
     this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea eliminar la membresía de tu socio?`,
     })
@@ -221,21 +220,15 @@ export class EmergenteInfoClienteComponent implements OnInit{
         const agrupadosPorPedido = this.pagoService.agruparPorPedido(registrosConPedido);
 
         const ordenar= this.ordenar(agrupadosPorPedido);
-
-        console.log('Mirar el test para ordernar',ordenar)
-
-        // Asignamos los resultados a la variable de la tabla
-        this.membresiaHisto = ordenar;
-        console.log("membresiaHisto final (agrupados por pedido):", this.membresiaHisto);
-        // Actualizamos el DataSource de la tabla
         this.dataSource = new MatTableDataSource(this.membresiaHisto);
         this.dataSource.paginator = this.paginator;
       },
       (error: any) => {
-        console.error("Error al obtener activos:", error);
+      
       }
     );
-    console.log('executed');
+
+
   }
 
   
@@ -338,14 +331,14 @@ OpenRestablecer(empleados: any) {
     this.spinner.show();
 
     if (!this.form.valid) {
-      console.log("Formulario no válido");
+     
       this.toastr.error("El formulario contiene errores. Por favor, revísalo.");
       this.spinner.hide(); // Asegúrate de ocultar el spinner en este caso
       return;
     }
     this.generarContraseña(9);
 
-    console.log(this.form.value);
+
 
     const clienteData = {
       id_cliente: this.form.value.id_cliente,
@@ -359,13 +352,13 @@ OpenRestablecer(empleados: any) {
 
     this.pagoService.actualizaDatosCliente2(clienteData).subscribe({
       next: (resultData) => {
-        console.log(resultData);
+      
 
         if (resultData?.Estado === 1) {
-          console.log("Actualización exitosa");
+          
 
           if (resultData.Mensaje === 'Actualización de datos exitosa\nContraseña actualizada correctamente.') {
-            console.log("Enviando WhatsApp");
+     
             this.enviarMensajeWhatsApp(this.form.value.telefono, this.form.value.correo, this.form.value.password);
           }
 
@@ -381,12 +374,12 @@ OpenRestablecer(empleados: any) {
         } else {
           this.spinner.hide();
           this.toastr.error(resultData.Mensaje || 'Hubo un error al actualizar los datos.');
-          console.log("Error: " + resultData.Mensaje);
+          
         }
       },
       error: (error) => {
         this.spinner.hide();
-        console.error(error);
+        
 
         this.toastr.error('Ocurrió un error al procesar la solicitud. Por favor, intenta nuevamente.');
       },
@@ -459,4 +452,3 @@ generarContraseña(longitud: number): void {
     
 
   }
-

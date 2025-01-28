@@ -183,7 +183,7 @@ export class RegistroComponent implements OnInit {
 
   ngOnInit(): void {
     this.eventCommunicationService.eventTriggered$.subscribe(event => {
-      console.log('Evento recibido:', event); // Verificar recepción
+    
       this.buscarPersonal();
     });
 
@@ -238,26 +238,41 @@ export class RegistroComponent implements OnInit {
     const formulario = this.form.value;
 
   const puesto =this.isCustomerRegistration;
-    console.log('Puestoooo',puesto)
+
 
     if (puesto ) {
-console.log('Validaciones con cliente')
+//console.log('Validaciones con cliente')
 
-      // El correo no es obligatorio
-      emailControl?.clearValidators();
+
+      emailControl?.setValidators(
+        Validators.compose([
+          Validators.pattern(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+        ])
+      );
       emailControl?.updateValueAndValidity();
-
-      // La contraseña no es obligatoria y se desactiva
-      contraControl?.clearValidators();
-      //contraControl?.disable();
+    
+      // Configurar validación para el campo de contraseña
+      contraControl?.clearValidators(); // Si no hay una regla específica, puedes dejarlo vacío
       contraControl?.updateValueAndValidity();
-      this.mostrarContra = false;
-
-      telefonoControl?.clearValidators();
+      this.mostrarContra = true; // Mostrar el campo de contraseña si es necesario
+    
+      // Configurar validación para el campo de teléfono
+      telefonoControl?.setValidators(
+        Validators.compose([
+          Validators.pattern(/^(0|[1-9][0-9]*)$/)
+        ])
+      );
       telefonoControl?.updateValueAndValidity();
 
+            // La contraseña no es obligatoria y se desactiva
+            contraControl?.clearValidators();
+            //contraControl?.disable();
+            contraControl?.updateValueAndValidity();
+            this.mostrarContra = false;
+      
+
     } else {
-      console.log('Validaciones con cualquier otro')
+      //console.log('Validaciones con cualquier otro')
 
       // El correo es obligatorio
       emailControl?.setValidators([
@@ -400,14 +415,14 @@ console.log('Validaciones con cliente')
     // 2. Guardar el valor seteado en una constante
     const valorSeleccionado = this.form.get('puesto')?.value;
 
-    console.log('Valor seleccionado:', valorSeleccionado);
+    
 
     // 3. Buscar si el id corresponde al puesto de "Cliente"
     const esCliente = this.personalCompleto.some(personal => 
         personal.id_personal === valorSeleccionado && personal.usu === 'Cliente'
     );
 
-    console.log('Es cliente:', esCliente)
+   
 
     this.isCustomerRegistration = esCliente;
     this.actualizarValidaciones();
@@ -419,7 +434,7 @@ console.log('Validaciones con cliente')
   registrarUsuario() {
     if (this.form.valid){
       const formulario = this.form.value;
-      console.log("datos: ",formulario);
+   
 
       const direccionCompleta = `${this.form.get("calle")?.value} ${this.form.get("numExterno")?.value ? "Ext. " + this.form.get("numExterno")?.value: ""}, ${this.form.get("numInter")?.value ? "Int. " + this.form.get("numInter")?.value : ""}, ${this.form.get("colonia")?.value}, ${this.form.get("ciudad")?.value}, ${this.form.get("estado")?.value}, CP ${this.form.get("codigoPostal")?.value}`;
       const nombreCompleto = `${this.form.get("nombreU")?.value} ${this.form.get("apPaterno")?.value} ${this.form.get("apMaterno")?.value}`;
@@ -431,7 +446,7 @@ console.log('Validaciones con cliente')
 // Determinar si se esta regustrando un cliente o un empleadoa
      const isCustomerRegistration=this.onPuestoSeleccionado(formulario.puesto);
       if (isCustomerRegistration){
-        console.log("PASA CLIENTE");
+   
 
         this.password = this.generarContraseña(9);
         this.form.patchValue({
@@ -442,12 +457,11 @@ console.log('Validaciones con cliente')
           fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png',
         });
 
-        console.log("DATOS: ",this.form.value);
+  
 
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
-            console.log('Enviando peticion');
-            console.log('VER valores enviados',this.form.value)
+      
             if (resultData.success == 0) {
               this.toastr.error(resultData.message, 'Error!!!');
               this.spinner.hide();
@@ -455,7 +469,7 @@ console.log('Validaciones con cliente')
               this.dialogo.close(true)
               this.spinner.hide();
               this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
-              console.log('va a home');
+       
               this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
             if (cerrarDialogo) {
               this.router.navigateByUrl(`/listaMembresias`);
@@ -481,7 +495,7 @@ console.log('Validaciones con cliente')
 
 
       } else {
-        console.log("No es cliente");
+   
         const datos2 = {
           clave: formulario.id,
           nombre:nombreCompleto,
@@ -569,7 +583,7 @@ console.log('Validaciones con cliente')
         if (response && response.length > 0) {
           response.forEach((resultado: any) => {
             this.asentamientosUnicos.add(resultado.asentamiento);
-            console.log(response)
+            //console.log(response)
           });
         } else {
         }
@@ -611,7 +625,7 @@ console.log('Validaciones con cliente')
   
       this.usuario.getPersonal().subscribe({
         next: (respuesta) => {
-          console.log("Personalllll: ", respuesta);
+      
           this.personalCompleto = respuesta; // Guardar toda la respuesta de la API
           this.esClienteDisponible();
           this.preseleccionarRolSiEsRecepcionista();
@@ -633,10 +647,10 @@ console.log('Validaciones con cliente')
 
       dialogRef.afterClosed().subscribe((resultado) => {
         if (resultado) {
-          console.log('El rol fue creado con éxito.');
+         
           // Aquí puedes refrescar tu lista de roles, si es necesario
         } else {
-          console.log('El usuario canceló la creación del rol.');
+         // console.log('El usuario canceló la creación del rol.');
         }
       });
     }

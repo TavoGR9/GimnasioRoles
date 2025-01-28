@@ -13,7 +13,7 @@ export class EventCommunicationServiceService {
 
   // Método para emitir eventos
   triggerEvent(modalId: string, data?: any) {
-    console.log(`Evento emitido por: ${modalId}`, data); // Log para depuración
+    //console.log(`Evento emitido por: ${modalId}`, data); // Log para depuración
     this.eventSubject.next({ modalId, data });
   }
 }

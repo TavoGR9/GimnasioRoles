@@ -8,6 +8,8 @@ import { IndexedDBService } from './indexed-db.service';
 import { catchError, tap } from 'rxjs/operators';
 import { forkJoin,of  } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -51,9 +53,8 @@ export class PagoMembresiaEfectivoService {
         this.saveDataToIndexedDB2(dataResponse);
       }),
       catchError(error => {
-        console.log('Error en API:', error.message || error);
-        console.log('Código de estado:', error.status);
-        console.log('Cargando datos desde IndexedDB debido a error en API:', error);
+   
+        // console.log('Cargando datos desde IndexedDB debido a error en API:', error);
         return this.getServiceDatos();
 
         /*const resultData = { success: '2' }; // Objeto que indica éxito
@@ -76,7 +77,7 @@ export class PagoMembresiaEfectivoService {
   private saveDataToIndexedDB2(data: any) {
     // Guarda los datos en IndexedDB
     this.indexedDBService.saveObtenerActivosData('ObtenerActivos', data);
-    console.log("Datos obtenidos")
+    //console.log("Datos obtenidos")
   }
 
   getServiceDatos() {
@@ -140,7 +141,7 @@ export class PagoMembresiaEfectivoService {
     return this.clienteHttp.get(this.API+"getProductosGym.php?id_bodega=", { params }).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB(dataResponse);
-        console.log('params',params)
+       // console.log('params',params)
       }),
       catchError(error => {
         return this.getDataFromIndexedDB();
@@ -320,7 +321,7 @@ deleteMembresia(id: any): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
-console.log("datos emnviado en servico",data);
+///console.log("datos emnviado en servico",data);
     return this.clienteHttp.post<any>(this.API+"Pago_Membresias_Efectivo2.php", JSON.stringify(data), { headers });
   }
 
