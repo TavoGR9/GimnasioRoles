@@ -114,10 +114,9 @@ export class CrearRolComponent implements OnInit {
 
   closeDialog(): void {
     const modalId = 'Crear Rol Component'; // Identificador único del modal
-    
     this.eventCommunicationService.triggerEvent(modalId); // Emitir evento
     this.dialogRef.close(true); // Cerrar modal
   }
-  
+
 
 }

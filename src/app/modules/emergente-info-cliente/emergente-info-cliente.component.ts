@@ -12,6 +12,11 @@ import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.c
 import { AuthService } from '../../service/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { RestablecerContraComponent } from '../restablecer-contra/restablecer-contra.component';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desactivar.component";
+
+import { ColaboradorService } from './../../service/colaborador.service';
+
 
 
 
@@ -45,6 +50,13 @@ export class EmergenteInfoClienteComponent implements OnInit{
   ];
   membresiaHisto: any;
   item: any;
+
+  isActive: boolean = true;
+  mostrarEstatus: boolean = true;
+  mostrarRestablecer: boolean = true;
+
+
+
   @ViewChild('paginatorHistorialMembre', { static: true }) paginator!: MatPaginator;
   form: FormGroup;
 
@@ -54,6 +66,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     private toastr: ToastrService,
     private auth: AuthService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
+    private http: ColaboradorService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
       const sanitizeValue = (value: any): string => {
@@ -78,6 +91,13 @@ export class EmergenteInfoClienteComponent implements OnInit{
   }
 
   ngOnInit() {
+    const dato = this.auth.idUser.getValue();
+    const dato2 = Number(this.data.idCliente);
+    const rol = this.data.rol;
+
+    this.mostrarEstatus = dato !== dato2 && !this.isRecep() && rol !== 'Cliente';
+    this.mostrarRestablecer = !this.isRecep() && rol !== 'Cliente';
+
     this.duracion = this.data.duracion + ' ' + 'días';
     this.photo = this.formatUrl(this.data.foto);
     this.huella = this.data.huella;
@@ -88,7 +108,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
       this.dataSource.paginator = this.paginator;
     }); */
     this.UserHIstorial(this.data.idCliente);
-   
+
+
 
   }
 
@@ -106,7 +127,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
 
 
-  duracionCalculo2(fechaInicio: string, fechaFin: string) { 
+  duracionCalculo2(fechaInicio: string, fechaFin: string) {
     const fechaInicial = new Date(fechaInicio); // Fecha de inicio proporcionada
     const fechaFinal = new Date(fechaFin);     // Fecha de fin proporcionada
     const hoy = new Date();                    // Fecha actual
@@ -156,7 +177,6 @@ export class EmergenteInfoClienteComponent implements OnInit{
     });
   }
 
-  //Se usa para acceder al puerto serial sin ebargo se quito de este componetne 
   abrirPuertoSerial(data: any): void {
     this.dialogo.close(true);
     this.dialog.open(EmergenteAperturaPuertoSerialComponent, {
@@ -175,7 +195,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
   }
 
   borrarSucursal(id: any) {
-   
+
     this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea eliminar la membresía de tu socio?`,
     })
@@ -224,94 +244,15 @@ export class EmergenteInfoClienteComponent implements OnInit{
         this.dataSource.paginator = this.paginator;
       },
       (error: any) => {
-      
+
       }
     );
 
 
   }
 
-  
-// Función para agrupar por pedido se paso "pago-membresia-efectivo"en toeria es lo mimso se puede borrar
-/*
-agruparPorPedido(clientes: any[]): any[] {
-  const agrupadosPorPedido: { [key: string]: any } = {};
-
-  clientes.forEach(cliente => {
-    const idPedido = cliente.id_pedido;
-
-    if (!agrupadosPorPedido[idPedido]) {
-      agrupadosPorPedido[idPedido] = {
-        clave: cliente.clave,
-        estafeta: cliente.estafeta,
-        telefono: cliente.telefono,
-        fotoUrl: cliente.fotoUrl,
-        Correo: cliente.Correo,
-        nombreCompleto: cliente.nombreCompleto,
-        fechaRegistro: cliente.fechaRegistro,
-        huella: cliente.huella,
-        precioPedido: cliente.precioPedido,
-        total: cliente.total,
-        membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-        correoCliente: cliente.correoCliente,
-        id_pedido: cliente.id_pedido,
-        fecha_hora_pedido: cliente.fecha_hora_pedido,
-        id_bodega: cliente.id_bodega,
-        precioCompra: cliente.precioCompra,
-        conteoPedidos: cliente.conteoPedidos, // Inicia con el valor del primer producto
-        estatus: cliente.estatus, // Inicia con el valor del primer producto
-        fecha_inicio: cliente.fecha_inicio,
-        fecha_caducidad: cliente.fecha_caducidad, // Inicialmente tomamos la fecha
-        idPromocion: cliente.idPromocion,
-        nombrePromocion: cliente.nombrePromocion,
-        productos: [] // Inicializamos un array vacío para los productos
-      };
-    }
-
-    // Agregamos la información del producto al array productos correspondiente
-    agrupadosPorPedido[idPedido].productos.push({
-      id_producto: cliente.id_producto,
-      marca: cliente.marca,
-      nombreProducto: cliente.nombreProducto,
-      idProbob: cliente.idProbob,
-      estatus: cliente.estatus,
-      fecha_inicio: cliente.fecha_inicio,
-      fecha_caducidad: cliente.fecha_caducidad,
-      conteoPedidos: cliente.conteoPedidos
-    });
-
-    // Cambiar el valor de conteoPedidos si algún producto tiene conteoPedidos = 1
-    if (cliente.conteoPedidos === 1) {
-      agrupadosPorPedido[idPedido].conteoPedidos = 1;
-    }
-
-    // Cambiar el valor de estatus si algún producto tiene estatus = '1'
-    if (cliente.estatus === '1') {
-      agrupadosPorPedido[idPedido].estatus = '1';
-    }
-
-    // Comparar las fechas de caducidad para actualizar el valor más alto
-    const fechaCliente = new Date(cliente.fecha_caducidad);
-    if (!isNaN(fechaCliente.getTime())) {
-      const fechaMaxima = new Date(agrupadosPorPedido[idPedido].fecha_caducidad);
-      if (!isNaN(fechaMaxima.getTime()) && fechaCliente > fechaMaxima) {
-        agrupadosPorPedido[idPedido].fecha_caducidad = cliente.fecha_caducidad;
-      }
-    }
-  });
-
-  // Convertimos el objeto agrupado en un array
-  return Object.values(agrupadosPorPedido);
-}
-
-*/
 
 OpenRestablecer(empleados: any) {
-        if (!empleados || !empleados.id_empleado) {
-          console.error("El objeto empleados no contiene id_empleado:", empleados);
-          return;
-        }
-
         const dialogConfig = new MatDialogConfig();
         dialogConfig.width = '70%';
         dialogConfig.disableClose = true;
@@ -324,14 +265,41 @@ OpenRestablecer(empleados: any) {
           });
       }
 
-      
+      onToggle(event: MatSlideToggleChange, idEmpleado: number): void {
+        if (!event.checked) {
+          const nuevoEstatus = 2;
+
+          const mensaje = '¿Deseas desactivar este usuario? Ten en cuenta que, si lo desactivas, no podrás volver a activarlo.';
+
+          const dialogRef = this.dialog.open(MensajeDesactivarComponent, {
+            data: { mensaje: mensaje, idEmpleado: idEmpleado },
+          });
+
+          console.log(`ID: ${idEmpleado}, Nuevo estatus: ${nuevoEstatus}`);
+
+          dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+              this.http.actualizarEstatus(Number(idEmpleado), nuevoEstatus).subscribe((response) => {
+                this.cerrarDialogo();
+              });
+            } else {
+              // Si cancela, restablecer el toggle a true
+              event.source.checked = true;
+            }
+          });
+        } else {
+          //console.log('El estatus no ha sido cambiado a 0 ya que el toggle está activado.');
+        }
+      }
+
+
 
   actualizarCliente2(): void {
 
     this.spinner.show();
 
     if (!this.form.valid) {
-     
+
       this.toastr.error("El formulario contiene errores. Por favor, revísalo.");
       this.spinner.hide(); // Asegúrate de ocultar el spinner en este caso
       return;
@@ -352,13 +320,13 @@ OpenRestablecer(empleados: any) {
 
     this.pagoService.actualizaDatosCliente2(clienteData).subscribe({
       next: (resultData) => {
-      
+
 
         if (resultData?.Estado === 1) {
-          
+
 
           if (resultData.Mensaje === 'Actualización de datos exitosa\nContraseña actualizada correctamente.') {
-     
+
             this.enviarMensajeWhatsApp(this.form.value.telefono, this.form.value.correo, this.form.value.password);
           }
 
@@ -374,12 +342,12 @@ OpenRestablecer(empleados: any) {
         } else {
           this.spinner.hide();
           this.toastr.error(resultData.Mensaje || 'Hubo un error al actualizar los datos.');
-          
+
         }
       },
       error: (error) => {
         this.spinner.hide();
-        
+
 
         this.toastr.error('Ocurrió un error al procesar la solicitud. Por favor, intenta nuevamente.');
       },
@@ -429,7 +397,7 @@ generarContraseña(longitud: number): void {
         // Si no es una URL completa, concatenarla con la base
         return this.imgBase + foto;
       }
-   
+
     }
 
     ordenar(array: any[]) {
@@ -437,18 +405,19 @@ generarContraseña(longitud: number): void {
         // Condición 1: estatus 1 y conteoPedidos 1 primero
         if (a.estatus === '1' && a.conteoPedidos === 1) return -1;
         if (b.estatus === '1' && b.conteoPedidos === 1) return 1;
-  
+
         // Condición 2: Solo estatus 1, ordenar por fecha_hora_pedido ascendente
         if (a.estatus === '1' && b.estatus === '1') {
           return new Date(a.fecha_hora_pedido).getTime() - new Date(b.fecha_hora_pedido).getTime();
         }
-  
+
         // Condición 3: Los demás, ordenar por fecha_hora_pedido descendente
         return new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime();
       });
     }
 
 
-    
+
+
 
   }

@@ -13,7 +13,6 @@ import { Inventario } from "../../models/inventario";
 import { ToastrService } from "ngx-toastr";
 import { switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { membresia } from '../../models/membresia';
 
 @Component({
   selector: "app-membresias-editar",
@@ -48,7 +47,6 @@ export class planEditarComponent {
     this.formulariodePlan = this.formulario.group(
       {
         id_promocion:["", Validators.required],
-        //status: ["", Validators.required],
         titulo: ["", Validators.required],
         fechaInicio: ["", Validators.required],
         fechaFin: ["", Validators.required],
@@ -122,24 +120,9 @@ export class planEditarComponent {
         let fechaDate2 = new Date(this.servicios[0].FechaFin + ' 0:00:00');
         this.formulariodePlan.controls['fechaFin'].setValue(fechaDate2);
 
-        console.log("DATOS EN EL FORMULARIO: ",this.servicios);
-        this.ngOnChanges();
     });
 
   }
-
-    ngOnChanges() {
-    console.log('Modo actual:', this.paquete === 1 ? 'Múltiple' : 'Único');
-    console.log('Valor de membresias:', this.formulariodePlan.value.membresias);
-
-    console.log('Valor de paquete:', this.paquete);
-    console.log('Tipo de membresias:', Array.isArray(this.formulariodePlan.value.membresias) ? 'Array (Múltiple)' : 'Objeto (Único)');
-    console.log('Contenido de membresias:', this.formulariodePlan.value.membresias);
-
-  }
-
-
-
 
 ///ACRUALIZAR LOS PLANES
 actualizar() {

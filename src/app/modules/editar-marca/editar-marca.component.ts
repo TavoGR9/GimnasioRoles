@@ -53,8 +53,6 @@ export class EditarMarcaComponent {
       this.categoriaService.getMarcaService2(this.idMarca).subscribe((res) => {
         if (res.success === 1 && res.data) {
           this.marca = res.data[0];
-          // console.log('Datos de la marca recibidos:', this.marca);
-
           // Llenar el formulario con los datos de la marca
           this.serviceForm.patchValue({
             id_marcas: this.marca.id_marcas,
@@ -93,12 +91,12 @@ export class EditarMarcaComponent {
         });
       } else {
         this.message = res.message || "Error al actualizar la marca.";
-        console.error("Error en la actualización", res);
+        //console.error("Error en la actualización", res);
       }
     }, (error) => {
       this.spinner.hide();
       this.message = "Error en la conexión al servidor.";
-      console.error("Error al actualizar la marca:", error);
+      //console.error("Error al actualizar la marca:", error);
     });
   }
 

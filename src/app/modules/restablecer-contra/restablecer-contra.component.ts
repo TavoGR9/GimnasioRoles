@@ -35,10 +35,6 @@ export class RestablecerContraComponent {
   }
 
   ngOnInit(): void {
-    //console.log("Datos recibidos en el modal:", this.data);
-    if (!this.data?.id_empleado) {
-      console.error("ID del empleado no está disponible en los datos:", this.data);
-    }
   }
 
   passwordMatchValidator(formGroup: FormGroup): void {
@@ -61,7 +57,8 @@ export class RestablecerContraComponent {
 
   onSubmit(): void {
     if (this.resetPasswordForm.valid) {
-      const idempleado = this.data?.id_empleado; // Verifica que id_empleado esté disponible
+      const idempleado = this.data; // Verifica que id_empleado esté disponible
+      console.log(idempleado);
       if (!idempleado) {
         console.error("ID del empleado no está disponible en los datos proporcionados al modal.");
         return;

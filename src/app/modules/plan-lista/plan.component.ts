@@ -109,7 +109,7 @@ export class planComponent implements OnInit, AfterViewInit  {
         this.loadData();
 
       } else {
-        console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
+        //console.error('La propiedad "data" no es un array o no está presente en la respuesta del servicio.');
       }
     } else {
       console.error('Error en respuesta success:', respuesta.success);
@@ -126,7 +126,7 @@ export class planComponent implements OnInit, AfterViewInit  {
 
 
       catchError(error => {
-        console.error('Error en la llamada HTTP:', error);
+        //console.error('Error en la llamada HTTP:', error);
         return of(null);//evita que el observable falle
       })
     ).subscribe();
@@ -232,11 +232,11 @@ export class planComponent implements OnInit, AfterViewInit  {
       tap(respuesta => this.actualizaLista(respuesta, true)), //Manejamos la respuesta y llamamos a el porcedimiento de cargar la lista
 
       catchError(error => {
-        console.error("Error al cargar la lista de planes:", error);
+        //console.error("Error al cargar la lista de planes:", error);
         this.toastr.error("Ocurrió un error al actualizar los planes.", "Error");
         return of(null); // Devuelve un observable vacío para continuar
       }),
-      finalize(() => console.log("Se actualizo el plan correctamente"))
+      //finalize(() => console.log("Se actualizo el plan correctamente"))
 
     ).subscribe();
 
@@ -262,11 +262,11 @@ export class planComponent implements OnInit, AfterViewInit  {
         }
       }),
       catchError((error) => {
-        console.error("Error al eliminar el plan: ", error);
+        //console.error("Error al eliminar el plan: ", error);
         this.toastr.error("Ocurrió un error al eliminar el plan.", "Error");
         return of(null);//Evita que el observable falle
       }),
-      finalize(() => console.log("Proceso de eliminación finalizado."))
+     // finalize(() => console.log("Proceso de eliminación finalizado."))
     ).subscribe();
 
   }

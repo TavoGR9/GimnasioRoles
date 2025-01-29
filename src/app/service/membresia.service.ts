@@ -13,34 +13,13 @@ export class MembresiaService {
   isConnected: boolean = true;
   private datosPlan: any;
   data: any = {};
-
-  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  //API: string = 'http://localhost/serviciosGimnasio/';
-
-  // API: string = 'http://localhost/gimnasioServicios/';
   API: string = 'http://localhost/serviciosGym/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  // APIv3: string = 'http://localhost/olimpusGym/conf/';
-  // API: String = '';
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
   }
 
-  // comprobar(){
-  //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
-  //     this.isConnected = isConnected;
-  //     if (isConnected) {
-  //       //console.log("La red WiFi tiene acceso a Internet.");
-  //       this.API = this.APIv2;
-  //     } else {
-  //       //console.log("La red WiFi no tiene acceso a Internet.");
-  //       this.API = this.APIv3;
-  //     }
-  //   });
-  // }
-
-  /////////////////////************************Membresia */
 
   private saveDataToIndexedDBM(data: any) {
     this.indexedDBService.saveAgregarMembresiaData('AgregarMembresia', data);

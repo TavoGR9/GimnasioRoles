@@ -80,8 +80,8 @@ export class RegistroComponent implements OnInit {
   filteredPersonal: string[] = [];
   personal: string[] = [];
   personalCompleto: any[] = []; // Para guardar toda la respuesta de la API
- 
-  
+
+
 
 
   //Contraseña
@@ -183,7 +183,6 @@ export class RegistroComponent implements OnInit {
 
   ngOnInit(): void {
     this.eventCommunicationService.eventTriggered$.subscribe(event => {
-    
       this.buscarPersonal();
     });
 
@@ -230,7 +229,7 @@ export class RegistroComponent implements OnInit {
 
 
   actualizarValidaciones(): void {
- 
+
     const emailControl = this.form.get('email');
     const contraControl = this.form.get('pass');
     const telefonoControl = this.form.get('fon');
@@ -241,8 +240,6 @@ export class RegistroComponent implements OnInit {
 
 
     if (puesto ) {
-//console.log('Validaciones con cliente')
-
 
       emailControl?.setValidators(
         Validators.compose([
@@ -250,12 +247,12 @@ export class RegistroComponent implements OnInit {
         ])
       );
       emailControl?.updateValueAndValidity();
-    
+
       // Configurar validación para el campo de contraseña
       contraControl?.clearValidators(); // Si no hay una regla específica, puedes dejarlo vacío
       contraControl?.updateValueAndValidity();
       this.mostrarContra = true; // Mostrar el campo de contraseña si es necesario
-    
+
       // Configurar validación para el campo de teléfono
       telefonoControl?.setValidators(
         Validators.compose([
@@ -269,10 +266,9 @@ export class RegistroComponent implements OnInit {
             //contraControl?.disable();
             contraControl?.updateValueAndValidity();
             this.mostrarContra = false;
-      
+
 
     } else {
-      //console.log('Validaciones con cualquier otro')
 
       // El correo es obligatorio
       emailControl?.setValidators([
@@ -411,30 +407,26 @@ export class RegistroComponent implements OnInit {
     // 1. Setear el valor del id en el formulario
     this.form.get('puesto')?.setValue(id);
 
-  
+
     // 2. Guardar el valor seteado en una constante
     const valorSeleccionado = this.form.get('puesto')?.value;
 
-    
-
     // 3. Buscar si el id corresponde al puesto de "Cliente"
-    const esCliente = this.personalCompleto.some(personal => 
+    const esCliente = this.personalCompleto.some(personal =>
         personal.id_personal === valorSeleccionado && personal.usu === 'Cliente'
     );
-
-   
 
     this.isCustomerRegistration = esCliente;
     this.actualizarValidaciones();
     // 4. Retornar si coincide con el puesto "Cliente"
     return esCliente;
-    
+
 }
 
   registrarUsuario() {
     if (this.form.valid){
       const formulario = this.form.value;
-   
+
 
       const direccionCompleta = `${this.form.get("calle")?.value} ${this.form.get("numExterno")?.value ? "Ext. " + this.form.get("numExterno")?.value: ""}, ${this.form.get("numInter")?.value ? "Int. " + this.form.get("numInter")?.value : ""}, ${this.form.get("colonia")?.value}, ${this.form.get("ciudad")?.value}, ${this.form.get("estado")?.value}, CP ${this.form.get("codigoPostal")?.value}`;
       const nombreCompleto = `${this.form.get("nombreU")?.value} ${this.form.get("apPaterno")?.value} ${this.form.get("apMaterno")?.value}`;
@@ -442,11 +434,10 @@ export class RegistroComponent implements OnInit {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.disableClose = true;
       dialogConfig.data = 'Registro agregado correctamente.';
-      
+
 // Determinar si se esta regustrando un cliente o un empleadoa
      const isCustomerRegistration=this.onPuestoSeleccionado(formulario.puesto);
       if (isCustomerRegistration){
-   
 
         this.password = this.generarContraseña(9);
         this.form.patchValue({
@@ -457,11 +448,11 @@ export class RegistroComponent implements OnInit {
           fotoUrl: this.form.get("fotoUrl")?.value || 'https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png',
         });
 
-  
+
 
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
-      
+
             if (resultData.success == 0) {
               this.toastr.error(resultData.message, 'Error!!!');
               this.spinner.hide();
@@ -469,7 +460,7 @@ export class RegistroComponent implements OnInit {
               this.dialogo.close(true)
               this.spinner.hide();
               this.enviarMensajeWhatsApp(this.form.value.fon, this.form.value.email, this.password);
-       
+
               this.dialog.open(MensajeEmergentesComponent, dialogConfig).afterClosed().subscribe((cerrarDialogo: boolean) => {
             if (cerrarDialogo) {
               this.router.navigateByUrl(`/listaMembresias`);
@@ -495,7 +486,7 @@ export class RegistroComponent implements OnInit {
 
 
       } else {
-   
+
         const datos2 = {
           clave: formulario.id,
           nombre:nombreCompleto,
@@ -610,7 +601,7 @@ export class RegistroComponent implements OnInit {
   esClienteDisponible(): boolean {
     // Verifica si la opción "Cliente" está disponible en personalCompleto
     return this.personalCompleto.some((p) => p.usu === 'Cliente');
-    
+
   }
 
 
@@ -621,22 +612,21 @@ export class RegistroComponent implements OnInit {
 
 
     buscarPersonal() {
-  
-  
+
+
       this.usuario.getPersonal().subscribe({
         next: (respuesta) => {
-      
           this.personalCompleto = respuesta; // Guardar toda la respuesta de la API
           this.esClienteDisponible();
           this.preseleccionarRolSiEsRecepcionista();
-  
+
         },
         error: (error) => {
           console.error("Error al obtener el personal:", error);
         },
       });
     }
-  
+
 
 
     abrirModalCrearRol(): void {
@@ -647,7 +637,7 @@ export class RegistroComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe((resultado) => {
         if (resultado) {
-         
+
           // Aquí puedes refrescar tu lista de roles, si es necesario
         } else {
          // console.log('El usuario canceló la creación del rol.');
@@ -660,7 +650,7 @@ export class RegistroComponent implements OnInit {
     if (this.isRecepcion()) {
       // Filtra las opciones para que solo aparezca "Cliente"
       this.personalCompleto = this.personalCompleto.filter((p) => p.usu === 'Cliente');
-  
+
       // Preselecciona el rol "Cliente" si existe
       const cliente = this.personalCompleto.find((p) => p.usu === 'Cliente');
       if (cliente) {
