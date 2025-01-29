@@ -17,8 +17,9 @@ export class ClienteService {
   URL: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/formaPago.php/";
   //apiFoto: string = "https://olympus.arvispace.com/gimnasioRoles/configuracion/recepcion/update_image.php";
   //apiFoto: string = "https://olympus.arvispace.com/olimpusGym/conf/";
-  // apiFoto: string = "http://localhost/serviciosGym/";
-  apiFoto: string = 'http://localhost/gimnasioServicios/'
+
+  // apiFoto: string = "http://localhost/gimnasioServicios/";
+  apiFoto: string = 'http://localhost/serviciosGym/';
 
 
   constructor(private clienteHttp:HttpClient) {

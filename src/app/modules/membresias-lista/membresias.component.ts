@@ -203,7 +203,7 @@ export class MembresiasComponent implements OnInit {
       // console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
 
       //this.productos = resultData
-      this.productos = resultData.filter((producto: any) => producto.nombreCategoria.toLowerCase() === 'servicios' && producto.id_bodega == this.idGym);
+      this.productos = resultData.filter((producto: any) => producto.membresia === '1' && producto.id_bodega == this.idGym);
       this.dataSourceDos = new MatTableDataSource(this.productos);
       // console.log('Lista de productos: ', this.productos);
       // console.log('Datos de la lista de productos: ', this.dataSourceDos);
