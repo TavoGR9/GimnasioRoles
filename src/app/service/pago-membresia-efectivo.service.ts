@@ -19,8 +19,9 @@ export class PagoMembresiaEfectivoService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
-  // API: string = 'http://localhost/serviciosGym/';
-  API: string = 'http://localhost/gimnasioServicios/'
+
+  // API: string = 'http://localhost/gimnasioServicios/';
+  API: string = 'http://localhost/serviciosGym/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';

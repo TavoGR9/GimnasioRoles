@@ -77,7 +77,7 @@ export class ProductosComponent implements OnInit {
       //this.productos = resultData
       // console.log('Resultados: ', resultData);
 
-      this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.nombreCategoria !== 'Servicios' && producto.activo == 1);
+      this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.membresia !== '1' && producto.activo == 1);
 
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData();
