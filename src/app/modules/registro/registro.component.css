@@ -6,8 +6,8 @@
 img {
   margin-top: 20px;
   width: 100%;
-  max-width: 400px;
-  border: 2px solid #FD9727;
+  max-width: 500px;
+/*border: 2px solid #FD9727;*/
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

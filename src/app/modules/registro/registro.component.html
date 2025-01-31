@@ -26,7 +26,7 @@
                      <h2><strong> Sube tu foto.</strong></h2>
                      <input accept="image/*" type="file" name="image" class="d-none" (change)="onPhotoSelected($event)" #photoInput />
                      <img
-                       [src]="photoSelected || 'https://images.vexels.com/media/users/3/137047/isolated/lists/5831a17a290077c646a48c4db78a81bb-icono-de-perfil-de-usuario-azul.png'"
+                       [src]="photoSelected || 'assets/img/cliente.png'"
                        class="img-fluid"
                        alt="No image"
                        (click)="photoInput.click()"
