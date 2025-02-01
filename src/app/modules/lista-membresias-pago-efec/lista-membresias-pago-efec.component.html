@@ -10,13 +10,13 @@
 			<h2>LISTA DE CLIENTES Y PAGO DE MEMBRESÍA EN EFECTIVO</h2>
 			<div style="display: flex; justify-content: flex-end;">
 				<button
-				  mat-raised-button
+				  mat-flat-button
 
 				  style="background-color: #fd9727; font-size: 16px;"
 				  class="mat-button"
           (click)="AbrirRegistro()">
 				  <mat-icon>person</mat-icon>
-				  Registro
+				  REGISTRO
 				</button>
 
 			</div>
@@ -126,9 +126,6 @@
 					  'estatus-activo': prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0',
 					  'estatus-inactivo': prod.huella === null || prod.huella === 'null' || prod.huella === '0'
 					}">
-
-
-
 					<div *ngIf="prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0'; else noHuella">
 
 						<label >
