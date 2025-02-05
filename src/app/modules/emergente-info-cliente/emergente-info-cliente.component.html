@@ -66,16 +66,16 @@
        <div class="row" style="margin-top: 20px; display: flex; justify-content: space-between;">
   <!-- Botón Restablecer -->
   <div class="col-sm-6" *ngIf="mostrarRestablecer">
-    <button mat-raised-button (click)="OpenRestablecer(this.data.id_empleado)"
-      style="background-color:whitesmoke; font-size: 15px; height: 40px;">
-     Restablecer contraseña
+    <button mat-flat-button (click)="OpenRestablecer(this.data.id_empleado)"
+      style="background-color:whitesmoke; font-size: 13px; height: 40px;">
+     RESTABLECER CONTRASEÑA
     </button>
   </div>
 
   <!-- Botón Actualizar Información -->
   <div class="col-sm-6">
     <button mat-flat-button (click)="actualizarCliente2()"
-      style="background-color: #fd9727; font-size: 15px; height: 40px;">
+      style="background-color: #fd9727; font-size: 13px; height: 40px;">
       ACTUALIZAR INFORMACIÓN
     </button>
   </div>
