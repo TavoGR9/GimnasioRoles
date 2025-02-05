@@ -240,7 +240,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
         const agrupadosPorPedido = this.pagoService.agruparPorPedido(registrosConPedido);
 
         const ordenar= this.ordenar(agrupadosPorPedido);
-        this.dataSource = new MatTableDataSource(this.membresiaHisto);
+        this.dataSource = new MatTableDataSource(ordenar);
         this.dataSource.paginator = this.paginator;
       },
       (error: any) => {

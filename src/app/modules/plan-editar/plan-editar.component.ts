@@ -79,7 +79,7 @@ export class planEditarComponent {
 
         //Guardamos el id de paquete para usarlo despues
         this.paquete = Number(this.servicios[0]?.idChoProm || 0);
-        console.log("Estatus inicializado:", this.paquete);
+      //onsole.log("Estatus inicializado:", this.paquete);
 
 
         return this.productoService.obternerInventario(idGym);

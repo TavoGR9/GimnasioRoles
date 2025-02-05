@@ -10,7 +10,8 @@
   <br>
   <div class="row">
     <div class="col-sm-5">
-      <img [src]="photo" class="size_image" alt="Imagen del Cliente no disponible" style="width: 90%;">
+      <img [src]="photo"
+       class="size_image" alt="Imagen del Cliente no disponible" style="width: 90%;">
       <button mat-button (click)="abrirDialogFoto(data)" style="background-color: #000000; color: white;">
         <mat-icon>camera_alt</mat-icon> <!-- Icono de cámara -->
         Tomar Foto
@@ -18,15 +19,23 @@
     </div>
     <div class="col-sm-7">
       <form [formGroup]="form">
-        <!-- Clave y Teléfono -->
         <div class="row">
-          <div class="col-sm-4">
+          <div class="col-sm-1" *ngIf="mostrarEstatus">
+            <div style="display: flex; align-items: center;">
+              <mat-slide-toggle
+              color="primary"
+              [checked]="isActive"
+              (change)="onToggle($event, this.data.id_empleado)">
+              </mat-slide-toggle>
+            </div>
+          </div>
+          <div class="col-sm-5">
             <mat-form-field appearance="outline" class="formInputs" style="width: 90%;">
               <mat-label>Clave:</mat-label>
               <input id="estafeta" formControlName="estafeta" type="text" matInput autocomplete="off" placeholder="Clave" />
             </mat-form-field>
           </div>
-          <div class="col-sm-8">
+          <div class="col-sm-6">
             <mat-form-field appearance="outline" class="formInputs" style="width: 92%;">
               <mat-label>Teléfono:</mat-label>
               <input id="telefono" formControlName="telefono" type="text" matInput autocomplete="off" placeholder="Teléfono" />
@@ -53,38 +62,25 @@
             </mat-form-field>
           </div>
         </div>
-
-        <!-- Botones Estatus y Restablecer -->
-        <div class="row" style="margin-top: 20px;">
-          <div class="col-sm-6" *ngIf="mostrarEstatus">
-            <!-- Botón Estatus -->
-            <div style="display: flex; justify-content: center;">
-              <mat-slide-toggle
-              [checked]="isActive"
-              (change)="onToggle($event, this.data.id_empleado)">
-                Estatus
-              </mat-slide-toggle>
-            </div>
-          </div>
-
-          <div class="col-sm-6" *ngIf="mostrarRestablecer">
-            <!-- Botón Restablecer -->
-            <div style="display: flex; justify-content: center;">
-              <button mat-icon-button color="primary" (click)="OpenRestablecer(this.data.id_empleado)">
-                <mat-icon>lock_reset</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-
         <!-- Botón Actualizar Información -->
-        <div class="row" style="margin-top: 20px;">
-          <div class="col-sm-12">
-            <div style="display: flex; justify-content: center;">
-              <button mat-raised-button (click)="actualizarCliente2()" style="background-color: #fd9727; font-size: 15px; height: 40px;">Actualizar información</button>
-            </div>
-          </div>
-        </div>
+       <div class="row" style="margin-top: 20px; display: flex; justify-content: space-between;">
+  <!-- Botón Restablecer -->
+  <div class="col-sm-6" *ngIf="mostrarRestablecer">
+    <button mat-flat-button (click)="OpenRestablecer(this.data.id_empleado)"
+      style="background-color:whitesmoke; font-size: 13px; height: 40px;">
+     RESTABLECER CONTRASEÑA
+    </button>
+  </div>
+
+  <!-- Botón Actualizar Información -->
+  <div class="col-sm-6">
+    <button mat-flat-button (click)="actualizarCliente2()"
+      style="background-color: #fd9727; font-size: 13px; height: 40px;">
+      ACTUALIZAR INFORMACIÓN
+    </button>
+  </div>
+</div>
+
       </form>
     </div>
   </div>
