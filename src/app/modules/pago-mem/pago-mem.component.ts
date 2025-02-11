@@ -30,6 +30,7 @@ export class PagoMemComponent implements OnInit{
     'clave','nombre'
   ];
   isOnline = true;
+  isLoading: boolean = true;
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -38,26 +39,34 @@ export class PagoMemComponent implements OnInit{
   constructor(
     private pagoMem: PagoMembresiaEfectivoService,
     private datePipe: DatePipe,
-    private toastr: ToastrService, 
+    private toastr: ToastrService,
     private auth:AuthService,
     private networkService: NetworkService){
-      
+
       this.fechaInicio.setHours(0, 0, 0, 0);
-     
+
   }
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
     this.verTabla();
-    
-    
+
+
       // Suscribirse al estado de conexión
       this.networkService.isOnline$.subscribe((status) => {
         this.isOnline = status;
       });
 
-      
 
-    
+
+
+  }
+
+  loadData() {
+    setTimeout(() => {
+      this.dataSource = new MatTableDataSource(this.clienteActivo);
+      this.dataSource.paginator = this.paginator;
+      this.isLoading = false;
+    }, 1000);
   }
 
 
@@ -78,21 +87,21 @@ export class PagoMemComponent implements OnInit{
 
     this.pagoMem.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       (response: any) => {
-        
+
         //this.clienteActivo = response.data;
 
-       
-        const Clientes=response.data ;
-       
-        const filtrados= Clientes.filter((item: any) => item.conteoPedidos ==="1"|| item.conteoPedidos === null);
-        
-        this.clienteActivo=filtrados;
-        
 
-       
+        const Clientes=response.data ;
+
+        const filtrados= Clientes.filter((item: any) => item.conteoPedidos ==="1"|| item.conteoPedidos === null);
+
+        this.clienteActivo=filtrados;
+
+
+
         this.dataSource = new MatTableDataSource(this.clienteActivo);
-     
-        
+
+
       },
       (error: any) => {
         console.error("Error al obtener activos:", error);
@@ -107,15 +116,18 @@ export class PagoMemComponent implements OnInit{
 
   total(): void{  //sin valor de retorno
      this.totalVentas = this.calcularVentas();
+     console.log('total ventas',this.totalVentas)
   }
 
   calcularVentas(): number {
     // Obtén los datos del dataSource
     const datos = this.dataSource?.filteredData || this.dataSource?.data || [];
 
+    console.log('datos para fucnion',datos);
+
     // Reduce los datos para sumar los valores válidos de 'total'
     return datos.reduce((total, dato) => {
-        const precio = parseFloat(dato?.total ?? '0'); // Maneja casos donde dato.total es undefined
+        const precio = parseFloat(dato?.precioPedido ?? '0'); // Maneja casos donde dato.total es undefined
         if (!isNaN(precio)) {
             return total + precio; // Suma el precio si es un número válido
         }
@@ -237,7 +249,7 @@ export class PagoMemComponent implements OnInit{
           console.error("Error al obtener los datos", error);
         }
       );
-  } 
+  }
 
   */
 
@@ -249,17 +261,17 @@ export class PagoMemComponent implements OnInit{
             // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
             const fechaInicio = this.fechaInicio
                 ? new Date(this.fechaInicio)
-                : new Date('2000-01-01'); // Fecha predeterminada 
+                : new Date('2000-01-01'); // Fecha predeterminada
             const fechaFin = this.fechaFin
                 ? new Date(this.fechaFin)
                 : new Date(); // Fecha predeterminada (hoy).
-                fechaFin.setHours(23, 59, 0); 
+                fechaFin.setHours(23, 59, 0);
 
             // Aseguramos que las fechas sean válidas antes de filtrar.
             const filtradosPorFecha = Clientes.filter((cliente: any) => {
                 const fechaPedido = new Date(cliente.fecha_hora_pedido);
                 return (
-                    fechaPedido >= fechaInicio && 
+                    fechaPedido >= fechaInicio &&
                     fechaPedido <= fechaFin
                 );
             });
@@ -279,18 +291,19 @@ export class PagoMemComponent implements OnInit{
 
             this.clienteActivo = agrupadosConPedidos;
 
-       
+
 
             // Actualizamos el DataSource de la tabla.
             this.dataSource = new MatTableDataSource(this.clienteActivo);
             this.dataSource.paginator = this.paginator;
+            this.loadData();
             this.total();
         },
         (error: any) => {
             console.error("Error al obtener activos:", error);
         }
     );
- 
+
 }
 
 
@@ -371,7 +384,7 @@ verificarCambios(): void {
 
 
 descargarExcel(): void {
-  
+
 
   // Obtener los datos de la tabla
   const datosTabla = this.dataSource.filteredData || this.dataSource.data;
@@ -379,7 +392,7 @@ descargarExcel(): void {
 
   // Verificar si hay datos para exportar
   if (!datosTabla || datosTabla.length === 0) {
-    
+
       this.toastr.error("No hay datos para exportar.", "Error!!!");
       return;
   }
@@ -407,7 +420,7 @@ descargarExcel(): void {
           "Creado por",
       ],
       ...datosTabla.map((cliente: any) => {
-       
+
           return [
               cliente.estafeta || "N/A",
               cliente.nombreCompleto || "N/A",
@@ -447,7 +460,7 @@ descargarExcel(): void {
 
   // Añadir la hoja de datos al libro
   XLSX.utils.book_append_sheet(workbook, hojaDatos, "Reporte");
- 
+
 
   // Escribir el libro en formato array
   const wbout = XLSX.write(workbook, {

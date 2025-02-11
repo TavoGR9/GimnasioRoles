@@ -92,14 +92,12 @@
             Registro
         </button>
 -->
-        <a href="{{url}}">
-        <button *ngIf="isAdmin() || isRecep()"  class="hover-orange transparent-button">
+        <button *ngIf="isAdmin() || isRecep()"  (click)="abrirTorniquete()" class="hover-orange transparent-button">
 
-            <mat-icon>person</mat-icon>
+          <mat-icon>person</mat-icon>
             Acceso manual
             <!--<a href="{{url}}"></a>-->
         </button>
-        </a>
 
         <button (click)="logoutBS()" class="hover-orange transparent-button">
             <mat-icon>power_settings_new</mat-icon>
