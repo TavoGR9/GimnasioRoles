@@ -120,6 +120,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   //fechaInicio: Date = new Date();
   //fechaFin: Date = new Date();
+  url: string = ``;
   fechaInicio: Date | null = null;
   fechaFin: Date | null = null;
   Clientes: any;
@@ -146,7 +147,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 // Suscribirse para ver si el modal de carga de fotos se ha cerrado
 
     this.eventCommunicationService.eventTriggered$.subscribe(event => {
-     
+
       this.actualizarDatos();
     });
 
@@ -173,7 +174,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
   // Suscribirse al estado de conexión
  this.networkService.isOnline$.subscribe((status) => {this.isOnline = status;
    });
-  
+
 
 
 
@@ -202,17 +203,18 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
 
   loadData() {
+    this.isLoading = true; // Mostrar el icono de carga
 
     setTimeout(() => {
+      this.listaClientesData3(); // Llamar a la función que obtiene los datos
 
-      this.isLoading = false;
-      this.listaClientesData3();
+      setTimeout(() => {
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
 
-
+        this.isLoading = false; // Ocultar el icono de carga solo cuando la tabla esté lista
+      }, 500); // Pequeño retraso para asegurar que los datos se procesen correctamente
     }, 1000);
-
-    this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-    this.dataSourceActivos.paginator = this.paginatorActivos;
   }
 
 
@@ -417,7 +419,7 @@ verificarCambios(): void {
           this.pagoService.deleteServiceUsuario(clave).subscribe({
             next: (respuesta) => {
               if (respuesta.success === 1) {
-            
+
                 this.toastr.success('Registro eliminado exitosamente', 'Éxito', {
                   positionClass: 'toast-bottom-left',
                 });
@@ -471,7 +473,7 @@ verificarCambios(): void {
 
 
     listaClientesData3(): void {
-   
+
       this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
         (response: any) => {
 
@@ -489,7 +491,7 @@ verificarCambios(): void {
           const Clientes =this.Clientes;
 
 
-       
+
 
           // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
           const fechaInicio = this.fechaInicio ? new Date(this.fechaInicio) : new Date('2000-01-01');
@@ -502,13 +504,13 @@ verificarCambios(): void {
             return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
           });
 
-        
+
 
           // Separar los clientes en dos grupos: con pedidos (id_pedido != null) y sin pedidos (id_pedido == null)
           const clientesConPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido != null);
           const clientesSinPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido == null);
 
-     
+
 
           // Agrupar los clientes con pedidos
           const pedidosAgrupados = this.pagoService.agruparPorPedido(clientesConPedidos);
@@ -533,7 +535,7 @@ verificarCambios(): void {
             return acc; // Retornamos el objeto acumulador.
           }, {});
 
-      
+
 
      ///////////////////// HASTA AQUI VA BIEN////////////////////////
 
@@ -558,7 +560,7 @@ verificarCambios(): void {
     };
   });
 
-  
+
 
 
 
@@ -628,10 +630,21 @@ verificarCambios(): void {
          this.toastr.error('Ocurrió un error al obtener los datos de los clientes', 'Error');
         }
       );
-   
+
   }
 
 
+  capturarHuella(clave: any): void {
+
+    this.url = `Finger://?idCliente=${clave}&idSucursal=${this.auth.idGym.getValue()}`;
+    if(this.url){
+      console.log('Abriendo URL: ',this.url);
+      console.log("Datos: ",clave);
+      window.location.href = this.url;
+    } else {
+      console.error('URL no esta definida.');
+    }
+  }
 
 
 

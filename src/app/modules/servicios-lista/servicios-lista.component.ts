@@ -48,8 +48,6 @@ export class ServiciosListaComponent implements OnInit{
     public dialog: MatDialog,
     private auth: AuthService,
     private ServiciosService: serviciosService,
-    private gimnasioService: GimnasioService,
-    private membresiaService: MembresiaService,
     private toastr: ToastrService,
     //REEMPLAZAR POR MARCAS
     private categoriaService: CategoriaService
@@ -64,6 +62,7 @@ export class ServiciosListaComponent implements OnInit{
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
+
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTablaMarca();
@@ -72,8 +71,10 @@ export class ServiciosListaComponent implements OnInit{
 
   loadData() {
     setTimeout(() => {
-      this.isLoading = false;
+      this.listaTablaMarca();
+      this.dataSourceDos = new MatTableDataSource(this.marcas);
       this.dataSourceDos.paginator = this.paginator;
+      this.isLoading = false;
     }, 1000);
   }
 
@@ -111,11 +112,13 @@ export class ServiciosListaComponent implements OnInit{
         this.dataSourceDos = new MatTableDataSource(this.marcas);
       }
       this.dataSourceDos.paginator = this.paginator;
-      this.isLoading = false;
+      this.loadData();
+      //this.isLoading = false;
     }, (error) => {
       this.marcas = [];
       this.dataSourceDos = new MatTableDataSource(this.marcas);
-      this.isLoading = false;
+      this.loadData();
+      //this.isLoading = false;
     });
   }
 

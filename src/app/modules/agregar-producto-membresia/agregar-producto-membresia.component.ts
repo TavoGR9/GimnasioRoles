@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, Inject } from "@angular/core";
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit, Inject } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from "@angular/forms";
 import { ErrorStateMatcher } from "@angular/material/core";
 import { DatePipe } from "@angular/common";
@@ -32,7 +32,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-agregar-producto-membresia',
   templateUrl: './agregar-producto-membresia.component.html',
   styleUrls: ['./agregar-producto-membresia.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  //changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe, MessageService],
 })
 export class AgregarProductoMembresiaComponent implements OnInit {
@@ -73,7 +73,8 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     private productoService: ProductoService,
     public dialog: MatDialog,
     private spinner: NgxSpinnerService,
-    private entradas: EntradasService
+    private entradas: EntradasService,
+    private cd: ChangeDetectorRef
   ) {
     this.fechaCreacion = this.obtenerFechaActual();
     this.form = this.fb.group({
@@ -147,6 +148,10 @@ export class AgregarProductoMembresiaComponent implements OnInit {
 
     this.buscarCategorias();
     this.buscarMarca();
+  }
+
+  ngAfterViewChecked() {
+    this.cd.detectChanges();
   }
 
   getSSdata(data: any) {

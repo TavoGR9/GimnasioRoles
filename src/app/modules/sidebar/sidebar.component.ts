@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
 import { SidebarService } from '../../service/sidebar.service';
@@ -8,6 +8,7 @@ import { RegistroComponent } from '../registro/registro.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { combineLatest } from 'rxjs';
 import { VentasComponent } from '../ventas/ventas.component';
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -24,7 +25,7 @@ export class SidebarComponent {
 
   private _mobileQueryListener: () => void;
 
-  constructor(private auth: AuthService, public dialog: MatDialog, private router: Router, private sidebarService: SidebarService,private mediaMatcher: MediaMatcher) {
+  constructor(private auth: AuthService, public dialog: MatDialog, private router: Router, private sidebarService: SidebarService,private mediaMatcher: MediaMatcher, private cdr: ChangeDetectorRef) {
 
     this.mobileQuery = mediaMatcher.matchMedia('(max-width: 900px)');
     this._mobileQueryListener = () => {
@@ -60,7 +61,8 @@ export class SidebarComponent {
         this.idGym = idGym;
         this.idUser = idUser;
         this.nombreGym = nombreGym;
-        this.url = `HuellaTorniquete://?idSucursal=${this.idGym}`;
+        this.url = `HuellaTorniquete://?id=${this.idGym}`;
+        this.cdr.detectChanges(); // Forzar la detección de cambios
       }
     });
   }
@@ -77,6 +79,15 @@ export class SidebarComponent {
           this.auth.encryptedMail.next(resultData.encryptedMail);
       }, error: (error) => { console.log(error); }
     });
+  }
+
+  abrirTorniquete() {
+    if (this.url) {
+      console.log('Abriendo URL:', this.url);
+      window.location.href = this.url;
+    } else {
+      console.error('URL no está definida.');
+    }
   }
 
   isAdmin(): boolean {

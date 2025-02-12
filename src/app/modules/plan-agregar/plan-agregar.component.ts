@@ -16,7 +16,7 @@ import { ProductoService } from "../../service/producto.service";
 
 import { Inventario } from "../../models/inventario";
 import { AgregarProductoMembresiaComponent } from '../agregar-producto-membresia/agregar-producto-membresia.component';
-import { plan } from '../../models/plan';
+
 
 @Component({
   selector: "app-membresias-agregar",

@@ -1,4 +1,11 @@
-<body>
+<div class="custom-spinner-container" *ngIf="isLoading">
+	<div class="custom-spinner">
+		<div class="spinner-circle"></div>
+		<div class="spinner-text">Cargando...</div>
+	</div>
+</div>
+
+<body *ngIf="!isLoading">
     <h1 style="margin-top: 65px;">PAGO MEMBRESÍA </h1>
     <div class="row">
         <div class="container">
@@ -10,7 +17,7 @@
                   <input matInput [matDatepicker]="pickerInicio"
                    [(ngModel)]="fechaInicio"
                    (ngModelChange)="verificarCambios()"
-                    readonly>  
+                    readonly>
                   <mat-hint>MM/DD/YYYY</mat-hint>
                   <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
                   <mat-datepicker #pickerInicio></mat-datepicker>
@@ -19,8 +26,8 @@
               <div class="col-sm-3">
                 <mat-form-field appearance="outline" style="width: 90%;">
                   <mat-label>Fecha Registro Fin</mat-label>
-                  <input matInput [matDatepicker]="pickerFin" 
-                  [(ngModel)]="fechaFin" 
+                  <input matInput [matDatepicker]="pickerFin"
+                  [(ngModel)]="fechaFin"
                   (ngModelChange)="verificarCambios()"
                   readonly>
                   <mat-hint>MM/DD/YYYY</mat-hint>
@@ -30,7 +37,7 @@
               </div>
             </div>
         </div>
-        
+
         <div style="display: flex; justify-content: flex-end;">
             <button class="mat-button" mat-button [matMenuTriggerFor]="menu">
                 <mat-icon style="font-size: 18px;">download</mat-icon>
@@ -39,12 +46,12 @@
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="descargarExcel()">.xlsx <mat-icon>grid_on</mat-icon></button>
             </mat-menu>
-        </div>   
+        </div>
         <br>
         <div class="total-ventas">
             <p class="total-label">Total: <strong style="margin-left: 20px;">{{ totalVentas | currency:'MXN':'symbol':'1.2-2' }}</strong></p>
         </div>
-         
+
 
         <br> <br><br> <br>
         <div class="table-container">
@@ -69,10 +76,10 @@
                     <th mat-header-cell *matHeaderCellDef> Fecha registro </th>
                     <td mat-cell *matCellDef="let empleados"> {{ empleados.fecha_hora_pedido | date:'dd/MM/yyyy' }} </td>
                 </ng-container>
-            
+
                 <tr mat-header-row *matHeaderRowDef="['clave','nombre','membresia','precio','fechaR']"></tr>
                 <tr mat-row *matRowDef="let row; columns: ['clave', 'nombre','membresia','precio','fechaR'];"></tr>
-            </table> 
+            </table>
             <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
         </div>
     </div>

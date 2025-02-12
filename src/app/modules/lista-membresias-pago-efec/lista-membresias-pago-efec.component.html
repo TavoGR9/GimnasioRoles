@@ -120,7 +120,7 @@
 				<ng-container *ngIf="column === 'Huella'">
 
 					<button
-					(click)="abrirPuertoSerial(prod.clave)"
+					(click)="capturarHuella(prod.clave)"
 					*ngIf="isAdmin() || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
 					[ngClass]="{
 					  'estatus-activo': prod.huella !== null && prod.huella !== 'null' && prod.huella !== '0',

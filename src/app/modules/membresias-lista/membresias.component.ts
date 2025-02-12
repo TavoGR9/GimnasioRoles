@@ -11,7 +11,6 @@ import { MembresiaService } from "../../service/membresia.service";
 // Reemplazar por productos
 import { ListaProductos } from "../../models/listaProductos";
 import { ProductoService } from "../../service/producto.service";
-import { CrearProductoComponent } from "../crearProducto/crearProducto.component";
 import { EditarProductoComponent } from "../editar-producto/editar-producto.component";
 import { AgregarProductoMembresiaComponent } from "../agregar-producto-membresia/agregar-producto-membresia.component";
 @Component({
@@ -93,8 +92,8 @@ export class MembresiasComponent implements OnInit {
 
   loadData() {
     setTimeout(() => {
-      this.isLoading = false;
       this.dataSourceDos.paginator = this.paginator;
+      this.isLoading = false;
     }, 1000);
   }
 
@@ -104,7 +103,7 @@ export class MembresiasComponent implements OnInit {
   }
 
   toggleCheckbox(idMem: number, status: number) {
-    const estadoOriginal = status;
+    //const estadoOriginal = status;
     const dialogRef = this.dialog.open(MensajeEliminarComponent, {
       data: `¿Desea cambiar el estatus de la categoría?`,
     });
