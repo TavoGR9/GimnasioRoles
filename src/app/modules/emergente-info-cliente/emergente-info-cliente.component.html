@@ -146,9 +146,9 @@
             {{ memCli.precioPedido | currency }}
           </ng-container>
           <ng-container *ngIf="column === 'Duración'">
-            <div *ngIf="duracionCalculo2(memCli.fecha_inicio,memCli.fecha_caducidad)">
+            <div *ngIf="MembershipDuration(memCli.fecha_inicio,memCli.fecha_caducidad)">
               <!-- Aquí puedes mostrar el resultado de la evaluación -->
-                {{duracionCalculo2(memCli.fecha_inicio,memCli.fecha_caducidad)}}
+                {{MembershipDuration(memCli.fecha_inicio,memCli.fecha_caducidad)}}
             </div>
 
           </ng-container>
