@@ -26,6 +26,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { Paginator } from './service/Paginator';
 
+import { DatePipe } from '@angular/common';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -72,8 +74,10 @@ import { Paginator } from './service/Paginator';
   providers: [
     {
       provide: MatPaginatorIntl,
-      useClass: Paginator
-    }
+      useClass: Paginator,
+    },
+    DatePipe,
+    MessageService
   ],
 
   bootstrap: [AppComponent]

@@ -9,11 +9,11 @@ select {
 }
 
 .input-date {
-    padding: 8px 12px; 
-    border: 1px solid #ccc; 
-    border-radius: 5px; 
-    font-size: 16px; 
-    margin-bottom: 10px; 
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
 }
 
 .mat-button {
@@ -29,14 +29,48 @@ select {
 .mat-form-field {
     width: 100%;
 }
-  
+
 .total-ventas {
     text-align: right; /* Alinea el contenido a la izquierda */
     margin-top: 20px;
 }
-  
+
 .total-label {
     font-size: 18px;
     color: #333; /* Color del texto */
     margin-bottom: 5px;
+}
+
+/*CARGANDO*/
+.custom-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.custom-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spinner-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #fd9727;
+  border-top: 4px solid transparent;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-text {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #000000;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
