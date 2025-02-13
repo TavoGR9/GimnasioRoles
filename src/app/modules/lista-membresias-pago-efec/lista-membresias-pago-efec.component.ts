@@ -134,7 +134,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private toastr: ToastrService,
     private auth: AuthService,
     private networkService: NetworkService,
-    private eventCommunicationService: EventCommunicationServiceService
+    private eventCommunicationService: EventCommunicationServiceService,
+    
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -201,23 +202,16 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     });
   }
 
-
-  loadData() {
+  async loadData() {
     this.isLoading = true; // Mostrar el icono de carga
-
-    setTimeout(() => {
-      this.listaClientesData3(); // Llamar a la función que obtiene los datos
-
-      setTimeout(() => {
-        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        this.dataSourceActivos.paginator = this.paginatorActivos;
-
-        this.isLoading = false; // Ocultar el icono de carga solo cuando la tabla esté lista
-      }, 500); // Pequeño retraso para asegurar que los datos se procesen correctamente
-    }, 1000);
+  
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simula la espera
+  
+    await this.listaClientesData3(); // Espera a que los datos se obtengan
+  
+    this.isLoading = false; // Ocultar el icono de carga solo cuando los datos estén listos
   }
-
-
+  
 
 
 verificarCambios(): void {
@@ -351,7 +345,7 @@ verificarCambios(): void {
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          this.listaClientesData3();
+          //this.listaClientesData3();
         }
       });
 
@@ -380,14 +374,14 @@ verificarCambios(): void {
     dialogRef.componentInstance.actualizarTablas.subscribe(
       (actualizar: boolean) => {
         if (actualizar) {
-          this.listaClientesData3();
+          //this.listaClientesData3();
         }
       }
     );
 
     dialogRef.afterClosed().subscribe((cancelDialog: boolean) => {
       if (cancelDialog) {
-        this.listaClientesData3();
+        //this.listaClientesData3();
       } else {
       }
     });
@@ -472,7 +466,7 @@ verificarCambios(): void {
   }
 
 
-    listaClientesData3(): void {
+   /* listaClientesData3(): void {
 
       this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
         (response: any) => {
@@ -489,7 +483,7 @@ verificarCambios(): void {
 
           // Obtenemos la lista completa de clientes desde la respuesta.
           const Clientes =this.Clientes;
-
+          const clientesSinPedidos = Clientes.filter((cliente: any) => cliente.id_pedido == null);
 
 
 
@@ -500,7 +494,7 @@ verificarCambios(): void {
 
           // Filtramos los clientes dentro del rango de fechas.
           const filtradosPorFecha = Clientes.filter((cliente: any) => {
-            const fechaRegistro = new Date(cliente.fechaRegistro);
+            const fechaRegistro = new Date(cliente.fecha_hora_pedido);
             return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
           });
 
@@ -508,7 +502,8 @@ verificarCambios(): void {
 
           // Separar los clientes en dos grupos: con pedidos (id_pedido != null) y sin pedidos (id_pedido == null)
           const clientesConPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido != null);
-          const clientesSinPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido == null);
+          //const clientesSinPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido == null);
+        
 
 
 
@@ -559,6 +554,8 @@ verificarCambios(): void {
       productos: []  // Campo 'productos' vacío
     };
   });
+    
+  console.log('Sin pedidos',clientesSinPedidosFiltrados)
 
 
 
@@ -634,6 +631,95 @@ verificarCambios(): void {
       );
 
   }
+*/
+
+listaClientesData3(): void {
+
+this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+  (response: any) => {
+    if (!response) return;
+
+    const respuestaApi = response.data;
+    this.Clientes = respuestaApi;
+    const Clientes = this.Clientes;
+
+    // ✅ 1. Obtener clientes con pedidos SIN aplicar filtro de fecha
+    const clientesConPedidosTotales = new Set(
+      Clientes.filter((cliente: any) => cliente.id_pedido != null)
+              .map((cliente: any) => cliente.clave) // Guardamos solo la clave
+    );
+
+    console.log("Clientes con pedidos en toda la API:", clientesConPedidosTotales);
+
+    // ✅ 2. Filtrar los clientes sin pedidos asegurándonos de que no tengan ningún pedido en la API
+    const clientesSinPedidos = Clientes
+      .filter((cliente: any) => !clientesConPedidosTotales.has(cliente.clave)) // Excluimos los clientes con pedidos en cualquier fecha
+      .map((cliente: any) => ({
+        ...cliente,
+        productos: [] // Añadimos productos vacío
+      }));
+
+    console.log("Clientes realmente sin pedidos:", clientesSinPedidos);
+
+    // ✅ 3. Filtrar los pedidos dentro del rango de fechas
+    const fechaInicio = this.fechaInicio ? new Date(this.fechaInicio) : new Date('2000-01-01');
+    const fechaFin = this.fechaFin ? new Date(this.fechaFin) : new Date();
+    fechaFin.setHours(23, 59, 0);
+
+    const pedidosFiltradosPorFecha = Clientes.filter((cliente: any) => {
+      if (!cliente.id_pedido) return false; // Si no tiene pedido, lo ignoramos aquí
+      const fechaRegistro = new Date(cliente.fecha_hora_pedido);
+      return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+    });
+
+    console.log("Pedidos dentro del rango de fecha:", pedidosFiltradosPorFecha);
+
+    // ✅ 4. Agrupar pedidos por usuario (misma lógica que tenías)
+    const pedidosAgrupados = this.pagoService.agruparPorPedido(pedidosFiltradosPorFecha);
+
+    const pedidosPorUsuario: Record<string, any[]> = pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
+      const identificador = item.clave;
+      const idPedido = item.id_pedido;
+      if (!acc[identificador]) acc[identificador] = [];
+      const existePedido = acc[identificador].some((pedido) => pedido.id_pedido === idPedido);
+      if (!existePedido) acc[identificador].push(item);
+      return acc;
+    }, {});
+
+    const pedidosCaducados = Object.values(pedidosPorUsuario)
+      .filter((pedidos: any[]) => pedidos.every(pedido => pedido.estatus === "0"))
+      .map((pedidos: any[]) =>
+        pedidos.sort((a, b) => new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime())[0]
+      );
+
+    // ✅ 5. Filtrar pedidos activos correctamente
+    const filteredData = Object.values(pedidosPorUsuario)
+      .flat()
+      .filter((item: any) =>
+        Array.isArray(item.productos) &&
+        item.productos.some((producto: any) => producto.conteoPedidos === "1" && producto.estatus === "1")
+      );
+
+    console.log("Pedidos activos filtrados:", filteredData);
+
+    // ✅ 6. Unir los clientes sin pedidos, pedidos filtrados y pedidos caducados
+    const clientesFinales = [...clientesSinPedidos, ...filteredData, ...pedidosCaducados];
+
+    // ✅ 7. Ordenar por fecha antes de asignar
+    this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
+      const fechaA = new Date(a.fecha_hora_pedido).getTime();
+      const fechaB = new Date(b.fecha_hora_pedido).getTime();
+      return fechaB - fechaA; // Orden descendente
+    });
+
+    this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+    this.dataSourceActivos.paginator = this.paginatorActivos;
+  },
+  (error: any) => {
+    this.toastr.error('Ocurrió un error al obtener los datos de los clientes', 'Error');
+  }
+);
+}
 
 
   capturarHuella(clave: any): void {
