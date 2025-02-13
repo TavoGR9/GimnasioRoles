@@ -290,6 +290,7 @@ export class PagoMemComponent implements OnInit{
             });
 
             this.clienteActivo = agrupadosConPedidos;
+            console.log('clienteActivo',this.clienteActivo)
 
 
 

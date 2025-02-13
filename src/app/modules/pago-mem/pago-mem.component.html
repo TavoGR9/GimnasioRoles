@@ -74,7 +74,7 @@
                 </ng-container>
                 <ng-container matColumnDef="fechaR">
                     <th mat-header-cell *matHeaderCellDef> Fecha registro </th>
-                    <td mat-cell *matCellDef="let empleados"> {{ empleados.fecha_hora_pedido | date:'dd/MM/yyyy' }} </td>
+                    <td mat-cell *matCellDef="let empleados"> {{ empleados.fecha_hora_pedido |  date:'dd/MM/yyyy HH:mm'}} </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="['clave','nombre','membresia','precio','fechaR']"></tr>
