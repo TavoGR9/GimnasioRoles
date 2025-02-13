@@ -27,7 +27,6 @@ import { ColaboradorService } from './../../service/colaborador.service';
 })
 
 export class EmergenteInfoClienteComponent implements OnInit{
-  url: string = `Finger://?idCliente=${this.data.idCliente}&idSucursal=${this.data.idSucursal}`;
   productos:any;
   currentDate: Date = new Date();
   duracion: any;
@@ -158,6 +157,33 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
     return diasCalculados;
 }
+
+
+MembershipDuration(fechaInicio: string, fechaFin: string) {
+  const fechaInicial = new Date(fechaInicio); // Fecha de inicio proporcionada
+  const fechaFinal = new Date(fechaFin);     // Fecha de fin proporcionada
+
+  // Ajustar las horas
+  fechaInicial.setHours(0, 0, 0, 0);  // Inicio a las 00:00
+  fechaFinal.setHours(23, 59, 59, 999); // Fin a las 23:59:59.999
+
+  // Calcular la diferencia de tiempo entre fechaFinal y fechaInicial
+  const diferenciaTiempo = fechaFinal.getTime() - fechaInicial.getTime();
+
+  // Convertir la diferencia de milisegundos a días
+  const diferenciaDias = diferenciaTiempo / (1000 * 3600 * 24);
+
+  // Aplicar redondeo hacia abajo
+  let diasCalculados;
+  if (diferenciaDias > 0) {
+      diasCalculados = Math.floor(diferenciaDias); // Redondear hacia abajo si es mayor a 1
+  } else {
+      diasCalculados = 0; // Si la diferencia es negativa o 0
+  }
+
+  return diasCalculados;
+}
+
 
   abrirDialogFoto(data: any): void {
     this.dialogo.close(true);

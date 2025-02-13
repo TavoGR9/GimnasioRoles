@@ -243,6 +243,7 @@ reloadPage(): void {
   consultarMeses(){
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
+        // console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
 
@@ -277,6 +278,7 @@ reloadPage(): void {
   consultarQuincenas(){
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
+        // console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
 
@@ -323,7 +325,7 @@ reloadPage(): void {
   consultarVisitas(){
     this.pagoService.getPedidosMembresias(this.auth.idGym.getValue()).subscribe(
       (response) => {
-
+        // console.log(this.auth.idGym.getValue(),'id')
         if (response.success === 1) {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
 

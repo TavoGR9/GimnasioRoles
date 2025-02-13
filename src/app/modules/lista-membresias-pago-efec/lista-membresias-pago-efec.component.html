@@ -89,7 +89,7 @@
 								{{ prod.fecha_caducidad | date:'dd/MM/yyyy, HH:mm' }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Fecha Registro'">
-								{{ prod.fechaRegistro| date:'dd/MM/yyyy, HH:mm' }}
+								{{ prod.fecha_hora_pedido| date:'dd/MM/yyyy, HH:mm' }}
 							</ng-container>
 							<ng-container *ngIf="column === 'Rol'">
 								{{prod.rol}}
