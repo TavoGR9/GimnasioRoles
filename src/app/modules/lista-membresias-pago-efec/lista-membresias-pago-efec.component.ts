@@ -666,6 +666,8 @@ this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
     const fechaFin = this.fechaFin ? new Date(this.fechaFin) : new Date();
     fechaFin.setHours(23, 59, 0);
 
+
+
     const pedidosFiltradosPorFecha = Clientes.filter((cliente: any) => {
       if (!cliente.id_pedido) return false; // Si no tiene pedido, lo ignoramos aquí
       const fechaRegistro = new Date(cliente.fecha_hora_pedido);
@@ -674,9 +676,12 @@ this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
 
     console.log("Pedidos dentro del rango de fecha:", pedidosFiltradosPorFecha);
 
-    // ✅ 4. Agrupar pedidos por usuario (misma lógica que tenías)
+    // ✅ 4. Agrupar productos por pedido
     const pedidosAgrupados = this.pagoService.agruparPorPedido(pedidosFiltradosPorFecha);
 
+    console.log('pedidos Agrupados por Usuario',pedidosAgrupados)
+
+    // ✅ 5. Agrupar pedidos por usuario
     const pedidosPorUsuario: Record<string, any[]> = pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
       const identificador = item.clave;
       const idPedido = item.id_pedido;
@@ -685,14 +690,56 @@ this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       if (!existePedido) acc[identificador].push(item);
       return acc;
     }, {});
+    console.log('pedidos por Usuario',pedidosPorUsuario )
 
+       // ✅ 6. Filtrar usuarios que tienen todos sus pedidos caducos
     const pedidosCaducados = Object.values(pedidosPorUsuario)
       .filter((pedidos: any[]) => pedidos.every(pedido => pedido.estatus === "0"))
       .map((pedidos: any[]) =>
         pedidos.sort((a, b) => new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime())[0]
       );
+ 
+// ✅ 6.5 Filtrar usuarios que tienen todos sus pedidos adelantados por membresía cancelada actual
+const usuariosConPedidosAdelantados = Object.values(pedidosPorUsuario)
+  .filter((pedidos: any[]) => pedidos.every(pedido => pedido.conteoPedidos === "2"))
+  .map((pedidos: any[]) =>
+    pedidos.sort((a, b) => new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime())[0]
+  )
+  .map(usuario => ({
+    clave: usuario.clave,
+    estafeta: usuario.estafeta,
+    telefono: usuario.telefono,
+    fotoUrl: usuario.fotoUrl,
+    Correo: usuario.Correo,
+    nombreCompleto: usuario.nombreCompleto,
+    fechaRegistro: null, // Cambiado a null
+    huella: usuario.huella,
+    rol: usuario.rol,
+    precioPedido: null, // Cambiado a null
+    total: null, // Cambiado a null
+    membresia: "Cancelada", // Cambiado a "Cancelada"
+    correoCliente: usuario.correoCliente,
+    id_pedido: usuario.id_pedido,
+    fecha_hora_pedido: null, // Cambiado a null
+    id_bodega: usuario.id_bodega,
+    precioCompra: null, // Cambiado a null
+    conteoPedidos: usuario.conteoPedidos,
+    estatus: "0", // Cambiado a "0"
+    fecha_inicio: null, // Cambiado a null
+    fecha_caducidad: null, // Cambiado a null
+    idPromocion: usuario.idPromocion,
+    nombrePromocion: usuario.nombrePromocion,
+    productos: null // Cambiado a null
+  }));
 
-    // ✅ 5. Filtrar pedidos activos correctamente
+console.log(usuariosConPedidosAdelantados);
+
+
+console.log(usuariosConPedidosAdelantados);
+
+
+      console.log('usuarios con pedidos adelantados', usuariosConPedidosAdelantados)
+    // ✅ 7. Filtrar pedidos que estan activos y en fecha 
     const filteredData = Object.values(pedidosPorUsuario)
       .flat()
       .filter((item: any) =>
@@ -702,10 +749,10 @@ this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
 
     console.log("Pedidos activos filtrados:", filteredData);
 
-    // ✅ 6. Unir los clientes sin pedidos, pedidos filtrados y pedidos caducados
-    const clientesFinales = [...clientesSinPedidos, ...filteredData, ...pedidosCaducados];
+    // ✅ 8. Unir los clientes sin pedidos, pedidos filtrados y pedidos caducados
+    const clientesFinales = [...clientesSinPedidos, ...filteredData, ...pedidosCaducados,...usuariosConPedidosAdelantados];
 
-    // ✅ 7. Ordenar por fecha antes de asignar
+    // ✅ 9. Ordenar por fecha antes de asignar
     this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
       const fechaA = new Date(a.fecha_hora_pedido).getTime();
       const fechaB = new Date(b.fecha_hora_pedido).getTime();
