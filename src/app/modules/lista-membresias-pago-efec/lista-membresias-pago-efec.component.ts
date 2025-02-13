@@ -134,7 +134,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private toastr: ToastrService,
     private auth: AuthService,
     private networkService: NetworkService,
-    private eventCommunicationService: EventCommunicationServiceService
+    private eventCommunicationService: EventCommunicationServiceService,
+    
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -201,23 +202,16 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     });
   }
 
-
-  loadData() {
+  async loadData() {
     this.isLoading = true; // Mostrar el icono de carga
-
-    setTimeout(() => {
-      this.listaClientesData3(); // Llamar a la función que obtiene los datos
-
-      setTimeout(() => {
-        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-        this.dataSourceActivos.paginator = this.paginatorActivos;
-
-        this.isLoading = false; // Ocultar el icono de carga solo cuando la tabla esté lista
-      }, 500); // Pequeño retraso para asegurar que los datos se procesen correctamente
-    }, 1000);
+  
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simula la espera
+  
+    await this.listaClientesData3(); // Espera a que los datos se obtengan
+  
+    this.isLoading = false; // Ocultar el icono de carga solo cuando los datos estén listos
   }
-
-
+  
 
 
 verificarCambios(): void {
@@ -351,7 +345,7 @@ verificarCambios(): void {
       .afterClosed()
       .subscribe((cerrarDialogo: Boolean) => {
         if (cerrarDialogo) {
-          this.listaClientesData3();
+          //this.listaClientesData3();
         }
       });
 
