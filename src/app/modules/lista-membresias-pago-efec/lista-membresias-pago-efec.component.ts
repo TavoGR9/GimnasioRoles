@@ -285,8 +285,8 @@ verificarCambios(): void {
           );
         case "Fecha Registro":
           return this.compare(
-            new Date(a.fechaRegistro || "1900-01-01"),
-            new Date(b.fechaRegistro || "1900-01-01"),
+            new Date(a.fecha_hora_pedido || "1900-01-01"),
+            new Date(b.fecha_hora_pedido || "1900-01-01"),
             isAsc
           );
         case "Estatus":
@@ -575,7 +575,7 @@ verificarCambios(): void {
             pedidos.every(pedido => pedido.estatus === "0") // Verifica que todos los pedidos estén caducos
           )
           .map((pedidos: any[]) =>
-            pedidos.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())[0] // Ordena por fecha descendente y toma el último
+            pedidos.sort((a, b) => new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime())[0] // Ordena por fecha descendente y toma el último
           );
 
 
@@ -592,6 +592,8 @@ verificarCambios(): void {
     )
   );
 
+
+  console.log('pedidos caducadaos',pedidosCaducados)
 
 
 
@@ -614,8 +616,8 @@ verificarCambios(): void {
 
           // Ahora ordenamos el arreglo final por `fechaRegistro` antes de asignarlo a `clienteActivo`.
           this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
-            const fechaA = new Date(a.fechaRegistro).getTime();
-            const fechaB = new Date(b.fechaRegistro).getTime();
+            const fechaA = new Date(a.fecha_hora_pedido).getTime();
+            const fechaB = new Date(b.fecha_hora_pedido).getTime();
             return fechaB - fechaA; // Ascendente (de más antiguo a más reciente)
           });
 
