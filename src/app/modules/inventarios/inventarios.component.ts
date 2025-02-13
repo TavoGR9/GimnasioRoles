@@ -63,7 +63,7 @@ export class InventariosComponent implements OnInit {
 
   aplicarFiltro(productos: Inventario[]): Inventario[] {
     return productos.filter((producto) => {
-      return producto.nombreCategoria !== "Servicios";
+      return producto.nombreCategoria !== "Servicios" && producto.existencia != 0;
     });
   }
 

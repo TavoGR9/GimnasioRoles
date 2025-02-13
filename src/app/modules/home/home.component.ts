@@ -659,12 +659,36 @@ cargarTarjetas2(): void {
   /**ASISTENCIA */
 
   consultarAsistencia() {
-    this.homeService.consultarAsistencias(this.idGym).subscribe((respuesta) => {
-      this.asistencia = respuesta;
-      this.dataSource = new MatTableDataSource(this.asistencia);
-      this.loadData();
-    });
-  }
+    this.homeService.consultarAsistencias(this.idGym).subscribe(
+      (respuesta) => {
+        if (!Array.isArray(respuesta) || respuesta.length === 0) {
+          console.warn("No hay registros a mostrar.");
+          this.asistencia = [];
+        } else {
+          this.asistencia = respuesta;
+        }
+
+        // Asegurar que dataSource siempre tenga un valor válido
+        this.dataSource = new MatTableDataSource(this.asistencia);
+
+        // Verificar si loadData existe antes de llamarlo
+        if (typeof this.loadData === "function") {
+          this.loadData();
+        } else {
+          console.warn("Método loadData no encontrado.");
+        }
+      },
+      (error) => {
+        console.error("Error al consultar asistencias:", error);
+
+        // En caso de error, aseguramos que dataSource no sea undefined
+        this.asistencia = [];
+        this.dataSource = new MatTableDataSource(this.asistencia);
+      }
+    );
+}
+
+
 
   /**Roles**/
   isAdmin(): boolean {
