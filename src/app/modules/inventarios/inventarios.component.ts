@@ -63,13 +63,13 @@ export class InventariosComponent implements OnInit {
 
   aplicarFiltro(productos: Inventario[]): Inventario[] {
     return productos.filter((producto) => {
-      return producto.nombreCategoria !== "Servicios";
+      return producto.nombreCategoria !== "Servicios" && producto.existencia !=0;
     });
   }
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      // console.log('TODAS LAS EXISTENCIAS: ', respuesta);
+      //console.log('TODAS LAS EXISTENCIAS: ', respuesta);
 
       this.listInventarioData = this.aplicarFiltro(respuesta);
       //this.listInventarioData = respuesta;

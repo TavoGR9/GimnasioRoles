@@ -148,7 +148,8 @@ export class VerCorteComponent implements OnInit  {
   aplicarFiltro() {
     this.dataSource.filter = this.fechaFiltro; // Aplica el filtro con la fecha actual
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-      return data.fecha_hora_pedido.includes(filter); // Compara la fecha con el filtro
+      return data.fecha_hora_pedido ? data.fecha_hora_pedido.includes(filter) : false;
+      // return data.fecha_hora_pedido.includes(filter); // Compara la fecha con el filtro
     };
     this.actualizarTotalVentas();
   }
