@@ -125,12 +125,13 @@ export class VerCorteComponent implements OnInit  {
     this.joinDetalleVentaService.consultarProductosVentasBodega(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
-        // console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
+        //console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.loadData();
         this.dataSource.data = this.detallesCaja;
         const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
         this.fechaFiltro = fechaActual;
+        console.log("dsj: ",this.fechaFiltro);
         this.aplicarFiltro();
       },
       (error) => {
@@ -148,8 +149,7 @@ export class VerCorteComponent implements OnInit  {
   aplicarFiltro() {
     this.dataSource.filter = this.fechaFiltro; // Aplica el filtro con la fecha actual
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-      return data.fecha_hora_pedido ? data.fecha_hora_pedido.includes(filter) : false;
-      // return data.fecha_hora_pedido.includes(filter); // Compara la fecha con el filtro
+      return data.fecha_hora_pedido ? data.fecha_hora_pedido.includes(filter) : false;
     };
     this.actualizarTotalVentas();
   }
