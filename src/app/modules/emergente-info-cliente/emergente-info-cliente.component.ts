@@ -137,10 +137,7 @@ duracionCalculo3(fechaInicio: string, fechaFin: string) {
   const fechaFinal = new Date(fechaFin);     // Fecha de fin proporcionada
   const hoy = new Date();                    // Fecha actual
 
-  // Ajustar las horas
-  fechaInicial.setHours(0, 1, 0, 0);  // Inicio a las 00:01
-  fechaFinal.setHours(23, 59, 0, 0);  // Fin a las 23:59
-  hoy.setHours(0, 0, 0, 0);           // Hoy a las 00:00
+          // Hoy a las 00:00
 
   console.log("Fecha inicial ajustada:", fechaInicial);
   console.log("Fecha final ajustada:", fechaFinal);
@@ -171,7 +168,7 @@ duracionCalculo3(fechaInicio: string, fechaFin: string) {
   } else if (diferenciaDias >= 1) {
       diasCalculados = Math.floor(diferenciaDias); // Redondear hacia abajo si es mayor a 1
   } else {
-      diasCalculados = 0; // Si la diferencia es negativa o 0
+    return "Membresia caducada"; 
   }
 
   console.log("Días calculados:", diasCalculados);

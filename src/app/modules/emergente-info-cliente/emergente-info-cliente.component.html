@@ -98,7 +98,7 @@
     <div class="column">
       <h3 style="font-weight: bold;">Dias restantes:</h3>
       
-      <span [ngClass]="{'text-danger': duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) === 'Aún no es válida la membresía'}">
+      <span [ngClass]="{'text-danger': duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) === 'Aún no es válida la membresía'||'Membresia caducada'}">
         {{ duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) }}
       </span>
     </div>
