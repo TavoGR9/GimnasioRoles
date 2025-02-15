@@ -8,7 +8,7 @@ import { AuthService } from "../../service/auth.service";
 import { NgxSpinnerService } from "ngx-spinner";
 import { MensajeAceptarComponent } from "../mensaje-aceptar/mensaje-aceptar.component";
 import { MatDialogConfig } from "@angular/material/dialog";
-
+import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
 
 @Component({
@@ -48,6 +48,7 @@ export class FormPagoEmergenteComponent implements OnInit {
     public dialog: MatDialog,
     private spinner: NgxSpinnerService,
     private GimnasioService: GimnasioService,
+    private eventCommunicationService:EventCommunicationServiceService,
     @Inject(MAT_DIALOG_DATA)
     public data: any,
     private membresiaService: PagoMembresiaEfectivoService,
@@ -162,147 +163,99 @@ export class FormPagoEmergenteComponent implements OnInit {
 
   succesDialog2() {
     if (this.receivedMoney >= this.precio) {
-      // Si el dinero recibido es suficiente, muestra el spinner y realiza la acción
-      this.spinner.show();
-      this.onMembresiaChange(); // Llama a la función para cambiar la membresía
+        this.spinner.show(); // ⬅️ Mostrar spinner antes de abrir el diálogo
 
-      // Configuración del diálogo de confirmación
-      const dialogConfig = new MatDialogConfig();
-      dialogConfig.width = "30%"; // Ajusta el ancho del diálogo
-      dialogConfig.height = "auto"; // Ajusta la altura del diálogo
-      dialogConfig.disableClose = true; // Deshabilita el cierre del diálogo al hacer clic fuera de él
-      dialogConfig.data = {
-        mensaje: `¿Está seguro/a de que desea pagar la membresía seleccionada?`,
-        cliente: this.data.nombre,
-        membresia: this.nombreMembresia,
-      };
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.width = "30%";
+        dialogConfig.height = "auto";
+        dialogConfig.disableClose = true;
+        dialogConfig.data = {
+            mensaje: `¿Está seguro/a de que desea pagar la membresía seleccionada?`,
+            cliente: this.data.nombre,
+            membresia: this.nombreMembresia,
+        };
 
-      // Abre el diálogo de confirmación y maneja la respuesta
-      this.dialog
-        .open(MensajeAceptarComponent, dialogConfig)
-        .afterClosed()
-        .subscribe((confirmado: boolean) => {
-          if (confirmado) {
-
-              const PrecioCalcular = this.receivedMoney - this.precio;
-            
-              this.dineroDevuelto =   PrecioCalcular;
-
-              let fechaVencimiento = new Date(); // Duración de la membresía (mensual, anual, etc.)
-              let fechaInicioMembresia ='';
-              let fechaVencimientoMembresia =''
-
-          
-              // calcular fechas
-              //hacer solicitud post
-              const dataPromo = {
-                p_isPromoPaquete: this.IspromocionPaquete, // Indicar si es una promoción
-                p_correo: this.data.correo, // Correo del cliente ---
-                p_bodega: this.data.idSucursal, // Ajusta la bodega según el contexto
-                p_total: this.precio, // Total pagado
-                p_pago: this.receivedMoney, // Forma de pago
-                p_idProbob: this.idProbob, // ID del producto o servicio si lo tienes
-                p_claveUser: this.data.idCliente, // Clave del usuario
-                p_idPromo:  this.id_promocion,
-                p_idEmpleado:this.auth.idUser.getValue(), // El ID de la promoción si lo tienes
-              };
-
-
-
-
-              this.obtenerFoto()
-
-
-
-
-              //this.imprimirResumen3();
-
-
-             
-              this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
-                response => {
-       
-                  const apiResponse = response
-
-                // Si la compra es exitosa
-                if (response.payment ==1)  { // Asumiendo que 'success' es el campo que indica una compra exitosa
-                  // Mostrar mensaje de compra exitosa
-                  this.fechaInicioMembresia = response.Fecha_inicio;  // '2025-06-15'
-                  this.fechaVencimientoMembresia = response.Fecha_Fin.split(' ')[0];  // '2025-07-14'  // '2025-07-14'
-
-               
-const DatosTicket ={
-
-  fechaVencimiento:this.fechaVencimientoMembresia,
-  fechaInicioMembresia:this.fechaInicioMembresia,
-
-  duracion: this.duracion,
-  producto: this.nombreMembresia,
-  claveUser: this.data.idCliente,
-  precio:  this.precio,
-  precioLetra: this.convertirNumeroAPalabrasPesos(this.precio),
-  pago: this.receivedMoney,
-  pagoLetra:this.convertirNumeroAPalabrasPesos(this.receivedMoney),
-  dineroDevuelto: this.dineroDevuelto,
-  dineroDevueltoLetra:this.convertirNumeroAPalabrasPesos(this.dineroDevuelto),
-  idPromocion:this.id_promocion,
-  idProbob : this.idProbob,
-  fechaActual: new Date().toLocaleDateString(), // Fecha en formato local (ej. '12/16/2024')
-   horaActual: new Date().toLocaleTimeString(),  // Hora en formato local (ej. '12:30:00 PM')
-
-  nombreMembresia: this.nombreMembresia,
-id_promocion: this.id_promocion,
-nombreCompleto:this.nombreCompleto
-
-}
-
-
-this.datosTicket= DatosTicket;
-
-
-
-                  this.dialog.open(MensajeEmergenteComponent, {
-                   
-                    data: `Pago exitoso, el cambio es de: $${this.dineroDevuelto}`, // Ajusta el mensaje con el precio calculado
-                    disableClose: true, // Bloquea el cierre haciendo clic fuera del diálogo
-                  }).afterClosed().subscribe((cerrarDialogo: Boolean) => {
-                    if (cerrarDialogo) {
-                  // Dentro de tu componente en Angular
-
-
-                      this.imprimirResumen3(); // Imprimir el resumen si el diálogo se cierra
-                      this.cancelDialogo();
-                    } else {
-                      // Aquí puedes agregar cualquier otra lógica si lo necesitas
-                    }
-                  });
-                } else {
-                  // Si no es exitoso, mostrar mensaje de error
-                  this.spinner.hide();
-                  this.toastr.error(`Hubo un error al procesar tu pago. ${apiResponse.message} Intenta nuevamente.`, "¡Error!");
+        this.dialog.open(MensajeAceptarComponent, dialogConfig)
+            .afterClosed()
+            .subscribe((confirmado: boolean) => {
+                if (!confirmado) {
+                    this.spinner.hide(); // ⬅️ Si el usuario cancela, ocultar el spinner
+                    return;
                 }
-              },
-              error => {
-                // Si hay un error en la llamada a la API
-                console.error('Error al consultar la API de promociones:', error);
-                this.spinner.hide();
-                this.toastr.error(
-                  "Hubo un error al procesar tu pago. Intenta nuevamente."
+
+                const PrecioCalcular = this.receivedMoney - this.precio;
+                this.dineroDevuelto = PrecioCalcular;
+
+                const dataPromo = {
+                    p_isPromoPaquete: this.IspromocionPaquete,
+                    p_correo: this.data.correo,
+                    p_bodega: this.data.idSucursal,
+                    p_total: this.precio,
+                    p_pago: this.receivedMoney,
+                    p_idProbob: this.idProbob,
+                    p_claveUser: this.data.idCliente,
+                    p_idPromo: this.id_promocion,
+                    p_idEmpleado: this.auth.idUser.getValue(),
+                };
+
+                this.obtenerFoto();
+
+                this.membresiaService.checkPromoPaquete(dataPromo).subscribe(
+                    response => {
+                        if (response.payment !== 1) { 
+                            this.spinner.hide(); // ⬅️ Ocultar spinner si el pago no fue exitoso
+                            this.toastr.error(`Hubo un error al procesar tu pago. ${response.message} Intenta nuevamente.`, "¡Error!");
+                            return;
+                        }
+
+                        this.fechaInicioMembresia = response.Fecha_inicio;
+                        this.fechaVencimientoMembresia = response.Fecha_Fin.split(' ')[0];
+
+                        this.datosTicket = {
+                            fechaVencimiento: this.fechaVencimientoMembresia,
+                            fechaInicioMembresia: this.fechaInicioMembresia,
+                            duracion: this.duracion,
+                            producto: this.nombreMembresia,
+                            claveUser: this.data.idCliente,
+                            precio: this.precio,
+                            precioLetra: this.convertirNumeroAPalabrasPesos(this.precio),
+                            pago: this.receivedMoney,
+                            pagoLetra: this.convertirNumeroAPalabrasPesos(this.receivedMoney),
+                            dineroDevuelto: this.dineroDevuelto,
+                            dineroDevueltoLetra: this.convertirNumeroAPalabrasPesos(this.dineroDevuelto),
+                            idPromocion: this.id_promocion,
+                            idProbob: this.idProbob,
+                            fechaActual: new Date().toLocaleDateString(),
+                            horaActual: new Date().toLocaleTimeString(),
+                            nombreMembresia: this.nombreMembresia,
+                            id_promocion: this.id_promocion,
+                            nombreCompleto: this.nombreCompleto,
+                        };
+
+                        this.dialog.open(MensajeEmergenteComponent, {
+                            data: `Pago exitoso, el cambio es de: $${this.dineroDevuelto}`,
+                            disableClose: true,
+                        }).afterClosed().subscribe((cerrarDialogo: boolean) => {
+                            if (!cerrarDialogo) {
+                                this.spinner.hide(); // ⬅️ Ocultar spinner si se cierra el diálogo sin imprimir
+                            } else {
+                                this.imprimirResumen3();
+                                this.emitEnventMethod('pago emergente exitoso')
+                            }
+                        });
+                    },
+                    error => {
+                        this.spinner.hide(); // ⬅️ Si hay un error en la API, ocultar el spinner
+                        console.error('Error al consultar la API de promociones:', error);
+                        this.toastr.error("Hubo un error al procesar tu pago. Intenta nuevamente.");
+                    }
                 );
-              }
-            );
-          }
-          this.spinner.hide(); // Se oculta el spinner después de la operación
-        });
+            });
     } else {
-      // Si el dinero recibido es insuficiente, muestra un error
-      this.spinner.hide(); // Esconde el spinner si la cantidad es insuficiente
-      this.toastr.error(
-        "Cantidad insuficiente para cubrir el costo de esta membresía.",
-        "¡Error!"
-      );
+        this.spinner.hide(); // ⬅️ Si el dinero es insuficiente, ocultar el spinner
+        this.toastr.error("Cantidad insuficiente para cubrir el costo de esta membresía.", "¡Error!");
     }
-  }
+}
 
 
 
@@ -565,19 +518,33 @@ imprimirResumen3() {
         image.onload = () => {
           ventanaImpresion.print();
           ventanaImpresion.close();
+          this.spinner.hide(); // ⬅️ Se oculta después de imprimir
+          this.cancelDialogo();
         };
 
         image.onerror = (error) => {
           console.error("Error al cargar la imagen:", error);
           ventanaImpresion.print();
           ventanaImpresion.close();
+          this.spinner.hide(); // ⬅️ Se oculta después de imprimir
+          this.cancelDialogo();
         };
       } else {
         ventanaImpresion.print();
         ventanaImpresion.close();
+        this.spinner.hide(); // ⬅️ Se oculta después de imprimir
+        this.cancelDialogo();
       }
     }
   } // Cierre correcto de la función
 
+  emitEnventMethod(button: string){
+
+    const modalId = 'ModalEmergenteInfoCliente'; // Identificador único del modal
+    const data = {boton:button }; // Datos opcionales
+  
+    this.eventCommunicationService.triggerEvent(modalId, data); // Emitir evento
+  }
+  
 
 }

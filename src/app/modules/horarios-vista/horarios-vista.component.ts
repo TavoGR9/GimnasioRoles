@@ -175,7 +175,7 @@ export class HorariosVistaComponent implements OnInit {
           Validators.minLength(10),
         ]),
       ],
-      puesto: ["Administrador"],
+      puesto: ["2"],
       foto: [""],
       jefe: ["1"],
       email: [""],
