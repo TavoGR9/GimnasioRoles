@@ -781,8 +781,7 @@ listaClientesData3(): void {
 
       // ✅ 1. Obtener clientes con pedidos
       const clientesConPedidosTotales = new Set(
-        Clientes.filter((cliente: any) => cliente.id_pedido != null)
-                .map((cliente: any) => cliente.clave)
+        Clientes.map((cliente: any) => cliente.clave)
       );
 
       console.log("Clientes con pedidos en toda la API:", clientesConPedidosTotales);
@@ -812,57 +811,54 @@ listaClientesData3(): void {
       console.log("Pedidos por usuario:", pedidosPorUsuario);
 
       // ✅ 5. Filtrar clientes finales según lógica de pedidos
-      // ✅ 5. Filtrar clientes finales según lógica de pedidos
-let usuariosConPedidosActivos = [];
-let usuariosConPedidosEstatus2 = [];
-let usuariosConPedidosPorFechaFin = [];
+      let usuariosConPedidosActivos: any[] = [];
+      let usuariosConPedidosEstatus2: any[] = [];
+      let usuariosConPedidosPorFechaFin: any[] = [];
 
-// Filtrar pedidos de usuarios según la lógica establecida
-Object.values(pedidosPorUsuario).forEach((pedidos) => {
-  
-  // 1️⃣ Tomar pedidos activos (estatus 1 o pedidoActual = "1")
-  const pedidosActivos = pedidos.filter(
-    (pedido) => pedido.pedidoActual === "1" || pedido.estatus === "1"
-  );
+      Object.values(pedidosPorUsuario).forEach((pedidos: any[]) => {
+        // 1️⃣ Tomar pedidos activos (estatus 1 o pedidoActual = "1")
+        const pedidosActivos = pedidos.filter(
+          (pedido) => pedido.pedidoActual === "1" || pedido.estatus === "1"
+        );
 
-  if (pedidosActivos.length > 0) {
-    usuariosConPedidosActivos.push(...pedidosActivos);
-    return; // Si tiene pedidos activos, no sigue evaluando más condiciones
-  }
+        if (pedidosActivos.length > 0) {
+          usuariosConPedidosActivos.push(...pedidosActivos);
+          return;
+        }
 
-  // 2️⃣ Tomar pedidos con estatus 2 (el más cercano a la fecha actual)
-  const pedidosEstatus2 = pedidos.filter((pedido) => pedido.estatus === "2");
-  
-  if (pedidosEstatus2.length > 0) {
-    const fechaActual = new Date().getTime();
-    const pedidoMasCercano = pedidosEstatus2.reduce((pedidoCercano, pedido) => {
-      return Math.abs(new Date(pedido.fecha_inicio).getTime() - fechaActual) <
-        Math.abs(new Date(pedidoCercano.fecha_inicio).getTime() - fechaActual)
-        ? pedido
-        : pedidoCercano;
-    });
+        // 2️⃣ Tomar pedidos con estatus 2 (el más cercano a la fecha actual)
+        const pedidosEstatus2 = pedidos.filter((pedido) => pedido.estatus === "2");
 
-    usuariosConPedidosEstatus2.push(pedidoMasCercano);
-    return; // Si encontró un pedido con estatus 2, no sigue evaluando más condiciones
-  }
+        if (pedidosEstatus2.length > 0) {
+          const fechaActual = new Date().getTime();
+          const pedidoMasCercano = pedidosEstatus2.reduce((pedidoCercano, pedido) => {
+            return Math.abs(new Date(pedido.fecha_caducidad).getTime() - fechaActual) <
+              Math.abs(new Date(pedidoCercano.fecha_caducidad).getTime() - fechaActual)
+              ? pedido
+              : pedidoCercano;
+          });
 
-  // 3️⃣ Si no hay pedidos activos ni estatus 2, tomar el pedido cuya fecha_fin esté más cerca de la fecha actual
-  if (pedidos.length > 0) {
-    const pedidoMasCercano = pedidos.reduce((pedidoCercano, pedido) => {
-      return Math.abs(new Date(pedido.fecha_fin).getTime() - fechaActual) <
-        Math.abs(new Date(pedidoCercano.fecha_fin).getTime() - fechaActual)
-        ? pedido
-        : pedidoCercano;
-    });
+          usuariosConPedidosEstatus2.push(pedidoMasCercano);
+          return;
+        }
 
-    usuariosConPedidosPorFechaFin.push(pedidoMasCercano);
-  }
-});
+        // 3️⃣ Si no hay pedidos activos ni estatus 2, tomar el pedido cuya fecha_fin esté más cerca de la fecha actual
+        if (pedidos.length > 0) {
+          const fechaActual = new Date().getTime();
+          const pedidoMasCercano = pedidos.reduce((pedidoCercano, pedido) => {
+            return Math.abs(new Date(pedido.fecha_caducidad).getTime() - fechaActual) <
+              Math.abs(new Date(pedidoCercano.fecha_caducidad).getTime() - fechaActual)
+              ? pedido
+              : pedidoCercano;
+          });
 
-console.log("Usuarios con pedidos activos:", usuariosConPedidosActivos);
-console.log("Usuarios con pedidos estatus 2:", usuariosConPedidosEstatus2);
-console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFechaFin);
+          usuariosConPedidosPorFechaFin.push(pedidoMasCercano);
+        }
+      });
 
+      console.log("Usuarios con pedidos activos:", usuariosConPedidosActivos);
+      console.log("Usuarios con pedidos estatus 2:", usuariosConPedidosEstatus2);
+      console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFechaFin);
 
       // ✅ 6. Unir los tres grupos y los clientes sin pedidos para obtener los CLIENTES FINALES
       let clientesFinales = [
@@ -882,8 +878,10 @@ console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFecha
         fechaFin.setHours(23, 59, 0);
 
         clientesFinales = clientesFinales.filter((cliente: any) => {
-          const fechaRegistro = new Date(cliente.fecha_hora_pedido || cliente.fecha_inicio || cliente.fecha_fin);
-          return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+          //const fechaRegistro = new Date(cliente.fecha_hora_pedido || cliente.fecha_inicio || cliente.fecha_fin);
+          const fechaRegistro = new Date(cliente.fecha_hora_pedido);
+         // return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+         return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
         });
       }
 
@@ -895,7 +893,6 @@ console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFecha
         const fechaB = new Date(b.fecha_hora_pedido).getTime();
         return fechaB - fechaA; // Orden descendente
       });
-  
 
       // ✅ 9. Aplicar resultado final a la tabla
       this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
