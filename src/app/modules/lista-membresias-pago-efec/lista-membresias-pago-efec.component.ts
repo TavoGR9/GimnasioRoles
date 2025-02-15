@@ -403,6 +403,7 @@ verificarCambios(): void {
   eliminarCliente(prod: any) {
     const clave = prod.clave; // Usar 'clave' como identificador del cliente
 
+
     this.dialog
       .open(MensajeEliminarComponent, {
         data: `¿Desea eliminar a este usuario?`,
@@ -420,6 +421,7 @@ verificarCambios(): void {
                 this.listaClientesData3(); // Actualizar lista de clientes
               } else {
                 // Mostrar un Toast de error si la respuesta no es exitosa
+             
                 this.toastr.error(
                   'Ocurrió un error al eliminar el registro',
                   'Error',
