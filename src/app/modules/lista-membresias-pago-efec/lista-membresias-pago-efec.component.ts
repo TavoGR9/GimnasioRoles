@@ -229,7 +229,7 @@ verificarCambios(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
 
-    this.listaClientesData3()
+    this.loadData()
     //this.updateDateLogs();
   }
 }
