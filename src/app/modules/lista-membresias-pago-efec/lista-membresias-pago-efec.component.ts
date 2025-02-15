@@ -336,6 +336,7 @@ verificarCambios(): void {
           foto: `${prod.fotoUrl}`,
           action: `${prod.accion}`,
           fecha_caducidad: `${prod.fecha_caducidad}`,
+          fecha_inicio: `${prod.fecha_inicio}`,
           productos:  JSON.stringify(prod.productos),
         },
         width: "70%",

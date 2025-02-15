@@ -129,37 +129,55 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
 
 
-  duracionCalculo2(fechaInicio: string, fechaFin: string) {
-    const fechaInicial = new Date(fechaInicio); // Fecha de inicio proporcionada
-    const fechaFinal = new Date(fechaFin);     // Fecha de fin proporcionada
-    const hoy = new Date();                    // Fecha actual
+duracionCalculo3(fechaInicio: string, fechaFin: string) {
+  console.log("Fecha de inicio recibida:", fechaInicio);
+  console.log("Fecha de fin recibida:", fechaFin);
 
-    // Ajustar las horas
-    fechaInicial.setHours(0, 1, 0, 0);  // Inicio a las 00:01
-    fechaFinal.setHours(23, 59, 0, 0);  // Fin a las 23:59
-    hoy.setHours(0, 0, 0, 0);           // Hoy a las 00:00
+  const fechaInicial = new Date(fechaInicio); // Fecha de inicio proporcionada
+  const fechaFinal = new Date(fechaFin);     // Fecha de fin proporcionada
+  const hoy = new Date();                    // Fecha actual
 
-    // Comparar fechaInicio con la fecha actual
-    const fechaBase = fechaInicial >= hoy ? fechaInicial : hoy;
+  // Ajustar las horas
+  fechaInicial.setHours(0, 1, 0, 0);  // Inicio a las 00:01
+  fechaFinal.setHours(23, 59, 0, 0);  // Fin a las 23:59
+  hoy.setHours(0, 0, 0, 0);           // Hoy a las 00:00
 
-    // Calcular la diferencia de tiempo entre fechaFinal y fechaBase
-    const diferenciaTiempo = fechaFinal.getTime() - fechaBase.getTime();
+  console.log("Fecha inicial ajustada:", fechaInicial);
+  console.log("Fecha final ajustada:", fechaFinal);
+  console.log("Fecha actual:", hoy);
 
-    // Convertir la diferencia de milisegundos a días
-    const diferenciaDias = diferenciaTiempo / (1000 * 3600 * 24);
+  // Si la fecha de inicio es futura, devolver un mensaje
+  if (fechaInicial > hoy) {
+      console.log("La membresía aún no es válida.");
+      return "Aún no es válida la membresía"; 
+  }
 
-    // Aplicar la lógica de redondeo
-    let diasCalculados;
-    if (diferenciaDias > 0 && diferenciaDias < 1) {
-        diasCalculados = Math.ceil(diferenciaDias); // Redondear hacia arriba si está entre 0 y 1
-    } else if (diferenciaDias >= 1) {
-        diasCalculados = Math.floor(diferenciaDias); // Redondear hacia abajo si es mayor a 1
-    } else {
-        diasCalculados = 0; // Si la diferencia es negativa o 0
-    }
+  // Comparar fechaInicio con la fecha actual
+  const fechaBase = fechaInicial >= hoy ? fechaInicial : hoy;
+  console.log("Fecha base para el cálculo:", fechaBase);
 
-    return diasCalculados;
+  // Calcular la diferencia de tiempo entre fechaFinal y fechaBase
+  const diferenciaTiempo = fechaFinal.getTime() - fechaBase.getTime();
+  console.log("Diferencia de tiempo (ms):", diferenciaTiempo);
+
+  // Convertir la diferencia de milisegundos a días
+  const diferenciaDias = diferenciaTiempo / (1000 * 3600 * 24);
+  console.log("Diferencia en días:", diferenciaDias);
+
+  // Aplicar la lógica de redondeo
+  let diasCalculados;
+  if (diferenciaDias > 0 && diferenciaDias < 1) {
+      diasCalculados = Math.ceil(diferenciaDias); // Redondear hacia arriba si está entre 0 y 1
+  } else if (diferenciaDias >= 1) {
+      diasCalculados = Math.floor(diferenciaDias); // Redondear hacia abajo si es mayor a 1
+  } else {
+      diasCalculados = 0; // Si la diferencia es negativa o 0
+  }
+
+  console.log("Días calculados:", diasCalculados);
+  return diasCalculados;
 }
+
 
 
 MembershipDuration(fechaInicio: string, fechaFin: string) {
