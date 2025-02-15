@@ -17,7 +17,7 @@ import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desact
 
 import { ColaboradorService } from './../../service/colaborador.service';
 
-
+import { EventCommunicationServiceService } from '../../service/event-communication-service.service';
 
 
 @Component({
@@ -66,6 +66,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
     private auth: AuthService,
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     private http: ColaboradorService,
+    private eventCommunicationService: EventCommunicationServiceService,
+
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
       const sanitizeValue = (value: any): string => {
@@ -235,8 +237,10 @@ MembershipDuration(fechaInicio: string, fechaFin: string) {
               this.toastr.success('Registro eliminado exitosamente', 'Éxito', {
                 positionClass: 'toast-bottom-left',
 
+
               });
               this.UserHIstorial(this.data.idCliente);
+              this.emitEnventMethod('Borrar usuario')
             } else { // Respuesta no exitosa
               this.toastr.error('No se pudo eliminar el registro', 'Error', {
                 positionClass: 'toast-bottom-left',
@@ -291,7 +295,7 @@ OpenRestablecer(empleados: any) {
           });
       }
 
-      onToggle(event: MatSlideToggleChange, idEmpleado: number): void {
+onToggle(event: MatSlideToggleChange, idEmpleado: number): void {
         if (!event.checked) {
           const nuevoEstatus = 2;
 
@@ -306,7 +310,7 @@ OpenRestablecer(empleados: any) {
           dialogRef.afterClosed().subscribe((result) => {
             if (result) {
               this.http.actualizarEstatus(Number(idEmpleado), nuevoEstatus).subscribe((response) => {
-                this.cerrarDialogo();
+                //this.cerrarDialogo();
               });
             } else {
               // Si cancela, restablecer el toggle a true
@@ -362,7 +366,8 @@ OpenRestablecer(empleados: any) {
             data: resultData.Mensaje || 'Datos actualizados satisfactoriamente'
           }).afterClosed()
             .subscribe(() => {
-              // Aquí puedes agregar lógica si es necesario
+              this.emitEnventMethod('Actualizar Cliente')
+
             });
 
         } else {
@@ -444,6 +449,13 @@ generarContraseña(longitud: number): void {
 
 
 
+    emitEnventMethod(button: string){
+
+  const modalId = 'ModalEmergenteInfoCliente'; // Identificador único del modal
+  const data = {boton:button }; // Datos opcionales
+
+  this.eventCommunicationService.triggerEvent(modalId, data); // Emitir evento
+}
 
 
   }
