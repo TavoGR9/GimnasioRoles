@@ -262,14 +262,24 @@ MembershipDuration(fechaInicio: string, fechaFin: string) {
       (respuesta: any) => {
         // Filtramos los datos para obtener solo el usuario con la clave proporcionada
         const datosFiltrados = respuesta.data.filter((item: any) => item.clave === clave);
+        console.log('datos filtrados',datosFiltrados)
 
          // Filtramos solo los registros donde id_pedido esté presente (no sea null ni undefined)
          const registrosConPedido = datosFiltrados.filter((item: any) => item.id_pedido);
+         console.log(' registrosConPedido',registrosConPedido)
+
 
         // Agrupamos los registros por id_pedido directamente (sin aplicar el filtro de conteoPedidos y estatus)
         const agrupadosPorPedido = this.pagoService.agruparPorPedido(registrosConPedido);
+        console.log(' agrupadosPorPedido',agrupadosPorPedido)
 
-        const ordenar= this.ordenar(agrupadosPorPedido);
+        const ordenar = agrupadosPorPedido.sort((a, b) => new Date(b.fecha_caducidad).getTime() - new Date(a.fecha_caducidad).getTime());
+    
+      
+
+        //const ordenar= this.ordenarPedidos(agrupadosPorPedido);
+        //console.log(' ordenar',ordenar)
+        
         this.dataSource = new MatTableDataSource(ordenar);
         this.dataSource.paginator = this.paginator;
       },
@@ -431,22 +441,40 @@ generarContraseña(longitud: number): void {
 
     }
 
-    ordenar(array: any[]) {
-      return array.sort((a, b) => {
-        // Condición 1: estatus 1 y conteoPedidos 1 primero
-        if (a.estatus === '1' && a.conteoPedidos === 1) return -1;
-        if (b.estatus === '1' && b.conteoPedidos === 1) return 1;
-
-        // Condición 2: Solo estatus 1, ordenar por fecha_hora_pedido ascendente
-        if (a.estatus === '1' && b.estatus === '1') {
-          return new Date(a.fecha_hora_pedido).getTime() - new Date(b.fecha_hora_pedido).getTime();
-        }
-
-        // Condición 3: Los demás, ordenar por fecha_hora_pedido descendente
-        return new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime();
-      });
+    ordenarPedidos(array: any[]): any[] {
+      console.log("📌 Array original:", JSON.stringify(array, null, 2));
+    
+      // 1️⃣ Separar en grupos según las condiciones dadas
+      const grupo1 = array.filter(p => p.pedidoActual === "1" && p.estatus === "1");
+      const grupo2 = array.filter(p => p.pedidoActual === "0" && p.estatus === "1");
+      const grupo3 = array.filter(p => p.estatus === "2");
+      const grupo4 = array.filter(p => p.estatus === "0");
+    
+      console.log("🔹 Grupo 1 (pedidoActual=1, estatus=1):", grupo1);
+      console.log("🔹 Grupo 2 (estatus=1, pedidoActual=0):", grupo2);
+      console.log("🔹 Grupo 3 (estatus=2):", grupo3);
+      console.log("🔹 Grupo 4 (estatus=0):", grupo4);
+    
+      // 2️⃣ Ordenar cada grupo según las reglas
+      grupo1.sort((a, b) => new Date(a.fecha_inicio).getTime() - new Date(b.fecha_inicio).getTime());
+      grupo2.sort((a, b) => new Date(a.fecha_inicio).getTime() - new Date(b.fecha_inicio).getTime());
+      grupo3.sort((a, b) => new Date(b.fecha_caducidad).getTime() - new Date(a.fecha_caducidad).getTime());
+      grupo4.sort((a, b) => new Date(b.fecha_caducidad).getTime() - new Date(a.fecha_caducidad).getTime());
+    
+      console.log("✅ Grupo 1 Ordenado:", grupo1);
+      console.log("✅ Grupo 2 Ordenado:", grupo2);
+      console.log("✅ Grupo 3 Ordenado:", grupo3);
+      console.log("✅ Grupo 4 Ordenado:", grupo4);
+    
+      // 3️⃣ Combinar los grupos en un solo array
+      const resultado = [...grupo1, ...grupo2, ...grupo3, ...grupo4];
+    
+      console.log("📌 Resultado Final Ordenado:", resultado);
+      return resultado;
     }
-
+    
+    
+    
 
 
     emitEnventMethod(button: string){

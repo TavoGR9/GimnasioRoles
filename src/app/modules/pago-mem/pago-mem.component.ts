@@ -280,7 +280,7 @@ export class PagoMemComponent implements OnInit{
             const conPedidos = filtradosPorFecha.filter((item: any) => item.id_pedido);
 
             // Agrupamos por pedido.
-            const agrupadosConPedidos = this.agruparPorPedido(conPedidos);
+            const agrupadosConPedidos = this.pagoMem.agruparPorPedido(conPedidos);
 
             // Ordenamos por fecha_hora_pedido.
             agrupadosConPedidos.sort((a: any, b: any) => {
