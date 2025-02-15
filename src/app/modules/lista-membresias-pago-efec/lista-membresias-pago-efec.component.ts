@@ -778,23 +778,24 @@ listaClientesData3(): void {
       const Clientes = this.Clientes;
 
       console.log("Respuesta de API:", respuestaApi);
+// ✅ 1. Obtener las claves de clientes que sí tienen pedidos
+const clientesConPedidosTotales = new Set(
+  Clientes.filter((cliente: any) => cliente.id_pedido && cliente.id_pedido.trim() !== '')
+          .map((cliente: any) => cliente.clave)
+);
 
-      // ✅ 1. Obtener clientes con pedidos
-      const clientesConPedidosTotales = new Set(
-        Clientes.map((cliente: any) => cliente.clave)
-      );
+console.log("Clientes que sí tienen pedidos:", clientesConPedidosTotales);
 
-      console.log("Clientes con pedidos en toda la API:", clientesConPedidosTotales);
+// ✅ 2. Filtrar clientes sin pedidos (es decir, los que no están en clientesConPedidosTotales)
+const clientesSinPedidos = Clientes
+  .filter((cliente: any) => !clientesConPedidosTotales.has(cliente.clave))
+  .map((cliente: any) => ({
+    ...cliente,
+    productos: [] 
+  }));
 
-      // ✅ 2. Filtrar clientes sin pedidos
-      const clientesSinPedidos = Clientes
-        .filter((cliente: any) => !clientesConPedidosTotales.has(cliente.clave))
-        .map((cliente: any) => ({
-          ...cliente,
-          productos: [] 
-        }));
+console.log("Clientes sin pedidos:", clientesSinPedidos);
 
-      console.log("Clientes sin pedidos:", clientesSinPedidos);
 
       // ✅ 3. Agrupar productos por pedido
       const pedidosAgrupados = this.pagoService.agruparPorPedido(Clientes);
@@ -858,7 +859,11 @@ listaClientesData3(): void {
 
       console.log("Usuarios con pedidos activos:", usuariosConPedidosActivos);
       console.log("Usuarios con pedidos estatus 2:", usuariosConPedidosEstatus2);
+      
       console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFechaFin);
+      
+      console.log("Usuarios sin pedidos", clientesSinPedidos);
+      
 
       // ✅ 6. Unir los tres grupos y los clientes sin pedidos para obtener los CLIENTES FINALES
       let clientesFinales = [
@@ -867,6 +872,8 @@ listaClientesData3(): void {
         ...usuariosConPedidosEstatus2,
         ...usuariosConPedidosPorFechaFin
       ];
+
+
 
       // ✅ 7. Filtrar clientes finales por rango de fechas (ÚLTIMO PASO)
       const fechaInicioValida = this.fechaInicio instanceof Date && !isNaN(this.fechaInicio.getTime());
