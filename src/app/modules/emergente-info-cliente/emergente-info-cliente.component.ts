@@ -502,4 +502,11 @@ generarContraseña(longitud: number): void {
 }
 
 
+isValidData(value: any): boolean {
+  return value !== undefined && value !== null && value.toString().trim() !== 'undefined' && value.toString().trim() !== '';
+}
+
+
+
+
   }

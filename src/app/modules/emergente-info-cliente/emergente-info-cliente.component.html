@@ -89,16 +89,20 @@
   <div class="grid">
 
     <div class="column">
-      <ng-container >
-        <h3 style="font-weight: bold;">Membresia:</h3> {{ data.membresia }}
+      <ng-container   >
+        <h3 style="font-weight: bold;">Membresia:</h3> 
+        <span *ngIf="isValidData(data?.membresia)">{{ data?.membresia }}</span>
       </ng-container>
 
     </div>
 
-    <div class="column">
+    <div class="column" >
       <h3 style="font-weight: bold;">Dias restantes:</h3>
       
-      <span [ngClass]="{'text-danger': duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) === 'Aún no es válida la membresía'||'Membresia caducada'}">
+      <span [ngClass]="{
+          'text-danger': duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) === 'Aún no es válida la membresía' || 
+                         duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) === 'Membresia caducada'
+      }">
         {{ duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) }}
       </span>
     </div>
