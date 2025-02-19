@@ -248,9 +248,11 @@ reloadPage(): void {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
 
           if (pedidos) {
-            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
 
-            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
+            const now = new Date().toLocaleDateString('fr-CA'); // Obtener la fecha actual en formato YYYY-MM-DD
+            //console.log('Pedidos: ',now);
+            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toLocaleDateString('fr-CA') === now  );
+           // console.log('Pedidos: ',mensualidades);
             // Calculamos la suma de total_cantidad
              this.totalMesesCantidad = mensualidades.reduce(
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
@@ -330,9 +332,11 @@ reloadPage(): void {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
 
           if (pedidos) {
-            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+            const now = new Date().toLocaleDateString('fr-CA'); // Obtener la fecha actual en formato YYYY-MM-DD
 
-            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
+            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toLocaleDateString('fr-CA') === now);
+
+
             // Calculamos la suma de total_cantidad
              this.totalVisitaCantidad = visitas.reduce(
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),

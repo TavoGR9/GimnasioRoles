@@ -279,10 +279,10 @@ export class VerCorteComponent implements OnInit  {
 
     const titulos = {
       descripcion: 'Nombre del producto',
-      cantidad: 'Cantidad',
-      total: 'Precio unitario',
       fecha_hora_pedido: 'Fecha de venta',
       VendidoPor: 'Vendido por',
+      cantidad: 'Cantidad',
+      total: 'Precio unitario',
       'Total Ventas': 'Total de ventas'
     };
 
@@ -290,10 +290,10 @@ export class VerCorteComponent implements OnInit  {
     const datosConTitulos = datosFiltrados.map(elemento => {
       return {
         'Nombre del producto': elemento.descripcion,
-        'Cantidad': elemento.cantidad,
-        'Precio unitario': elemento.total,
         'Fecha de venta': elemento.fecha_hora_pedido,
         'Vendido por': elemento.nombreCompleto, // Asegúrate de que esto coincida con la estructura de tus datos
+        'Cantidad': elemento.cantidad,
+        'Precio unitario': elemento.total,
         'Total de ventas': elemento['Total Ventas']
       };
     });
@@ -304,10 +304,10 @@ export class VerCorteComponent implements OnInit  {
 
     worksheet['!cols'] = [
       { wpx: 200 },
+      { wpx: 150 },
+      { wpx: 150 },
       { wpx: 100 },
       { wpx: 100 },
-      { wpx: 100 },
-      { wpx: 200 },
       { wpx: 100 },
     ];
 
