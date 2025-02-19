@@ -229,7 +229,7 @@ verificarCambios(): void {
     this.fechaInicioAnterior = this.fechaInicio;
     this.fechaFinAnterior = this.fechaFin;
 
-    this.listaClientesData3()
+    this.loadData()
     //this.updateDateLogs();
   }
 }
@@ -403,6 +403,7 @@ verificarCambios(): void {
   eliminarCliente(prod: any) {
     const clave = prod.clave; // Usar 'clave' como identificador del cliente
 
+
     this.dialog
       .open(MensajeEliminarComponent, {
         data: `¿Desea eliminar a este usuario?`,
@@ -420,6 +421,7 @@ verificarCambios(): void {
                 this.listaClientesData3(); // Actualizar lista de clientes
               } else {
                 // Mostrar un Toast de error si la respuesta no es exitosa
+             
                 this.toastr.error(
                   'Ocurrió un error al eliminar el registro',
                   'Error',
@@ -495,7 +497,7 @@ verificarCambios(): void {
           // Filtramos los clientes dentro del rango de fechas.
           const filtradosPorFecha = Clientes.filter((cliente: any) => {
             const fechaRegistro = new Date(cliente.fecha_hora_pedido);
-            return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+            return fechaInicio && fechaFin && fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
           });
 
 
@@ -632,7 +634,7 @@ verificarCambios(): void {
 
   }
 */
-
+/*
 listaClientesData3(): void {
 
 this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
@@ -701,7 +703,7 @@ this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
  
 // ✅ 6.5 Filtrar usuarios que tienen todos sus pedidos adelantados por membresía cancelada actual
 const usuariosConPedidosAdelantados = Object.values(pedidosPorUsuario)
-  .filter((pedidos: any[]) => pedidos.every(pedido => pedido.conteoPedidos === "2"))
+  .filter((pedidos: any[]) => pedidos.every(pedido => pedido.status === "2"))
   .map((pedidos: any[]) =>
     pedidos.sort((a, b) => new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime())[0]
   )
@@ -717,13 +719,13 @@ const usuariosConPedidosAdelantados = Object.values(pedidosPorUsuario)
     rol: usuario.rol,
     precioPedido: null, // Cambiado a null
     total: null, // Cambiado a null
-    membresia: "Cancelada", // Cambiado a "Cancelada"
+    membresia: "Membresia actual cancelada", // Cambiado a "Cancelada"
     correoCliente: usuario.correoCliente,
     id_pedido: usuario.id_pedido,
     fecha_hora_pedido: null, // Cambiado a null
     id_bodega: usuario.id_bodega,
     precioCompra: null, // Cambiado a null
-    conteoPedidos: usuario.conteoPedidos,
+  
     estatus: "0", // Cambiado a "0"
     fecha_inicio: null, // Cambiado a null
     fecha_caducidad: null, // Cambiado a null
@@ -744,7 +746,7 @@ console.log(usuariosConPedidosAdelantados);
       .flat()
       .filter((item: any) =>
         Array.isArray(item.productos) &&
-        item.productos.some((producto: any) => producto.conteoPedidos === "1" && producto.estatus === "1")
+        item.productos.some((producto: any) => producto.estatus === "1")
       );
 
     console.log("Pedidos activos filtrados:", filteredData);
@@ -766,6 +768,151 @@ console.log(usuariosConPedidosAdelantados);
     this.toastr.error('Ocurrió un error al obtener los datos de los clientes', 'Error');
   }
 );
+}
+*/
+
+listaClientesData3(): void {
+  this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+    (response: any) => {
+      if (!response) return;
+      const respuestaApi = response.data;
+      this.Clientes = respuestaApi;
+      const Clientes = this.Clientes;
+
+      console.log("Respuesta de API:", respuestaApi);
+// ✅ 1. Obtener las claves de clientes que sí tienen pedidos
+const clientesConPedidosTotales = new Set(
+  Clientes.filter((cliente: any) => cliente.id_pedido && cliente.id_pedido.trim() !== '')
+          .map((cliente: any) => cliente.clave)
+);
+
+console.log("Clientes que sí tienen pedidos:", clientesConPedidosTotales);
+
+// ✅ 2. Filtrar clientes sin pedidos (es decir, los que no están en clientesConPedidosTotales)
+const clientesSinPedidos = Clientes
+  .filter((cliente: any) => !clientesConPedidosTotales.has(cliente.clave))
+  .map((cliente: any) => ({
+    ...cliente,
+    productos: [] 
+  }));
+
+console.log("Clientes sin pedidos:", clientesSinPedidos);
+
+
+      // ✅ 3. Agrupar productos por pedido
+      const pedidosAgrupados = this.pagoService.agruparPorPedido(Clientes);
+      console.log("Pedidos agrupados por usuario:", pedidosAgrupados);
+
+      // ✅ 4. Agrupar pedidos por usuario
+      const pedidosPorUsuario: Record<string, any[]> = pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
+        const identificador = item.clave;
+        if (!acc[identificador]) acc[identificador] = [];
+        acc[identificador].push(item);
+        return acc;
+      }, {});
+
+      console.log("Pedidos por usuario:", pedidosPorUsuario);
+
+      // ✅ 5. Filtrar clientes finales según lógica de pedidos
+      let usuariosConPedidosActivos: any[] = [];
+      let usuariosConPedidosEstatus2: any[] = [];
+      let usuariosConPedidosPorFechaFin: any[] = [];
+
+      Object.values(pedidosPorUsuario).forEach((pedidos: any[]) => {
+        // 1️⃣ Tomar pedidos activos (estatus 1 o pedidoActual = "1")
+        const pedidosActivos = pedidos.filter(
+          (pedido) => pedido.pedidoActual === "1" || pedido.estatus === "1"
+        );
+
+        if (pedidosActivos.length > 0) {
+          usuariosConPedidosActivos.push(...pedidosActivos);
+          return;
+        }
+
+        // 2️⃣ Tomar pedidos con estatus 2 (el más cercano a la fecha actual)
+        const pedidosEstatus2 = pedidos.filter((pedido) => pedido.estatus === "2");
+
+        if (pedidosEstatus2.length > 0) {
+          const fechaActual = new Date().getTime();
+          const pedidoMasCercano = pedidosEstatus2.reduce((pedidoCercano, pedido) => {
+            return Math.abs(new Date(pedido.fecha_caducidad).getTime() - fechaActual) <
+              Math.abs(new Date(pedidoCercano.fecha_caducidad).getTime() - fechaActual)
+              ? pedido
+              : pedidoCercano;
+          });
+
+          usuariosConPedidosEstatus2.push(pedidoMasCercano);
+          return;
+        }
+
+        // 3️⃣ Si no hay pedidos activos ni estatus 2, tomar el pedido cuya fecha_fin esté más cerca de la fecha actual
+        if (pedidos.length > 0) {
+          const fechaActual = new Date().getTime();
+          const pedidoMasCercano = pedidos.reduce((pedidoCercano, pedido) => {
+            return Math.abs(new Date(pedido.fecha_caducidad).getTime() - fechaActual) <
+              Math.abs(new Date(pedidoCercano.fecha_caducidad).getTime() - fechaActual)
+              ? pedido
+              : pedidoCercano;
+          });
+
+          usuariosConPedidosPorFechaFin.push(pedidoMasCercano);
+        }
+      });
+
+      console.log("Usuarios con pedidos activos:", usuariosConPedidosActivos);
+      console.log("Usuarios con pedidos estatus 2:", usuariosConPedidosEstatus2);
+      
+      console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFechaFin);
+      
+      console.log("Usuarios sin pedidos", clientesSinPedidos);
+      
+
+      // ✅ 6. Unir los tres grupos y los clientes sin pedidos para obtener los CLIENTES FINALES
+      let clientesFinales = [
+        ...clientesSinPedidos,
+        ...usuariosConPedidosActivos,
+        ...usuariosConPedidosEstatus2,
+        ...usuariosConPedidosPorFechaFin
+      ];
+
+
+
+      // ✅ 7. Filtrar clientes finales por rango de fechas (ÚLTIMO PASO)
+      const fechaInicioValida = this.fechaInicio instanceof Date && !isNaN(this.fechaInicio.getTime());
+      const fechaFinValida = this.fechaFin instanceof Date && !isNaN(this.fechaFin.getTime());
+
+      if (fechaInicioValida && fechaFinValida) {
+        const fechaInicio = new Date(this.fechaInicio!);
+        const fechaFin = new Date(this.fechaFin!);
+        fechaFin.setHours(23, 59, 0);
+
+        clientesFinales = clientesFinales.filter((cliente: any) => {
+          //const fechaRegistro = new Date(cliente.fecha_hora_pedido || cliente.fecha_inicio || cliente.fecha_fin);
+          const fechaRegistro = new Date(cliente.fecha_hora_pedido);
+         // return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+         return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+        });
+      }
+
+      console.log("Clientes finales filtrados por fecha:", clientesFinales);
+
+      // ✅ 8. Ordenar por fecha antes de asignar
+      this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
+        const fechaA = new Date(a.fecha_hora_pedido).getTime();
+        const fechaB = new Date(b.fecha_hora_pedido).getTime();
+        return fechaB - fechaA; // Orden descendente
+      });
+
+      // ✅ 9. Aplicar resultado final a la tabla
+      this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+      this.dataSourceActivos.paginator = this.paginatorActivos;
+
+      console.log("Clientes finales:", this.clienteActivo);
+    },
+    (error: any) => {
+      this.toastr.error('Ocurrió un error al obtener los datos de los clientes', 'Error');
+    }
+  );
 }
 
 

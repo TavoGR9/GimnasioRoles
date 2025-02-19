@@ -10,6 +10,7 @@ import { forkJoin,of  } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -372,8 +373,8 @@ agruparPorPedido(clientes: any[]): any[] {
         fecha_hora_pedido: cliente.fecha_hora_pedido,
         id_bodega: cliente.id_bodega,
         precioCompra: cliente.precioCompra,
-        conteoPedidos: cliente.conteoPedidos, // Inicia con el valor del primer producto
         estatus: cliente.estatus, // Inicia con el valor del primer producto
+        pedidoActual:cliente.pedidoActual,
         fecha_inicio: cliente.fecha_inicio,
         fecha_caducidad: cliente.fecha_caducidad, // Inicialmente tomamos la fecha
         idPromocion: cliente.idPromocion,
@@ -391,13 +392,10 @@ agruparPorPedido(clientes: any[]): any[] {
       estatus: cliente.estatus,
       fecha_inicio: cliente.fecha_inicio,
       fecha_caducidad: cliente.fecha_caducidad,
-      conteoPedidos: cliente.conteoPedidos
+  
     });
 
-    // Cambiar el valor de conteoPedidos si algún producto tiene conteoPedidos = 1
-    if (cliente.conteoPedidos === 1) {
-      agrupadosPorPedido[idPedido].conteoPedidos = 1;
-    }
+ 
 
     // Cambiar el valor de estatus si algún producto tiene estatus = '1'
     if (cliente.estatus === '1') {
