@@ -271,14 +271,15 @@ export class ProductoService {
       const url = `${this.API}updateProbod.php?actualizarP`;
       // console.log('datos: ', datosP);
 
-      return this.clienteHttp.post(url, datosP).pipe(
+      return this.clienteHttp.post<any>(url, datosP).pipe(
         tap(dataResponse => {
-          // console.log('que manda: ', dataResponse);
+          // Asegúrate de que la respuesta es la esperada
+          //console.log('Respuesta recibida:', dataResponse);
         }),
         catchError(error => {
-          console.log(error);
-          return error;
-       })
+          console.log('Error recibido:', error);
+          return throwError(() => new Error(error)); // Manejo adecuado del error
+        })
       );
     }
 

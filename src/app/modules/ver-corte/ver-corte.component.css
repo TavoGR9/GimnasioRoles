@@ -333,14 +333,20 @@ option {
 
 
 .download-button {
-    display: flex;
-    align-items:center;
-    border-color:#F9A640;
-    background-color:#F9A640;
-    width: 200px;
-    height: 37px;
-    border-radius: 5px;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centrar el texto */
+  border-color: #F9A640;
+  background-color: #F9A640;
+  width: 200px;
+  height: 37px;
+  border-radius: 5px;
+  position: absolute;
+  right: 10px; /* Ajusta la distancia del borde derecho */
+  top: 50%; /* Ajusta la posición vertical */
+  transform: translateY(-50%); /* Centrar verticalmente */
+}
+
 
   .download-icon {
     font-size: 24px;
