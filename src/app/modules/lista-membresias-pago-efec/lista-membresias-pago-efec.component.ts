@@ -202,14 +202,19 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     });
   }
 
-  async loadData() {
+  loadData() {
     this.isLoading = true; // Mostrar el icono de carga
 
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simula la espera
+    setTimeout(() => {
+      this.listaClientesData3(); // Llamar a la función que obtiene los datos
 
-    await this.listaClientesData3(); // Espera a que los datos se obtengan
+      setTimeout(() => {
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
 
-    this.isLoading = false; // Ocultar el icono de carga solo cuando los datos estén listos
+        this.isLoading = false; // Ocultar el icono de carga solo cuando la tabla esté lista
+      }, 500); // Pequeño retraso para asegurar que los datos se procesen correctamente
+    }, 1000);
   }
 
 
@@ -336,6 +341,7 @@ verificarCambios(): void {
           foto: `${prod.fotoUrl}`,
           action: `${prod.accion}`,
           fecha_caducidad: `${prod.fecha_caducidad}`,
+          fecha_inicio: `${prod.fecha_inicio}`,
           productos:  JSON.stringify(prod.productos),
         },
         width: "70%",
@@ -441,11 +447,6 @@ verificarCambios(): void {
         }
       });
   }
-
-
-
-
-
 
 
 

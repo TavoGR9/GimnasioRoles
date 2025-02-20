@@ -34,6 +34,8 @@ export class VerCorteComponent implements OnInit  {
   total = 0;
   fechaFin: Date = new Date();
   fechaInicio: Date = new Date();
+  private fechaInicioAnterior: Date | null = null;
+  private fechaFinAnterior: Date | null = null;
   fechaFiltro: string = "";
   opcionSeleccionada: string = "diario";
   totalAPagarCorte: number = 0;
@@ -62,7 +64,7 @@ export class VerCorteComponent implements OnInit  {
     // this.InventarioService.comprobar();
     // this.ventasService.comprobar();
     // this.joinDetalleVentaService.comprobar();
-    this.auth.comprobar().subscribe((respuesta)=>{
+    this.auth.comprobar().subscribe((respuesta) => {
       this.habilitarBoton = respuesta.status;
     });
     this.dialogStateService.currentMaximizeState.subscribe((isMaximized) => {
@@ -75,28 +77,35 @@ export class VerCorteComponent implements OnInit  {
       }
     });
     this.currentUser = this.auth.getCurrentUser();
-    if(this.currentUser){
+    if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
-
 
     combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(([idGym, idUser]) => {
       if (idGym && idUser) {
         this.idGym = idGym;
         this.idUser = idUser;
-        // console.log('idGym combine: ',this.idGym);
+        // console.log('idGym combine: ', this.idGym);
         this.listaTablas();
       }
     });
 
+    // Obtener la fecha actual en formato local
+    const fechaActual = this.obtenerFechaActual();
+    const year = fechaActual.getFullYear();
+    const month = fechaActual.getMonth(); // Nota: getMonth() es 0-indexado
+    const day = fechaActual.getDate();
 
-    const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
-  this.fechaFiltro = fechaActual;
-  this.fechaInicio = new Date(fechaActual);
-  this.fechaFin = new Date(fechaActual);
-  this.opcionSeleccionada = 'rango'; // Configuración por defecto
+    // Construir la fecha formateada para la visualización (opcional)
+    const fechaFormateada = `${year}-${('0' + (month + 1)).slice(-2)}-${('0' + day).slice(-2)}`;
 
+    this.fechaFiltro = fechaFormateada;
+    // Construir las fechas usando el constructor numérico para mantener la zona horaria local
+    this.fechaInicio = new Date(year, month, day);
+    this.fechaFin = new Date(year, month, day);
+    this.opcionSeleccionada = 'rango'; // Configuración por defecto
   }
+
 
   loadData() {
     setTimeout(() => {
@@ -175,6 +184,65 @@ export class VerCorteComponent implements OnInit  {
     this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;;
     this.actualizarTotalVentas();
   }
+
+
+  verificarCambios() {
+    if (!this.fechaInicio || !this.fechaFin) {
+      console.warn("Fechas no seleccionadas, no se aplicará el filtro.");
+      return;
+    }
+
+    // Normalizar fechas al inicio y final del día (hora local)
+    const fechaInicioFiltrar = new Date(this.fechaInicio);
+    fechaInicioFiltrar.setHours(0, 0, 0, 0);
+
+    const fechaFinFiltrar = new Date(this.fechaFin);
+    fechaFinFiltrar.setHours(23, 59, 59, 999);
+
+    // Convertir a formato YYYY-MM-DD manualmente para evitar problemas con UTC
+    const fechaInicioIso = fechaInicioFiltrar.getFullYear() + '-' +
+                           ('0' + (fechaInicioFiltrar.getMonth() + 1)).slice(-2) + '-' +
+                           ('0' + fechaInicioFiltrar.getDate()).slice(-2);
+
+    const fechaFinIso = fechaFinFiltrar.getFullYear() + '-' +
+                        ('0' + (fechaFinFiltrar.getMonth() + 1)).slice(-2) + '-' +
+                        ('0' + fechaFinFiltrar.getDate()).slice(-2);
+
+
+
+    // Configurar la función de filtrado en la tabla (Angular Material)
+    this.dataSource.filterPredicate = (data: any) => {
+      const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' según tu estructura
+      fechaItem.setHours(0, 0, 0, 0);
+      console.log('d=',fechaItem);
+
+
+      // Convertir a formato YYYY-MM-DD sin UTC
+      const fechaItemIso = fechaItem.getFullYear() + '-' +
+                           ('0' + (fechaItem.getMonth() + 1)).slice(-2) + '-' +
+                           ('0' + fechaItem.getDate()).slice(-2);
+                           console.log('itemiso=',fechaItemIso);
+      return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
+
+    };
+
+
+
+    // Aplicar filtro a la tabla
+    this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;
+    console.log('s=',this.dataSource.filter);
+
+
+
+
+    // Llamar a la función que actualiza los datos (si es necesario)
+    this.actualizarTotalVentas();
+
+  }
+
+
+
+
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

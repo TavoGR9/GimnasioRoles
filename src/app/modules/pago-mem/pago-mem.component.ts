@@ -48,6 +48,7 @@ export class PagoMemComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.loadData();
     this.verTabla();
 
 
@@ -68,6 +69,11 @@ export class PagoMemComponent implements OnInit{
       this.dataSource.paginator = this.paginator;
 
     }, 1000);
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
 
@@ -291,6 +297,7 @@ export class PagoMemComponent implements OnInit{
             });
 
             this.clienteActivo = agrupadosConPedidos;
+            console.log('clienteActivo',this.clienteActivo)
 
 
 
@@ -308,60 +315,6 @@ export class PagoMemComponent implements OnInit{
 }
 
 
-// Nueva función: agruparPorPedido
-private agruparPorPedido(clientes: any[]): any[] {
-    // Creamos un objeto para almacenar los resultados agrupados por id_pedido.
-    const agrupadosPorPedido: { [key: string]: any } = {};
-
-    clientes.forEach(cliente => {
-        const idPedido = cliente.id_pedido;
-
-        // Ignoramos clientes que no tienen id_pedido.
-        if (!idPedido) {
-            return;
-        }
-
-        if (!agrupadosPorPedido[idPedido]) {
-            // Si no existe este `id_pedido` en el objeto agrupador, lo inicializamos.
-            agrupadosPorPedido[idPedido] = {
-                clave: cliente.clave,
-                estafeta: cliente.estafeta,
-                telefono: cliente.telefono,
-                fotoUrl: cliente.fotoUrl,
-                Correo: cliente.Correo,
-                nombreCompleto: cliente.nombreCompleto,
-                fechaRegistro: cliente.fechaRegistro,
-                huella: cliente.huella,
-                precioPedido: cliente.precioPedido,
-                total: cliente.total,
-                membresia: cliente.nombrePromocion ?? `${cliente.marca} - ${cliente.nombreProducto}`,
-                correoCliente: cliente.correoCliente,
-                id_pedido: cliente.id_pedido,
-                fecha_hora_pedido: cliente.fecha_hora_pedido,
-                id_bodega: cliente.id_bodega,
-                precioCompra: cliente.precioCompra,
-                conteoPedidos: cliente.conteoPedidos,
-                fecha_inicio: cliente.fecha_inicio,
-                fecha_caducidad: cliente.fecha_caducidad,
-                idPromocion: cliente.idPromocion,
-                nombrePromocion: cliente.nombrePromocion,
-                estatus: cliente.estatus,
-                productos: [] // Inicializamos un array vacío para los productos.
-            };
-        }
-
-        // Agregamos la información del producto al array `productos` correspondiente.
-        agrupadosPorPedido[idPedido].productos.push({
-            id_producto: cliente.id_producto,
-            marca: cliente.marca,
-            nombreProducto: cliente.nombreProducto,
-            idProbob: cliente.idProbob
-        });
-    });
-
-    // Convertimos el objeto agrupado en un array.
-    return Object.values(agrupadosPorPedido);
-}
 
 verificarCambios(): void {
   // Verificar que las fechas no sean nulas, indefinidas o inválidas

@@ -69,7 +69,7 @@ export class InventariosComponent implements OnInit {
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      // console.log('TODAS LAS EXISTENCIAS: ', respuesta);
+      //console.log('TODAS LAS EXISTENCIAS: ', respuesta);
 
       this.listInventarioData = this.aplicarFiltro(respuesta);
       //this.listInventarioData = respuesta;

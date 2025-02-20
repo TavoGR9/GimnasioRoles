@@ -15,50 +15,50 @@ table {
     margin: 20px auto;
     padding: 20px;
     width: 100%;
-    
+
     background-color: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
-  
+
   /* Estilos para el título principal */
   .resumen h1 {
     color: #333;
     font-size: 24px;
     margin-bottom: 20px;
   }
-  
+
   /* Estilos para la lista de productos */
   .resumen ul {
     list-style: none;
     padding: 0;
     margin: 0;
   }
-  
+
   /* Estilos para cada elemento de la lista de productos */
   .resumen li {
     margin-bottom: 10px;
     color: #555;
     font-size: 16px;
   }
-  
+
   /* Estilos para la sección del total */
   .resumen .total {
     margin-top: 30px;
   }
-  
+
   /* Estilos para los elementos de total */
   .resumen h2 {
     margin: 10px 0;
     font-size: 20px;
     font-weight: bold;
   }
-  
+
   /* Estilos para el campo de dinero recibido */
   .resumen mat-form-field {
     width: 100%;
   }
-  
+
   /* Estilos para el botón */
   .resumen button {
     margin-top: 20px;
@@ -71,12 +71,12 @@ table {
     cursor: pointer;
     transition: background-color 0.3s;
   }
-  
+
   /* Estilos para el botón al pasar el mouse por encima */
   .resumen button:hover {
     background-color: #0056b3;
   }
-  
+
 
   .open-cash-register {
     display: inline-flex;
@@ -125,7 +125,7 @@ table {
     transition: opacity 0.3s ease;
     width: 90%;
   }
-  
+
   .ver-cash-register  .icon {
     background-image: url('https://cdn-icons-png.flaticon.com/512/4696/4696938.png');
     background-size: 40px; /* Tamaño de la imagen */
@@ -135,7 +135,7 @@ table {
     height: 40px; /* Altura de la imagen */
     margin-right: 10px; /* Espacio entre la imagen y el texto */
   }
-  
+
   .open-cash-register  .icon {
     background-image: url('https://cdn-icons-png.flaticon.com/512/4696/4696938.png');
     background-size: 40px; /* Tamaño de la imagen */
@@ -156,11 +156,11 @@ table {
     height: 40px; /* Altura de la imagen */
     margin-right: 10px; /* Espacio entre la imagen y el texto */
   }
-  
+
   .open-cash-register:hover {
     opacity: 0.8;
   }
-  
+
   input[type="text"] {
     width: 100%;
     padding: 10px;
@@ -171,7 +171,7 @@ table {
     box-sizing: border-box; /* Asegura que el padding no aumente el tamaño total */
     transition: border-color 0.3s ease; /* Efecto de transición en el borde */
   }
-  
+
   /* Cambia el color del borde al enfocar el input */
   input[type="text"]:focus {
     outline: none; /* Quita el contorno al enfocar */
@@ -182,7 +182,7 @@ table {
     outline: none; /* Quita el contorno al enfocar */
     border-color: #007bff; /* Cambia el color del borde al enfocar */
   }
-  
+
   .number {
     width: 100%;
     padding: 10px;
@@ -239,7 +239,7 @@ table {
   display: flex;
   align-items: center;
   margin-bottom: 30px;
-  
+
 }
 
 /* Estilos para los inputs de fecha */
@@ -322,7 +322,7 @@ option {
 }
 
 .mat-button {
-    background-color: #F9A640; 
+    background-color: #F9A640;
    border-color:#F9A640;
 }
 
@@ -334,24 +334,24 @@ option {
 
 .download-button {
     display: flex;
-    align-items: center;
+    align-items:center;
     border-color:#F9A640;
     background-color:#F9A640;
     width: 200px;
     height: 37px;
     border-radius: 5px;
   }
-  
+
   .download-icon {
     font-size: 24px;
     margin-right: 5px;
    margin-right: 10px;
   }
-  
+
   .download-text {
     font-size: 13px;
   }
-  
+
   /* Estilos para el mensaje de falta de detalles */
 .no-details-message {
   font-size: 18px;
@@ -424,7 +424,7 @@ option {
 .spinner-text {
   margin-top: 10px;
   font-weight: bold;
-  color: #000000; 
+  color: #000000;
 }
 
 @keyframes spin {

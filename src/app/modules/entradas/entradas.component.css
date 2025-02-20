@@ -46,7 +46,7 @@
 /**propiedades contenedor formulario**/
 .form_data {
     margin: auto;
-    
+
     padding-bottom: 15px;
 }
 
@@ -63,7 +63,7 @@
     width: 290px;
     height: 45px;
     margin: 10px 7px;
-    background: #FD9727; 
+    background: #FD9727;
     color: white;
     font-size: larger;
 }
@@ -125,13 +125,13 @@
     align-items: center;
     height: 100%;
   }
-  
+
   .custom-spinner {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  
+
   .spinner-circle {
     width: 80px;
     height: 80px;
@@ -140,13 +140,13 @@
     border-top: 4px solid transparent;
     animation: spin 1s linear infinite;
   }
-  
+
   .spinner-text {
     margin-top: 10px;
     font-weight: bold;
-    color: #000000; 
+    color: #000000;
   }
-  
+
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -163,4 +163,10 @@
   .mat-button {
     background-color: #F9A640;
     color: #000000;
+}
+
+.download-icon {
+  font-size: 24px;
+  margin-right: 5px;
+ margin-right: 10px;
 }
