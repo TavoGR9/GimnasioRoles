@@ -200,27 +200,38 @@ export class VerCorteComponent implements OnInit  {
     const fechaFinIso = fechaFinFiltrar.getFullYear() + '-' + 
                         ('0' + (fechaFinFiltrar.getMonth() + 1)).slice(-2) + '-' + 
                         ('0' + fechaFinFiltrar.getDate()).slice(-2);
+
+                        
   
     // Configurar la función de filtrado en la tabla (Angular Material)
     this.dataSource.filterPredicate = (data: any) => {
       const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' según tu estructura
       fechaItem.setHours(0, 0, 0, 0);
+      console.log('d=',fechaItem);
+      
   
       // Convertir a formato YYYY-MM-DD sin UTC
       const fechaItemIso = fechaItem.getFullYear() + '-' + 
                            ('0' + (fechaItem.getMonth() + 1)).slice(-2) + '-' + 
                            ('0' + fechaItem.getDate()).slice(-2);
-  
+                           console.log('itemiso=',fechaItemIso);
       return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
+
     };
+
+    
   
     // Aplicar filtro a la tabla
     this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;
+    console.log('s=',this.dataSource.filter);
+    
+
+    
   
     // Llamar a la función que actualiza los datos (si es necesario)
     this.actualizarTotalVentas();
+
   }
-  
   
   
 
@@ -244,7 +255,7 @@ export class VerCorteComponent implements OnInit  {
       const precioUnitario = parseFloat(detalle.total);
       if (!isNaN(cantidad) && !isNaN(precioUnitario)) {
         return total + (cantidad * precioUnitario);
-      } else {
+      } else { 
         return total;
       }
     }, 0);
