@@ -1148,45 +1148,39 @@ export class CrearProductoComponent implements OnInit {
                                   this.form.value.cantidadMayoreo,
                                   //idUsuario: this.auth.idUser.getValue(),
                               };
-                              this.productoService
-                                .actualizarProducto2(formularioP)
-                                .subscribe({
-                                  next: (respuesta) => {
-                                    if (respuesta.success) {
-                                      this.spinner.hide();
-                                      this.dialog
-                                        .open(MensajeEmergentesComponent, {
-                                          data: `Producto actualizado exitosamente`,
-                                        })
-                                        .afterClosed()
-                                        .subscribe((cerrarDialogo: Boolean) => {
-                                          if (cerrarDialogo) {
-                                            this.productoSubject.next();
-                                            this.dialogo.close(true);
-                                          } else {
-                                            // Puedes agregar lógica adicional aquí si es necesario
-                                          }
-                                        });
-                                    } else {
-                                      this.toastr.error(
-                                        respuesta.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    }
-                                  },
-                                  error: (paramError) => {
-                                    this.toastr.error(
-                                      paramError.error.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  },
-                                });
+
+console.log('que se envia1: ', formularioP);
+
+this.productoService.actualizarProducto2(formularioP).subscribe({
+  next: (respuesta) => {
+      console.log('Respuesta recibida:', respuesta);
+      if (respuesta.success === 1) {
+          // Producto actualizado correctamente
+          console.log(respuesta.message);
+      } else {
+          // El código de barras ya existe
+          console.log(respuesta.message);
+          this.toastr.error(respuesta.message, "Error", {
+            positionClass: 'toast-bottom-left',
+        });
+      }
+      this.spinner.hide();
+  },
+  error: (paramError) => {
+      console.error('Error recibido:', paramError);
+      this.spinner.hide();
+      this.toastr.error('Error en la solicitud', 'Error', {
+          positionClass: 'toast-bottom-left',
+      });
+  }
+});
+
+
+
+
+
+
+
                             } else {
                               const formMarca = {
                                 marcaP: this.form.value.marcaP,
@@ -1221,48 +1215,36 @@ export class CrearProductoComponent implements OnInit {
                                       //idUsuario: this.auth.idUser.getValue(),
                                   };
 
-                                  this.productoService
-                                    .actualizarProducto2(formularioP)
-                                    .subscribe({
-                                      next: (respuesta) => {
-                                        if (respuesta.success) {
-                                          this.spinner.hide();
-                                          this.dialog
-                                            .open(MensajeEmergentesComponent, {
-                                              data: `Producto actualizado exitosamente`,
-                                            })
-                                            .afterClosed()
-                                            .subscribe(
-                                              (cerrarDialogo: Boolean) => {
-                                                if (cerrarDialogo) {
-                                                  this.productoSubject.next();
-                                                  this.dialogo.close(true);
-                                                } else {
-                                                  // Puedes agregar lógica adicional aquí si es necesario
-                                                }
-                                              }
-                                            );
+                                  console.log('que se envia2: ', formularioP);
+
+
+                                  this.productoService.actualizarProducto2(formularioP).subscribe({
+                                    next: (respuesta) => {
+                                        console.log('Respuesta recibida:', respuesta);
+                                        if (respuesta.success === 1) {
+                                            // Producto actualizado correctamente
+                                            console.log(respuesta.message);
                                         } else {
-                                          this.toastr.error(
-                                            respuesta.message,
-                                            "Error",
-                                            {
-                                              positionClass:
-                                                "toast-bottom-left",
-                                            }
-                                          );
+                                            // El código de barras ya existe
+                                            console.log(respuesta.message);
+                                            this.toastr.error(respuesta.message, "Error", {
+                                              positionClass: 'toast-bottom-left',
+                                          });
                                         }
-                                      },
-                                      error: (paramError) => {
-                                        this.toastr.error(
-                                          paramError.error.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      },
-                                    });
+                                        this.spinner.hide();
+                                    },
+                                    error: (paramError) => {
+                                        console.error('Error recibido:', paramError);
+                                        this.spinner.hide();
+                                        this.toastr.error('Error en la solicitud', 'Error', {
+                                            positionClass: 'toast-bottom-left',
+                                        });
+                                    }
+                                 });
+
+
+
+
                                 });
                             }
                           });
@@ -1310,48 +1292,36 @@ export class CrearProductoComponent implements OnInit {
                                       //idUsuario: this.auth.idUser.getValue(),
                                   };
 
-                                  this.productoService
-                                    .actualizarProducto2(formularioP)
-                                    .subscribe({
-                                      next: (respuesta) => {
-                                        if (respuesta.success) {
-                                          this.spinner.hide();
-                                          this.dialog
-                                            .open(MensajeEmergentesComponent, {
-                                              data: `Producto actualizado exitosamente`,
-                                            })
-                                            .afterClosed()
-                                            .subscribe(
-                                              (cerrarDialogo: Boolean) => {
-                                                if (cerrarDialogo) {
-                                                  this.productoSubject.next();
-                                                  this.dialogo.close(true);
-                                                } else {
-                                                  // Puedes agregar lógica adicional aquí si es necesario
-                                                }
-                                              }
-                                            );
+                                  console.log('que se envia3: ', formularioP);
+
+
+                                  this.productoService.actualizarProducto2(formularioP).subscribe({
+                                    next: (respuesta) => {
+                                        console.log('Respuesta recibida:', respuesta);
+                                        if (respuesta.success === 1) {
+                                            // Producto actualizado correctamente
+                                            console.log(respuesta.message);
                                         } else {
-                                          this.toastr.error(
-                                            respuesta.message,
-                                            "Error",
-                                            {
-                                              positionClass:
-                                                "toast-bottom-left",
-                                            }
-                                          );
+                                            // El código de barras ya existe
+                                            console.log(respuesta.message);
+                                            this.toastr.error(respuesta.message, "Error", {
+                                              positionClass: 'toast-bottom-left',
+                                          });
                                         }
-                                      },
-                                      error: (paramError) => {
-                                        this.toastr.error(
-                                          paramError.error.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      },
-                                    });
+                                        this.spinner.hide();
+                                    },
+                                    error: (paramError) => {
+                                        console.error('Error recibido:', paramError);
+                                        this.spinner.hide();
+                                        this.toastr.error('Error en la solicitud', 'Error', {
+                                            positionClass: 'toast-bottom-left',
+                                        });
+                                    }
+                                 });
+
+
+
+
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
@@ -1388,52 +1358,36 @@ export class CrearProductoComponent implements OnInit {
                                           //idUsuario: this.auth.idUser.getValue(),
                                       };
 
-                                      this.productoService
-                                        .actualizarProducto2(formularioP)
-                                        .subscribe({
-                                          next: (respuesta) => {
-                                            if (respuesta.success) {
-                                              this.spinner.hide();
-                                              this.dialog
-                                                .open(
-                                                  MensajeEmergentesComponent,
-                                                  {
-                                                    data: `Producto actualizado exitosamente`,
-                                                  }
-                                                )
-                                                .afterClosed()
-                                                .subscribe(
-                                                  (cerrarDialogo: Boolean) => {
-                                                    if (cerrarDialogo) {
-                                                      this.productoSubject.next();
-                                                      this.dialogo.close(true);
-                                                    } else {
-                                                      // Puedes agregar lógica adicional aquí si es necesario
-                                                    }
-                                                  }
-                                                );
+                                      console.log('que se envia4: ', formularioP);
+
+
+                                      this.productoService.actualizarProducto2(formularioP).subscribe({
+                                        next: (respuesta) => {
+                                            console.log('Respuesta recibida:', respuesta);
+                                            if (respuesta.success === 1) {
+                                                // Producto actualizado correctamente
+                                                console.log(respuesta.message);
                                             } else {
-                                              this.toastr.error(
-                                                respuesta.message,
-                                                "Error",
-                                                {
-                                                  positionClass:
-                                                    "toast-bottom-left",
-                                                }
-                                              );
+                                                // El código de barras ya existe
+                                                console.log(respuesta.message);
+                                                this.toastr.error(respuesta.message, "Error", {
+                                                  positionClass: 'toast-bottom-left',
+                                              });
                                             }
-                                          },
-                                          error: (paramError) => {
-                                            this.toastr.error(
-                                              paramError.error.message,
-                                              "Error",
-                                              {
-                                                positionClass:
-                                                  "toast-bottom-left",
-                                              }
-                                            );
-                                          },
-                                        });
+                                            this.spinner.hide();
+                                        },
+                                        error: (paramError) => {
+                                            console.error('Error recibido:', paramError);
+                                            this.spinner.hide();
+                                            this.toastr.error('Error en la solicitud', 'Error', {
+                                                positionClass: 'toast-bottom-left',
+                                            });
+                                        }
+                                     });
+
+
+
+
                                       this.spinner.hide();
                                     });
                                 }
@@ -1488,48 +1442,34 @@ export class CrearProductoComponent implements OnInit {
                                       //idUsuario: this.auth.idUser.getValue(),
                                   };
 
-                                  this.productoService
-                                    .actualizarProducto2(formularioP)
-                                    .subscribe({
-                                      next: (respuesta) => {
-                                        if (respuesta.success) {
-                                          this.spinner.hide();
-                                          this.dialog
-                                            .open(MensajeEmergentesComponent, {
-                                              data: `Producto actualizado exitosamente`,
-                                            })
-                                            .afterClosed()
-                                            .subscribe(
-                                              (cerrarDialogo: Boolean) => {
-                                                if (cerrarDialogo) {
-                                                  this.productoSubject.next();
-                                                  this.dialogo.close(true);
-                                                } else {
-                                                  // Puedes agregar lógica adicional aquí si es necesario
-                                                }
-                                              }
-                                            );
+                                  console.log('que se envia5: ', formularioP);
+
+                                  this.productoService.actualizarProducto2(formularioP).subscribe({
+                                    next: (respuesta) => {
+                                        console.log('Respuesta recibida:', respuesta);
+                                        if (respuesta.success === 1) {
+                                            // Producto actualizado correctamente
+                                            console.log(respuesta.message);
                                         } else {
-                                          this.toastr.error(
-                                            respuesta.message,
-                                            "Error",
-                                            {
-                                              positionClass:
-                                                "toast-bottom-left",
-                                            }
-                                          );
+                                            // El código de barras ya existe
+                                            console.log(respuesta.message);
+                                            this.toastr.error(respuesta.message, "Error", {
+                                              positionClass: 'toast-bottom-left',
+                                          });
                                         }
-                                      },
-                                      error: (paramError) => {
-                                        this.toastr.error(
-                                          paramError.error.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      },
-                                    });
+                                        this.spinner.hide();
+                                    },
+                                    error: (paramError) => {
+                                        console.error('Error recibido:', paramError);
+                                        this.spinner.hide();
+                                        this.toastr.error('Error en la solicitud', 'Error', {
+                                            positionClass: 'toast-bottom-left',
+                                        });
+                                    }
+                                 });
+
+
+
                                 } else {
                                   const formMarca = {
                                     marcaP: this.form.value.marcaP,
@@ -1568,51 +1508,34 @@ export class CrearProductoComponent implements OnInit {
                                           //idUsuario: this.auth.idUser.getValue(),
                                       };
 
-                                      this.productoService
-                                        .actualizarProducto2(formularioP)
-                                        .subscribe({
-                                          next: (respuesta) => {
-                                            if (respuesta.success) {
-                                              this.spinner.hide();
-                                              this.dialog
-                                                .open(
-                                                  MensajeEmergentesComponent,
-                                                  {
-                                                    data: `Producto actualizado exitosamente`,
-                                                  }
-                                                )
-                                                .afterClosed()
-                                                .subscribe(
-                                                  (cerrarDialogo: Boolean) => {
-                                                    if (cerrarDialogo) {
-                                                      this.productoSubject.next();
-                                                      this.dialogo.close(true);
-                                                    } else {
-                                                    }
-                                                  }
-                                                );
+                                      console.log('que se envia6: ', formularioP);
+
+                                      this.productoService.actualizarProducto2(formularioP).subscribe({
+                                        next: (respuesta) => {
+                                            console.log('Respuesta recibida:', respuesta);
+                                            if (respuesta.success === 1) {
+                                                // Producto actualizado correctamente
+                                                console.log(respuesta.message);
                                             } else {
-                                              this.toastr.error(
-                                                respuesta.message,
-                                                "Error",
-                                                {
-                                                  positionClass:
-                                                    "toast-bottom-left",
-                                                }
-                                              );
+                                                // El código de barras ya existe
+                                                console.log(respuesta.message);
+                                                this.toastr.error(respuesta.message, "Error", {
+                                                  positionClass: 'toast-bottom-left',
+                                              });
                                             }
-                                          },
-                                          error: (paramError) => {
-                                            this.toastr.error(
-                                              paramError.error.message,
-                                              "Error",
-                                              {
-                                                positionClass:
-                                                  "toast-bottom-left",
-                                              }
-                                            );
-                                          },
-                                        });
+                                            this.spinner.hide();
+                                        },
+                                        error: (paramError) => {
+                                            console.error('Error recibido:', paramError);
+                                            this.spinner.hide();
+                                            this.toastr.error('Error en la solicitud', 'Error', {
+                                                positionClass: 'toast-bottom-left',
+                                            });
+                                        }
+                                     });
+
+
+
                                       this.spinner.hide();
                                     });
                                 }
@@ -1661,51 +1584,37 @@ export class CrearProductoComponent implements OnInit {
                                           this.form.value.cantidadMayoreo,
                                          // idUsuario: this.auth.idUser.getValue(),
                                       };
-                                      this.productoService
-                                        .actualizarProducto2(formularioP)
-                                        .subscribe({
-                                          next: (respuesta) => {
-                                            if (respuesta.success) {
-                                              this.spinner.hide();
-                                              this.dialog
-                                                .open(
-                                                  MensajeEmergentesComponent,
-                                                  {
-                                                    data: `Producto actualizado exitosamente`,
-                                                  }
-                                                )
-                                                .afterClosed()
-                                                .subscribe(
-                                                  (cerrarDialogo: Boolean) => {
-                                                    if (cerrarDialogo) {
-                                                      this.productoSubject.next();
-                                                      this.dialogo.close(true);
-                                                    } else {
-                                                    }
-                                                  }
-                                                );
+
+                                      console.log('que se envia7: ', formularioP);
+
+
+                                      this.productoService.actualizarProducto2(formularioP).subscribe({
+                                        next: (respuesta) => {
+                                            console.log('Respuesta recibida:', respuesta);
+                                            if (respuesta.success === 1) {
+                                                // Producto actualizado correctamente
+                                                console.log(respuesta.message);
                                             } else {
-                                              this.toastr.error(
-                                                respuesta.message,
-                                                "Error",
-                                                {
-                                                  positionClass:
-                                                    "toast-bottom-left",
-                                                }
-                                              );
+                                                // El código de barras ya existe
+                                                console.log(respuesta.message);
+                                                this.toastr.error(respuesta.message, "Error", {
+                                                  positionClass: 'toast-bottom-left',
+                                              });
                                             }
-                                          },
-                                          error: (paramError) => {
-                                            this.toastr.error(
-                                              paramError.error.message,
-                                              "Error",
-                                              {
-                                                positionClass:
-                                                  "toast-bottom-left",
-                                              }
-                                            );
-                                          },
-                                        });
+                                            this.spinner.hide();
+                                        },
+                                        error: (paramError) => {
+                                            console.error('Error recibido:', paramError);
+                                            this.spinner.hide();
+                                            this.toastr.error('Error en la solicitud', 'Error', {
+                                                positionClass: 'toast-bottom-left',
+                                            });
+                                        }
+                                     });
+
+
+
+
                                     } else {
                                       const formMarca = {
                                         marcaP: this.form.value.marcaP,
@@ -1745,55 +1654,34 @@ export class CrearProductoComponent implements OnInit {
                                               //idUsuario: this.auth.idUser.getValue(),
                                           };
 
-                                          this.productoService
-                                            .actualizarProducto2(formularioP)
-                                            .subscribe({
-                                              next: (respuesta) => {
-                                                if (respuesta.success) {
-                                                  this.spinner.hide();
-                                                  this.dialog
-                                                    .open(
-                                                      MensajeEmergentesComponent,
-                                                      {
-                                                        data: `Producto actualizado exitosamente`,
-                                                      }
-                                                    )
-                                                    .afterClosed()
-                                                    .subscribe(
-                                                      (
-                                                        cerrarDialogo: Boolean
-                                                      ) => {
-                                                        if (cerrarDialogo) {
-                                                          this.productoSubject.next();
-                                                          this.dialogo.close(
-                                                            true
-                                                          );
-                                                        } else {
-                                                        }
-                                                      }
-                                                    );
+                                          console.log('que se envia8: ', formularioP);
+
+                                          this.productoService.actualizarProducto2(formularioP).subscribe({
+                                            next: (respuesta) => {
+                                                console.log('Respuesta recibida:', respuesta);
+                                                if (respuesta.success === 1) {
+                                                    // Producto actualizado correctamente
+                                                    console.log(respuesta.message);
                                                 } else {
-                                                  this.toastr.error(
-                                                    respuesta.message,
-                                                    "Error",
-                                                    {
-                                                      positionClass:
-                                                        "toast-bottom-left",
-                                                    }
-                                                  );
+                                                    // El código de barras ya existe
+                                                    console.log(respuesta.message);
+                                                    this.toastr.error(respuesta.message, "Error", {
+                                                      positionClass: 'toast-bottom-left',
+                                                  });
                                                 }
-                                              },
-                                              error: (paramError) => {
-                                                this.toastr.error(
-                                                  paramError.error.message,
-                                                  "Error",
-                                                  {
-                                                    positionClass:
-                                                      "toast-bottom-left",
-                                                  }
-                                                );
-                                              },
-                                            });
+                                                this.spinner.hide();
+                                            },
+                                            error: (paramError) => {
+                                                console.error('Error recibido:', paramError);
+                                                this.spinner.hide();
+                                                this.toastr.error('Error en la solicitud', 'Error', {
+                                                    positionClass: 'toast-bottom-left',
+                                                });
+                                            }
+                                         });
+
+
+
                                           this.spinner.hide();
                                         });
                                     }
