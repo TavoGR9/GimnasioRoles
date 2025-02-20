@@ -34,7 +34,6 @@ export class HomeService {
     )
   }
 
-
   consultarAsistenciasTotal(idGym: number): Observable<any> {
     const data = { idGim: idGym }; // Formato esperado por el backend
     return this.clienteHttp.post(this.API + "ObtenerAsistenciasFechaActualTotal.php", data).pipe(

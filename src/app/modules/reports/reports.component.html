@@ -61,7 +61,7 @@
                         <br>
                         <br>
                         <div>
-                            <h1>{{ gimnasioData.key }}</h1>
+                          <h1>{{ gimnasioData.key.split('-')[0] }} - Bodega: {{ gimnasioData.key.split('-')[1] }}</h1>
                             <div style="width: 90%; height: 70%;">
                                 <canvas baseChart [datasets]="gimnasioData.value.chartData" [labels]="gimnasioData.value.chartLabels" [options]="barChartOptions" [legend]="barChartLegend" [type]="barChartType">
                                 </canvas>

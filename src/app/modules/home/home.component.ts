@@ -363,7 +363,8 @@ reloadPage(): void {
     }
 
   calculateVisitaTotal(): void {
-    this.visitaTotal = (this.salesChartDataVisita.length * 70)
+    this.visitaTotal = (this.salesChartDataVisita.length * 70);
+    console.log("VISITAS: ",this.visitaTotal);
   }
 
 
@@ -1148,10 +1149,15 @@ processSalesDataVisita() {
   // Rellenar datos reales en las series
   Object.keys(this.salesData).forEach((date) => {
     const record = this.salesData[date];
+    console.log("Estructura de salesData:", JSON.stringify(this.salesData, null, 2));
+
+   // console.log("Datos: ",record);
     if (record.conteoProductos) {
       Object.values(record.conteoProductos).forEach((product: any) => {
+
         if (product.nombreProducto === this.selectedProductVisita) {
           const day = parseInt(date.split('-')[2]); // Extraer día (DD)
+          //console.log("FECHA: ",day);
           if (date.startsWith(currentMonthStrVisita) && day <= daysInCurrentMonth) {
             currentMonthSalesVisita[day - 1].value = product.cantidad;
           } else if (date.startsWith(previousMonthStrVisita)) {
