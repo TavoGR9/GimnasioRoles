@@ -89,17 +89,25 @@
   <div class="grid">
 
     <div class="column">
-      <ng-container >
-        <h3 style="font-weight: bold;">Membresia:</h3> {{ data.membresia }}
+      <ng-container   >
+        <h3 style="font-weight: bold;">Membresia:</h3> 
+        <span *ngIf="isValidData(data?.membresia)">{{ data?.membresia }}</span>
       </ng-container>
 
     </div>
 
     <div class="column" >
-      <ng-container  *ngIf="duracionCalculo2(data.fecha_inicio,data.fecha_caducidad)" >
-        <h3 style="font-weight: bold;">Duración:</h3>  {{ duracionCalculo2(data.fecha_inicio,data.fecha_caducidad) || null }}
-      </ng-container>
+      <h3 style="font-weight: bold;">Dias restantes:</h3>
+      
+      <span [ngClass]="{
+          'text-danger': duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) === 'Aún no es válida la membresía' || 
+                         duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) === 'Membresia caducada'
+      }"
+       *ngIf="isValidData(data?.membresia) && isValidData(data?.fecha_inicio) && isValidData(data?.fecha_caducidad)">
+        {{ duracionCalculo3(data.fecha_inicio, data.fecha_caducidad) }}
+      </span>
     </div>
+    
 
 
 
@@ -108,9 +116,9 @@
         <h3 style="font-weight: bold;">Información de la membresia:</h3>
         <ul>
           <li *ngFor="let producto of productos">
-            <ng-container *ngIf="duracionCalculo2(producto.fecha_inicio, producto.fecha_caducidad) > 0">
+            <ng-container >
               {{ producto.marca }} -  {{ producto.nombreProducto }}
-              - Duración: {{ duracionCalculo2(producto.fecha_inicio, producto.fecha_caducidad) }} días
+              - Duración: {{ MembershipDuration(producto.fecha_inicio, producto.fecha_caducidad) }} días
             </ng-container>
           </li>
         </ul>
@@ -161,16 +169,22 @@
 
               <ng-container *ngIf="column === 'Status'">
                 <!-- Mostrar el texto del estatus con estilos condicionales -->
-                <p [ngClass]="{'estatus-activo': memCli.estatus === '1', 'estatus-inactivo': memCli.estatus !== '1'}">
-                  {{ memCli.estatus === '1' ? 'Activo' : 'Inactivo' }}
+                <p [ngClass]="{'estatus-activo': memCli.estatus === '1',
+                 'estatus-inactivo': memCli.estatus === '0',
+                 'estatus-pago-adelantado': memCli.estatus === '2'
+                 }">
+                   {{ memCli.estatus === '1' ? 'Activo' : (memCli.estatus === '2' ? 'Pago Adelantado' : 'Inactivo') }}
                 </p>
 
                 <!-- Mostrar íconos según el estatus -->
                 <ng-container *ngIf="memCli.estatus === '1'">
                   <mat-icon style="color:green">timer</mat-icon>
                 </ng-container>
-                <ng-container *ngIf="memCli.estatus !== '1'">
-                  <mat-icon style="color:red">timer_off</mat-icon>
+                <ng-container *ngIf="memCli.estatus === '0'">
+                  <mat-icon style="color:red">timer</mat-icon>
+                </ng-container>
+                <ng-container *ngIf="memCli.estatus === '2'">
+                  <mat-icon style="color:rgba(30, 48, 248, 0.982)">timer</mat-icon>
                 </ng-container>
               </ng-container>
 

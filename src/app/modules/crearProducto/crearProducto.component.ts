@@ -163,7 +163,7 @@ export class CrearProductoComponent implements OnInit {
 
         // Filtrar las categorías excluyendo aquellas donde nombreCategoria sea "Servicios"
         const categoriasFiltradas = respuesta.filter(
-          (categoria: any) => categoria.nombreCategoria !== "Servicios"
+          (categoria: any) => categoria.membresia == 0 && categoria.status == 1
         );
 
         const categoriasU = new Set(
