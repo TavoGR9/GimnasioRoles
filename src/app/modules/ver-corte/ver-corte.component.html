@@ -13,20 +13,35 @@
          <div >
             <br>
             <div class="row">
-               <div class="col-sm-6">
+               <div class="container">
                   <p>Filtro por fecha:</p>
-                  <select [(ngModel)]="opcionSeleccionada" style="margin-right: 20px;">
-                  <!-- <option value="diario">Diario</option> -->
-                  <option value="rango">Rango Personalizado</option>
-                  </select>
-                  <!-- <ng-container *ngIf="opcionSeleccionada === 'diario'">
-                     <input type="date" [(ngModel)]="fechaFiltro" (ngModelChange)="aplicarFiltro()" class="input-date" style="margin-right: 20px;">
-                  </ng-container> -->
-                  <ng-container *ngIf="opcionSeleccionada === 'rango'">
-                     <input type="date" [(ngModel)]="fechaInicio" (change)="aplicarFiltross()" class="input-date">
-                     <input type="date" [(ngModel)]="fechaFin" (change)="aplicarFiltross()" class="input-date">
-                  </ng-container>
-               </div>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <mat-form-field appearance="outline" style="width: 90%;">
+                        <mat-label>Fecha Registro Inicio</mat-label>
+                        <input matInput [matDatepicker]="pickerInicio"
+                         [(ngModel)]="fechaInicio"
+                         (ngModelChange)="verificarCambios()"
+                          readonly>
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerInicio></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-sm-3">
+                      <mat-form-field appearance="outline" style="width: 90%;">
+                        <mat-label>Fecha Registro Fin</mat-label>
+                        <input matInput [matDatepicker]="pickerFin"
+                        [(ngModel)]="fechaFin"
+                        (ngModelChange)="verificarCambios()"
+                        readonly>
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerFin></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                  </div>
+              </div>
                <div class="col-sm-6">
                   <div style="display: flex; justify-content: flex-end;margin-top: 30px;">
                      <button mat-button [matMenuTriggerFor]="menu2" class="download-button">

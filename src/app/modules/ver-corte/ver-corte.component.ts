@@ -34,6 +34,8 @@ export class VerCorteComponent implements OnInit  {
   total = 0;
   fechaFin: Date = new Date();
   fechaInicio: Date = new Date();
+  private fechaInicioAnterior: Date | null = null;
+  private fechaFinAnterior: Date | null = null;
   fechaFiltro: string = "";
   opcionSeleccionada: string = "diario";
   totalAPagarCorte: number = 0;
@@ -175,6 +177,54 @@ export class VerCorteComponent implements OnInit  {
     this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;;
     this.actualizarTotalVentas();
   }
+
+  
+  verificarCambios() {
+    if (!this.fechaInicio || !this.fechaFin) {
+      console.warn("Fechas no seleccionadas, no se aplicará el filtro.");
+      return;
+    }
+  
+    // Normalizar fechas al inicio y final del día (hora local)
+    const fechaInicioFiltrar = new Date(this.fechaInicio);
+    fechaInicioFiltrar.setHours(0, 0, 0, 0);
+  
+    const fechaFinFiltrar = new Date(this.fechaFin);
+    fechaFinFiltrar.setHours(23, 59, 59, 999);
+  
+    // Convertir a formato YYYY-MM-DD manualmente para evitar problemas con UTC
+    const fechaInicioIso = fechaInicioFiltrar.getFullYear() + '-' + 
+                           ('0' + (fechaInicioFiltrar.getMonth() + 1)).slice(-2) + '-' + 
+                           ('0' + fechaInicioFiltrar.getDate()).slice(-2);
+    
+    const fechaFinIso = fechaFinFiltrar.getFullYear() + '-' + 
+                        ('0' + (fechaFinFiltrar.getMonth() + 1)).slice(-2) + '-' + 
+                        ('0' + fechaFinFiltrar.getDate()).slice(-2);
+  
+    // Configurar la función de filtrado en la tabla (Angular Material)
+    this.dataSource.filterPredicate = (data: any) => {
+      const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' según tu estructura
+      fechaItem.setHours(0, 0, 0, 0);
+  
+      // Convertir a formato YYYY-MM-DD sin UTC
+      const fechaItemIso = fechaItem.getFullYear() + '-' + 
+                           ('0' + (fechaItem.getMonth() + 1)).slice(-2) + '-' + 
+                           ('0' + fechaItem.getDate()).slice(-2);
+  
+      return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
+    };
+  
+    // Aplicar filtro a la tabla
+    this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;
+  
+    // Llamar a la función que actualiza los datos (si es necesario)
+    this.actualizarTotalVentas();
+  }
+  
+  
+  
+
+  
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
