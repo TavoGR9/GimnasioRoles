@@ -54,7 +54,7 @@ export class PagoMemComponent implements OnInit{
 
       // Suscribirse al estado de conexión
       this.networkService.isOnline$.subscribe((status) => {
-        this.isOnline = status;
+      this.isOnline = status;
       });
 
 
@@ -64,9 +64,10 @@ export class PagoMemComponent implements OnInit{
 
   loadData() {
     setTimeout(() => {
+      this.isLoading = false;
       this.dataSource = new MatTableDataSource(this.clienteActivo);
       this.dataSource.paginator = this.paginator;
-      this.isLoading = false;
+
     }, 1000);
   }
 

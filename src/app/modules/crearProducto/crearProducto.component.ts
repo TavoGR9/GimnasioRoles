@@ -24,6 +24,7 @@ import { MensajeEmergentesComponent } from "../mensaje-emergentes/mensaje-emerge
 import { ProductoService } from "../../service/producto.service";
 import { Subject } from "rxjs";
 import { NgxSpinnerService } from "ngx-spinner";
+import { membresia } from '../../models/membresia';
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
@@ -41,8 +42,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   selector: "crear-producto",
   templateUrl: "./crearProducto.component.html",
   styleUrls: ["./crearProducto.component.css"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DatePipe, MessageService],
+  //changeDetection: ChangeDetectionStrategy.OnPush,
+  //providers: [DatePipe, MessageService],
 })
 export class CrearProductoComponent implements OnInit {
   fechaCreacion: string;

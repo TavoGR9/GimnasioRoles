@@ -56,8 +56,8 @@ export class InventariosComponent implements OnInit {
 
   loadData() {
     setTimeout(() => {
-      this.isLoading = false;
       this.dataSource.paginator = this.paginator;
+      this.isLoading = false;
     }, 1000);
   }
 
