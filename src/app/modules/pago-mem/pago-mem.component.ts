@@ -378,14 +378,14 @@ descargarExcel(): void {
           return [
               cliente.estafeta || "N/A",
               cliente.nombreCompleto || "N/A",
-              cliente.id_bodega || "N/A",
+              cliente.nombreBodega || "N/A",
               cliente.membresia || "N/A",
               cliente.total || 0,
               cliente.fecha_inicio ? this.datePipe.transform(cliente.fecha_inicio, "dd/MM/yyyy") : "Sin fecha",
               cliente.fecha_caducidad ? this.datePipe.transform(cliente.fecha_caducidad, "dd/MM/yyyy") : "Sin fecha",
               cliente.fecha_hora_pedido ? this.datePipe.transform(cliente.fecha_hora_pedido, "dd/MM/yyyy") : "Sin fecha",
               cliente.estatus == 1 ? "Activo" : "Inactivo",
-              cliente.creadoPor || "Desconocido",
+              cliente.CreatedBy || "Desconocido",
           ];
       }),
   ];

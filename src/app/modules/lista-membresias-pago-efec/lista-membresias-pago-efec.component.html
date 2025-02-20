@@ -4,7 +4,7 @@
 		<div class="spinner-text">Cargando...</div>
 	</div>
 </div>
-<div *ngIf="!isLoading">
+<div [hidden]="isLoading">
 	<div style="margin-top: 60px;">
 		<div class="container mt-4">
 			<h2>LISTA DE CLIENTES Y PAGO DE MEMBRESÍA EN EFECTIVO</h2>
@@ -96,7 +96,7 @@
 							</ng-container>
 							<ng-container *ngIf="column === 'Estatus'">
 								<div [ngClass]="{
-									'estatus-activo': prod.estatus === '1', 
+									'estatus-activo': prod.estatus === '1',
 									'estatus-inactivo': prod.estatus === '0',
 									'estatus-adelantado': prod.estatus === '2'
 									}">
@@ -149,7 +149,7 @@
 							<ng-container *ngIf="column === 'Usuario'">
 								<span *ngIf="prod.rol === 'Cliente'; else notCliente">
                   <mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
-                </span> 
+                </span>
 								<ng-template #notCliente>
 									<mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
 								</ng-template>
