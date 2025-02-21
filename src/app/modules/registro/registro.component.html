@@ -136,7 +136,7 @@
                                <mat-error *ngIf="form.get('nombreU')?.hasError('pattern') && !form.get('nombreU')?.hasError('required')">
                                   <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                                </mat-error>
-                               <mat-error ngIf="form.get('nombreU')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
+                               <mat-error *ngIf="form.get('nombreU')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
                             </mat-form-field>
                          </p>
                         </div>
@@ -149,7 +149,7 @@
                                <mat-error *ngIf="form.get('apPaterno')?.hasError('pattern') && !form.get('apPaterno')?.hasError('required')">
                                   <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                                </mat-error>
-                               <mat-error ngIf="form.get('apPaterno')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
+                               <mat-error *ngIf="form.get('apPaterno')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
                             </mat-form-field>
                          </p>
                         </div>
@@ -161,7 +161,7 @@
                             <mat-error *ngIf="form.get('apMaterno')?.hasError('pattern') && !form.get('apMaterno')?.hasError('required')">
                                <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                             </mat-error>
-                            <mat-error ngIf="form.get('apMaterno')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
+                            <mat-error *ngIf="form.get('apMaterno')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
                          </mat-form-field>
                         </div>
 
@@ -320,7 +320,7 @@
                      <mat-error *ngIf="form.get('email')?.hasError('pattern') && !form.get('email')?.hasError('required')">
                         <strong class="txt_msg">**Formato de correo no valido...</strong>
                      </mat-error>
-                    <mat-error ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
+                    <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
                   </mat-form-field>
                </p>
               </div>
@@ -378,7 +378,7 @@
 
               </form>
            </div>
-           
+
            <div mat-dialog-actions fxLayoutAlign="center center">
             <button mat-button [disabled]="!habilitarBoton" (click)="registrarUsuario()" style=" background-color: #fd9727; " mat-raised-button class="aceptar">
               ¡Registrar!

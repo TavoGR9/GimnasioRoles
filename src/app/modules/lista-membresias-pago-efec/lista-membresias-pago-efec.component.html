@@ -4,7 +4,7 @@
 		<div class="spinner-text">Cargando...</div>
 	</div>
 </div>
-<div [hidden]="isLoading">
+<div *ngIf="!isLoading">
 	<div style="margin-top: 60px;">
 		<div class="container mt-4">
 			<h2>LISTA DE CLIENTES Y PAGO DE MEMBRESÍA EN EFECTIVO</h2>
@@ -111,14 +111,14 @@
 
 			<ng-container *ngIf="column === 'Info Cliente'">
 				<button
-				  *ngIf="isAdmin()
-				  || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
-				  mat-icon-button
-				  [disabled]="!habilitarBoton"
-				  (click)="abrirInfoCliente(prod)"
-				  color="{{ prod.fotoUrl ? 'primary' : 'warn' }}">
-				  <mat-icon class="icon-size">info</mat-icon>
-				</button>
+          *ngIf="isAdmin() || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
+          mat-icon-button
+          [disabled]="!habilitarBoton"
+          (click)="abrirInfoCliente(prod)"
+          [color]="prod.fotoUrl ? 'primary' : 'warn'">
+          <mat-icon class="icon-size">info</mat-icon>
+        </button>
+
 			  </ng-container>
 
 				<ng-container *ngIf="column === 'Huella'">

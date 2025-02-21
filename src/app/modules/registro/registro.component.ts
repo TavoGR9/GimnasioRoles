@@ -191,6 +191,8 @@ export class RegistroComponent implements OnInit {
     this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
+
+    
   }
 
   public cameraWasSwitched(deviceId: string): void {

@@ -15,6 +15,9 @@ import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergen
 import { NetworkService } from "../../service/network.service";
 import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
+import { ChangeDetectorRef } from '@angular/core';
+
+
 /*
 interface Producto {
   id_producto: string;
@@ -135,6 +138,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private auth: AuthService,
     private networkService: NetworkService,
     private eventCommunicationService: EventCommunicationServiceService,
+    private cdRef: ChangeDetectorRef,
 
   ) {
 
@@ -463,6 +467,8 @@ verificarCambios(): void {
         this.listaClientesData3();  // Actualizar la lista o realizar alguna acción
       }
       // Puedes agregar más acciones aquí si es necesario cuando cerrarDialogo sea false
+      // Forzar detección de cambios para evitar el error
+      this.cdRef.detectChanges();
     });
 
 
@@ -907,6 +913,8 @@ console.log("Clientes sin pedidos:", clientesSinPedidos);
         const fechaB = new Date(b.fecha_hora_pedido).getTime();
         return fechaB - fechaA; // Orden descendente
       });
+
+      console.log("ClienteActivo",this.clienteActivo);
 
       // ✅ 9. Aplicar resultado final a la tabla
       this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
