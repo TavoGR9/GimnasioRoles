@@ -1,6 +1,6 @@
 <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
 
-<div >
+<div>
     <div >
         <!--SE AGREGA CONTENIDO DE LA PANTALLA-->
         <div >
@@ -89,19 +89,19 @@
                               <mat-form-field appearance="outline" class="inputs_properties">
                                 <mat-label>Puesto</mat-label>
                                 <mat-select
-                                
+
                                   formControlName="puesto"
                                   [disabled]="isRecepcion()"
                                   (selectionChange)="onPuestoSeleccionado($event.value)"
                                 >
-                                
-                                <mat-option 
+
+                                <mat-option
                                 *ngFor="let personal of personalCompleto"
                                 [value]="personal.id_personal"
                               >
                                 {{ personal.usu }}
                               </mat-option>
-                              
+
                               <!-- Opción adicional -->
                               <mat-option *ngIf="isAdmin()" (click)="abrirModalCrearRol()">
                                  Agregar otro rol
@@ -109,8 +109,8 @@
                                 </mat-select>
                               </mat-form-field>
                             </p>
-                            
-                            
+
+
                         </div>
 
                         <div class="col-sm-6">
@@ -136,7 +136,7 @@
                                <mat-error *ngIf="form.get('nombreU')?.hasError('pattern') && !form.get('nombreU')?.hasError('required')">
                                   <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                                </mat-error>
-                               <mat-error *ngIf="form.get('nombreU')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                               <mat-error *ngIf="form.get('nombreU')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
                             </mat-form-field>
                          </p>
                         </div>
@@ -149,7 +149,7 @@
                                <mat-error *ngIf="form.get('apPaterno')?.hasError('pattern') && !form.get('apPaterno')?.hasError('required')">
                                   <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                                </mat-error>
-                               <mat-error *ngIf="form.get('apPaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                               <mat-error *ngIf="form.get('apPaterno')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
                             </mat-form-field>
                          </p>
                         </div>
@@ -161,7 +161,7 @@
                             <mat-error *ngIf="form.get('apMaterno')?.hasError('pattern') && !form.get('apMaterno')?.hasError('required')">
                                <strong class="txt_msg">**Formato no valido, (solo letras)...</strong>
                             </mat-error>
-                            <mat-error *ngIf="form.get('apMaterno')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                            <mat-error *ngIf="form.get('apMaterno')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
                          </mat-form-field>
                         </div>
 
@@ -176,7 +176,7 @@
                                <mat-error *ngIf="form.get('fon')?.hasError('pattern') && !form.get('fon')?.hasError('required')">
                                   <strong class="txt_msg">**Formato no valido, (solo números)...</strong>
                                </mat-error>
-                               <!--<mat-error *ngIf="form.get('fon')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>-->
+                               <!--<mat-error ngIf="form.get('fon')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>-->
                             </mat-form-field>
                          </p>
                         </div>
@@ -189,7 +189,7 @@
                                <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('pattern') && !form.get('fechaNacimiento')?.hasError('required')">
                                   <strong class="txt_msg">**Formato de fecha no valido, (DD/MM/YYYY)...</strong>
                                </mat-error>
-                             <!-- <mat-error *ngIf="form.get('fechaNacimiento')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>-->
+                             <!-- <mat-error ngIf="form.get('fechaNacimiento')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>-->
                             </mat-form-field>
                          </p>
                         </div>
@@ -320,7 +320,7 @@
                      <mat-error *ngIf="form.get('email')?.hasError('pattern') && !form.get('email')?.hasError('required')">
                         <strong class="txt_msg">**Formato de correo no valido...</strong>
                      </mat-error>
-                    <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">**Campo requerido</strong></mat-error>
+                    <mat-error *ngIf="form.get('email')?.hasError('required')"><strong class="txt_msg">*Campo requerido</strong></mat-error>
                   </mat-form-field>
                </p>
               </div>
@@ -378,6 +378,7 @@
 
               </form>
            </div>
+
            <div mat-dialog-actions fxLayoutAlign="center center">
             <button mat-button [disabled]="!habilitarBoton" (click)="registrarUsuario()" style=" background-color: #fd9727; " mat-raised-button class="aceptar">
               ¡Registrar!
@@ -386,4 +387,5 @@
           </div>
         </div>
      </div>
-    </div>
+</div>
+

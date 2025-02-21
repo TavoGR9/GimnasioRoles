@@ -89,7 +89,7 @@ export class SidebarComponent {
       console.error('URL no está definida.');
     }
   }
-
+  
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }

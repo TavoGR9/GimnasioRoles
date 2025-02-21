@@ -15,6 +15,9 @@ import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergen
 import { NetworkService } from "../../service/network.service";
 import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
+import { ChangeDetectorRef } from '@angular/core';
+
+
 /*
 interface Producto {
   id_producto: string;
@@ -135,7 +138,8 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private auth: AuthService,
     private networkService: NetworkService,
     private eventCommunicationService: EventCommunicationServiceService,
-    
+    private cdRef: ChangeDetectorRef,
+
   ) {
 
     this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
@@ -202,16 +206,21 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     });
   }
 
-  async loadData() {
+  loadData() {
     this.isLoading = true; // Mostrar el icono de carga
-  
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simula la espera
-  
-    await this.listaClientesData3(); // Espera a que los datos se obtengan
-  
-    this.isLoading = false; // Ocultar el icono de carga solo cuando los datos estén listos
+
+    setTimeout(() => {
+      this.listaClientesData3(); // Llamar a la función que obtiene los datos
+
+      setTimeout(() => {
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
+
+        this.isLoading = false; // Ocultar el icono de carga solo cuando la tabla esté lista
+      }, 500); // Pequeño retraso para asegurar que los datos se procesen correctamente
+    }, 1000);
   }
-  
+
 
 
 verificarCambios(): void {
@@ -422,7 +431,7 @@ verificarCambios(): void {
                 this.listaClientesData3(); // Actualizar lista de clientes
               } else {
                 // Mostrar un Toast de error si la respuesta no es exitosa
-             
+
                 this.toastr.error(
                   'Ocurrió un error al eliminar el registro',
                   'Error',
@@ -445,11 +454,6 @@ verificarCambios(): void {
 
 
 
-
-
-
-
-
   AbrirRegistro() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = `Empleado agregado correctamente.`;
@@ -463,6 +467,8 @@ verificarCambios(): void {
         this.listaClientesData3();  // Actualizar la lista o realizar alguna acción
       }
       // Puedes agregar más acciones aquí si es necesario cuando cerrarDialogo sea false
+      // Forzar detección de cambios para evitar el error
+      this.cdRef.detectChanges();
     });
 
 
@@ -506,7 +512,7 @@ verificarCambios(): void {
           // Separar los clientes en dos grupos: con pedidos (id_pedido != null) y sin pedidos (id_pedido == null)
           const clientesConPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido != null);
           //const clientesSinPedidos = filtradosPorFecha.filter((cliente: any) => cliente.id_pedido == null);
-        
+
 
 
 
@@ -557,7 +563,7 @@ verificarCambios(): void {
       productos: []  // Campo 'productos' vacío
     };
   });
-    
+
   console.log('Sin pedidos',clientesSinPedidosFiltrados)
 
 
@@ -701,7 +707,7 @@ this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
       .map((pedidos: any[]) =>
         pedidos.sort((a, b) => new Date(b.fecha_hora_pedido).getTime() - new Date(a.fecha_hora_pedido).getTime())[0]
       );
- 
+
 // ✅ 6.5 Filtrar usuarios que tienen todos sus pedidos adelantados por membresía cancelada actual
 const usuariosConPedidosAdelantados = Object.values(pedidosPorUsuario)
   .filter((pedidos: any[]) => pedidos.every(pedido => pedido.status === "2"))
@@ -726,7 +732,7 @@ const usuariosConPedidosAdelantados = Object.values(pedidosPorUsuario)
     fecha_hora_pedido: null, // Cambiado a null
     id_bodega: usuario.id_bodega,
     precioCompra: null, // Cambiado a null
-  
+
     estatus: "0", // Cambiado a "0"
     fecha_inicio: null, // Cambiado a null
     fecha_caducidad: null, // Cambiado a null
@@ -742,7 +748,7 @@ console.log(usuariosConPedidosAdelantados);
 
 
       console.log('usuarios con pedidos adelantados', usuariosConPedidosAdelantados)
-    // ✅ 7. Filtrar pedidos que estan activos y en fecha 
+    // ✅ 7. Filtrar pedidos que estan activos y en fecha
     const filteredData = Object.values(pedidosPorUsuario)
       .flat()
       .filter((item: any) =>
@@ -794,18 +800,22 @@ const clientesSinPedidos = Clientes
   .filter((cliente: any) => !clientesConPedidosTotales.has(cliente.clave))
   .map((cliente: any) => ({
     ...cliente,
-    productos: [] 
+    productos: []
   }));
 
 console.log("Clientes sin pedidos:", clientesSinPedidos);
 
 
       // ✅ 3. Agrupar productos por pedido
+      /// quitar objetos  sin id pedido, seguit ocn flujo normal
       const pedidosAgrupados = this.pagoService.agruparPorPedido(Clientes);
       console.log("Pedidos agrupados por usuario:", pedidosAgrupados);
+      const pedidosFiltrados = pedidosAgrupados.filter(pedido => pedido.id_pedido !== null);
+
+      console.log("Pedidos filtrados (sin id_pedido null):", pedidosFiltrados);
 
       // ✅ 4. Agrupar pedidos por usuario
-      const pedidosPorUsuario: Record<string, any[]> = pedidosAgrupados.reduce((acc: Record<string, any[]>, item: any) => {
+      const pedidosPorUsuario: Record<string, any[]> = pedidosFiltrados.reduce((acc: Record<string, any[]>, item: any) => {
         const identificador = item.clave;
         if (!acc[identificador]) acc[identificador] = [];
         acc[identificador].push(item);
@@ -862,11 +872,11 @@ console.log("Clientes sin pedidos:", clientesSinPedidos);
 
       console.log("Usuarios con pedidos activos:", usuariosConPedidosActivos);
       console.log("Usuarios con pedidos estatus 2:", usuariosConPedidosEstatus2);
-      
+
       console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFechaFin);
-      
+
       console.log("Usuarios sin pedidos", clientesSinPedidos);
-      
+
 
       // ✅ 6. Unir los tres grupos y los clientes sin pedidos para obtener los CLIENTES FINALES
       let clientesFinales = [
@@ -903,6 +913,8 @@ console.log("Clientes sin pedidos:", clientesSinPedidos);
         const fechaB = new Date(b.fecha_hora_pedido).getTime();
         return fechaB - fechaA; // Orden descendente
       });
+
+      console.log("ClienteActivo",this.clienteActivo);
 
       // ✅ 9. Aplicar resultado final a la tabla
       this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);

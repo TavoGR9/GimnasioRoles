@@ -42,7 +42,7 @@ export class planComponent implements OnInit, AfterViewInit  {
 
   ngOnInit(): void {
 
-    this.listaTabla();//no quitar,
+    //this.listaTabla();,
 
     this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
@@ -58,6 +58,7 @@ export class planComponent implements OnInit, AfterViewInit  {
       distinctUntilChanged()  // Esto evitará la llamada si el valor no ha cambiado
     ).subscribe((data) => {
       this.idGym = data;
+      // console.log("ID PROMOCION: ",this.idGym);
       this.listaTabla(); // Llama a la tabla solo cuando idGym cambia
     });
 

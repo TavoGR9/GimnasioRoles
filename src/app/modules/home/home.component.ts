@@ -248,9 +248,11 @@ reloadPage(): void {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
 
           if (pedidos) {
-            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
 
-            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
+            const now = new Date().toLocaleDateString('fr-CA'); // Obtener la fecha actual en formato YYYY-MM-DD
+            //console.log('Pedidos: ',now);
+            const mensualidades = pedidos.filter((membresia: any) => membresia.nombreProducto == "Mensualidad" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toLocaleDateString('fr-CA') === now  );
+           // console.log('Pedidos: ',mensualidades);
             // Calculamos la suma de total_cantidad
              this.totalMesesCantidad = mensualidades.reduce(
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
@@ -330,9 +332,11 @@ reloadPage(): void {
           const pedidos = response.data; // Almacenamos los datos de la respuesta
 
           if (pedidos) {
-            const now = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato YYYY-MM-DD
+            const now = new Date().toLocaleDateString('fr-CA'); // Obtener la fecha actual en formato YYYY-MM-DD
 
-            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toISOString().split('T')[0] === now );
+            const visitas = pedidos.filter((membresia: any) => membresia.nombreProducto == "Visita" && membresia.id_promocion == null && new Date(membresia.fecha_hora_pedido).toLocaleDateString('fr-CA') === now);
+
+
             // Calculamos la suma de total_cantidad
              this.totalVisitaCantidad = visitas.reduce(
               (sum: number, membresia: any) => sum + Number(membresia.total_cantidad),
@@ -359,7 +363,8 @@ reloadPage(): void {
     }
 
   calculateVisitaTotal(): void {
-    this.visitaTotal = (this.salesChartDataVisita.length * 70)
+    this.visitaTotal = (this.salesChartDataVisita.length * 70);
+    console.log("VISITAS: ",this.visitaTotal);
   }
 
 
@@ -661,12 +666,36 @@ cargarTarjetas2(): void {
   /**ASISTENCIA */
 
   consultarAsistencia() {
-    this.homeService.consultarAsistencias(this.idGym).subscribe((respuesta) => {
-      this.asistencia = respuesta;
-      this.dataSource = new MatTableDataSource(this.asistencia);
-      this.loadData();
-    });
-  }
+    this.homeService.consultarAsistencias(this.idGym).subscribe(
+      (respuesta) => {
+        if (!Array.isArray(respuesta) || respuesta.length === 0) {
+          console.warn("No hay registros a mostrar.");
+          this.asistencia = [];
+        } else {
+          this.asistencia = respuesta;
+        }
+
+        // Asegurar que dataSource siempre tenga un valor válido
+        this.dataSource = new MatTableDataSource(this.asistencia);
+
+        // Verificar si loadData existe antes de llamarlo
+        if (typeof this.loadData === "function") {
+          this.loadData();
+        } else {
+          console.warn("Método loadData no encontrado.");
+        }
+      },
+      (error) => {
+        console.error("Error al consultar asistencias:", error);
+
+        // En caso de error, aseguramos que dataSource no sea undefined
+        this.asistencia = [];
+        this.dataSource = new MatTableDataSource(this.asistencia);
+      }
+    );
+}
+
+
 
   /**Roles**/
   isAdmin(): boolean {
@@ -1120,10 +1149,15 @@ processSalesDataVisita() {
   // Rellenar datos reales en las series
   Object.keys(this.salesData).forEach((date) => {
     const record = this.salesData[date];
+    console.log("Estructura de salesData:", JSON.stringify(this.salesData, null, 2));
+
+   // console.log("Datos: ",record);
     if (record.conteoProductos) {
       Object.values(record.conteoProductos).forEach((product: any) => {
+
         if (product.nombreProducto === this.selectedProductVisita) {
           const day = parseInt(date.split('-')[2]); // Extraer día (DD)
+          //console.log("FECHA: ",day);
           if (date.startsWith(currentMonthStrVisita) && day <= daysInCurrentMonth) {
             currentMonthSalesVisita[day - 1].value = product.cantidad;
           } else if (date.startsWith(previousMonthStrVisita)) {

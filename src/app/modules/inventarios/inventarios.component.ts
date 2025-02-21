@@ -56,20 +56,20 @@ export class InventariosComponent implements OnInit {
 
   loadData() {
     setTimeout(() => {
-      this.isLoading = false;
       this.dataSource.paginator = this.paginator;
+      this.isLoading = false;
     }, 1000);
   }
 
   aplicarFiltro(productos: Inventario[]): Inventario[] {
     return productos.filter((producto) => {
-      return producto.nombreCategoria !== "Servicios";
+      return producto.nombreCategoria !== "Servicios" && producto.existencia != 0;
     });
   }
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      // console.log('TODAS LAS EXISTENCIAS: ', respuesta);
+      //console.log('TODAS LAS EXISTENCIAS: ', respuesta);
 
       this.listInventarioData = this.aplicarFiltro(respuesta);
       //this.listInventarioData = respuesta;

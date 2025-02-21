@@ -33,7 +33,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './agregar-producto-membresia.component.html',
   styleUrls: ['./agregar-producto-membresia.component.css'],
   //changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DatePipe, MessageService],
+  //providers: [DatePipe, MessageService],
 })
 export class AgregarProductoMembresiaComponent implements OnInit {
   fechaCreacion: string;

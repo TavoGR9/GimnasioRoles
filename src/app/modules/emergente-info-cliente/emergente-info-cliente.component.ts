@@ -27,7 +27,6 @@ import { EventCommunicationServiceService } from '../../service/event-communicat
 })
 
 export class EmergenteInfoClienteComponent implements OnInit{
-  url: string = `Finger://?idCliente=${this.data.idCliente}&idSucursal=${this.data.idSucursal}`;
   productos:any;
   currentDate: Date = new Date();
   duracion: any;
@@ -68,7 +67,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     private http: ColaboradorService,
     private eventCommunicationService: EventCommunicationServiceService,
-   
+
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
       const sanitizeValue = (value: any): string => {
@@ -321,7 +320,7 @@ OpenRestablecer(empleados: any) {
           });
       }
 
-      onToggle(event: MatSlideToggleChange, idEmpleado: number): void {
+onToggle(event: MatSlideToggleChange, idEmpleado: number): void {
         if (!event.checked) {
           const nuevoEstatus = 2;
 
@@ -336,7 +335,7 @@ OpenRestablecer(empleados: any) {
           dialogRef.afterClosed().subscribe((result) => {
             if (result) {
               this.http.actualizarEstatus(Number(idEmpleado), nuevoEstatus).subscribe((response) => {
-                this.cerrarDialogo();
+                //this.cerrarDialogo();
               });
             } else {
               // Si cancela, restablecer el toggle a true
@@ -393,7 +392,7 @@ OpenRestablecer(empleados: any) {
           }).afterClosed()
             .subscribe(() => {
               this.emitEnventMethod('Actualizar Cliente')
-            
+
             });
 
         } else {

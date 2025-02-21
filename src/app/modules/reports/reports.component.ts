@@ -185,6 +185,7 @@ export class ReportsComponent implements OnInit {
     this.auth.chart_sucursales(this.form.value).subscribe({
       next: (resultData: Graficoss[]) => {
         // Manejar caso sin resultados
+        console.log(resultData);
         if (
           resultData.length === 0 ||
           resultData[0].nombreGimnasio === "No_result"
@@ -199,25 +200,31 @@ export class ReportsComponent implements OnInit {
           return;
         }
         // Inicializar la estructura de datos para almacenar la información del gráfico
-        const datosGraficosPorGimnasio: DatosGraficosPorGimnasio = {};
+       const datosGraficosPorGimnasio: DatosGraficosPorGimnasio = {};
+       //const datosGraficosPorGimnasioYBodega: { [key: string]: { chartLabels: string[]; chartData: any[] } } = {};
+
 
         // Procesar datos
         resultData.forEach((dato) => {
-          if (!datosGraficosPorGimnasio[dato.nombreGimnasio]) {
-            datosGraficosPorGimnasio[dato.nombreGimnasio] = {
+          const key = `${dato.nombreGimnasio}-${dato.id_bodega}`;
+          if (!datosGraficosPorGimnasio[key]) {
+            datosGraficosPorGimnasio[key] = {
               chartLabels: [],
               chartData: [{ data: [], label: "Ventas" }],
             };
           }
-          datosGraficosPorGimnasio[dato.nombreGimnasio].chartLabels.push(
+
+          //Añadir datos para cada producto
+          datosGraficosPorGimnasio[key].chartLabels.push(
             String(dato.nombreProducto)
           );
-          datosGraficosPorGimnasio[dato.nombreGimnasio].chartData[0].data.push(
+          datosGraficosPorGimnasio[key].chartData[0].data.push(
             dato.totalVentas
           );
         });
         // Asignar la estructura de datos a una propiedad del componente
         this.datosGraficosPorGimnasio = datosGraficosPorGimnasio;
+
       },
       error: (error) => {
         this.toastr.error("Error al obtener datos.", "Error", {
@@ -229,11 +236,13 @@ export class ReportsComponent implements OnInit {
 }
 
 interface DatosGrafico {
+  id_bodega: string;
   nombre: string;
   ventas: number;
 }
 
 interface DatosGraficoss {
+  id_bodega: string;
   nombre: string;
   visita: number;
   quincena: number;
@@ -242,13 +251,14 @@ interface DatosGraficoss {
 }
 
 interface Graficoss {
+  id_bodega:number;
   nombreGimnasio: string;
-  nombreProducto: number;
+  nombreProducto: string;
   totalVentas: number;
 }
 
 interface DatosGraficosPorGimnasio {
-  [nombreGimnasio: string]: {
+  [key: string]: {
     chartLabels: string[];
     chartData: { data: number[]; label: string }[];
   };

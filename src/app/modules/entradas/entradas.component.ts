@@ -171,7 +171,7 @@ export class EntradasComponent implements OnInit {
   listaTablas() {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
-        // console.log("Resultado de listaProductos:", resultData);
+        //console.log("Resultado de listaProductos:", resultData);
 
         // Filtrar las subcategorías excluyendo aquellas donde
         this.productosFiltrados = resultData.productos.filter(
