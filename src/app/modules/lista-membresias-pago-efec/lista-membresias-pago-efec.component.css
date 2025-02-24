@@ -179,3 +179,12 @@ table {
   margin-top: 5px;
 }
 
+.alerta-internet {
+  background-color: #fdecea;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+  margin: 1rem 0;
+}

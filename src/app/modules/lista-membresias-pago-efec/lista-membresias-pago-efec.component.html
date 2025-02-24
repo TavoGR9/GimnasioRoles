@@ -51,6 +51,16 @@
 				</div>
 			</div>
 			<br> <br>
+
+			<ng-container *ngIf="!isOnline">
+				<div class="alerta-internet">
+				  <h3>Conexión interrumpida</h3>
+				  <p>No se ha detectado una conexión a Internet. Algunas funciones estarán limitadas hasta que se restablezca la conexión.</p>
+				</div>
+			  </ng-container>
+			  
+
+
 			<mat-form-field class="full-width">
 				<mat-label>Buscar</mat-label>
 				<input matInput (keyup)="applyFilterActivos($event)" placeholder="Buscar" #input/>
