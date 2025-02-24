@@ -177,7 +177,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     };
 
   // Suscribirse al estado de conexión
- this.networkService.isOnline$.subscribe((status) => {this.isOnline = status;
+ this.networkService.combinedOnline$.subscribe((status) => {this.isOnline = status;
    });
 
 
