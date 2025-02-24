@@ -779,153 +779,165 @@ console.log(usuariosConPedidosAdelantados);
 */
 
 listaClientesData3(): void {
-  this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
-    (response: any) => {
-      if (!response) return;
-      const respuestaApi = response.data;
-      this.Clientes = respuestaApi;
-      const Clientes = this.Clientes;
-
-      console.log("Respuesta de API:", respuestaApi);
-// ✅ 1. Obtener las claves de clientes que sí tienen pedidos
-const clientesConPedidosTotales = new Set(
-  Clientes.filter((cliente: any) => cliente.id_pedido && cliente.id_pedido.trim() !== '')
-          .map((cliente: any) => cliente.clave)
-);
-
-console.log("Clientes que sí tienen pedidos:", clientesConPedidosTotales);
-
-// ✅ 2. Filtrar clientes sin pedidos (es decir, los que no están en clientesConPedidosTotales)
-const clientesSinPedidos = Clientes
-  .filter((cliente: any) => !clientesConPedidosTotales.has(cliente.clave))
-  .map((cliente: any) => ({
-    ...cliente,
-    productos: []
-  }));
-
-console.log("Clientes sin pedidos:", clientesSinPedidos);
-
-
-      // ✅ 3. Agrupar productos por pedido
-      /// quitar objetos  sin id pedido, seguit ocn flujo normal
-      const pedidosAgrupados = this.pagoService.agruparPorPedido(Clientes);
-      console.log("Pedidos agrupados por usuario:", pedidosAgrupados);
-      const pedidosFiltrados = pedidosAgrupados.filter(pedido => pedido.id_pedido !== null);
-
-      console.log("Pedidos filtrados (sin id_pedido null):", pedidosFiltrados);
-
-      // ✅ 4. Agrupar pedidos por usuario
-      const pedidosPorUsuario: Record<string, any[]> = pedidosFiltrados.reduce((acc: Record<string, any[]>, item: any) => {
-        const identificador = item.clave;
-        if (!acc[identificador]) acc[identificador] = [];
-        acc[identificador].push(item);
-        return acc;
-      }, {});
-
-      console.log("Pedidos por usuario:", pedidosPorUsuario);
-
-      // ✅ 5. Filtrar clientes finales según lógica de pedidos
-      let usuariosConPedidosActivos: any[] = [];
-      let usuariosConPedidosEstatus2: any[] = [];
-      let usuariosConPedidosPorFechaFin: any[] = [];
-
-      Object.values(pedidosPorUsuario).forEach((pedidos: any[]) => {
-        // 1️⃣ Tomar pedidos activos (estatus 1 o pedidoActual = "1")
-        const pedidosActivos = pedidos.filter(
-          (pedido) => pedido.pedidoActual === "1" || pedido.estatus === "1"
-        );
-
-        if (pedidosActivos.length > 0) {
-          usuariosConPedidosActivos.push(...pedidosActivos);
-          return;
-        }
-
-        // 2️⃣ Tomar pedidos con estatus 2 (el más cercano a la fecha actual)
-        const pedidosEstatus2 = pedidos.filter((pedido) => pedido.estatus === "2");
-
-        if (pedidosEstatus2.length > 0) {
-          const fechaActual = new Date().getTime();
-          const pedidoMasCercano = pedidosEstatus2.reduce((pedidoCercano, pedido) => {
-            return Math.abs(new Date(pedido.fecha_caducidad).getTime() - fechaActual) <
-              Math.abs(new Date(pedidoCercano.fecha_caducidad).getTime() - fechaActual)
-              ? pedido
-              : pedidoCercano;
-          });
-
-          usuariosConPedidosEstatus2.push(pedidoMasCercano);
-          return;
-        }
-
-        // 3️⃣ Si no hay pedidos activos ni estatus 2, tomar el pedido cuya fecha_fin esté más cerca de la fecha actual
-        if (pedidos.length > 0) {
-          const fechaActual = new Date().getTime();
-          const pedidoMasCercano = pedidos.reduce((pedidoCercano, pedido) => {
-            return Math.abs(new Date(pedido.fecha_caducidad).getTime() - fechaActual) <
-              Math.abs(new Date(pedidoCercano.fecha_caducidad).getTime() - fechaActual)
-              ? pedido
-              : pedidoCercano;
-          });
-
-          usuariosConPedidosPorFechaFin.push(pedidoMasCercano);
-        }
-      });
-
-      console.log("Usuarios con pedidos activos:", usuariosConPedidosActivos);
-      console.log("Usuarios con pedidos estatus 2:", usuariosConPedidosEstatus2);
-
-      console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFechaFin);
-
-      console.log("Usuarios sin pedidos", clientesSinPedidos);
-
-
-      // ✅ 6. Unir los tres grupos y los clientes sin pedidos para obtener los CLIENTES FINALES
-      let clientesFinales = [
-        ...clientesSinPedidos,
-        ...usuariosConPedidosActivos,
-        ...usuariosConPedidosEstatus2,
-        ...usuariosConPedidosPorFechaFin
-      ];
-
-
-
-      // ✅ 7. Filtrar clientes finales por rango de fechas (ÚLTIMO PASO)
-      const fechaInicioValida = this.fechaInicio instanceof Date && !isNaN(this.fechaInicio.getTime());
-      const fechaFinValida = this.fechaFin instanceof Date && !isNaN(this.fechaFin.getTime());
-
-      if (fechaInicioValida && fechaFinValida) {
-        const fechaInicio = new Date(this.fechaInicio!);
-        const fechaFin = new Date(this.fechaFin!);
-        fechaFin.setHours(23, 59, 0);
-
-        clientesFinales = clientesFinales.filter((cliente: any) => {
-          //const fechaRegistro = new Date(cliente.fecha_hora_pedido || cliente.fecha_inicio || cliente.fecha_fin);
-          const fechaRegistro = new Date(cliente.fecha_hora_pedido);
-         // return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
-         return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
-        });
+  console.log("isOnline:", this.isOnline);
+  if (this.isOnline) {
+    this.pagoService.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+      (response: any) => {
+        this.procesarClientes(response);
+      },
+      (error: any) => {
+        this.toastr.error('Ocurrió un error al obtener los datos de los clientes', 'Error');
       }
+    );
+  } else {
+    this.pagoService.getServiceDatos().subscribe(
+      (data: any) => {
+        console.log("Datos obtenidos desde getServiceDatos:", data);
+        this.procesarClientes(data);
 
-      console.log("Clientes finales filtrados por fecha:", clientesFinales);
+      },
+      (error: any) => {
+        this.toastr.error('Ocurrió un error al obtener los datos de getServiceDatos', 'Error');
+      }
+    );
+  }
+}
 
-      // ✅ 8. Ordenar por fecha antes de asignar
-      this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
-        const fechaA = new Date(a.fecha_hora_pedido).getTime();
-        const fechaB = new Date(b.fecha_hora_pedido).getTime();
-        return fechaB - fechaA; // Orden descendente
+
+
+private procesarClientes(response: any): void {
+  if (!response) return;
+  const respuestaApi = response.data;
+  this.Clientes = respuestaApi;
+  const Clientes = this.Clientes;
+
+  console.log("Respuesta de API:", respuestaApi);
+  // ✅ 1. Obtener las claves de clientes que sí tienen pedidos
+  const clientesConPedidosTotales = new Set(
+    Clientes.filter((cliente: any) => cliente.id_pedido && cliente.id_pedido.trim() !== '')
+            .map((cliente: any) => cliente.clave)
+  );
+
+  console.log("Clientes que sí tienen pedidos:", clientesConPedidosTotales);
+
+  // ✅ 2. Filtrar clientes sin pedidos (es decir, los que no están en clientesConPedidosTotales)
+  const clientesSinPedidos = Clientes
+    .filter((cliente: any) => !clientesConPedidosTotales.has(cliente.clave))
+    .map((cliente: any) => ({
+      ...cliente,
+      productos: []
+    }));
+
+  console.log("Clientes sin pedidos:", clientesSinPedidos);
+
+  // ✅ 3. Agrupar productos por pedido
+  /// quitar objetos  sin id pedido, seguit ocn flujo normal
+  const pedidosAgrupados = this.pagoService.agruparPorPedido(Clientes);
+  console.log("Pedidos agrupados por usuario:", pedidosAgrupados);
+  const pedidosFiltrados = pedidosAgrupados.filter(pedido => pedido.id_pedido !== null);
+
+  console.log("Pedidos filtrados (sin id_pedido null):", pedidosFiltrados);
+
+  // ✅ 4. Agrupar pedidos por usuario
+  const pedidosPorUsuario: Record<string, any[]> = pedidosFiltrados.reduce((acc: Record<string, any[]>, item: any) => {
+    const identificador = item.clave;
+    if (!acc[identificador]) acc[identificador] = [];
+    acc[identificador].push(item);
+    return acc;
+  }, {});
+
+  console.log("Pedidos por usuario:", pedidosPorUsuario);
+
+  // ✅ 5. Filtrar clientes finales según lógica de pedidos
+  let usuariosConPedidosActivos: any[] = [];
+  let usuariosConPedidosEstatus2: any[] = [];
+  let usuariosConPedidosPorFechaFin: any[] = [];
+
+  Object.values(pedidosPorUsuario).forEach((pedidos: any[]) => {
+    // 1️⃣ Tomar pedidos activos (estatus 1 o pedidoActual = "1")
+    const pedidosActivos = pedidos.filter(
+      (pedido) => pedido.pedidoActual === "1" || pedido.estatus === "1"
+    );
+
+    if (pedidosActivos.length > 0) {
+      usuariosConPedidosActivos.push(...pedidosActivos);
+      return;
+    }
+
+    // 2️⃣ Tomar pedidos con estatus 2 (el más cercano a la fecha actual)
+    const pedidosEstatus2 = pedidos.filter((pedido) => pedido.estatus === "2");
+
+    if (pedidosEstatus2.length > 0) {
+      const fechaActual = new Date().getTime();
+      const pedidoMasCercano = pedidosEstatus2.reduce((pedidoCercano, pedido) => {
+        return Math.abs(new Date(pedido.fecha_caducidad).getTime() - fechaActual) <
+          Math.abs(new Date(pedidoCercano.fecha_caducidad).getTime() - fechaActual)
+          ? pedido
+          : pedidoCercano;
       });
 
-      console.log("ClienteActivo",this.clienteActivo);
-
-      // ✅ 9. Aplicar resultado final a la tabla
-      this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
-      this.dataSourceActivos.paginator = this.paginatorActivos;
-
-      console.log("Clientes finales:", this.clienteActivo);
-    },
-    (error: any) => {
-      this.toastr.error('Ocurrió un error al obtener los datos de los clientes', 'Error');
+      usuariosConPedidosEstatus2.push(pedidoMasCercano);
+      return;
     }
-  );
+
+    // 3️⃣ Si no hay pedidos activos ni estatus 2, tomar el pedido cuya fecha_fin esté más cerca de la fecha actual
+    if (pedidos.length > 0) {
+      const fechaActual = new Date().getTime();
+      const pedidoMasCercano = pedidos.reduce((pedidoCercano, pedido) => {
+        return Math.abs(new Date(pedido.fecha_caducidad).getTime() - fechaActual) <
+          Math.abs(new Date(pedidoCercano.fecha_caducidad).getTime() - fechaActual)
+          ? pedido
+          : pedidoCercano;
+      });
+
+      usuariosConPedidosPorFechaFin.push(pedidoMasCercano);
+    }
+  });
+
+  console.log("Usuarios con pedidos activos:", usuariosConPedidosActivos);
+  console.log("Usuarios con pedidos estatus 2:", usuariosConPedidosEstatus2);
+  console.log("Usuarios con pedidos según fecha_fin:", usuariosConPedidosPorFechaFin);
+  console.log("Usuarios sin pedidos", clientesSinPedidos);
+
+  // ✅ 6. Unir los tres grupos y los clientes sin pedidos para obtener los CLIENTES FINALES
+  let clientesFinales = [
+    ...clientesSinPedidos,
+    ...usuariosConPedidosActivos,
+    ...usuariosConPedidosEstatus2,
+    ...usuariosConPedidosPorFechaFin
+  ];
+
+  // ✅ 7. Filtrar clientes finales por rango de fechas (ÚLTIMO PASO)
+  const fechaInicioValida = this.fechaInicio instanceof Date && !isNaN(this.fechaInicio.getTime());
+  const fechaFinValida = this.fechaFin instanceof Date && !isNaN(this.fechaFin.getTime());
+
+  if (fechaInicioValida && fechaFinValida) {
+    const fechaInicio = new Date(this.fechaInicio!);
+    const fechaFin = new Date(this.fechaFin!);
+    fechaFin.setHours(23, 59, 0);
+
+    clientesFinales = clientesFinales.filter((cliente: any) => {
+      const fechaRegistro = new Date(cliente.fecha_hora_pedido);
+      return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+    });
+  }
+
+  console.log("Clientes finales filtrados por fecha:", clientesFinales);
+
+  // ✅ 8. Ordenar por fecha antes de asignar
+  this.clienteActivo = clientesFinales.sort((a: any, b: any) => {
+    const fechaA = new Date(a.fecha_hora_pedido).getTime();
+    const fechaB = new Date(b.fecha_hora_pedido).getTime();
+    return fechaB - fechaA; // Orden descendente
+  });
+
+  console.log("ClienteActivo", this.clienteActivo);
+
+  // ✅ 9. Aplicar resultado final a la tabla
+  this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+  this.dataSourceActivos.paginator = this.paginatorActivos;
+
+  console.log("Clientes finales:", this.clienteActivo);
 }
 
 
