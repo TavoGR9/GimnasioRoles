@@ -39,6 +39,9 @@ export class IndexedDBService extends Dexie {
   private AgregarSubCategoriaDataTable: Dexie.Table<any, string>;
   private AgregarMarcaDataTable: Dexie.Table<any, string>;
 
+
+  private AddRolesTable: Dexie.Table<any, string>;
+
   constructor() {
     super('OlimpusGym');
     this.version(1).stores({
@@ -75,6 +78,8 @@ export class IndexedDBService extends Dexie {
       AgregarSubCategoria: '++id,key,data',
       AgregarMarca: '++id,key,data',
 
+      AddRolesTable:'++id,key,data',
+
     });
     this.receptionistsTable = this.table('receptionists');
     this.userDataTable = this.table('userData');  //Obtener la tabla de DatosStorage Para cargar las pantallas
@@ -107,7 +112,24 @@ export class IndexedDBService extends Dexie {
     this.AgregarCategoriaDataTable = this.table('AgregarCategoria');
     this.AgregarSubCategoriaDataTable = this.table('AgregarSubCategoria');
     this.AgregarMarcaDataTable = this.table('AgregarMarca');
+
+    this.AddRolesTable = this.table('AddRolesTable');
   }
+
+  async saveDataRolesTable(key: string, data: any) {
+    await this.receptionistsTable.put({ key, data });
+  }
+
+  async getDataRolesTable(key: string) {
+    return await this.table('receptionists')
+        .where('key')
+        .equals(key)
+        .toArray();
+
+  }
+
+
+
 
   async saveData(key: string, data: any) {
     await this.receptionistsTable.put({ key, data });
