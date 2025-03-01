@@ -264,6 +264,7 @@ export class PagoMemComponent implements OnInit{
     this.pagoMem.obtenerActivos(this.auth.idGym.getValue()).subscribe(
         (response: any) => {
             const Clientes = response.data;
+            console.log(Clientes)
 
             // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
             const fechaInicio = this.fechaInicio
@@ -378,14 +379,14 @@ descargarExcel(): void {
           return [
               cliente.estafeta || "N/A",
               cliente.nombreCompleto || "N/A",
-              cliente.nombreBodega || "N/A",
+              "N/A",
               cliente.membresia || "N/A",
               cliente.total || 0,
               cliente.fecha_inicio ? this.datePipe.transform(cliente.fecha_inicio, "dd/MM/yyyy") : "Sin fecha",
               cliente.fecha_caducidad ? this.datePipe.transform(cliente.fecha_caducidad, "dd/MM/yyyy") : "Sin fecha",
               cliente.fecha_hora_pedido ? this.datePipe.transform(cliente.fecha_hora_pedido, "dd/MM/yyyy") : "Sin fecha",
               cliente.estatus == 1 ? "Activo" : "Inactivo",
-              cliente.CreatedBy || "Desconocido",
+             "Desconocido",
           ];
       }),
   ];
