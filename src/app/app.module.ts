@@ -29,6 +29,7 @@ import { Paginator } from './service/Paginator';
 import { DatePipe } from '@angular/common';
 import { MessageService } from 'primeng/api';
 
+import { NgxSpinnerModule } from "ngx-spinner";
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,6 +65,7 @@ import { MessageService } from 'primeng/api';
     ModulesModule,
     RouterModule,
     MatPaginatorModule,
+    NgxSpinnerModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable

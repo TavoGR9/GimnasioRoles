@@ -96,7 +96,7 @@
 							</ng-container>
 							<ng-container *ngIf="column === 'Estatus'">
 								<div [ngClass]="{
-									'estatus-activo': prod.estatus === '1', 
+									'estatus-activo': prod.estatus === '1',
 									'estatus-inactivo': prod.estatus === '0',
 									'estatus-adelantado': prod.estatus === '2'
 									}">
@@ -111,14 +111,14 @@
 
 			<ng-container *ngIf="column === 'Info Cliente'">
 				<button
-				  *ngIf="isAdmin()
-				  || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
-				  mat-icon-button
-				  [disabled]="!habilitarBoton"
-				  (click)="abrirInfoCliente(prod)"
-				  color="{{ prod.fotoUrl ? 'primary' : 'warn' }}">
-				  <mat-icon class="icon-size">info</mat-icon>
-				</button>
+          *ngIf="isAdmin() || (isRecep() && (prod.id_rol !== 1 && prod.id_rol !== 2 && prod.rol !== 'Administrador'))"
+          mat-icon-button
+          [disabled]="!habilitarBoton"
+          (click)="abrirInfoCliente(prod)"
+          [color]="prod.fotoUrl ? 'primary' : 'warn'">
+          <mat-icon class="icon-size">info</mat-icon>
+        </button>
+
 			  </ng-container>
 
 				<ng-container *ngIf="column === 'Huella'">
@@ -149,7 +149,7 @@
 							<ng-container *ngIf="column === 'Usuario'">
 								<span *ngIf="prod.rol === 'Cliente'; else notCliente">
                   <mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
-                </span> 
+                </span>
 								<ng-template #notCliente>
 									<mat-icon *ngIf="isAdmin()" (click)="eliminarCliente(prod)">delete</mat-icon>
 								</ng-template>

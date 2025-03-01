@@ -71,6 +71,11 @@ export class PagoMemComponent implements OnInit{
     }, 1000);
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
 
 /*
   ngDoCheck(): void {

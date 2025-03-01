@@ -15,6 +15,9 @@ import { EmergenteInfoClienteComponent } from "../emergente-info-cliente/emergen
 import { NetworkService } from "../../service/network.service";
 import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
 
+import { ChangeDetectorRef } from '@angular/core';
+
+
 /*
 interface Producto {
   id_producto: string;
@@ -135,6 +138,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     private auth: AuthService,
     private networkService: NetworkService,
     private eventCommunicationService: EventCommunicationServiceService,
+    private cdRef: ChangeDetectorRef,
 
   ) {
 
@@ -202,14 +206,19 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
     });
   }
 
-  async loadData() {
+  loadData() {
     this.isLoading = true; // Mostrar el icono de carga
 
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simula la espera
+    setTimeout(() => {
+      this.listaClientesData3(); // Llamar a la función que obtiene los datos
 
-    await this.listaClientesData3(); // Espera a que los datos se obtengan
+      setTimeout(() => {
+        this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);
+        this.dataSourceActivos.paginator = this.paginatorActivos;
 
-    this.isLoading = false; // Ocultar el icono de carga solo cuando los datos estén listos
+        this.isLoading = false; // Ocultar el icono de carga solo cuando la tabla esté lista
+      }, 500); // Pequeño retraso para asegurar que los datos se procesen correctamente
+    }, 1000);
   }
 
 
@@ -445,11 +454,6 @@ verificarCambios(): void {
 
 
 
-
-
-
-
-
   AbrirRegistro() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = `Empleado agregado correctamente.`;
@@ -463,6 +467,8 @@ verificarCambios(): void {
         this.listaClientesData3();  // Actualizar la lista o realizar alguna acción
       }
       // Puedes agregar más acciones aquí si es necesario cuando cerrarDialogo sea false
+      // Forzar detección de cambios para evitar el error
+      this.cdRef.detectChanges();
     });
 
 
@@ -907,6 +913,8 @@ console.log("Clientes sin pedidos:", clientesSinPedidos);
         const fechaB = new Date(b.fecha_hora_pedido).getTime();
         return fechaB - fechaA; // Orden descendente
       });
+
+      console.log("ClienteActivo",this.clienteActivo);
 
       // ✅ 9. Aplicar resultado final a la tabla
       this.dataSourceActivos = new MatTableDataSource(this.clienteActivo);

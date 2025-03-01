@@ -40,7 +40,7 @@
 
         <div style="display: flex; justify-content: flex-end;">
             <button class="mat-button" mat-button [matMenuTriggerFor]="menu">
-                <mat-icon style="font-size: 18px;">download</mat-icon>
+              <mat-icon class="download-icon">cloud_download</mat-icon>
                 DESCARGAR REPORTE
             </button>
             <mat-menu #menu="matMenu">
@@ -53,7 +53,17 @@
         </div>
 
 
-        <br> <br><br> <br>
+        <br> <br>
+        <h3>Ingresa el valor de una columna</h3>
+         <mat-form-field class="full-width">
+            <mat-label>Filtro</mat-label>
+            <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="Busca por columnas"
+            #input
+            />
+         </mat-form-field>
         <div class="table-container">
             <table mat-table [dataSource]="dataSource">
                 <ng-container matColumnDef="clave">
