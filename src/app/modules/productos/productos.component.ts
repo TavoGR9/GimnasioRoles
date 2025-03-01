@@ -74,11 +74,16 @@ export class ProductosComponent implements OnInit {
 
   listaTabla(){
     this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
-      //this.productos = resultData
-      // console.log('Resultados: ', resultData);
-
-      this.productos = resultData.filter((producto:any) => producto.existencia !== null && producto.existencia !== '0' && producto.membresia !== '1' && producto.activo == 1);
-
+      this.productos = resultData.filter((producto: any) => 
+        producto.existencia !== null && 
+        producto.existencia !== '0' && 
+        producto.membresia !== '1' && 
+        producto.activo == 1
+      );
+  
+      // Ordenar los productos alfabéticamente según presentacionProducto
+      this.productos.sort((a, b) => a.presentacionProducto.localeCompare(b.presentacionProducto));
+  
       this.dataSource = new MatTableDataSource(this.productos);
       this.loadData();
     });

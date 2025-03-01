@@ -6,7 +6,7 @@
   </div>
 </div>
 
-<div>
+<div [hidden]="isLoading">
   <div style="margin-top: 60px;">
     <div class="container mt-4">
       <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "ball-pulse-sync" [fullScreen] = "true"><p style="color: white" > Cargando... </p></ngx-spinner>
