@@ -29,7 +29,7 @@ export class GimnasioService {
   //API: string = 'http://localhost/serviciosGimnasio/';
 
   // API: string = 'http://localhost/gimnasioServicios/';
-  API: string = 'http://localhost/serviciosGym/';
+  API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 

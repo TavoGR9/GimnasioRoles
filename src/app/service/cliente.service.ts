@@ -19,7 +19,7 @@ export class ClienteService {
   //apiFoto: string = "https://olympus.arvispace.com/olimpusGym/conf/";
 
   // apiFoto: string = "http://localhost/gimnasioServicios/";
-  apiFoto: string = 'http://localhost/serviciosGym/';
+  apiFoto: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
 
   constructor(private clienteHttp:HttpClient) {

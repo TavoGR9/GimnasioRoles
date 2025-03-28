@@ -13,7 +13,7 @@ export class MembresiaService {
   isConnected: boolean = true;
   private datosPlan: any;
   data: any = {};
-  API: string = 'http://localhost/serviciosGym/';
+  API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 

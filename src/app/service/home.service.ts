@@ -14,7 +14,7 @@ export class HomeService {
   isConnected: boolean = true;
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  API: string ='http://localhost/serviciosGym/';
+  API: string ='https://olympus.arvispace.com/ServiciosGym/';
 
 
   constructor(private clienteHttp:HttpClient,private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService ) {

@@ -12,7 +12,7 @@ export class ArchivoService {
 //API: string = 'http://localhost/serviciosGimnasio/'
 
 // API: string = 'http://localhost/gimnasioServicios/';
-API: string = 'http://localhost/serviciosGym/';
+API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
 constructor(private clienteHttp: HttpClient) {
 }
