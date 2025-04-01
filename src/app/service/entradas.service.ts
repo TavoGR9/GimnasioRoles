@@ -6,6 +6,10 @@ import { ListaProductos } from '../models/listaProductos';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
 import { catchError, tap } from 'rxjs/operators';
+import { ApiUrlService } from './api-url.service';
+
+
+
 @Injectable({
   providedIn: 'root',
 })
@@ -23,7 +27,13 @@ export class EntradasService {
 
 
 
-  constructor(private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {}
+  constructor(private clienteHttp: HttpClient,
+     private connectivityService: ConnectivityService, 
+     private indexedDBService: IndexedDBService,
+     private apiUrlService: ApiUrlService) {
+
+      this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
+     }
 
   // comprobar(){
   //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {

@@ -2,16 +2,23 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { ApiUrlService } from './api-url.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class agregarContra {
 
-  API: string ='https://olympus.arvispace.com/olimpusGym/EnviarMail/';
+  API: string ;
+ // API: string ='https://olympus.arvispace.com/olimpusGym/EnviarMail/';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private clienteHttp: HttpClient) {
+  constructor(private clienteHttp: HttpClient,
+    private apiUrlService: ApiUrlService
+  ) {
+
+    this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
   }
 
   enviarMail(username: string): Observable<any> {

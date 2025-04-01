@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
 import { tap, catchError } from 'rxjs';
+import { ApiUrlService } from './api-url.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,13 +18,18 @@ export class JoinDetalleVentaService {
   // API: string = 'http://localhost/serviciosGimnasio/';
 
   // API: string = 'http://localhost/gimnasioServicios/';
-  API: string = 'http://localhost/serviciosGym/';
+ 
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
-  // API: String = '';
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
+
+  API: String ;
+  //API: string = 'http://localhost/serviciosGym/';
+
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, 
+    private indexedDBService: IndexedDBService, private apiUrlService: ApiUrlService) {
+    this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
   }
 
   // comprobar(){

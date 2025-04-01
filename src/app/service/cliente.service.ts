@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Cliente } from '../models/Cliente';
+import { ApiUrlService } from './api-url.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +20,13 @@ export class ClienteService {
   //apiFoto: string = "https://olympus.arvispace.com/olimpusGym/conf/";
 
   // apiFoto: string = "http://localhost/gimnasioServicios/";
-  apiFoto: string = 'http://localhost/serviciosGym/';
+  //apiFoto: string = 'http://localhost/serviciosGym/';
+  apiFoto: string ;
 
-
-  constructor(private clienteHttp:HttpClient) {
+  constructor(private clienteHttp:HttpClient,
+    private apiUrlService: ApiUrlService
+  ) {
+    this.apiFoto = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
   }
   private dataSubject = new BehaviorSubject<any>(null);
   data$ = this.dataSubject.asObservable();

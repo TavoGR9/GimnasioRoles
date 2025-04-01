@@ -11,7 +11,7 @@ import { IndexedDBService } from './indexed-db.service';
 //MENSAJE EMERGENTE
 import { MatDialog } from '@angular/material/dialog';
 import { MensajeEliminarComponent } from '../modules/mensaje-eliminar/mensaje-eliminar.component';
-
+import { ApiUrlService } from './api-url.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,15 +35,22 @@ export class AuthService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // API: string = 'http://localhost/gimnasioServicios/';
-  API: string = 'http://localhost/serviciosGym/';
+//  API: string = 'http://localhost/serviciosGym/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
-  // API: String = '';
+  API: String = '';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  constructor(private router: Router, private clienteHttp: HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService, public dialog: MatDialog) {
+  constructor(private router: Router, 
+    private clienteHttp: HttpClient, 
+    private connectivityService: ConnectivityService, 
+    private indexedDBService:IndexedDBService, 
+    public dialog: MatDialog,
+    private apiUrlService: ApiUrlService) {
+    
+    this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
     const encryptedMail = sessionStorage.getItem(this.USER_KEY);
     if (encryptedMail) {
       this.encryptedMail.next(encryptedMail);

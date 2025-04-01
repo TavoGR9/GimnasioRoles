@@ -8,7 +8,7 @@ import { IndexedDBService } from './indexed-db.service';
 import { catchError, tap } from 'rxjs/operators';
 import { forkJoin,of  } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
+import { ApiUrlService } from './api-url.service';
 
 
 @Injectable({
@@ -22,13 +22,23 @@ export class PagoMembresiaEfectivoService {
   //API: string = 'http://localhost/serviciosGimnasio/';
 
   // API: string = 'http://localhost/gimnasioServicios/';
-  API: string = 'http://localhost/serviciosGym/';
+  
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
-  // API: String = '';
+  
+  
+   API: String = '';
+ // API: string = 'http://localhost/serviciosGym/';
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) { }
+  constructor(private clienteHttp:HttpClient, 
+    private connectivityService: ConnectivityService, 
+    private indexedDBService: IndexedDBService,
+    private apiUrlService: ApiUrlService ) {
+
+      this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
+      console.log('pagoMembresiaEfectivoService API:', this.API); // Verifica la URL de la API
+     }
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
 
@@ -54,12 +64,13 @@ export class PagoMembresiaEfectivoService {
       tap(dataResponse => {
 
         this.saveDataToIndexedDB2(dataResponse);
+        console.log('Respuesta de la API en obtenerActivos pagoMembresia', dataResponse);
       }),
       catchError(error => {
    
         // console.log('Cargando datos desde IndexedDB debido a error en API:', error);
         return this.getServiceDatos();
-
+console.error('Error al obtener datos de la API:', error);
         /*const resultData = { success: '2' }; // Objeto que indica éxito
         return forkJoin([
           this.getServiceDatos().pipe(
@@ -76,6 +87,7 @@ export class PagoMembresiaEfectivoService {
       })
     );
   }
+
 
   private saveDataToIndexedDB2(data: any) {
     // Guarda los datos en IndexedDB

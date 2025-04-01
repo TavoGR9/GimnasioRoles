@@ -5,6 +5,8 @@ import { tap } from 'rxjs/operators';
 import { catchError, of, BehaviorSubject, Observable} from 'rxjs';
 import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
+import { ApiUrlService } from './api-url.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,11 +15,14 @@ export class MembresiaService {
   isConnected: boolean = true;
   private datosPlan: any;
   data: any = {};
-  API: string = 'http://localhost/serviciosGym/';
+ // API: string = 'http://localhost/serviciosGym/';
+ API: string ;
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,
+     private indexedDBService:IndexedDBService, private apiUrlService: ApiUrlService) {
+    this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
   }
 
 
