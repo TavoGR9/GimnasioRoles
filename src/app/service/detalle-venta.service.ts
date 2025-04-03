@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable,forkJoin } from 'rxjs';
 import { detalleVenta } from '../models/detalleVenta';
 import { ConnectivityService } from './connectivity.service';
+import { ApiUrlService } from './api-url.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,8 @@ export class DetalleVentaService {
   API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private apiUrlService: ApiUrlService) {
+    this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
   }
 
   // comprobar(){

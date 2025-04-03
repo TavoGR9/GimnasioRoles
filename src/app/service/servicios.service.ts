@@ -5,6 +5,8 @@ import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
 import { tap } from 'rxjs/operators';
 import { catchError, of } from 'rxjs';
+import { ApiUrlService } from './api-url.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,7 +31,11 @@ export class serviciosService {
   services: any[] = [];
   data: any = {};
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private indexedDBService:IndexedDBService) {
+  constructor(private clienteHttp:HttpClient, 
+    private connectivityService: ConnectivityService,
+    private indexedDBService:IndexedDBService,
+  private apiUrlService: ApiUrlService) {
+    this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
   }
 
   // comprobar(){

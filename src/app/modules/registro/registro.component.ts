@@ -16,6 +16,7 @@ import { PostalCodeService } from "../../service/cp.service";
 import { CrearRolComponent } from '../crear-rol/crear-rol.component';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { EventCommunicationServiceService } from "../../service/event-communication-service.service";
+import { IndexedDBService } from "../../service/indexed-db.service";
 
 interface Food {
   value: string;
@@ -142,7 +143,8 @@ export class RegistroComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public dialogo: MatDialogRef<RegistroComponent>,
     private postalCodeService: PostalCodeService,
-    private eventCommunicationService: EventCommunicationServiceService
+    private eventCommunicationService: EventCommunicationServiceService,
+    private indexedDBService: IndexedDBService
 
   ) {
     this.form = this.fb.group({
@@ -451,10 +453,10 @@ export class RegistroComponent implements OnInit {
         });
 
 
-
+        console.log('Modificar valor de formulario',this.form.value)
         this.usuario.agregarUsuario(this.form.value).subscribe({
           next: (resultData) => {
-
+console.log('Resultado de la API',resultData)
             if (resultData.success == 0) {
               this.toastr.error(resultData.message, 'Error!!!');
               this.spinner.hide();
@@ -612,22 +614,34 @@ export class RegistroComponent implements OnInit {
 
 
 
+  buscarPersonal() {
+    this.usuario.getPersonal().subscribe({
+      next: (respuesta) => {
+        this.personalCompleto = respuesta; // Guardar toda la respuesta de la API
+        this.indexedDBService.saveDataRolesTable('AddRolesTable', this.personalCompleto);
+        console.log('Personal completo:', this.personalCompleto);
+        this.esClienteDisponible();
+        this.preseleccionarRolSiEsRecepcionista();
+        
+        
+      },
+      error: (error) => {
+        console.error("Error al obtener el personal:", error);
+            // Obtener los datos almacenados en IndexedDB si existen
+    this.indexedDBService.getDataRolesTable('AddRolesTable').then((data) => {
+      if (data) {
+        console.log(data)
+        this.personalCompleto = data;
+        this.esClienteDisponible();
+        this.preseleccionarRolSiEsRecepcionista();
+      }
+    });
+      }
+    });
+  
 
-    buscarPersonal() {
-
-
-      this.usuario.getPersonal().subscribe({
-        next: (respuesta) => {
-          this.personalCompleto = respuesta; // Guardar toda la respuesta de la API
-          this.esClienteDisponible();
-          this.preseleccionarRolSiEsRecepcionista();
-
-        },
-        error: (error) => {
-          console.error("Error al obtener el personal:", error);
-        },
-      });
-    }
+  }
+  
 
 
 

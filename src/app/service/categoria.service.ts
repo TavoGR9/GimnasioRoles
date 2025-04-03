@@ -6,6 +6,8 @@ import { tap } from 'rxjs/operators';
 import { catchError, of } from 'rxjs';
 import { IndexedDBService } from './indexed-db.service';
 
+import { ApiUrlService } from './api-url.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,7 +29,12 @@ export class CategoriaService {
   public seleccionado: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   public idMarca: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private indexedDBService:IndexedDBService) {
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,
+    private indexedDBService:IndexedDBService,
+     private apiUrlService: ApiUrlService
+    ) {
+      this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
+
   }
 
   idGym = new BehaviorSubject<number>(0);

@@ -10,6 +10,8 @@ import { ConnectivityService } from './connectivity.service';
 import { IndexedDBService } from './indexed-db.service';
 import { HttpParams } from '@angular/common/http';
 
+import { ApiUrlService } from './api-url.service';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -30,9 +32,17 @@ export class ColaboradorService {
     // API: string = 'http://localhost/gimnasioServicios/';
     API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
-    constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService:IndexedDBService) {
+
+    constructor(private clienteHttp:HttpClient,
+       private connectivityService: ConnectivityService, 
+       private indexedDBService:IndexedDBService,
+       private apiUrlService: ApiUrlService) {
+      
+        this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
         //this.comprobar();
     }
+
+    
     // comprobar(){
     //     this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
     //       this.isConnected = isConnected;

@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import axios from 'axios';
 import { ConnectivityService } from './connectivity.service';
+import { ApiUrlService } from './api-url.service';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -17,12 +19,17 @@ export class PostalCodeService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
-
-  // API: string = 'http://localhost/gimnasioServicios/';
   API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
 
-  constructor(private http: HttpClient, private connectivityService: ConnectivityService) { }
+  constructor(
+    private http: HttpClient, 
+    private connectivityService: ConnectivityService,
+    private apiUrlService: ApiUrlService
+  ) { 
+
+    this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
+  }
 
   // comprobar(){
   //   this.connectivityService.checkInternetConnectivity().subscribe((isConnected: boolean) => {
@@ -34,6 +41,9 @@ export class PostalCodeService {
   //     }
   //   });
   // }
+
+
+
 
   consultarCodigoPostal(codigoPostal: string): Observable<any> {
     const url = `${this.API}cp.php?consultarCodigoP=${codigoPostal}`;

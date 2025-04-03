@@ -116,18 +116,28 @@ export class IndexedDBService extends Dexie {
     this.AddRolesTable = this.table('AddRolesTable');
   }
 
-  async saveDataRolesTable(key: string, data: any) {
-    await this.receptionistsTable.put({ key, data });
+  async saveDataRolesTable(key: string, data: any[]) {
+    // Busca si ya existe un registro con la clave
+    const existing = await this.AddRolesTable.where("key").equals(key).first();
+  
+    if (existing) {
+      // Si existe, actualiza SOLO la data sin cambiar el id
+      await this.AddRolesTable.update(existing.id, { data });
+    } else {
+      // Si no existe, crea un nuevo registro
+      await this.AddRolesTable.put({ key, data });
+    }
   }
+  
+  
+  
+  
 
   async getDataRolesTable(key: string) {
-    return await this.table('receptionists')
-        .where('key')
-        .equals(key)
-        .toArray();
-
+    const result = await this.AddRolesTable.where("key").equals(key).first();
+    return result ? result.data : []; // Devuelve el arreglo o vacío si no existe
   }
-
+  
 
 
 
@@ -509,5 +519,66 @@ async VaciarAgregarMarcaData(){
   await this.AgregarMarcaDataTable.clear();
   //return console.log("Eliminados");
 }
+
+
+async addTemporaryEntryToActivos(newEntry: any) {
+  // Paso 1: Buscar el último registro en la tabla 'ObtenerActivosDataTable'
+  const lastEntry = await this.ObtenerActivosDataTable.orderBy('id').last();
+
+  if (!lastEntry) {
+    console.warn("No se encontró una entrada existente en la tabla.");
+    return;
+  }
+
+  // Paso 2: Generar una clave única temporal alfanumérica
+  const tempKey = `TMP-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+
+  // Paso 3: Crear el objeto con los datos mínimos requeridos
+  const temporaryObject = {
+    clave: tempKey, // Clave única temporal
+    estafeta: null,
+    telefono: null,
+    fotoUrl: "olympus.arvispace.com/olimpusGym/imgPerfil/usuario.jpg",
+    Correo: null,
+    id_empleado: "0",
+    nombreCompleto: newEntry.nombreCompleto || "Usuario Temporal",
+    fechaRegistro: new Date().toISOString(), // Fecha actual como registro
+    huella: null, // No se almacena huella en offline
+    rol: "Cliente",
+    id_rol: "4",
+    marca: "Gimnasio",
+    id_producto: "14",
+    nombreProducto: "Mensualidad",
+    id_categoria: "7",
+    nombreCategoria: "Servicios",
+    precio: "0.00",
+    precioPedido: "350",
+    total: "350",
+    correoCliente: "",
+    id_pedido: null, // No hay ID de pedido aún
+    fecha_hora_pedido: null,
+    id_bodega: "1",
+    idProbob: "131",
+    precioCompra: "0",
+    fecha_inicio: new Date().toISOString().split("T")[0], // Fecha de inicio hoy
+    fecha_caducidad: null,
+    idPromocion: null,
+    nombrePromocion: null,
+    estatus: "0",
+    pedidoActual: null,
+    CreatedBy: "Offline",
+    nombreBodega: "Olimpus Gym",
+    isTemporary: true // Flag para identificar que es temporal
+  };
+
+  // Paso 4: Agregar este objeto al arreglo `data[]` del último registro
+  lastEntry.data.push(temporaryObject);
+
+  // Paso 5: Actualizar el último registro en la base de datos
+  await this.ObtenerActivosDataTable.put({ key: lastEntry.key, data: lastEntry.data });
+
+  console.log("Entrada temporal añadida correctamente en ObtenerActivosDataTable:", temporaryObject);
+}
+
 
 }

@@ -4,6 +4,8 @@ import { BehaviorSubject, Observable, Subject, catchError } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { horario } from '../models/horario';
 import { ConnectivityService } from './connectivity.service';
+import { ApiUrlService } from './api-url.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +23,10 @@ export class HorarioService {
   // API: string = 'http://localhost/gimnasioServicios/';
   API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
-  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService) {
+  constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,
+    private apiUrlService: ApiUrlService) {
+
+      this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
   }
 
   agregarHorario(datosHorario: horario):Observable<any>{
