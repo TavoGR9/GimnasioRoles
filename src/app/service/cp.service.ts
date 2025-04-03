@@ -15,7 +15,9 @@ export class PostalCodeService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  API: string = 'http://localhost/olimpusGym/conf/';
+
 
   constructor(private http: HttpClient, private connectivityService: ConnectivityService) { }
 

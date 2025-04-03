@@ -24,7 +24,9 @@ export class GimnasioService {
   // APIv3: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+ // API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+ API: string = 'http://localhost/olimpusGym/conf/';
+
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 

@@ -30,10 +30,10 @@ export class AuthService {
   //API: string = 'https://olympus.arvispace.com/gimnasioRoles/configuracion/superAdministrador/loginRolev2.php/';
   //APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-  API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
+  //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
   // APIv2: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-  // APIv3: string = 'http://localhost/olimpusGym/conf/';
+   API: string = 'http://localhost/olimpusGym/conf/';
   // API: String = '';
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
