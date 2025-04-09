@@ -652,6 +652,8 @@ cargarTarjetas2(): void {
     this.homeService.getAnalyticsData(this.idGym).subscribe(
       (data) => {
         this.masVendidos = data;
+        //console.log('MAS VENDIDOS: ', this.masVendidos);
+
         this.dataSourceProductos = new MatTableDataSource(this.masVendidos);
         this.loadData();
       },

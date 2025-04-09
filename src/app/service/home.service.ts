@@ -90,7 +90,7 @@ consultarAsistenciasPersonal(idGym: number): Observable<any> {
   //HOME
   // llamada HTTP a la API REST, para obtener los productos más vendidos
   getAnalyticsData(sucursalId: any): Observable<any> {
-    return this.clienteHttp.get(this.API+"ProductosMasComprados.php?consultarProductosVendidos="+sucursalId).pipe(
+    return this.clienteHttp.get(this.API+"productosMasComprados.php?consultarProductosVendidos="+sucursalId).pipe(
       tap(dataResponse => {
         this.saveDataToIndexedDB2(dataResponse);
       }),
