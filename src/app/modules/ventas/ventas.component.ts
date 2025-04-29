@@ -419,12 +419,13 @@ export class VentasComponent implements OnInit {
                 // lat: 0,
                 // lng: 0,
               };
+              console.log('datos enviados a pedido: ', JSON.stringify(datosVentas));
 
               this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
                 const lastInsertId = response.id_pedido;
                 // console.log('idlast: ', lastInsertId);
 
-                // console.log('Producto seleccionado: ', this.selectedProducts);
+               console.log('Producto seleccionado: ', this.selectedProducts);
 
                 const detallesVentas = this.selectedProducts.map((producto) => {
                   return {
@@ -436,18 +437,20 @@ export class VentasComponent implements OnInit {
                     idPromocion: ''
                   };
                 });
-                // console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
+                console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
                 this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe(
                   (response) => {
-                    // console.log('Detalle Pedido insertado correctamente:', response);
+                    console.log('Detalle Pedido insertado correctamente:', response);
                     if (response.success === 1) {
                       //Actualizamos existencias
                       const existencias = this.selectedProducts.map((producto) => {
                         return {
                           codigo: producto.codigoBarras,
-                          cantidad: producto.cantidad
+                          cantidad: producto.cantidad,
+                          id_bodega: this.auth.idGym.getValue()
                         }
                       });
+                      console.log('Datos enviados a updateExistencia:', JSON.stringify(existencias));
                       this.DetalleVenta.updateExistenciasPedido(existencias).subscribe((data) => {
 
                       });
