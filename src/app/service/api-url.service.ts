@@ -6,8 +6,7 @@ import { Injectable } from '@angular/core';
 export class ApiUrlService {
   
  private readonly baseUrl: string = 'https://olympus.arvispace.com/ServiciosGym/';
-
-//  private readonly baseUrl: string = 'http://localhost/serviciosGym/';
+ //private readonly baseUrl: string = 'http://localhost/serviciosGym/';
 
 
   constructor() {}

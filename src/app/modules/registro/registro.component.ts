@@ -455,7 +455,9 @@ export class RegistroComponent implements OnInit {
 
         console.log('Modificar valor de formulario',this.form.value)
         this.usuario.agregarUsuario(this.form.value).subscribe({
+         
           next: (resultData) => {
+            console.log (this.form.value)
 console.log('Resultado de la API',resultData)
             if (resultData.success == 0) {
               this.toastr.error(resultData.message, 'Error!!!');
