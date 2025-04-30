@@ -42,18 +42,19 @@
                     </div>
                   </div>
               </div>
-               <div class="col-sm-6">
-                  <div style="display: flex; justify-content: flex-end;margin-top: 30px;">
-                     <button mat-button [matMenuTriggerFor]="menu2" class="download-button">
-                        <mat-icon class="download-icon">cloud_download</mat-icon>
-                        <span class="download-text">DESCARGAR REPORTE</span>
-                     </button>
-                     <mat-menu #menu2="matMenu">
-                        <button mat-menu-item (click)="descargarExcel2()">.xlsx</button>
-                     </mat-menu>
-                  </div>
-               </div>
+              <div class="container">
+                <div style="text-align: right; margin-bottom:30px;">
+                  <button mat-button [matMenuTriggerFor]="menu2" class="download-button">
+                    <mat-icon class="download-icon">cloud_download</mat-icon>
+                    <span class="download-text">DESCARGAR REPORTE</span>
+                  </button>
+                  <mat-menu #menu2="matMenu">
+                    <button mat-menu-item (click)="descargarExcel2()">.xlsx</button>
+                  </mat-menu>
+                </div>
+              </div>
             </div>
+
             <div class="total-ventas">
                <p class="total-label">Total: <strong style="margin-left: 20px;">{{ totalVentas | currency:'USD':'symbol':'1.2-2' }}</strong></p>
                <p class="total-amount"></p>

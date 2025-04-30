@@ -16,6 +16,9 @@ import { CategoriaService } from "../../service/categoria.service";
 import { CrearMarcaComponent } from "../crear-marca/crear-marca.component";
 import { EditarMarcaComponent } from "../editar-marca/editar-marca.component";
 
+import { distinctUntilChanged } from 'rxjs/operators';
+
+
 @Component({
   selector: "app-servicios-lista",
   templateUrl: "./servicios-lista.component.html",
@@ -63,7 +66,9 @@ export class ServiciosListaComponent implements OnInit{
       this.getSSdata(JSON.stringify(this.currentUser));
     }
 
-    this.auth.idGym.subscribe((data) => {
+    this.auth.idGym
+    .pipe(distinctUntilChanged())
+    .subscribe((data) => {
       this.idGym = data;
       this.listaTablaMarca();
     });
@@ -71,7 +76,7 @@ export class ServiciosListaComponent implements OnInit{
 
   loadData() {
     setTimeout(() => {
-      this.listaTablaMarca();
+      // this.listaTablaMarca();
       this.dataSourceDos = new MatTableDataSource(this.marcas);
       this.dataSourceDos.paginator = this.paginator;
       this.isLoading = false;
