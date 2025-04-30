@@ -140,7 +140,7 @@ export class VentasComponent implements OnInit {
     //Obtener productos de la bodega
     this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      // console.log('ProductosV: ', this.productData);
+      console.log('ProductosV: ', this.productData);
 
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator;
@@ -166,7 +166,7 @@ export class VentasComponent implements OnInit {
     this.InventarioService.obtenerProductoPorIdYIdBodega(producto.idProbob, this.auth.idGym.getValue()).subscribe(
       (data) => {
         const productoObtenido = data[0];
-        // console.log('PRODUCTO OBTENIDO: ', productoObtenido);
+        console.log('PRODUCTO OBTENIDO: ', productoObtenido);
 
         if (!productoObtenido) {
           this.toastr.error("Producto no encontrado");
@@ -347,7 +347,7 @@ export class VentasComponent implements OnInit {
     const productoIngresado = this.form.get("producto")?.value;
       this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
-          // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
+          console.log('PRODUCTOS POR NOMBRE: ', respuesta);
 
            // Filtrar las subcategorías excluyendo aquellas donde
         const productosFiltrados = respuesta.nombreproducto.filter(
@@ -401,6 +401,8 @@ export class VentasComponent implements OnInit {
             if (this.totalAPagar <= this.dineroRecibido) {
               /**FECHA */
               const totalAPagar = this.selectedProducts.reduce((total, producto) => total + producto.precioSucursal * producto.cantidad,0);
+              console.log("totalAPagar: ", totalAPagar);
+
               // Enviar datos de ventas
               const datosVentas = {
                 correoCliente: "correo@cliente.com",
@@ -419,11 +421,15 @@ export class VentasComponent implements OnInit {
                 // lat: 0,
                 // lng: 0,
               };
-              console.log('datos enviados a pedido: ', JSON.stringify(datosVentas));
+              // console.log('datos enviados a pedido stringify: ', JSON.stringify(datosVentas));
+              console.log("DATOS ENVIADOS A PEDIDO: ", datosVentas);
+
 
               this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
                 const lastInsertId = response.id_pedido;
-                // console.log('idlast: ', lastInsertId);
+                console.log("RESPONSE PEDIDO: ", response);
+
+                console.log('idlast: ', lastInsertId);
 
                console.log('Producto seleccionado: ', this.selectedProducts);
 
@@ -437,7 +443,9 @@ export class VentasComponent implements OnInit {
                     idPromocion: ''
                   };
                 });
-                console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
+                // console.log('Datos enviados a agregarDetallePedido stringyfy:', JSON.stringify(detallesVentas));
+                console.log("DATOS ENVIADOS A DETALLEPEDIDO: ", detallesVentas);
+
                 this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe(
                   (response) => {
                     console.log('Detalle Pedido insertado correctamente:', response);
@@ -445,13 +453,18 @@ export class VentasComponent implements OnInit {
                       //Actualizamos existencias
                       const existencias = this.selectedProducts.map((producto) => {
                         return {
-                          codigo: producto.codigoBarras,
+                          // codigo: producto.codigoBarras,
+                          idProbob: producto.idProbob,
                           cantidad: producto.cantidad,
                           id_bodega: this.auth.idGym.getValue()
                         }
                       });
-                      console.log('Datos enviados a updateExistencia:', JSON.stringify(existencias));
+                      // console.log('Datos enviados a updateExistencia stringify:', JSON.stringify(existencias));
+                      console.log("DATOS ENVIADOS A UPDATE EXISTENCIA: ", existencias);
+
                       this.DetalleVenta.updateExistenciasPedido(existencias).subscribe((data) => {
+                        console.log("RESPONSE EXISTENCIAS: ", data);
+
 
                       });
                       this.spinner.hide();

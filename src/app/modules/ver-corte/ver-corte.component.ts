@@ -134,13 +134,18 @@ export class VerCorteComponent implements OnInit  {
     this.joinDetalleVentaService.consultarProductosVentasBodega(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
-        //console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
+        console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.loadData();
         this.dataSource.data = this.detallesCaja;
-        const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
-        this.fechaFiltro = fechaActual;
-        console.log("dsj: ",this.fechaFiltro);
+        // const fechaActual = this.obtenerFechaActual().toISOString().slice(0, 10);
+        // this.fechaFiltro = fechaActual;
+        // console.log("dsj: ",this.fechaFiltro);
+        const fechaActual = this.obtenerFechaActual();
+        const fechaLocal = fechaActual.toLocaleDateString('sv-SE'); // 'sv-SE' da formato yyyy-mm-dd
+        this.fechaFiltro = fechaLocal;
+        console.log("FECHA ACTUAL DENTRO DE LA TABLA: ", this.fechaFiltro);
+
         this.aplicarFiltro();
       },
       (error) => {
@@ -152,6 +157,8 @@ export class VerCorteComponent implements OnInit  {
   private obtenerFechaActual(): Date {
     const fechaActual = new Date();
     // fechaActual.setHours(fechaActual.getHours() - 0); // Agregar 6 horas
+    console.log("FECHA ACTUAL: ",fechaActual);
+
     return fechaActual;
   }
 
@@ -256,6 +263,8 @@ export class VerCorteComponent implements OnInit  {
   calcularTotalVentas(): number {
     // Obtén los datos visibles después de aplicar filtros
     const datosVisibles = this.dataSource.filteredData || this.dataSource.data;
+    console.log("DATOS VIVIBLES: ",datosVisibles);
+
     // Realiza el cálculo del total
     return datosVisibles.reduce((total, detalle) => {
       const cantidad = parseFloat(detalle.cantidad);
