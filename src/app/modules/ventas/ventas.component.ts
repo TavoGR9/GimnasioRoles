@@ -167,6 +167,8 @@ export class VentasComponent implements OnInit {
       (data) => {
         const productoObtenido = data[0];
         console.log('PRODUCTO OBTENIDO: ', productoObtenido);
+        console.log("IDBODPRO: ", productoObtenido.idBodPro);
+        console.log("IDPRObob: ", productoObtenido.idProbob);
 
         if (!productoObtenido) {
           this.toastr.error("Producto no encontrado");
@@ -454,9 +456,10 @@ export class VentasComponent implements OnInit {
                       const existencias = this.selectedProducts.map((producto) => {
                         return {
                           // codigo: producto.codigoBarras,
-                          idProbob: producto.idProbob,
+                          // idProbob: producto.idProbob,
+                          idBodPro: producto.idBodPro,
                           cantidad: producto.cantidad,
-                          id_bodega: this.auth.idGym.getValue()
+                          // id_bodega: this.auth.idGym.getValue()
                         }
                       });
                       // console.log('Datos enviados a updateExistencia stringify:', JSON.stringify(existencias));

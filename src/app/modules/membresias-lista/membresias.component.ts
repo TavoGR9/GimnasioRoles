@@ -198,8 +198,8 @@ export class MembresiasComponent implements OnInit {
 
   //Reemplazar por productos
   listaTablaProdMem(){
-    this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
-      // console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
+    this.productoService.obternerInventario2(this.idGym).subscribe((resultData) => {
+      console.log('LISTA DE TODOS LOS PRODUCTOS: ', resultData);
 
       //this.productos = resultData
       this.productos = resultData.filter((producto: any) => producto.membresia === '1' && producto.id_bodega == this.idGym);

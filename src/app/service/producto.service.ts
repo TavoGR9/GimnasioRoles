@@ -22,7 +22,7 @@ export class ProductoService {
   // API: String = '';
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
-  // API: string = 'http://localhost/gimnasioServicios/';
+  //API: string = 'http://localhost/gimnasioServicios/';
   API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
     constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService, private indexedDBService: IndexedDBService) {
@@ -131,6 +131,19 @@ export class ProductoService {
     obternerInventario(id:any): Observable<any[]> {
       const data = { id_bodega_param: id };
       return this.clienteHttp.post<any[]>(this.API +'getProductosBodega.php',data).pipe(
+        tap((dataResponse: any[])=> {
+          this.saveDataToIndexedDB3(dataResponse);
+        }),
+        catchError(error => {
+          return this.getServiceDatos3();
+        })
+      ) as Observable<any[]>;
+    }
+
+
+    obternerInventario2(id:any): Observable<any[]> {
+      const data = { id_bodega_param: id };
+      return this.clienteHttp.post<any[]>(this.API +'getProductosBodega2.php',data).pipe(
         tap((dataResponse: any[])=> {
           this.saveDataToIndexedDB3(dataResponse);
         }),

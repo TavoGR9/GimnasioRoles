@@ -73,7 +73,7 @@ export class planAgregarComponent {
         this.idGym = id;
       }
       //se optinene las membresias
-      this.productoService.obternerInventario(this.idGym)
+      this.productoService.obternerInventario2(this.idGym)
         .subscribe((respuesta) => {
           if (respuesta )
           this.plan = this.aplicarFiltro(respuesta);
