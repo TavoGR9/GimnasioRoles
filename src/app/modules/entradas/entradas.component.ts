@@ -53,6 +53,7 @@ export class EntradasComponent implements OnInit {
   filteredProducto: any[] = [];
   productoss: any[] = [];
   dataSource: any;
+  dataSource2: any;
   compras: any;
   fechaInicio: string = "";
   fechaFin: string = "";
@@ -123,8 +124,8 @@ export class EntradasComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       if (data) {
         this.idGym = data;
-        this.listaTablas();
         this.verCompras();
+        this.listaTablas();
       }
     });
 
@@ -171,18 +172,17 @@ export class EntradasComponent implements OnInit {
   listaTablas() {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
-        //console.log("Resultado de listaProductos:", resultData);
+        console.log("Resultado de listaProductos:", resultData);
 
         // Filtrar las subcategorías excluyendo aquellas donde
         this.productosFiltrados = resultData.productos.filter(
           (productos: any) => productos.servicio != "1"
         );
 
-        // console.log("Productos después del filtro:", this.productosFiltrados);
-
+        console.log("Productos después del filtro:", this.productosFiltrados);
 
       //   // Asignar datos filtrados a la tabla
-      this.dataSource = new MatTableDataSource(this.productosFiltrados);
+      this.dataSource2 = new MatTableDataSource(this.productosFiltrados);
       this.loadData();
 
 
@@ -478,7 +478,7 @@ export class EntradasComponent implements OnInit {
                 )
                 .subscribe((respuesta) => {
                   this.compras = respuesta.data;
-                  // console.log('compras actualizdas: ', this.compras);
+                  console.log('compras actualizdas: ', this.compras);
 
                   this.dataSource = new MatTableDataSource(this.compras);
                   this.dataSource.paginator = this.paginator;
@@ -676,7 +676,7 @@ export class EntradasComponent implements OnInit {
       )
       .subscribe((respuesta) => {
         this.compras = respuesta.data;
-        // console.log('compras ver: ', this.compras);
+        console.log('compras ver: ', this.compras);
 
         this.dataSource = new MatTableDataSource(this.compras);
         this.loadData();
