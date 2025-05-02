@@ -455,15 +455,15 @@ export class VentasComponent implements OnInit {
                       //Actualizamos existencias
                       const existencias = this.selectedProducts.map((producto) => {
                         return {
-                          // // codigo: producto.codigoBarras,
-                          // // idProbob: producto.idProbob,
-                          // idBodPro: producto.idBodPro,
-                          // cantidad: producto.cantidad,
-                          // // id_bodega: this.auth.idGym.getValue()
+                           // // codigo: producto.codigoBarras,
+                         // // idProbob: producto.idProbob,
+                         // idBodPro: producto.idBodPro,
+                         // cantidad: producto.cantidad,
+                         // // id_bodega: this.auth.idGym.getValue()
 
-                          codigo: producto.codigoBarras,
-                          cantidad: producto.cantidad,
-                          idBodega: this.auth.idGym.getValue()
+                         codigo: producto.codigoBarras,
+                         cantidad: producto.cantidad,
+                         idBodega: this.auth.idGym.getValue()
                         }
                       });
                       // console.log('Datos enviados a updateExistencia stringify:', JSON.stringify(existencias));
