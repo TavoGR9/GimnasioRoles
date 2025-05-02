@@ -53,6 +53,7 @@ export class EntradasComponent implements OnInit {
   filteredProducto: any[] = [];
   productoss: any[] = [];
   dataSource: any;
+  dataSource2: any;
   compras: any;
   fechaInicio: string = "";
   fechaFin: string = "";
@@ -123,8 +124,9 @@ export class EntradasComponent implements OnInit {
     this.auth.idGym.subscribe((data) => {
       if (data) {
         this.idGym = data;
-        this.listaTablas();
         this.verCompras();
+        this.listaTablas();
+
       }
     });
 
@@ -182,7 +184,7 @@ export class EntradasComponent implements OnInit {
 
 
       //   // Asignar datos filtrados a la tabla
-      this.dataSource = new MatTableDataSource(this.productosFiltrados);
+      this.dataSource2 = new MatTableDataSource(this.productosFiltrados);
       this.loadData();
 
 
