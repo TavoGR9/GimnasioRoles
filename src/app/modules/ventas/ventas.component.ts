@@ -361,7 +361,7 @@ export class VentasComponent implements OnInit {
                   cantidad: producto.cantidad,
                   total: producto.precioSucursal,
                   total_cantidad: producto.cantidad * producto.precioSucursal,
-                  idPromocion: 0
+                  idPromocion: "0"
                 };
               });
               // console.log('Datos enviados a agregarDetallePedido stringyfy:', JSON.stringify(detallesVentas));
