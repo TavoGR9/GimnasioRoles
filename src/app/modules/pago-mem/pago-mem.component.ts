@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { AuthService } from '../../service/auth.service';
 import { NetworkService } from '../../service/network.service';
+import { listarClientesService } from '../../service/listarClientes.service';
 
 @Component({
   selector: 'app-pago-mem',
@@ -41,7 +42,8 @@ export class PagoMemComponent implements OnInit{
     private datePipe: DatePipe,
     private toastr: ToastrService,
     private auth:AuthService,
-    private networkService: NetworkService){
+    private networkService: NetworkService,
+  private listarClientesService: listarClientesService){
 
       this.fechaInicio.setHours(0, 0, 0, 0);
 
@@ -260,60 +262,64 @@ export class PagoMemComponent implements OnInit{
 
   */
 
-  verTabla(): void {
-    this.pagoMem.obtenerActivos(this.auth.idGym.getValue()).subscribe(
-        (response: any) => {
-            const Clientes = response.data;
-            console.log(Clientes)
 
-            // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
-            const fechaInicio = this.fechaInicio
-                ? new Date(this.fechaInicio)
-                : new Date('2000-01-01'); // Fecha predeterminada
-            const fechaFin = this.fechaFin
-                ? new Date(this.fechaFin)
-                : new Date(); // Fecha predeterminada (hoy).
-                fechaFin.setHours(23, 59, 0);
-
-            // Aseguramos que las fechas sean válidas antes de filtrar.
-            const filtradosPorFecha = Clientes.filter((cliente: any) => {
-                const fechaPedido = new Date(cliente.fecha_hora_pedido);
-                return (
-                    fechaPedido >= fechaInicio &&
-                    fechaPedido <= fechaFin
-                );
-            });
-
-            // Filtramos solo clientes con id_pedido.
-            const conPedidos = filtradosPorFecha.filter((item: any) => item.id_pedido);
-
-            // Agrupamos por pedido.
-            const agrupadosConPedidos = this.pagoMem.agruparPorPedido(conPedidos);
-
-            // Ordenamos por fecha_hora_pedido.
-            agrupadosConPedidos.sort((a: any, b: any) => {
-                const fechaA = new Date(a.fecha_hora_pedido);
-                const fechaB = new Date(b.fecha_hora_pedido);
-                return fechaA.getTime() - fechaB.getTime();
-            });
-
-            this.clienteActivo = agrupadosConPedidos;
-            console.log('clienteActivo',this.clienteActivo)
+///Método para obtener los datos de la tabla y filtrarlos por fecha 30/04/2025
 
 
+//   verTabla(): void {
+//     this.pagoMem.obtenerActivos(this.auth.idGym.getValue()).subscribe(
+//         (response: any) => {
+//             const Clientes = response.data;
+//             console.log(Clientes)
 
-            // Actualizamos el DataSource de la tabla.
-            this.dataSource = new MatTableDataSource(this.clienteActivo);
-            this.dataSource.paginator = this.paginator;
-            this.loadData();
-            this.total();
-        },
-        (error: any) => {
-            console.error("Error al obtener activos:", error);
-        }
-    );
+//             // Validamos si las fechas están definidas; si no, usamos valores predeterminados.
+//             const fechaInicio = this.fechaInicio
+//                 ? new Date(this.fechaInicio)
+//                 : new Date('2000-01-01'); // Fecha predeterminada
+//             const fechaFin = this.fechaFin
+//                 ? new Date(this.fechaFin)
+//                 : new Date(); // Fecha predeterminada (hoy).
+//                 fechaFin.setHours(23, 59, 0);
 
-}
+//             // Aseguramos que las fechas sean válidas antes de filtrar.
+//             const filtradosPorFecha = Clientes.filter((cliente: any) => {
+//                 const fechaPedido = new Date(cliente.fecha_hora_pedido);
+//                 return (
+//                     fechaPedido >= fechaInicio &&
+//                     fechaPedido <= fechaFin
+//                 );
+//             });
+
+//             // Filtramos solo clientes con id_pedido.
+//             const conPedidos = filtradosPorFecha.filter((item: any) => item.id_pedido);
+
+//             // Agrupamos por pedido.
+//             const agrupadosConPedidos = this.pagoMem.agruparPorPedido(conPedidos);
+
+//             // Ordenamos por fecha_hora_pedido.
+//             agrupadosConPedidos.sort((a: any, b: any) => {
+//                 const fechaA = new Date(a.fecha_hora_pedido);
+//                 const fechaB = new Date(b.fecha_hora_pedido);
+//                 return fechaA.getTime() - fechaB.getTime();
+//             });
+
+//             this.clienteActivo = agrupadosConPedidos;
+//             console.log('clienteActivo',this.clienteActivo)
+
+
+
+//             // Actualizamos el DataSource de la tabla.
+//             this.dataSource = new MatTableDataSource(this.clienteActivo);
+//             this.dataSource.paginator = this.paginator;
+//             this.loadData();
+//             this.total();
+//         },
+//         (error: any) => {
+//             console.error("Error al obtener activos:", error);
+//         }
+//     );
+
+// }
 
 
 
@@ -433,5 +439,57 @@ descargarExcel(): void {
   saveAs(newBlob, "Clientes.xlsx");
 
 }
+
+
+
+verTabla(): void {
+  // Validar las fechas antes de usarlas
+
+  const bodegaId = this.auth.idGym.getValue().toString();
+
+
+  let fechaInicio = new Date(this.fechaInicio);
+  fechaInicio.setHours(0, 0, 0);
+
+  let fechaFin = new Date(this.fechaFin);
+  fechaFin.setHours(23, 59, 0);
+
+  let fechaInicioStr = this.datePipe.transform(fechaInicio, 'yyyy-MM-dd HH:mm:ss') ?? '';
+  let fechaFinStr = this.datePipe.transform(fechaFin, 'yyyy-MM-dd HH:mm:ss') ?? '';
+  
+
+  console.log('fechaInicio:', fechaInicioStr);
+  console.log('fechaFin:', fechaFinStr);
+
+
+
+  this.listarClientesService.ObtenerPedidosFechas(bodegaId, fechaInicioStr, fechaFinStr).subscribe(
+    (response: any) => {
+      const Clientes = response.data;
+
+      // Asumes que ya vienen filtrados desde el backend, así que omites el filtro por fechas
+      const conPedidos = Clientes.filter((item: any) => item.id_pedido);
+      const agrupadosConPedidos = this.pagoMem.agruparPorPedido(conPedidos);
+
+      agrupadosConPedidos.sort((a: any, b: any) => {
+        const fechaA = new Date(a.fecha_hora_pedido);
+        const fechaB = new Date(b.fecha_hora_pedido);
+        return fechaA.getTime() - fechaB.getTime();
+      });
+
+      this.clienteActivo = agrupadosConPedidos;
+      this.dataSource = new MatTableDataSource(this.clienteActivo);
+      this.dataSource.paginator = this.paginator;
+      this.loadData();
+      this.total();
+    },
+    (error: any) => {
+      console.error("Error al obtener activos:", error);
+    }
+  );
+}
+
+
+
 
 }

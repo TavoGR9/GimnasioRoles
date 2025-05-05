@@ -208,7 +208,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
 
   loadData() {
     this.isLoading = true; // Mostrar el icono de carga
-
+    this.listaClientesData3(); // Llamar a la función que obtiene los datos
     setTimeout(() => {
       this.listaClientesData3(); // Llamar a la función que obtiene los datos
 
@@ -219,6 +219,7 @@ export class ListaMembresiasPagoEfecComponent implements OnInit {
         this.isLoading = false; // Ocultar el icono de carga solo cuando la tabla esté lista
       }, 500); // Pequeño retraso para asegurar que los datos se procesen correctamente
     }, 1000);
+        this.isLoading = false; // Ocultar el icono de carga solo cuando la tabla esté lista
   }
 
 

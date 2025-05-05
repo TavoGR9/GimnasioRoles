@@ -20,10 +20,6 @@ export class VentasService {
   // API: string = 'http://localhost/serviciosGimnasio/';
 
   // API: string = 'http://localhost/gimnasioServicios/';
-<<<<<<< HEAD
-=======
-  API: string = 'https://olympus.arvispace.com/ServiciosGym/';
->>>>>>> d19c94e9bb8151b9f2b03a87ffaf38f74c05e5c5
 
 
   //API: string = 'http://localhost/serviciosGym/';

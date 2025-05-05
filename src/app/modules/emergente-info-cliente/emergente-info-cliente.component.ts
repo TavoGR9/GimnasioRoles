@@ -18,7 +18,7 @@ import { MensajeDesactivarComponent } from "../mensaje-desactivar/mensaje-desact
 import { ColaboradorService } from './../../service/colaborador.service';
 
 import { EventCommunicationServiceService } from '../../service/event-communication-service.service';
-
+import { listarClientesService } from '../../service/listarClientes.service';
 
 @Component({
   selector: 'app-emergente-info-cliente',
@@ -54,6 +54,9 @@ export class EmergenteInfoClienteComponent implements OnInit{
   mostrarEstatus: boolean = true;
   mostrarRestablecer: boolean = true;
 
+  resultadoTest: any[] = [];
+  membresias: any[] = [];
+  errorMessage: string = '';
 
 
   @ViewChild('paginatorHistorialMembre', { static: true }) paginator!: MatPaginator;
@@ -67,6 +70,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     public dialogo: MatDialogRef<EmergenteInfoClienteComponent>,
     private http: ColaboradorService,
     private eventCommunicationService: EventCommunicationServiceService,
+    private listarClientesService: listarClientesService,
 
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
@@ -95,6 +99,7 @@ export class EmergenteInfoClienteComponent implements OnInit{
     const dato = this.auth.idUser.getValue();
     const dato2 = Number(this.data.idCliente);
     const rol = this.data.rol;
+   
 
     this.mostrarEstatus = dato !== dato2 && !this.isRecep() && rol !== 'Cliente';
     this.mostrarRestablecer = !this.isRecep() && rol !== 'Cliente';
@@ -108,11 +113,15 @@ export class EmergenteInfoClienteComponent implements OnInit{
       this.dataSource = new MatTableDataSource(this.membresiaHisto);
       this.dataSource.paginator = this.paginator;
     }); */
-    this.UserHIstorial(this.data.idCliente);
-
+   //this.UserHIstorial(this.data.idCliente);
+   this.ejecutarTestProcedure()
 
 
   }
+
+
+  
+
 
   isAdmin(): boolean {
     return this.auth.isAdmin();
@@ -129,8 +138,8 @@ export class EmergenteInfoClienteComponent implements OnInit{
 
 
 duracionCalculo3(fechaInicio: string, fechaFin: string) {
-  console.log("Fecha de inicio recibida:", fechaInicio);
-  console.log("Fecha de fin recibida:", fechaFin);
+  // console.log("Fecha de inicio recibida:", fechaInicio);
+  // console.log("Fecha de fin recibida:", fechaFin);
 
   const fechaInicial = new Date(fechaInicio); // Fecha de inicio proporcionada
   const fechaFinal = new Date(fechaFin);     // Fecha de fin proporcionada
@@ -138,9 +147,9 @@ duracionCalculo3(fechaInicio: string, fechaFin: string) {
 
           // Hoy a las 00:00
 
-  console.log("Fecha inicial ajustada:", fechaInicial);
-  console.log("Fecha final ajustada:", fechaFinal);
-  console.log("Fecha actual:", hoy);
+  // console.log("Fecha inicial ajustada:", fechaInicial);
+  // console.log("Fecha final ajustada:", fechaFinal);
+  // console.log("Fecha actual:", hoy);
 
   // Si la fecha de inicio es futura, devolver un mensaje
   if (fechaInicial > hoy) {
@@ -150,15 +159,15 @@ duracionCalculo3(fechaInicio: string, fechaFin: string) {
 
   // Comparar fechaInicio con la fecha actual
   const fechaBase = fechaInicial >= hoy ? fechaInicial : hoy;
-  console.log("Fecha base para el cálculo:", fechaBase);
+  // console.log("Fecha base para el cálculo:", fechaBase);
 
   // Calcular la diferencia de tiempo entre fechaFinal y fechaBase
   const diferenciaTiempo = fechaFinal.getTime() - fechaBase.getTime();
-  console.log("Diferencia de tiempo (ms):", diferenciaTiempo);
+  // console.log("Diferencia de tiempo (ms):", diferenciaTiempo);
 
   // Convertir la diferencia de milisegundos a días
   const diferenciaDias = diferenciaTiempo / (1000 * 3600 * 24);
-  console.log("Diferencia en días:", diferenciaDias);
+  // console.log("Diferencia en días:", diferenciaDias);
 
   // Aplicar la lógica de redondeo
   let diasCalculados;
@@ -170,7 +179,7 @@ duracionCalculo3(fechaInicio: string, fechaFin: string) {
     return "Membresia caducada"; 
   }
 
-  console.log("Días calculados:", diasCalculados);
+  // console.log("Días calculados:", diasCalculados);
   return diasCalculados;
 }
 
@@ -293,7 +302,7 @@ MembershipDuration(fechaInicio: string, fechaFin: string) {
       
 
         //const ordenar= this.ordenarPedidos(agrupadosPorPedido);
-        //console.log(' ordenar',ordenar)
+        console.log(' ordenar',ordenar)
         
         this.dataSource = new MatTableDataSource(ordenar);
         this.dataSource.paginator = this.paginator;
@@ -305,6 +314,42 @@ MembershipDuration(fechaInicio: string, fechaFin: string) {
 
 
   }
+
+
+  ejecutarTestProcedure(): void {
+    this.listarClientesService.getClienteMembresias(this.data.idSucursal, this.data.idCliente).subscribe({
+      next: res => {
+        this.resultadoTest = res.data;
+        console.log('Resultadooooooooooooooooooooooooooooooooooooooooooooooooooo:', this.resultadoTest);
+
+
+        // res.data.forEach((item: any) => {
+        //   item.estatus = item.estatus?.toString();
+        // });
+      
+    
+            // Agrupamos los registros por id_pedido directamente (sin aplicar el filtro de conteoPedidos y estatus)
+            const agrupadosPorPedido = this.pagoService.agruparPorPedido(res.data);
+            console.log(' agrupadosPorPedido',agrupadosPorPedido)
+
+        const ordenar = agrupadosPorPedido.sort((a, b) => new Date(b.fecha_caducidad).getTime() - new Date(a.fecha_caducidad).getTime());
+    
+      
+
+        //const ordenar= this.ordenarPedidos(agrupadosPorPedido);
+        console.log(' ordenar 2',ordenar)
+        
+         this.dataSource = new MatTableDataSource(ordenar);
+         this.dataSource.paginator = this.paginator;
+
+
+
+      },
+      error: err => this.errorMessage = 'Error al ejecutar el procedimiento'
+    });
+  }
+  
+
 
 
 OpenRestablecer(empleados: any) {

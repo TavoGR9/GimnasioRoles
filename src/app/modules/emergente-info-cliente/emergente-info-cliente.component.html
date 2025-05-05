@@ -169,21 +169,21 @@
 
               <ng-container *ngIf="column === 'Status'">
                 <!-- Mostrar el texto del estatus con estilos condicionales -->
-                <p [ngClass]="{'estatus-activo': memCli.estatus === '1',
-                 'estatus-inactivo': memCli.estatus === '0',
-                 'estatus-pago-adelantado': memCli.estatus === '2'
+                <p [ngClass]="{'estatus-activo': memCli.estatus == 1,
+                 'estatus-inactivo': memCli.estatus == 0,
+                 'estatus-pago-adelantado': memCli.estatus == 2
                  }">
-                   {{ memCli.estatus === '1' ? 'Activo' : (memCli.estatus === '2' ? 'Pago Adelantado' : 'Inactivo') }}
+                   {{ memCli.estatus == 1 ? 'Activo' : (memCli.estatus == 2 ? 'Pago Adelantado' : 'Inactivo') }}
                 </p>
 
                 <!-- Mostrar íconos según el estatus -->
-                <ng-container *ngIf="memCli.estatus === '1'">
+                <ng-container *ngIf="memCli.estatus == 1">
                   <mat-icon style="color:green">timer</mat-icon>
                 </ng-container>
-                <ng-container *ngIf="memCli.estatus === '0'">
+                <ng-container *ngIf="memCli.estatus == 0">
                   <mat-icon style="color:red">timer</mat-icon>
                 </ng-container>
-                <ng-container *ngIf="memCli.estatus === '2'">
+                <ng-container *ngIf="memCli.estatus == 2">
                   <mat-icon style="color:rgba(30, 48, 248, 0.982)">timer</mat-icon>
                 </ng-container>
               </ng-container>
