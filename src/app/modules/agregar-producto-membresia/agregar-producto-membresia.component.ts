@@ -194,14 +194,14 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     this.categoriaService.obtenerCategoria2().subscribe({
       next: (respuesta) => {
 
-        // console.log("Categorias: ", respuesta);
+        console.log("Categorias: ", respuesta);
 
         // Filtra las marcas que tienen 'servicio' igual a 1
         const categoriaFiltrada = respuesta.filter(
           (categoria: any) => categoria.membresia ==1
         );
 
-        // console.log('categoriasFiltradas: ', categoriaFiltrada);
+        console.log('categoriasFiltradas: ', categoriaFiltrada);
 
         const categoriasU = new Set(
           categoriaFiltrada.map((categoria: any) => categoria.nombreCategoria)

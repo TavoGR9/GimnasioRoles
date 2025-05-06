@@ -61,20 +61,24 @@ export class InventariosComponent implements OnInit {
     }, 1000);
   }
 
-  aplicarFiltro(productos: Inventario[]): Inventario[] {
-    return productos.filter((producto) => {
-      return producto.nombreCategoria !== "Servicios" && producto.existencia != 0;
-    });
-  }
+  // aplicarFiltro(productos: Inventario[]): Inventario[] {
+  //   return productos.filter((producto) => {
+  //     console.log("productos: ", productos);
+
+  //     return producto.nombreCategoria !== "Servicios" && producto.existencia != 0;
+  //   });
+  // }
 
   listaTablas(){
     this.productoService.obternerInventario(this.idGym).subscribe((respuesta) => {
-      //console.log('TODAS LAS EXISTENCIAS: ', respuesta);
+      console.log('TODAS LAS EXISTENCIAS: ', respuesta);
 
-      this.listInventarioData = this.aplicarFiltro(respuesta);
+      // this.listInventarioData = this.aplicarFiltro(respuesta);
       //this.listInventarioData = respuesta;
-      this.dataSource= new MatTableDataSource(this.listInventarioData);
-      //console.log("DATOs: " ,this.listInventarioData);
+      this.dataSource= new MatTableDataSource(respuesta);
+      console.log("TABLA CON FILTRO: ", this.dataSource);
+
+      // console.log("DATOs: " ,this.listInventarioData);
       this.loadData();
     });
   }

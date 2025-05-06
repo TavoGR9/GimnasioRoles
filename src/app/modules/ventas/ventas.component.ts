@@ -140,7 +140,7 @@ export class VentasComponent implements OnInit {
     //Obtener productos de la bodega
     this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      // console.log('ProductosV: ', this.productData);
+      console.log('ProductosV: ', this.productData);
 
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator;
@@ -166,7 +166,9 @@ export class VentasComponent implements OnInit {
     this.InventarioService.obtenerProductoPorIdYIdBodega(producto.idProbob, this.auth.idGym.getValue()).subscribe(
       (data) => {
         const productoObtenido = data[0];
-        // console.log('PRODUCTO OBTENIDO: ', productoObtenido);
+        console.log('PRODUCTO OBTENIDO: ', productoObtenido);
+        console.log("IDBODPRO: ", productoObtenido.idBodPro);
+        console.log("IDPRObob: ", productoObtenido.idProbob);
 
         if (!productoObtenido) {
           this.toastr.error("Producto no encontrado");
@@ -347,7 +349,7 @@ export class VentasComponent implements OnInit {
     const productoIngresado = this.form.get("producto")?.value;
       this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
-          // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
+          console.log('PRODUCTOS POR NOMBRE: ', respuesta);
 
            // Filtrar las subcategorías excluyendo aquellas donde
         const productosFiltrados = respuesta.nombreproducto.filter(
@@ -379,11 +381,10 @@ export class VentasComponent implements OnInit {
 
     //PEDIDOS
     imprimirResumenPedido() {
-      this.dialog.open(MensajeEliminarComponent,{
+      this.dialog.open(MensajeEliminarComponent, {
         data: `¿Está seguro/a de que desea completar esta venta?`,
       })
-      .afterClosed()
-      .subscribe((confirmado: boolean) => {
+      .afterClosed().subscribe((confirmado: boolean) => {
         if (confirmado) {
           this.spinner.show();
           let allProductsValid = true;
@@ -397,225 +398,211 @@ export class VentasComponent implements OnInit {
             }
           }
 
-          if(allProductsValid && this.selectedProducts.length > 0 ){
+          if (allProductsValid && this.selectedProducts.length > 0) {
             if (this.totalAPagar <= this.dineroRecibido) {
-              /**FECHA */
-              const totalAPagar = this.selectedProducts.reduce((total, producto) => total + producto.precioSucursal * producto.cantidad,0);
-              // Enviar datos de ventas
+
+              const totalAPagar = this.selectedProducts.reduce((total, producto) => total + producto.precioSucursal * producto.cantidad, 0);
+              console.log("totalAPagar: ", totalAPagar);
+
               const datosVentas = {
                 correoCliente: "correo@cliente.com",
-                // telefono: "1234567890",
                 id_empleado: this.auth.idUser.getValue(),
                 id_bodega: this.auth.idGym.getValue(),
-                // direccionPedido: "Calle1",
-                // fecha_hora_entrega: "12:00 - 14: 00",
-                // DetalledireccionPedido: "NA",
-                // codigoConfirmacion: "ABC123",
-                // codigoPostal: "90000",
                 total: totalAPagar,
                 pago: totalAPagar,
                 MetodoPag: "Efectivo",
-                // express: 0,
-                // lat: 0,
-                // lng: 0,
               };
-              console.log('datos enviados a pedido: ', JSON.stringify(datosVentas));
 
-              this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
-                const lastInsertId = response.id_pedido;
-                // console.log('idlast: ', lastInsertId);
+              const existencias = this.selectedProducts.map((producto) => {
+                return {
+                  codigo: producto.codigoBarras,
+                  cantidad: producto.cantidad,
+                  idBodega: this.auth.idGym.getValue()
+                };
+              });
 
-               console.log('Producto seleccionado: ', this.selectedProducts);
+              this.DetalleVenta.updateExistenciasPedido(existencias).subscribe((data) => {
+                if (data.success === 0) {
+                  this.spinner.hide();
+                  this.dialog.open(MensajeEmergentesComponent, {
+                    data: 'Error al actualizar existencias. No se completó la venta.',
+                  });
+                  return;
+                }
 
-                const detallesVentas = this.selectedProducts.map((producto) => {
-                  return {
-                    id_pedido: lastInsertId,
-                    idBodPro: producto.idProbob,
-                    cantidad: producto.cantidad,
-                    total: producto.precioSucursal,
-                    total_cantidad: producto.cantidad * producto.precioSucursal,
-                    idPromocion: ''
-                  };
-                });
-                console.log('Datos enviados a agregarDetallePedido:', JSON.stringify(detallesVentas));
-                this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe(
-                  (response) => {
-                    console.log('Detalle Pedido insertado correctamente:', response);
-                    if (response.success === 1) {
-                      //Actualizamos existencias
-                      const existencias = this.selectedProducts.map((producto) => {
-                        return {
-                          codigo: producto.codigoBarras,
-                          cantidad: producto.cantidad,
-                          id_bodega: this.auth.idGym.getValue()
-                        }
-                      });
-                      console.log('Datos enviados a updateExistencia:', JSON.stringify(existencias));
-                      this.DetalleVenta.updateExistenciasPedido(existencias).subscribe((data) => {
+                console.log("DATOS ENVIADOS A PEDIDO: ", datosVentas);
 
-                      });
-                      this.spinner.hide();
+                this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
+                  const lastInsertId = response.id_pedido;
+                  console.log("RESPONSE PEDIDO: ", response);
+                  console.log('idlast: ', lastInsertId);
+                  console.log('Producto seleccionado: ', this.selectedProducts);
 
-                      this.dialog.open(MensajeEmergentesComponent, {
-                        data: 'Productos registrados correctamente',
-                      })
-                      .afterClosed()
-                      .subscribe((cerrarDialogo: Boolean) => {
-                        if (cerrarDialogo) {
-                          this.dialogo.close(true);
-                          this.resetearValores();
-                        } else {
+                  const detallesVentas = this.selectedProducts.map((producto) => {
+                    return {
+                      id_pedido: lastInsertId,
+                      idBodPro: producto.idProbob,
+                      cantidad: producto.cantidad,
+                      total: producto.precioSucursal,
+                      total_cantidad: producto.cantidad * producto.precioSucursal,
+                      idPromocion: ''
+                    };
+                  });
+                  console.log("DATOS ENVIADOS A DETALLEPEDIDO: ", detallesVentas);
 
-                        }
-                      });
+                  this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe({
+                    next: (response) => {
+                      console.log('Detalle Pedido insertado correctamente:', response);
+                      if (response.success === 1) {
+                        this.spinner.hide();
+                        this.dialog.open(MensajeEmergentesComponent, {
+                          data: 'Productos registrados correctamente',
+                        })
+                        .afterClosed()
+                        .subscribe((cerrarDialogo: Boolean) => {
+                          if (cerrarDialogo) {
+                            this.dialogo.close(true);
+                            this.resetearValores();
+                          }
+                        });
 
-                      // ARCHIVO PDF
-                      if (this.totalAPagar <= this.dineroRecibido) {
-                        const totalCantidad = this.selectedProducts.reduce(
-                          (total, producto) => producto.cantidad,
-                          0
-                        );
-                        const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.totalAPagar);
-                        const ventanaImpresion = window.open("", "_blank");
-                        const fechaActual = new Date().toLocaleDateString("es-MX"); //Obtener solo la fecha en formato local en México
-                        const horaActual = new Date().toLocaleTimeString("es-MX", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }); //Obtener solo la hora en formato local de México
-                        if (ventanaImpresion) {
-                          ventanaImpresion.document.open();
-                          ventanaImpresion.document.write(`
-                            <html>
-                              <head>
-                                <style>
-                                  body {
-                                    font-family: 'Arial', sans-serif;
-                                    margin: 0;
-                                    padding: 0;
-                                    background-color: #f5f5f5;
-                                  }
-                                  .ticket {
-                                    width: 80%;
-                                    max-width: 600px;
-                                    margin: 20px auto;
-                                    background-color: #fff;
-                                    border-radius: 4px;
-                                    padding: 20px;
+                        // ARCHIVO PDF
+                        if (this.totalAPagar <= this.dineroRecibido) {
+                          const totalCantidad = this.selectedProducts.reduce(
+                            (total, producto) => total + producto.cantidad,
+                            0
+                          );
+                          const totalEnPesos = this.convertirNumeroAPalabrasPesos(this.totalAPagar);
+                          const ventanaImpresion = window.open("", "_blank");
+                          const fechaActual = new Date().toLocaleDateString("es-MX");
+                          const horaActual = new Date().toLocaleTimeString("es-MX", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          });
 
-                                  }
-                                  h1 {
-                                    text-align: center;
-                                    color: #333;
-                                    margin-bottom: 20px;
-                                  }
-                                  table {
-                                    width: 100%;
-                                    border-collapse: collapse;
-                                    margin-bottom: 20px;
-                                  }
-                                  th, td {
-                                    padding: 8px;
-                                    border-bottom: 1px solid #ddd;
-                                    text-align: left;
-                                  }
-                                  th {
-                                    background-color: #f2f2f2;
-                                  }
-                                  .total {
-                                    text-align: right;
-                                    margin-top: 20px;
-                                    font-weight: bold;
-                                  }
-                                  .total p {
-                                    margin: 5px 0;
-                                    font-size: 1.1em;
-                                  }
-                                  hr {
-                                    border: none;
-                                    border-top: 1px dashed #ccc;
-                                    margin: 20px 0;
-                                  }
-                                  .brand {
-                                    text-align: center;
-                                    color: #888;
-                                    font-size: 20px;
-                                    margin-top: 20px;
-                                  }
-                                  .fecha-hora {
-                                    display: flex;
-                                    justify-content: space-between;
-                                  }
-                                  .logo {
-                                    display: block;
-                                    margin: 0 auto 20px;
-                                    max-width: 150px;
-                                    width: 100%;
-                                    height: auto;
-                                  }
-                                </style>
-                              </head>
-
-                              <body>
-                                <div class="ticket">
-                                ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
-                                  <table>
-                                    <thead>
-                                      <tr>
-                                        <th>Nombre</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio Unitario</th>
-                                        <th>Total</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      ${this.selectedProducts
-                                        .map(
-                                          (producto) => `
-                                          <tr>
-                                            <td>${producto.nombreProducto}</td>
-                                            <td>${producto.cantidad}</td>
-                                            <td>$${producto.precioSucursal}</td>
-                                            <td>$${producto.precioSucursal * producto.cantidad}</td>
-                                          </tr>
-                                          `
-                                        )
-                                        .join("")
-                                      }
-                                    </tbody>
-                                  </table>
-                                  <hr>
-                                  <p>Cantidad total de productos: ${totalCantidad}</p>
-                                  <div class="total">
+                          if (ventanaImpresion) {
+                            ventanaImpresion.document.open();
+                            ventanaImpresion.document.write(`
+                              <html>
+                                <head>
+                                  <style>
+                                    body {
+                                      font-family: 'Arial', sans-serif;
+                                      margin: 0;
+                                      padding: 0;
+                                      background-color: #f5f5f5;
+                                    }
+                                    .ticket {
+                                      width: 80%;
+                                      max-width: 600px;
+                                      margin: 20px auto;
+                                      background-color: #fff;
+                                      border-radius: 4px;
+                                      padding: 20px;
+                                    }
+                                    h1 {
+                                      text-align: center;
+                                      color: #333;
+                                      margin-bottom: 20px;
+                                    }
+                                    table {
+                                      width: 100%;
+                                      border-collapse: collapse;
+                                      margin-bottom: 20px;
+                                    }
+                                    th, td {
+                                      padding: 8px;
+                                      border-bottom: 1px solid #ddd;
+                                      text-align: left;
+                                    }
+                                    th {
+                                      background-color: #f2f2f2;
+                                    }
+                                    .total {
+                                      text-align: right;
+                                      margin-top: 20px;
+                                      font-weight: bold;
+                                    }
+                                    .total p {
+                                      margin: 5px 0;
+                                      font-size: 1.1em;
+                                    }
+                                    hr {
+                                      border: none;
+                                      border-top: 1px dashed #ccc;
+                                      margin: 20px 0;
+                                    }
+                                    .brand {
+                                      text-align: center;
+                                      color: #888;
+                                      font-size: 20px;
+                                      margin-top: 20px;
+                                    }
+                                    .fecha-hora {
+                                      display: flex;
+                                      justify-content: space-between;
+                                    }
+                                    .logo {
+                                      display: block;
+                                      margin: 0 auto 20px;
+                                      max-width: 150px;
+                                      width: 100%;
+                                      height: auto;
+                                    }
+                                  </style>
+                                </head>
+                                <body>
+                                  <div class="ticket">
+                                    ${this.fotoUrl ? `<img class="logo" src="${this.fotoUrl}" alt="Logo">` : ''}
+                                    <table>
+                                      <thead>
+                                        <tr>
+                                          <th>Nombre</th>
+                                          <th>Cantidad</th>
+                                          <th>Precio Unitario</th>
+                                          <th>Total</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        ${this.selectedProducts
+                                          .map(producto => `
+                                            <tr>
+                                              <td>${producto.nombreProducto}</td>
+                                              <td>${producto.cantidad}</td>
+                                              <td>$${producto.precioSucursal}</td>
+                                              <td>$${producto.precioSucursal * producto.cantidad}</td>
+                                            </tr>
+                                          `).join('')}
+                                      </tbody>
+                                    </table>
+                                    <hr>
+                                    <p>Cantidad total de productos: ${totalCantidad}</p>
+                                    <div class="total">
                                       <p>Total a Pagar: $${this.totalAPagar}</p>
-
                                       <p>(${totalEnPesos} PESOS)</p>
-                                      <div class="total">
-                                        <p>Dinero recibido: $${this.dineroRecibido}</p>
-                                        <p>Cambio: $${this.dineroRecibido - this.totalAPagar}</p>
-                                      </div>
-                                      <div class="fecha-hora">
-                                        <p>Fecha: ${fechaActual}</p> <!-- Fecha -->
-                                        <p>Hora: ${horaActual}</p> <!-- Hora -->
-                                      </div>
-                                  </div>
-                                  <div class="brand">
+                                      <p>Dinero recibido: $${this.dineroRecibido}</p>
+                                      <p>Cambio: $${this.dineroRecibido - this.totalAPagar}</p>
+                                    </div>
+                                    <div class="fecha-hora">
+                                      <p>Fecha: ${fechaActual}</p>
+                                      <p>Hora: ${horaActual}</p>
+                                    </div>
+                                    <div class="brand">
                                       <p>Gracias por su compra</p>
                                       <p>¡Vuelva pronto!</p>
+                                    </div>
                                   </div>
-                                </div>
-                              </body>
-                            </html>
+                                </body>
+                              </html>
                             `);
                             ventanaImpresion.document.close();
 
-                            // Esperar a que la imagen se cargue antes de imprimir
                             const image: HTMLImageElement | null = ventanaImpresion.document.querySelector('img');
                             if (image) {
                               image.onload = () => {
                                 ventanaImpresion.print();
                                 ventanaImpresion.close();
                               };
-
                               image.onerror = (error) => {
                                 console.error('Error al cargar la imagen:', error);
                                 ventanaImpresion.print();
@@ -625,33 +612,29 @@ export class VentasComponent implements OnInit {
                               ventanaImpresion.print();
                               ventanaImpresion.close();
                             }
+                          }
+                        } else {
+                          this.toastr.error("Ingresa el pago");
                         }
+
                       } else {
-                        this.toastr.error("Ingresa el pago");
+                        this.toastr.error("Error al vender el producto");
                       }
-
-
-                    } else {
-                      this.toastr.error("Error al vender el producto");
+                    },
+                    error: (error) => {
+                      console.error('Error al insertar detalle:', error.error ? error.error.text : error);
                     }
-
-                  },
-                  (error) => {
-                    console.error('Error al insertar detalle:', error.error ? error.error.text : error);
-                  }
-                );
-
+                  });
+                });
               });
             } else {
               this.spinner.hide();
               this.toastr.error("Pago incorrecto, verifica que el pago sea igual o mayor al total a pagar");
             }
-
           }
-
-        } else {
         }
       });
     }
+
 
 }

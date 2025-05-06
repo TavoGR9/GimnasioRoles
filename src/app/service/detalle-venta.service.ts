@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable,forkJoin } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable,forkJoin, throwError } from 'rxjs';
 import { detalleVenta } from '../models/detalleVenta';
 import { ConnectivityService } from './connectivity.service';
-import { ApiUrlService } from './api-url.service';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class DetalleVentaService {
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // API: string = 'http://localhost/serviciosGimnasio/';
 
-  // API: string = 'http://localhost/gimnasioServicios/';
+  //API: string = 'http://localhost/gimnasioServicios/';
   API: string = 'https://olympus.arvispace.com/ServiciosGym/';
 
 
@@ -74,6 +74,24 @@ export class DetalleVentaService {
   //PARA EL DESCUENTO DE EXISTENCIAS POR PEDIDO
   updateExistenciasPedido(data:any):Observable<any>{
     return this.clienteHttp.post(this.API+"updateExistencias.php?actualizarExistencias",data)
+  }
+
+  updateExistenciasPedido2(data: any[]): Observable<any> {
+    return this.clienteHttp.post<any>(`${this.API}updateExistencias2.php?actualizarExistencias`, data)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.error('Error en updateExistenciasPedido:', error);
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente o red
+      return throwError(() => new Error('Error de red: ' + error.error.message));
+    } else {
+      // Error del backend
+      return throwError(() => new Error(`Error del servidor: ${error.status}, mensaje: ${error.message}`));
+    }
   }
 
 }
