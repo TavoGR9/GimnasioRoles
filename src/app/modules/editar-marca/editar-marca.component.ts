@@ -18,8 +18,8 @@ export class EditarMarcaComponent {
   idGym: number = 0;
   idMarca: number = 0;
   marca: any;
-  marcasDisponibles: any;
-  seleccionado: number = 0;
+  // marcasDisponibles: any;
+  // seleccionado: number = 0;
   message: string = "";
 
   esServicio: boolean = true;
@@ -37,7 +37,7 @@ export class EditarMarcaComponent {
   ) {
 
     this.idMarca = data.idMarca;
-
+    //SE CONSTRUYE EL FORMULARIO
     this.serviceForm = this.fb.group({
       id_marcas: [0],
       marcaP: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
@@ -49,6 +49,19 @@ export class EditarMarcaComponent {
   ngOnInit(): void {
     this.getIdGym();
 
+    this.getDetailsMarca();
+  }
+
+
+  //OBTIENE EL idGym
+  getIdGym() {
+    this.auth.idGym.subscribe((respuesta) => {
+      this.idGym = respuesta;
+    });
+  }
+
+  //SE OBTIENE LOS DATOS DE LA MARCA A EDITAR POR MEDIO DEL idMarca PROPORCIONADO
+  getDetailsMarca() {
     if (this.idMarca) {
       this.categoriaService.getMarcaService2(this.idMarca).subscribe((res) => {
         if (res.success === 1 && res.data) {
@@ -65,13 +78,7 @@ export class EditarMarcaComponent {
     }
   }
 
-
-  getIdGym() {
-    this.auth.idGym.subscribe((respuesta) => {
-      this.idGym = respuesta;
-    });
-  }
-
+  //SE VALIDA Y SE EDITA LA MARCA
   actualizarForm() {
     if (this.serviceForm.invalid) {
       this.marcarCamposInvalidos(this.serviceForm);
@@ -100,6 +107,7 @@ export class EditarMarcaComponent {
     });
   }
 
+  //MUESTRA ERROR EN CAMPOS
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);

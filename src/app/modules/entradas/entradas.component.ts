@@ -19,12 +19,12 @@ import { inventarioService } from "../../service/inventario.service";
 import { ChangeDetectorRef } from "@angular/core";
 
 
-interface Producto {
-  idProbob: number;
-  descripcion: string;
-  marca: string;
-  detalleCompra: string;
-}
+// interface Producto {
+//   idProbob: number;
+//   descripcion: string;
+//   marca: string;
+//   detalleCompra: string;
+// }
 @Component({
   selector: "app-entradas",
   templateUrl: "./entradas.component.html",
@@ -38,10 +38,10 @@ export class EntradasComponent implements OnInit {
   idUsuario: number;
   fechaRegistro: string;
   listaProductos: any;
-  listaProducto: Producto[] = [];
+  // listaProducto: Producto[] = [];
   idProducto: number = 0;
   message: string = "";
-  listaProveedores: any;
+  // listaProveedores: any;
   idProveedor: number = 0;
   currentUser: string = "";
   idGym: number = 0;
@@ -87,6 +87,7 @@ export class EntradasComponent implements OnInit {
     this.id = this.auth.idGym.getValue();
     this.idUsuario = this.auth.idUser.getValue();
     this.fechaRegistro = this.obtenerFechaActual();
+    //SE CONSTRUYE EL FORMULARIO
     this.form = this.fb.group({
       idGym: [this.id],
       idProbob: ["", Validators.compose([Validators.required])],
@@ -109,18 +110,23 @@ export class EntradasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //SE ESTABLECE LA FECHA INICIAL
     const fechaActual = this.obtenerFechaActual().toString().slice(0, 10);
     this.fechaInicio = fechaActual;
     this.fechaFin = fechaActual;
 
+    //COMPRUEBA SI EL BOTON AÑADIR HABILITADO
     this.auth.comprobar().subscribe((respuesta) => {
       this.habilitarBoton = respuesta.status;
     });
 
+    //OBTIENE EL USUARIO ACTUAL
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
+
+    //LLAMAMOS A COMPRAS Y LA LISTA SI HAY UN idGym VALIDO
     this.auth.idGym.subscribe((data) => {
       if (data) {
         this.idGym = data;
@@ -130,10 +136,11 @@ export class EntradasComponent implements OnInit {
       }
     });
 
-    this.buscarProducto();
+    // this.buscarProducto();
     // console.log('idUser: ', this.idUsuario);
   }
 
+  //SE LE ASOCIA EL PAGINADOR A LA TABLA
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
@@ -141,6 +148,7 @@ export class EntradasComponent implements OnInit {
     }, 1000);
   }
 
+  //CALCULA EL PRECIO POR UNIDAD (precioCaja).
   calcularPrecioCaja() {
     const total = this.form.get('total')?.value || 0;
     const exis = this.form.get('exis')?.value || 0;
@@ -153,6 +161,7 @@ export class EntradasComponent implements OnInit {
     }
   }
 
+  //CONSULTA LOS DATOS DEL USUARIO LOGUEADO
   getSSdata(data: any) {
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -170,6 +179,7 @@ export class EntradasComponent implements OnInit {
     });
   }
 
+  //SE OBTIENE LA LISTA DE PRODUCTOS Y LOS MUESTRA EN LA TABLA AL AÑADIR
   listaTablas() {
     this.entrada.listaProductos().subscribe({
       next: (resultData) => {
@@ -196,6 +206,7 @@ export class EntradasComponent implements OnInit {
     });
   }
 
+  //MUESTRA LOS PRODUCTOS AL IR ESCRIBIENDO EN EL INPUT
   buscarProducto() {
     const marcaIngresado = this.form.get("idProbob")?.value;
     this.entrada.listaProductos().subscribe({
@@ -227,11 +238,12 @@ export class EntradasComponent implements OnInit {
     });
   }
 
+  //MUESTRA EL NOMBRE DEL PRODUCTO EN EL AUTOCOMPLETADO
   displayFn(product: any): string {
     return product && product.nombre ? product.nombre : "";
   }
 
-  //setValue requiere que se proporcionen valores para todos los controles en el formulario. Si falta algún valor, lanzará un error.
+  //SE ACTUALIZA EL FORM CON EL PRODUCTO SELECCIONADO (PRECIOS)
   onProductSelected(product: any) {
     this.form.patchValue({
       idProbob: product,
@@ -257,19 +269,23 @@ export class EntradasComponent implements OnInit {
     });
   }
 
+  //GUARDA EL ID DEL PRODUCTO
   infoProducto(event: number) {
     this.idProducto = event;
   }
 
+  //DEVUELVE LA FECHA ACTUAL
   obtenerFechaActual(): string {
     const fechaActual = new Date();
     return this.datePipe.transform(fechaActual, "yyyy-MM-dd") || "";
   }
 
+  //LIMPIA EL FORMULARIO
   limpiarFormulario(): void {
     this.form.reset();
   }
 
+  //AGREGA UN PRODUCTO DEL FORM A LA TABLA AL AÑADIR
   agregarATabla() {
     if (this.form.valid) {
       this.form.get("idProbob")?.setValue(this.form.value.idProbob.idProd);
@@ -322,6 +338,7 @@ export class EntradasComponent implements OnInit {
     }
   }
 
+  //SE DETERMINA QUE PRODUCTOS SON NUEVOS PARA INSERTARSE Y QUE PRODUCTOS EXISTEN PARA ACTUALIZARSE
   registrar(): any {
     if (this.tablaDatos.length > 0) {
       this.habilitarBoton = false;
@@ -411,6 +428,7 @@ export class EntradasComponent implements OnInit {
     }
   }
 
+  //SE INSERTAN LOS NUEVOS PRODUCTOS
   enviarRegistros(registrosParaEnviar: any[]) {
     this.entrada.agregarEntradaProducto(registrosParaEnviar).subscribe({
       next: (respuesta) => {
@@ -457,6 +475,7 @@ export class EntradasComponent implements OnInit {
     });
   }
 
+  //SE ACTUALIZAN LOS PRODUCTOS EXISTENTES
   actualizarReg(registrosAc: any[]) {
     this.entrada.actualizarProducto(registrosAc).subscribe({
       next: (update) => {
@@ -498,6 +517,7 @@ export class EntradasComponent implements OnInit {
     });
   }
 
+  //MUESTRA ERROR EN CAMPOS
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);
@@ -513,25 +533,26 @@ export class EntradasComponent implements OnInit {
 
   cerrarDialogo(): void {}
 
-  obtenerFoto() {
-    this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
-      (respuesta) => {
-        if (respuesta && respuesta[0] && respuesta[0].foto) {
-          let fotoUrl = respuesta[0].foto;
-          // Añadir el esquema si no está presente
-          if (!/^https?:\/\//i.test(fotoUrl)) {
-            fotoUrl = "https://" + fotoUrl;
-          }
-          this.fotoUrl = fotoUrl;
-        }
-      },
-      (error) => {
-        console.error("Error al obtener la foto:", error);
-        this.fotoUrl = null;
-      }
-    );
-  }
+  // obtenerFoto() {
+  //   this.GimnasioService.consultarFoto(this.auth.idGym.getValue()).subscribe(
+  //     (respuesta) => {
+  //       if (respuesta && respuesta[0] && respuesta[0].foto) {
+  //         let fotoUrl = respuesta[0].foto;
+  //         // Añadir el esquema si no está presente
+  //         if (!/^https?:\/\//i.test(fotoUrl)) {
+  //           fotoUrl = "https://" + fotoUrl;
+  //         }
+  //         this.fotoUrl = fotoUrl;
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error("Error al obtener la foto:", error);
+  //       this.fotoUrl = null;
+  //     }
+  //   );
+  // }
 
+  //ABRE UNA VENTANA CON LOS DATOS A IMPRIMIR
   imprimirResumen() {
     const fechaActual = new Date().toLocaleDateString();
     const horaActual = new Date().toLocaleTimeString();
@@ -661,14 +682,17 @@ export class EntradasComponent implements OnInit {
     }
   }
 
+  //QUITA UN PRODUCTO SELECCIONADO DE LA TABLA AL AÑADIR
   quitarArchivo(index: number): void {
     this.tablaDatos.splice(index, 1);
   }
 
+  //FORMATEA LA FECHA
   formatDate(date: Date): string {
     return this.datePipe.transform(date, "yyyy-MM-dd") || "";
   }
 
+  //SE MUESTRAN LAS ENTRADAS REGISTRADAS
   verCompras(): void {
     this.entrada
       .obtenerEntradas(
@@ -687,6 +711,7 @@ export class EntradasComponent implements OnInit {
   }
 
 
+  //SE EXPORTAN LAS ENTRADAS A UN EXCEL
 todosClientes: any;
   descargarExcel(): void {
     if (

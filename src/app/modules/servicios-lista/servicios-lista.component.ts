@@ -1,17 +1,12 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { plan } from "../../models/plan";
-import { serviciosService } from "../../service/servicios.service";
-import { MensajeEliminarComponent } from "../mensaje-eliminar/mensaje-eliminar.component";
-import { GimnasioService } from "../../service/gimnasio.service";
+// import { serviciosService } from "../../service/servicios.service";
 import { AuthService } from "../../service/auth.service";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
-import { ServiceDialogComponent } from "../service-dialog/service-dialog.component";
-import { MembresiaService } from "../../service/membresia.service";
-import { ToastrService } from 'ngx-toastr';
+// import { ToastrService } from 'ngx-toastr';
 
-// REEMPLAZAR POR MARCAS
+//REEMPLAZAR POR MARCAS
 import { CategoriaService } from "../../service/categoria.service";
 import { CrearMarcaComponent } from "../crear-marca/crear-marca.component";
 import { EditarMarcaComponent } from "../editar-marca/editar-marca.component";
@@ -26,12 +21,11 @@ import { distinctUntilChanged } from 'rxjs/operators';
 })
 export class ServiciosListaComponent implements OnInit{
 
-  services: any[] = [];
   idGym: number = 0;
-  seleccionado: number = 0;
+  // seleccionado: number = 0;
   message: string = "";
   currentUser: string = "";
-  confirmButton: boolean = false;
+  // confirmButton: boolean = false;
   displayedColumns: string[] = [
     "title",
     "details",
@@ -50,22 +44,25 @@ export class ServiciosListaComponent implements OnInit{
   constructor(
     public dialog: MatDialog,
     private auth: AuthService,
-    private ServiciosService: serviciosService,
-    private toastr: ToastrService,
+    // private ServiciosService: serviciosService,
+    // private toastr: ToastrService,
     //REEMPLAZAR POR MARCAS
     private categoriaService: CategoriaService
   ) {}
 
   ngOnInit(): void {
+    //COMPRUEBA SI ESTA EN LINEA
     this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
 
+    //OBTIENE EL USUARIO ACTUAL
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
 
+    //ESCUCHA CAMBIOS DEL idGym Y, SI CAMBIA, RECARGA LOS DATOS DE LAS MARCAS
     this.auth.idGym
     .pipe(distinctUntilChanged())
     .subscribe((data) => {
@@ -74,6 +71,7 @@ export class ServiciosListaComponent implements OnInit{
     });
   }
 
+  //REFRESCA LOS DATOS EN LA TABLA Y LE ASOCIA EL PAGINADOR
   loadData() {
     setTimeout(() => {
       // this.listaTablaMarca();
@@ -83,6 +81,7 @@ export class ServiciosListaComponent implements OnInit{
     }, 1000);
   }
 
+  //CONSULTA LOS DATOS DEL USUARIO LOGUEADO
   getSSdata(data: any) {
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -100,12 +99,13 @@ export class ServiciosListaComponent implements OnInit{
     });
   }
 
+  //FILTRO DE BUSQUEDA
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceDos.filter = filterValue.trim().toLowerCase();
   }
 
-  //REEMPLAZAR POR MARCAS
+  //OBTIENE LAS MARCAS Y SE MUESTRAN EN LA TABLA
   listaTablaMarca() {
     this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe((res) => {
 
@@ -128,9 +128,10 @@ export class ServiciosListaComponent implements OnInit{
   }
 
 
+  //ABRE EL COMPONENTE PARA CREAR UNA NUEVA MARCA
   openDialogMar(): void {
-    this.seleccionado = 1;
-    this.ServiciosService.seleccionado.next(this.seleccionado);
+    // this.seleccionado = 1;
+    // this.ServiciosService.seleccionado.next(this.seleccionado);
     this.dialogRef = this.dialog.open(CrearMarcaComponent, {
       width: "70%",
       disableClose: true,
@@ -141,6 +142,7 @@ export class ServiciosListaComponent implements OnInit{
     });
   }
 
+  //ABRE EL COMPONENTE PARA EDITAR UNA MARCA A TRAVES DEL idMarca
   editarMarcaSer(idMarca: number) {
     const dialogRef = this.dialog.open(EditarMarcaComponent, {
       width: "70%",
@@ -154,23 +156,23 @@ export class ServiciosListaComponent implements OnInit{
 
   }
 
-  borrarMarca(id_marcas: any) {
-    this.dialog.open(MensajeEliminarComponent,{
-      data: `¿Desea eliminar este servicio?`,
-    })
-    .afterClosed()
-    .subscribe((confirmado: boolean) => {
-      if (confirmado) {
-        this.categoriaService.deleteMarcaServ(id_marcas).subscribe(
-          (respuesta) => {
-            this.listaTablaMarca();
-            this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
-              positionClass: 'toast-bottom-left',
-            });
-          }
-        );
-      }
-    });
-  }
+  // borrarMarca(id_marcas: any) {
+  //   this.dialog.open(MensajeEliminarComponent,{
+  //     data: `¿Desea eliminar este servicio?`,
+  //   })
+  //   .afterClosed()
+  //   .subscribe((confirmado: boolean) => {
+  //     if (confirmado) {
+  //       this.categoriaService.deleteMarcaServ(id_marcas).subscribe(
+  //         (respuesta) => {
+  //           this.listaTablaMarca();
+  //           this.toastr.success('Registro eliminado exitosamente', 'Exitó', {
+  //             positionClass: 'toast-bottom-left',
+  //           });
+  //         }
+  //       );
+  //     }
+  //   });
+  // }
 
 }

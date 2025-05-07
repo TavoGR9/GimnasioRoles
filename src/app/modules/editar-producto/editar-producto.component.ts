@@ -65,6 +65,7 @@ export class EditarProductoComponent implements OnInit{
 
     this.idProducto = data.idProducto;
 
+    //CONSULTAMOS EL PRODUCTO A TRAVES DE SU idProducto Y idGym
     this.inventarioService.obtenerProductoPorIdYIdBodega(this.idProducto, this.auth.idGym.getValue()).subscribe(
       respuesta=>{
         this.editarProd = respuesta;
@@ -74,7 +75,7 @@ export class EditarProductoComponent implements OnInit{
         // Imprimir en consola el nombre de la categoría
         // console.log('Nombre de la categoría:', this.editarProd[0]?.nombreCategoria);
 
-
+        //SE LLENA EL FORM CON LOS DATOS OBTENIDOS
         this.form.setValue({
           codigoBarra:respuesta [0]['codigoBarras'],
           nomsubcate:respuesta [0]['subCategoria'],
@@ -100,6 +101,7 @@ export class EditarProductoComponent implements OnInit{
       }
     );
 
+    //SE CONSTRUYE EL FORMULARIO
     this.fechaCreacion = this.obtenerFechaActual();
     this.form = this.fb.group({
       detalleUnidadMedida: ["pza", Validators.required],
@@ -118,6 +120,7 @@ export class EditarProductoComponent implements OnInit{
     });
   }
 
+  //VALIDA QUE UN CAMPO NUMERICO SOLO CONTENGA NUMEROS CON HASTA DOS DECIMALES
   validarNumeroDecimal(event: any) {
     const input = event.target.value;
     const pattern = /^\d+(\.\d{0,2})?$/;
@@ -128,11 +131,13 @@ export class EditarProductoComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    // this.currentUser = this.auth.getCurrentUser();
-    // if(this.currentUser){
-    //   this.getSSdata(JSON.stringify(this.currentUser));
-    // }
+    //OBTIENE EL USUARIO ACTUAL
+    this.currentUser = this.auth.getCurrentUser();
+    if(this.currentUser){
+      this.getSSdata(JSON.stringify(this.currentUser));
+    }
 
+    //OBTIENE EL idGym
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
     });
@@ -140,10 +145,11 @@ export class EditarProductoComponent implements OnInit{
     // this.idUser = this.auth.idUser.getValue();
     // console.log('idUser: ', this.idUser);
 
-
+    //OBTIENE EL CORREO
     this.correooo = this.auth.email.getValue();
     // console.log('correoo: ', this.correooo);
 
+    //CONSULTA Y GUARDA LOS DATOS DEL USUARIO
     this.auth.getUsuario(this.correooo).subscribe({
       next: (response) => {
         // console.log('response: ', response);
@@ -159,26 +165,29 @@ export class EditarProductoComponent implements OnInit{
     });
   }
 
-  // getSSdata(data: any){
-  //   this.auth.dataUser(data).subscribe({
-  //     next: (resultData) => {
+  //CONSULTA LOS DATOS DEL USUARIO LOGUEADO
+  getSSdata(data: any){
+    this.auth.dataUser(data).subscribe({
+      next: (resultData) => {
 
-  //       this.auth.loggedIn.next(true);
-  //         this.auth.role.next(resultData.rolUser);
-  //         this.auth.idUser.next(resultData.id);
-  //         this.auth.idGym.next(resultData.idGym);
-  //         this.auth.nombreGym.next(resultData.nombreGym);
-  //         this.auth.email.next(resultData.email);
-  //         this.auth.encryptedMail.next(resultData.encryptedMail);
-  //     }, error: (error) => { console.log(error); }
-  //   });
-  // }
+        this.auth.loggedIn.next(true);
+          this.auth.role.next(resultData.rolUser);
+          this.auth.idUser.next(resultData.id);
+          this.auth.idGym.next(resultData.idGym);
+          this.auth.nombreGym.next(resultData.nombreGym);
+          this.auth.email.next(resultData.email);
+          this.auth.encryptedMail.next(resultData.encryptedMail);
+      }, error: (error) => { console.log(error); }
+    });
+  }
 
+  //OBTIENE LA FECHA ACTUAL
   obtenerFechaActual(): string {
     const fechaActual = new Date();
     return this.datePipe.transform(fechaActual, 'yyyy-MM-dd HH:mm:ss') || '';
   }
 
+  //MUESTRA ERROR EN CAMPOS
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);
@@ -192,6 +201,7 @@ export class EditarProductoComponent implements OnInit{
     });
   }
 
+  //ACTUALIZA EL PRODUCTO
   actualizar(){
     const fechaActual: Date = new Date();
     const dia: string = fechaActual.getDate().toString().padStart(2, '0');
@@ -213,14 +223,17 @@ export class EditarProductoComponent implements OnInit{
       // detalleCompra:this.form.value.detalleCompra
     }
 
+    // console.log("data sin array: ", data);
+
     const dataArray = [data];
-    //console.log('Datos a enviar: ', dataArray);
+    // console.log('Datos a enviar: ', dataArray);
 
     this.entrada.actualizarProductoEInsertarHistorial(dataArray).subscribe({next: (update) =>{
-      //console.log('Update: ', update);
+      // console.log('Update: ', update);
+      // console.log("SUCCES: ", update.success)
 
       if (update.success == 1) {
-        //console.log('Update: ', update);
+        // console.log('Update: ', update);
 
         this.spinner.hide();
         this.dialog.open(MensajeEmergentesComponent, {data: `Producto actualizado exitosamente`})
@@ -240,10 +253,12 @@ export class EditarProductoComponent implements OnInit{
       }});
 }
 
-infoCategoria(event: number) {
-  this.idCategoria = event;
-}
+//GUARDA EL idCategoria SELECCIONADO
+// infoCategoria(event: number) {
+//   this.idCategoria = event;
+// }
 
+//CIERRA EL COMPONENTE
 cerrarDialogo(): void {
   this.dialogo.close(true);
 }

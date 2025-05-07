@@ -43,21 +43,26 @@ export class ProductosComponent implements OnInit {
 
   ngOnInit(): void {
     // this.productoService.comprobar();
+    //COMPRUEBA SI ESTA EN LINEA
     this.auth.comprobar().subscribe((respuesta)=>{
       this.habilitarBoton = respuesta.status;
     });
 
     // this.categoriaService.comprobar();
+    //OBTIENE EL USUARIO ACTUAL
     this.currentUser = this.auth.getCurrentUser();
     if(this.currentUser){
       this.getSSdata(JSON.stringify(this.currentUser));
     }
+
+    //LLAMAMOS A LA LISTA DE PRODUCTOS SI HAY UN idGym VALIDO
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
       this.listaTabla();
     });
   }
 
+  //CONSULTA LOS DATOS DEL USUARIO LOGUEADO
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -72,9 +77,10 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  //OBTIENE LOS PRODUCTOS DE LA BODEGA Y SE MUESTRAN EN LA TABLA
   listaTabla(){
     this.productoService.obternerInventario(this.idGym).subscribe((resultData) => {
-      console.log("TODAS LAS EXISTENCIAS: ", resultData);
+      // console.log("TODAS LAS EXISTENCIAS: ", resultData);
 
       // this.productos = resultData.filter((producto: any) =>
       //   producto.existencia !== null &&
@@ -87,7 +93,7 @@ export class ProductosComponent implements OnInit {
       // this.productos.sort((a, b) => a.presentacionProducto.localeCompare(b.presentacionProducto));
 
       this.dataSource = new MatTableDataSource(resultData);
-      console.log("TABLA CON FILTRO: ", this.dataSource);
+      // console.log("TABLA CON FILTRO: ", this.dataSource);
 
       this.loadData();
     });
@@ -96,6 +102,7 @@ export class ProductosComponent implements OnInit {
   sortField: string = '';
   sortDirection: string = 'asc';
 
+  //ORDENAR POR COLUMNAS (Actualmente, sólo se ordena por nombreProducto)
   sortData(column: string): void {
     const data = this.dataSource.data;
     if (this.sortField === column) {
@@ -116,6 +123,7 @@ export class ProductosComponent implements OnInit {
     this.dataSource.data = data;
   }
 
+  //AUXILIAR PARA ORDENAR DATOS TIPO STRING O NUMERO
   compare(a: string | number | Date, b: string | number | Date, isAsc: boolean): number {
     if (typeof a === 'string' && typeof b === 'string') {
       // Utiliza localeCompare para comparar cadenas de texto
@@ -125,6 +133,7 @@ export class ProductosComponent implements OnInit {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
+    //SE LE ASOCIA EL PAGINADOR A LA TABLA
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
@@ -132,6 +141,7 @@ export class ProductosComponent implements OnInit {
     }, 1000);
   }
 
+  //ABRE EL COMPONENTE PARA CREAR UN NUEVO PRODUCTO
   crearProducto(): void {
     const dialogRef = this.dialog.open(CrearProductoComponent, {
       width: '70%',
@@ -142,6 +152,7 @@ export class ProductosComponent implements OnInit {
     })
   }
 
+  //ABRE EL COMPONENTE PARA EDITAR UN PRODUCTO A TRAVES DEL idProducto
   editarProducto(idProducto: number): void {
     const dialogRef = this.dialog.open(EditarProductoComponent, {
       data: { idProducto: idProducto },
@@ -155,11 +166,13 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  //FILTRO DE BUSQUEDA
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  //DETERMINA EL ROL DEL USUARIO PARA MOSTRAR U OCULTAR ACCIONES DEPENDIENDO EL ROL (editar/eliminar)
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
@@ -168,6 +181,7 @@ export class ProductosComponent implements OnInit {
     return this.auth.isRecepcion();
   }
 
+  //ABRE EL COMPONENTE PARA ELIMINAR UN PRODUCTO. Y SE ELIMINA
   deleteProducto(id: any) {
     // console.log('IDProbob: ', id);
     this.dialog.open(MensajeEliminarComponent,{

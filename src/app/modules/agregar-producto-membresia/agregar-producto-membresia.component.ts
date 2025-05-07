@@ -77,6 +77,8 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     private cd: ChangeDetectorRef
   ) {
     this.fechaCreacion = this.obtenerFechaActual();
+
+    //SE CONSTRUYE EL FORMULARIO
     this.form = this.fb.group({
       detalleUnidadMedida: ["pza"],
       precioCompra: [0],
@@ -99,6 +101,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
       duracion: ["", Validators.required]
     });
 
+    //SE HABILITA/DESHABILITA EL CAMPO SUBCATEGORIA (nomsubcate)
     this.form.get("nombreCategoriaP")?.valueChanges.subscribe((value) => {
       // Habilitar o deshabilitar dinámicamente el control de la subcategoría
       if (value) {
@@ -110,10 +113,13 @@ export class AgregarProductoMembresiaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //OBTIENE EL USUARIO ACTUAL
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
+
+    //OBTIENE EL idGym
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
     });
@@ -122,8 +128,11 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     // this.form.get('nombreCategoriaP')?.setValue('Servicios');
 
     // Obtener dinámicamente el ID de la categoría "Servicios"
+
+    //OBTENER CATEGORIAS
     this.categoriaService.obtenerCategoria2().subscribe({
       next: (respuesta) => {
+        console.log("Categorias: ", respuesta);
         // Busca la categoría con el nombre "Servicios"
         const categoriaServicios = respuesta.find(
           (categoria: any) => categoria.nombreCategoria === 'Servicios' && categoria.membresia==1
@@ -146,6 +155,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
       },
     });
 
+    //INICIALIZAN METODOS
     this.buscarCategorias();
     this.buscarMarca();
   }
@@ -154,6 +164,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     this.cd.detectChanges();
   }
 
+  //CONSULTA LOS DATOS DEL USUARIO LOGUEADO
   getSSdata(data: any) {
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -171,6 +182,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     });
   }
 
+  //VALIDA QUE UN CAMPO NUMERICO SOLO CONTENGA NUMEROS CON HASTA DOS DECIMALES
   validarNumeroDecimal(event: any) {
     const input = event.target.value;
     // Patrón para aceptar números decimales
@@ -180,15 +192,18 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     }
   }
 
+  //OBTIENE LA FECHA ACTUAL
   obtenerFechaActual(): string {
     const fechaActual = new Date();
     return this.datePipe.transform(fechaActual, "yyyy-MM-dd HH:mm:ss") || "";
   }
 
+  //CIERRA EL COMPONENTE
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
 
+  //OBTIENE LAS CATEGORIAS ACTIVAS RELACIONADAS CON MEMBRESIAS, GUARDA EL ID EN LOCALSTORAGE SI SE SELECCIONA UNA, LLAMA A buscarSubCategorias()
   buscarCategorias() {
     const categoriaIngresada = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria2().subscribe({
@@ -201,7 +216,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
           (categoria: any) => categoria.membresia ==1
         );
 
-        console.log('categoriasFiltradas: ', categoriaFiltrada);
+        // console.log('categoriasFiltradas: ', categoriaFiltrada);
 
         const categoriasU = new Set(
           categoriaFiltrada.map((categoria: any) => categoria.nombreCategoria)
@@ -260,6 +275,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     });
   }
 
+  //DETERMINA SI EL ROL DEL USUARIO ES ADMINISTRADOR O RECEPCIONISTA
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
@@ -268,11 +284,13 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     return this.auth.isRecepcion();
   }
 
+  //USA EL idCategoriaSeleccionada DE LOCALSTORAGE PARA OBTENER LAS SUBCATEGORIAS CON RELACION A LA CATEGORIA
   buscarSubCategorias() {
     const idCategoriaGuardada = localStorage.getItem("idCategoriaSeleccionada");
     const subCIngresado = this.form.get("nomsubcate")?.value;
     this.categoriaService.obtenerSubCategoria2(idCategoriaGuardada).subscribe({
       next: (respuesta) => {
+        console.log("SUBCategorias: ", respuesta);
         const subCategoriasU = new Set(
           respuesta.productos.map(
             (subCategoria: any) => subCategoria.nombreProducto
@@ -289,6 +307,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     });
   }
 
+  //OBTIENE LAS MARCAS CON UN FILTRO PARA INCLUIR AQUELLAS CON servicio == "1".
   buscarMarca() {
     const marcaIngresado = this.form.get("marcaP")?.value;
       this.categoriaService.obtenerMarcasServiciosIdGym2(this.idGym).subscribe({
@@ -356,6 +375,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
       });
   }
 
+  //MUESTRA ERROR EN CAMPOS
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);
@@ -375,6 +395,8 @@ export class AgregarProductoMembresiaComponent implements OnInit {
   return `${timestamp}-${random}`;
 }
 
+
+  //SE CREA UNA NUEVA MEMBRESIA
   registrarProd() {
     if (this.form.valid) {
       this.spinner.show();
@@ -1302,6 +1324,7 @@ export class AgregarProductoMembresiaComponent implements OnInit {
     }
   }
 
+  //SE ENVIA LA ENTRADA DE LA MEMBRESIA (con precio incluido) A LA TABLA bodegaproducto
   enviarRegistros(): void {
     const fechaActual: Date = new Date();
     const dia: string = fechaActual.getDate().toString().padStart(2, '0');

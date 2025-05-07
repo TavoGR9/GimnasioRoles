@@ -78,6 +78,7 @@ export class CrearProductoComponent implements OnInit {
     private spinner: NgxSpinnerService
   ) {
     this.fechaCreacion = this.obtenerFechaActual();
+    //SE CONSTRUYE EL FORMULARIO
     this.form = this.fb.group({
       // detalleUnidadMedida: ["pza"],
       precioCompra: [0],
@@ -98,6 +99,7 @@ export class CrearProductoComponent implements OnInit {
       descripcion: ["", Validators.required],
     });
 
+    //SE HABILITA/DESHABILITA EL CAMPO SUBCATEGORIA (nomsubcate)
     this.form.get("nombreCategoriaP")?.valueChanges.subscribe((value) => {
       // Habilitar o deshabilitar dinámicamente el control de la subcategoría
       if (value) {
@@ -109,18 +111,24 @@ export class CrearProductoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    //OBTIENE EL USUARIO ACTUAL
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
+
+    //OBTIENE EL idGym
     this.auth.idGym.subscribe((data) => {
       this.idGym = data;
     });
+
+    //INICIALIZAN METODOS
     this.buscarCategorias();
     this.buscarMarca();
     //  this.buscarSubCategorias();
   }
 
+  //CONSULTA LOS DATOS DEL USUARIO LOGUEADO
   getSSdata(data: any) {
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -138,6 +146,7 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
+  //VALIDA QUE UN CAMPO NUMERICO SOLO CONTENGA NUMEROS CON HASTA DOS DECIMALES
   validarNumeroDecimal(event: any) {
     const input = event.target.value;
     // Patrón para aceptar números decimales
@@ -147,15 +156,18 @@ export class CrearProductoComponent implements OnInit {
     }
   }
 
+  //OBTIENE LA FECHA ACTUAL
   obtenerFechaActual(): string {
     const fechaActual = new Date();
     return this.datePipe.transform(fechaActual, "yyyy-MM-dd HH:mm:ss") || "";
   }
 
+  //CIERRA EL COMPONENTE
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
 
+  //OBTIENE LAS CATEGORIAS ACTIVAS NO RELACIONADAS CON MEMBRESIAS, GUARDA EL ID EN LOCALSTORAGE SI SE SELECCIONA UNA, LLAMA A buscarSubCategorias()
   buscarCategorias() {
     const saborIngresado = this.form.get("nombreCategoriaP")?.value;
     this.categoriaService.obtenerCategoria2().subscribe({
@@ -195,6 +207,7 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
+  //DETERMINA SI EL ROL DEL USUARIO ES ADMINISTRADOR O RECEPCIONISTA
   isAdmin(): boolean {
     return this.auth.isAdmin();
   }
@@ -203,6 +216,7 @@ export class CrearProductoComponent implements OnInit {
     return this.auth.isRecepcion();
   }
 
+  //USA EL idCategoriaSeleccionada DE LOCALSTORAGE PARA OBTENER LAS SUBCATEGORIAS CON RELACION A LA CATEGORIA
   buscarSubCategorias() {
     const idCategoriaGuardada = localStorage.getItem("idCategoriaSeleccionada");
     const subCIngresado = this.form.get("nomsubcate")?.value;
@@ -231,6 +245,7 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
+  //OBTIENE LAS MARCAS CON UN FILTRO PARA EXCLUIR AQUELLAS CON servicio == "1".
   buscarMarca() {
     const marcaIngresado = this.form.get("marcaP")?.value;
     this.categoriaService.obtenerMarcas2().subscribe({
@@ -259,12 +274,14 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
+  //EVITA QUE EL CAMPO DEL CODIGO DE BARRAS TENGA MAS DE 15 CARACTERES
   onInputCodigoBarra(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.value.length > 15) {
        input.value = input.value.slice(0, 15); // Limita los caracteres
     }
  }
+
 
   vercodigoBarras() {
     const codigo = this.form.get("codigoBarra")?.value;
@@ -298,6 +315,7 @@ export class CrearProductoComponent implements OnInit {
       });
   }
 
+  //MUESTRA ERROR EN CAMPOS
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);
@@ -311,6 +329,7 @@ export class CrearProductoComponent implements OnInit {
     });
   }
 
+  //SE CREA EL NUEVO PRODUCTO O SE ACTUALIZA UNO YA EXISTENTE
   registrarProd() {
     if (this.form.valid) {
       this.spinner.show();
@@ -1156,6 +1175,28 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
   next: (respuesta) => {
       console.log('Respuesta recibida:', respuesta);
       if (respuesta.success === 1) {
+        this.spinner.hide();
+                                                  this.dialog
+                                                    .open(
+                                                      MensajeEmergentesComponent,
+                                                      {
+                                                        data: `Producto actualizado exitosamente, el codigo de barras ya existia`,
+                                                      }
+                                                    )
+                                                    .afterClosed()
+                                                    .subscribe(
+                                                      (
+                                                        cerrarDialogo: Boolean
+                                                      ) => {
+                                                        if (cerrarDialogo) {
+                                                          this.productoSubject.next();
+                                                          this.dialogo.close(
+                                                            true
+                                                          );
+                                                        } else {
+                                                        }
+                                                      }
+                                                    );
           // Producto actualizado correctamente
           console.log(respuesta.message);
       } else {
@@ -1223,6 +1264,28 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
                                     next: (respuesta) => {
                                         console.log('Respuesta recibida:', respuesta);
                                         if (respuesta.success === 1) {
+                                          this.spinner.hide();
+                                                  this.dialog
+                                                    .open(
+                                                      MensajeEmergentesComponent,
+                                                      {
+                                                        data: `Producto actualizado exitosamente, el codigo de barras ya existia`,
+                                                      }
+                                                    )
+                                                    .afterClosed()
+                                                    .subscribe(
+                                                      (
+                                                        cerrarDialogo: Boolean
+                                                      ) => {
+                                                        if (cerrarDialogo) {
+                                                          this.productoSubject.next();
+                                                          this.dialogo.close(
+                                                            true
+                                                          );
+                                                        } else {
+                                                        }
+                                                      }
+                                                    );
                                             // Producto actualizado correctamente
                                             console.log(respuesta.message);
                                         } else {
@@ -1300,6 +1363,28 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
                                     next: (respuesta) => {
                                         console.log('Respuesta recibida:', respuesta);
                                         if (respuesta.success === 1) {
+                                          this.spinner.hide();
+                                          this.dialog
+                                            .open(
+                                              MensajeEmergentesComponent,
+                                              {
+                                                data: `Producto actualizado exitosamente, el codigo de barras ya existia`,
+                                              }
+                                            )
+                                            .afterClosed()
+                                            .subscribe(
+                                              (
+                                                cerrarDialogo: Boolean
+                                              ) => {
+                                                if (cerrarDialogo) {
+                                                  this.productoSubject.next();
+                                                  this.dialogo.close(
+                                                    true
+                                                  );
+                                                } else {
+                                                }
+                                              }
+                                            );
                                             // Producto actualizado correctamente
                                             console.log(respuesta.message);
                                         } else {
@@ -1366,6 +1451,28 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
                                         next: (respuesta) => {
                                             console.log('Respuesta recibida:', respuesta);
                                             if (respuesta.success === 1) {
+                                              this.spinner.hide();
+                                              this.dialog
+                                                .open(
+                                                  MensajeEmergentesComponent,
+                                                  {
+                                                    data: `Producto actualizado exitosamente, el codigo de barras ya existia`,
+                                                  }
+                                                )
+                                                .afterClosed()
+                                                .subscribe(
+                                                  (
+                                                    cerrarDialogo: Boolean
+                                                  ) => {
+                                                    if (cerrarDialogo) {
+                                                      this.productoSubject.next();
+                                                      this.dialogo.close(
+                                                        true
+                                                      );
+                                                    } else {
+                                                    }
+                                                  }
+                                                );
                                                 // Producto actualizado correctamente
                                                 console.log(respuesta.message);
                                             } else {
@@ -1449,6 +1556,28 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
                                     next: (respuesta) => {
                                         console.log('Respuesta recibida:', respuesta);
                                         if (respuesta.success === 1) {
+                                          this.spinner.hide();
+                                          this.dialog
+                                            .open(
+                                              MensajeEmergentesComponent,
+                                              {
+                                                data: `Producto actualizado exitosamente, el codigo de barras ya existia`,
+                                              }
+                                            )
+                                            .afterClosed()
+                                            .subscribe(
+                                              (
+                                                cerrarDialogo: Boolean
+                                              ) => {
+                                                if (cerrarDialogo) {
+                                                  this.productoSubject.next();
+                                                  this.dialogo.close(
+                                                    true
+                                                  );
+                                                } else {
+                                                }
+                                              }
+                                            );
                                             // Producto actualizado correctamente
                                             console.log(respuesta.message);
                                         } else {
@@ -1515,6 +1644,28 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
                                         next: (respuesta) => {
                                             console.log('Respuesta recibida:', respuesta);
                                             if (respuesta.success === 1) {
+                                              this.spinner.hide();
+                                              this.dialog
+                                                .open(
+                                                  MensajeEmergentesComponent,
+                                                  {
+                                                    data: `Producto actualizado exitosamente, el codigo de barras ya existia`,
+                                                  }
+                                                )
+                                                .afterClosed()
+                                                .subscribe(
+                                                  (
+                                                    cerrarDialogo: Boolean
+                                                  ) => {
+                                                    if (cerrarDialogo) {
+                                                      this.productoSubject.next();
+                                                      this.dialogo.close(
+                                                        true
+                                                      );
+                                                    } else {
+                                                    }
+                                                  }
+                                                );
                                                 // Producto actualizado correctamente
                                                 console.log(respuesta.message);
                                             } else {
@@ -1593,6 +1744,28 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
                                         next: (respuesta) => {
                                             console.log('Respuesta recibida:', respuesta);
                                             if (respuesta.success === 1) {
+                                              this.spinner.hide();
+                                              this.dialog
+                                                .open(
+                                                  MensajeEmergentesComponent,
+                                                  {
+                                                    data: `Producto actualizado exitosamente, el codigo de barras ya existia`,
+                                                  }
+                                                )
+                                                .afterClosed()
+                                                .subscribe(
+                                                  (
+                                                    cerrarDialogo: Boolean
+                                                  ) => {
+                                                    if (cerrarDialogo) {
+                                                      this.productoSubject.next();
+                                                      this.dialogo.close(
+                                                        true
+                                                      );
+                                                    } else {
+                                                    }
+                                                  }
+                                                );
                                                 // Producto actualizado correctamente
                                                 console.log(respuesta.message);
                                             } else {
@@ -1661,6 +1834,28 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
                                             next: (respuesta) => {
                                                 console.log('Respuesta recibida:', respuesta);
                                                 if (respuesta.success === 1) {
+                                                  this.spinner.hide();
+                                                  this.dialog
+                                                    .open(
+                                                      MensajeEmergentesComponent,
+                                                      {
+                                                        data: `Producto actualizado exitosamente, el codigo de barras ya existia`,
+                                                      }
+                                                    )
+                                                    .afterClosed()
+                                                    .subscribe(
+                                                      (
+                                                        cerrarDialogo: Boolean
+                                                      ) => {
+                                                        if (cerrarDialogo) {
+                                                          this.productoSubject.next();
+                                                          this.dialogo.close(
+                                                            true
+                                                          );
+                                                        } else {
+                                                        }
+                                                      }
+                                                    );
                                                     // Producto actualizado correctamente
                                                     console.log(respuesta.message);
                                                 } else {
@@ -1704,650 +1899,650 @@ this.productoService.actualizarProducto2(formularioP).subscribe({
     }
   }
 
-  registrarP() {
-    if (this.form.valid) {
-      this.spinner.show();
-    const codigo = this.form.get("codigoBarra")?.value;
-    this.productoService
-      .verProductoCodigoBarras2(codigo)
-      .subscribe((respuesta: any) => {
-        if (respuesta.success == 0) {
-          this.categoriaService
-          .obtenerCategoriaPorNombre2(this.form.value.nombreCategoriaP)
-          .subscribe((categoriaExistente) => {
-            if (categoriaExistente.success == 1) {
-              ///********** Verifica si la subcategoria ya existe */
-              this.categoriaService
-                .obtenerSubCategoriaPorNombre2(
-                  this.form.value.nomsubcate,
-                  categoriaExistente.categoria.id_categoria
-                )
-                .subscribe((subCategoriaExistente) => {
-                  if (subCategoriaExistente.success == 1) {
-                    ///********** Verifica si la marca ya existe */
-                    this.categoriaService
-                      .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
-                      .subscribe((marcaExistente) => {
-                        if (marcaExistente.success == 1) {
-                          const formularioP = {
-                            idProducto:
-                              subCategoriaExistente.producto.id_producto,
-                            detalleUnidadMedida: "pza",
-                            precioCompra: this.form.value.precioCompra,
-                            detalleCompra: this.form.value.detalleCompra,
-                            id_marcaV: marcaExistente.marca.id_marcas,
-                            descripcion: this.form.value.descripcion,
-                            codigoBarra: this.form.value.codigoBarra,
-                            ItemNumber: this.form.value.ItemNumber,
-                            activo: this.form.value.activo,
-                            sat: this.form.value.sat,
-                            ieps: this.form.value.ieps,
-                            iva: this.form.value.iva,
-                            factura: this.form.value.factura,
-                            STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                            precioCaja: this.form.value.precioCaja,
-                            cantidadMayoreo: this.form.value.cantidadMayoreo,
-                            //idUsuario: this.auth.idUser.getValue(),
-                          };
+  // registrarP() {
+  //   if (this.form.valid) {
+  //     this.spinner.show();
+  //   const codigo = this.form.get("codigoBarra")?.value;
+  //   this.productoService
+  //     .verProductoCodigoBarras2(codigo)
+  //     .subscribe((respuesta: any) => {
+  //       if (respuesta.success == 0) {
+  //         this.categoriaService
+  //         .obtenerCategoriaPorNombre2(this.form.value.nombreCategoriaP)
+  //         .subscribe((categoriaExistente) => {
+  //           if (categoriaExistente.success == 1) {
+  //             ///********** Verifica si la subcategoria ya existe */
+  //             this.categoriaService
+  //               .obtenerSubCategoriaPorNombre2(
+  //                 this.form.value.nomsubcate,
+  //                 categoriaExistente.categoria.id_categoria
+  //               )
+  //               .subscribe((subCategoriaExistente) => {
+  //                 if (subCategoriaExistente.success == 1) {
+  //                   ///********** Verifica si la marca ya existe */
+  //                   this.categoriaService
+  //                     .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
+  //                     .subscribe((marcaExistente) => {
+  //                       if (marcaExistente.success == 1) {
+  //                         const formularioP = {
+  //                           idProducto:
+  //                             subCategoriaExistente.producto.id_producto,
+  //                           detalleUnidadMedida: "pza",
+  //                           precioCompra: this.form.value.precioCompra,
+  //                           detalleCompra: this.form.value.detalleCompra,
+  //                           id_marcaV: marcaExistente.marca.id_marcas,
+  //                           descripcion: this.form.value.descripcion,
+  //                           codigoBarra: this.form.value.codigoBarra,
+  //                           ItemNumber: this.form.value.ItemNumber,
+  //                           activo: this.form.value.activo,
+  //                           sat: this.form.value.sat,
+  //                           ieps: this.form.value.ieps,
+  //                           iva: this.form.value.iva,
+  //                           factura: this.form.value.factura,
+  //                           STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+  //                           precioCaja: this.form.value.precioCaja,
+  //                           cantidadMayoreo: this.form.value.cantidadMayoreo,
+  //                           //idUsuario: this.auth.idUser.getValue(),
+  //                         };
 
-                          this.productoService
-                            .creaProductoMemb(formularioP)
-                            .subscribe({
-                              next: (respuesta) => {
-                                if (respuesta.success) {
-                                  this.spinner.hide();
-                                  this.dialog
-                                    .open(MensajeEmergentesComponent, {
-                                      data: `Producto agregado exitosamente`,
-                                    })
-                                    .afterClosed()
-                                    .subscribe((cerrarDialogo: Boolean) => {
-                                      if (cerrarDialogo) {
-                                        this.productoSubject.next();
-                                        this.dialogo.close(true);
-                                      } else {
-                                        // Puedes agregar lógica adicional aquí si es necesario
-                                      }
-                                    });
-                                } else {
-                                  this.toastr.error(respuesta.message, "Error", {
-                                    positionClass: "toast-bottom-left",
-                                  });
-                                }
-                              },
-                              error: (paramError) => {
-                                this.toastr.error(
-                                  paramError.error.message,
-                                  "Error",
-                                  {
-                                    positionClass: "toast-bottom-left",
-                                  }
-                                );
-                              },
-                            });
-                        } else {
-                          const formMarca = {
-                            marcaP: this.form.value.marcaP,
-                            idGimnasio: 0,
-                            servicio: 0
-                          };
-                          this.categoriaService
-                            .agregarMarca2(formMarca)
-                            .subscribe((respuestaMarca) => {
-                              const formularioP = {
-                                idProducto:
-                                  subCategoriaExistente.producto.id_producto,
-                                detalleUnidadMedida: "pza",
-                                precioCompra: this.form.value.precioCompra,
-                                detalleCompra: this.form.value.detalleCompra,
-                                id_marcaV: respuestaMarca.data.id_marcas,
-                                descripcion: this.form.value.descripcion,
-                                codigoBarra: this.form.value.codigoBarra,
-                                ItemNumber: this.form.value.ItemNumber,
-                                activo: this.form.value.activo,
-                                sat: this.form.value.sat,
-                                ieps: this.form.value.ieps,
-                                iva: this.form.value.iva,
-                                factura: this.form.value.factura,
-                                STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                precioCaja: this.form.value.precioCaja,
-                                cantidadMayoreo: this.form.value.cantidadMayoreo,
-                                //idUsuario: this.auth.idUser.getValue(),
-                              };
+  //                         this.productoService
+  //                           .creaProductoMemb(formularioP)
+  //                           .subscribe({
+  //                             next: (respuesta) => {
+  //                               if (respuesta.success) {
+  //                                 this.spinner.hide();
+  //                                 this.dialog
+  //                                   .open(MensajeEmergentesComponent, {
+  //                                     data: `Producto agregado exitosamente`,
+  //                                   })
+  //                                   .afterClosed()
+  //                                   .subscribe((cerrarDialogo: Boolean) => {
+  //                                     if (cerrarDialogo) {
+  //                                       this.productoSubject.next();
+  //                                       this.dialogo.close(true);
+  //                                     } else {
+  //                                       // Puedes agregar lógica adicional aquí si es necesario
+  //                                     }
+  //                                   });
+  //                               } else {
+  //                                 this.toastr.error(respuesta.message, "Error", {
+  //                                   positionClass: "toast-bottom-left",
+  //                                 });
+  //                               }
+  //                             },
+  //                             error: (paramError) => {
+  //                               this.toastr.error(
+  //                                 paramError.error.message,
+  //                                 "Error",
+  //                                 {
+  //                                   positionClass: "toast-bottom-left",
+  //                                 }
+  //                               );
+  //                             },
+  //                           });
+  //                       } else {
+  //                         const formMarca = {
+  //                           marcaP: this.form.value.marcaP,
+  //                           idGimnasio: 0,
+  //                           servicio: 0
+  //                         };
+  //                         this.categoriaService
+  //                           .agregarMarca2(formMarca)
+  //                           .subscribe((respuestaMarca) => {
+  //                             const formularioP = {
+  //                               idProducto:
+  //                                 subCategoriaExistente.producto.id_producto,
+  //                               detalleUnidadMedida: "pza",
+  //                               precioCompra: this.form.value.precioCompra,
+  //                               detalleCompra: this.form.value.detalleCompra,
+  //                               id_marcaV: respuestaMarca.data.id_marcas,
+  //                               descripcion: this.form.value.descripcion,
+  //                               codigoBarra: this.form.value.codigoBarra,
+  //                               ItemNumber: this.form.value.ItemNumber,
+  //                               activo: this.form.value.activo,
+  //                               sat: this.form.value.sat,
+  //                               ieps: this.form.value.ieps,
+  //                               iva: this.form.value.iva,
+  //                               factura: this.form.value.factura,
+  //                               STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+  //                               precioCaja: this.form.value.precioCaja,
+  //                               cantidadMayoreo: this.form.value.cantidadMayoreo,
+  //                               //idUsuario: this.auth.idUser.getValue(),
+  //                             };
 
-                              this.productoService
-                                .creaProductoMemb(formularioP)
-                                .subscribe({
-                                  next: (respuesta) => {
-                                    if (respuesta.success) {
-                                      this.spinner.hide();
-                                      this.dialog
-                                        .open(MensajeEmergentesComponent, {
-                                          data: `Producto agregado exitosamente`,
-                                        })
-                                        .afterClosed()
-                                        .subscribe((cerrarDialogo: Boolean) => {
-                                          if (cerrarDialogo) {
-                                            this.productoSubject.next();
-                                            this.dialogo.close(true);
-                                          } else {
-                                            // Puedes agregar lógica adicional aquí si es necesario
-                                          }
-                                        });
-                                    } else {
-                                      this.toastr.error(
-                                        respuesta.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    }
-                                  },
-                                  error: (paramError) => {
-                                    this.toastr.error(
-                                      paramError.error.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  },
-                                });
-                            });
-                        }
-                      });
-                  } else {
-                    ///********** Si la sub no existe */
-                    const formSub = {
-                      idcatte: categoriaExistente.categoria.id_categoria,
-                      nomsubcate: this.form.value.nomsubcate,
-                    };
+  //                             this.productoService
+  //                               .creaProductoMemb(formularioP)
+  //                               .subscribe({
+  //                                 next: (respuesta) => {
+  //                                   if (respuesta.success) {
+  //                                     this.spinner.hide();
+  //                                     this.dialog
+  //                                       .open(MensajeEmergentesComponent, {
+  //                                         data: `Producto agregado exitosamente`,
+  //                                       })
+  //                                       .afterClosed()
+  //                                       .subscribe((cerrarDialogo: Boolean) => {
+  //                                         if (cerrarDialogo) {
+  //                                           this.productoSubject.next();
+  //                                           this.dialogo.close(true);
+  //                                         } else {
+  //                                           // Puedes agregar lógica adicional aquí si es necesario
+  //                                         }
+  //                                       });
+  //                                   } else {
+  //                                     this.toastr.error(
+  //                                       respuesta.message,
+  //                                       "Error",
+  //                                       {
+  //                                         positionClass: "toast-bottom-left",
+  //                                       }
+  //                                     );
+  //                                   }
+  //                                 },
+  //                                 error: (paramError) => {
+  //                                   this.toastr.error(
+  //                                     paramError.error.message,
+  //                                     "Error",
+  //                                     {
+  //                                       positionClass: "toast-bottom-left",
+  //                                     }
+  //                                   );
+  //                                 },
+  //                               });
+  //                           });
+  //                       }
+  //                     });
+  //                 } else {
+  //                   ///********** Si la sub no existe */
+  //                   const formSub = {
+  //                     idcatte: categoriaExistente.categoria.id_categoria,
+  //                     nomsubcate: this.form.value.nomsubcate,
+  //                   };
 
-                    this.categoriaService
-                      .agregarSubCategoria2(formSub)
-                      .subscribe((respuestaSub) => {
-                        ///********** Verifica si la marca ya existe */
-                        this.categoriaService
-                          .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
-                          .subscribe((marcaExistente) => {
-                            if (marcaExistente.success == 1) {
-                              this.spinner.hide();
-                              //agregar producto
+  //                   this.categoriaService
+  //                     .agregarSubCategoria2(formSub)
+  //                     .subscribe((respuestaSub) => {
+  //                       ///********** Verifica si la marca ya existe */
+  //                       this.categoriaService
+  //                         .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
+  //                         .subscribe((marcaExistente) => {
+  //                           if (marcaExistente.success == 1) {
+  //                             this.spinner.hide();
+  //                             //agregar producto
 
-                              const formularioP = {
-                                idProducto: respuestaSub.id_producto,
-                                detalleUnidadMedida: "pza",
-                                precioCompra: this.form.value.precioCompra,
-                                detalleCompra: this.form.value.detalleCompra,
-                                id_marcaV:
-                                  marcaExistente.marca.id_marcas,
-                                descripcion: this.form.value.descripcion,
-                                codigoBarra: this.form.value.codigoBarra,
-                                ItemNumber: this.form.value.ItemNumber,
-                                activo: this.form.value.activo,
-                                sat: this.form.value.sat,
-                                ieps: this.form.value.ieps,
-                                iva: this.form.value.iva,
-                                factura: this.form.value.factura,
-                                STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                precioCaja: this.form.value.precioCaja,
-                                cantidadMayoreo: this.form.value.cantidadMayoreo,
-                                //idUsuario: this.auth.idUser.getValue(),
-                              };
+  //                             const formularioP = {
+  //                               idProducto: respuestaSub.id_producto,
+  //                               detalleUnidadMedida: "pza",
+  //                               precioCompra: this.form.value.precioCompra,
+  //                               detalleCompra: this.form.value.detalleCompra,
+  //                               id_marcaV:
+  //                                 marcaExistente.marca.id_marcas,
+  //                               descripcion: this.form.value.descripcion,
+  //                               codigoBarra: this.form.value.codigoBarra,
+  //                               ItemNumber: this.form.value.ItemNumber,
+  //                               activo: this.form.value.activo,
+  //                               sat: this.form.value.sat,
+  //                               ieps: this.form.value.ieps,
+  //                               iva: this.form.value.iva,
+  //                               factura: this.form.value.factura,
+  //                               STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+  //                               precioCaja: this.form.value.precioCaja,
+  //                               cantidadMayoreo: this.form.value.cantidadMayoreo,
+  //                               //idUsuario: this.auth.idUser.getValue(),
+  //                             };
 
-                              this.productoService
-                                .creaProductoMemb(formularioP)
-                                .subscribe({
-                                  next: (respuesta) => {
-                                    if (respuesta.success) {
-                                      this.spinner.hide();
-                                      this.dialog
-                                        .open(MensajeEmergentesComponent, {
-                                          data: `Producto agregado exitosamente`,
-                                        })
-                                        .afterClosed()
-                                        .subscribe((cerrarDialogo: Boolean) => {
-                                          if (cerrarDialogo) {
-                                            this.productoSubject.next();
-                                            this.dialogo.close(true);
-                                          } else {
-                                            // Puedes agregar lógica adicional aquí si es necesario
-                                          }
-                                        });
-                                    } else {
-                                      this.toastr.error(
-                                        respuesta.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    }
-                                  },
-                                  error: (paramError) => {
-                                    this.toastr.error(
-                                      paramError.error.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  },
-                                });
-                            } else {
-                              const formMarca = {
-                                marcaP: this.form.value.marcaP,
-                                idGimnasio: 0,
-                                servicio: 0
-                              };
-                              this.categoriaService
-                                .agregarMarca2(formMarca)
-                                .subscribe((respuestaMarca) => {
-                                  const formularioP = {
-                                    idProducto: respuestaSub.id_producto,
-                                    detalleUnidadMedida: "pza",
-                                    precioCompra: this.form.value.precioCompra,
-                                    detalleCompra: this.form.value.detalleCompra,
-                                    id_marcaV: respuestaMarca.data.id_marcas,
-                                    descripcion: this.form.value.descripcion,
-                                    codigoBarra: this.form.value.codigoBarra,
-                                    ItemNumber: this.form.value.ItemNumber,
-                                    activo: this.form.value.activo,
-                                    sat: this.form.value.sat,
-                                    ieps: this.form.value.ieps,
-                                    iva: this.form.value.iva,
-                                    factura: this.form.value.factura,
-                                    STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                    precioCaja: this.form.value.precioCaja,
-                                    cantidadMayoreo:
-                                      this.form.value.cantidadMayoreo,
-                                      //idUsuario: this.auth.idUser.getValue(),
-                                  };
+  //                             this.productoService
+  //                               .creaProductoMemb(formularioP)
+  //                               .subscribe({
+  //                                 next: (respuesta) => {
+  //                                   if (respuesta.success) {
+  //                                     this.spinner.hide();
+  //                                     this.dialog
+  //                                       .open(MensajeEmergentesComponent, {
+  //                                         data: `Producto agregado exitosamente`,
+  //                                       })
+  //                                       .afterClosed()
+  //                                       .subscribe((cerrarDialogo: Boolean) => {
+  //                                         if (cerrarDialogo) {
+  //                                           this.productoSubject.next();
+  //                                           this.dialogo.close(true);
+  //                                         } else {
+  //                                           // Puedes agregar lógica adicional aquí si es necesario
+  //                                         }
+  //                                       });
+  //                                   } else {
+  //                                     this.toastr.error(
+  //                                       respuesta.message,
+  //                                       "Error",
+  //                                       {
+  //                                         positionClass: "toast-bottom-left",
+  //                                       }
+  //                                     );
+  //                                   }
+  //                                 },
+  //                                 error: (paramError) => {
+  //                                   this.toastr.error(
+  //                                     paramError.error.message,
+  //                                     "Error",
+  //                                     {
+  //                                       positionClass: "toast-bottom-left",
+  //                                     }
+  //                                   );
+  //                                 },
+  //                               });
+  //                           } else {
+  //                             const formMarca = {
+  //                               marcaP: this.form.value.marcaP,
+  //                               idGimnasio: 0,
+  //                               servicio: 0
+  //                             };
+  //                             this.categoriaService
+  //                               .agregarMarca2(formMarca)
+  //                               .subscribe((respuestaMarca) => {
+  //                                 const formularioP = {
+  //                                   idProducto: respuestaSub.id_producto,
+  //                                   detalleUnidadMedida: "pza",
+  //                                   precioCompra: this.form.value.precioCompra,
+  //                                   detalleCompra: this.form.value.detalleCompra,
+  //                                   id_marcaV: respuestaMarca.data.id_marcas,
+  //                                   descripcion: this.form.value.descripcion,
+  //                                   codigoBarra: this.form.value.codigoBarra,
+  //                                   ItemNumber: this.form.value.ItemNumber,
+  //                                   activo: this.form.value.activo,
+  //                                   sat: this.form.value.sat,
+  //                                   ieps: this.form.value.ieps,
+  //                                   iva: this.form.value.iva,
+  //                                   factura: this.form.value.factura,
+  //                                   STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+  //                                   precioCaja: this.form.value.precioCaja,
+  //                                   cantidadMayoreo:
+  //                                     this.form.value.cantidadMayoreo,
+  //                                     //idUsuario: this.auth.idUser.getValue(),
+  //                                 };
 
-                                  this.productoService
-                                    .creaProductoMemb(formularioP)
-                                    .subscribe({
-                                      next: (respuesta) => {
-                                        if (respuesta.success) {
-                                          this.spinner.hide();
-                                          this.dialog
-                                            .open(MensajeEmergentesComponent, {
-                                              data: `Producto agregado exitosamente`,
-                                            })
-                                            .afterClosed()
-                                            .subscribe(
-                                              (cerrarDialogo: Boolean) => {
-                                                if (cerrarDialogo) {
-                                                  this.productoSubject.next();
-                                                  this.dialogo.close(true);
-                                                } else {
-                                                  // Puedes agregar lógica adicional aquí si es necesario
-                                                }
-                                              }
-                                            );
-                                        } else {
-                                          this.toastr.error(
-                                            respuesta.message,
-                                            "Error",
-                                            {
-                                              positionClass: "toast-bottom-left",
-                                            }
-                                          );
-                                        }
-                                      },
-                                      error: (paramError) => {
-                                        this.toastr.error(
-                                          paramError.error.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      },
-                                    });
-                                  this.spinner.hide();
-                                });
-                            }
-                          });
-                      });
-                  }
-                });
-            } else {
-              // Si la categoría no existe, se agrega
-              this.categoriaService
-                .agregarCategoria2(this.form.value)
-                .subscribe((respuesta) => {
-                  if (respuesta.success === 1) {
+  //                                 this.productoService
+  //                                   .creaProductoMemb(formularioP)
+  //                                   .subscribe({
+  //                                     next: (respuesta) => {
+  //                                       if (respuesta.success) {
+  //                                         this.spinner.hide();
+  //                                         this.dialog
+  //                                           .open(MensajeEmergentesComponent, {
+  //                                             data: `Producto agregado exitosamente`,
+  //                                           })
+  //                                           .afterClosed()
+  //                                           .subscribe(
+  //                                             (cerrarDialogo: Boolean) => {
+  //                                               if (cerrarDialogo) {
+  //                                                 this.productoSubject.next();
+  //                                                 this.dialogo.close(true);
+  //                                               } else {
+  //                                                 // Puedes agregar lógica adicional aquí si es necesario
+  //                                               }
+  //                                             }
+  //                                           );
+  //                                       } else {
+  //                                         this.toastr.error(
+  //                                           respuesta.message,
+  //                                           "Error",
+  //                                           {
+  //                                             positionClass: "toast-bottom-left",
+  //                                           }
+  //                                         );
+  //                                       }
+  //                                     },
+  //                                     error: (paramError) => {
+  //                                       this.toastr.error(
+  //                                         paramError.error.message,
+  //                                         "Error",
+  //                                         {
+  //                                           positionClass: "toast-bottom-left",
+  //                                         }
+  //                                       );
+  //                                     },
+  //                                   });
+  //                                 this.spinner.hide();
+  //                               });
+  //                           }
+  //                         });
+  //                     });
+  //                 }
+  //               });
+  //           } else {
+  //             // Si la categoría no existe, se agrega
+  //             this.categoriaService
+  //               .agregarCategoria2(this.form.value)
+  //               .subscribe((respuesta) => {
+  //                 if (respuesta.success === 1) {
 
-                  ///********** Verifica si la subcategoria ya existe */
-                  this.categoriaService
-                    .obtenerSubCategoriaPorNombre2(
-                      this.form.value.nomsubcate,
-                      respuesta.id_categoria
-                    )
-                    .subscribe((subCategoriaExistente) => {
-                      if (subCategoriaExistente.success == 1) {
-                        this.categoriaService
-                          .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
-                          .subscribe((marcaExistente) => {
-                            if (marcaExistente.success == 1) {
-                              //agregar producto
+  //                 ///********** Verifica si la subcategoria ya existe */
+  //                 this.categoriaService
+  //                   .obtenerSubCategoriaPorNombre2(
+  //                     this.form.value.nomsubcate,
+  //                     respuesta.id_categoria
+  //                   )
+  //                   .subscribe((subCategoriaExistente) => {
+  //                     if (subCategoriaExistente.success == 1) {
+  //                       this.categoriaService
+  //                         .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
+  //                         .subscribe((marcaExistente) => {
+  //                           if (marcaExistente.success == 1) {
+  //                             //agregar producto
 
-                              const formularioP = {
-                                idProducto:
-                                  subCategoriaExistente.producto.id_producto,
-                                detalleUnidadMedida: "pza",
-                                precioCompra: this.form.value.precioCompra,
-                                detalleCompra: this.form.value.detalleCompra,
-                                id_marcaV:
-                                  marcaExistente.marca.id_marcas,
-                                descripcion: this.form.value.descripcion,
-                                codigoBarra: this.form.value.codigoBarra,
-                                ItemNumber: this.form.value.ItemNumber,
-                                activo: this.form.value.activo,
-                                sat: this.form.value.sat,
-                                ieps: this.form.value.ieps,
-                                iva: this.form.value.iva,
-                                factura: this.form.value.factura,
-                                STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                precioCaja: this.form.value.precioCaja,
-                                cantidadMayoreo: this.form.value.cantidadMayoreo,
-                                //idUsuario: this.auth.idUser.getValue(),
-                              };
+  //                             const formularioP = {
+  //                               idProducto:
+  //                                 subCategoriaExistente.producto.id_producto,
+  //                               detalleUnidadMedida: "pza",
+  //                               precioCompra: this.form.value.precioCompra,
+  //                               detalleCompra: this.form.value.detalleCompra,
+  //                               id_marcaV:
+  //                                 marcaExistente.marca.id_marcas,
+  //                               descripcion: this.form.value.descripcion,
+  //                               codigoBarra: this.form.value.codigoBarra,
+  //                               ItemNumber: this.form.value.ItemNumber,
+  //                               activo: this.form.value.activo,
+  //                               sat: this.form.value.sat,
+  //                               ieps: this.form.value.ieps,
+  //                               iva: this.form.value.iva,
+  //                               factura: this.form.value.factura,
+  //                               STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+  //                               precioCaja: this.form.value.precioCaja,
+  //                               cantidadMayoreo: this.form.value.cantidadMayoreo,
+  //                               //idUsuario: this.auth.idUser.getValue(),
+  //                             };
 
-                              this.productoService
-                                .creaProductoMemb(formularioP)
-                                .subscribe({
-                                  next: (respuesta) => {
-                                    if (respuesta.success) {
-                                      this.spinner.hide();
-                                      this.dialog
-                                        .open(MensajeEmergentesComponent, {
-                                          data: `Producto agregado exitosamente`,
-                                        })
-                                        .afterClosed()
-                                        .subscribe((cerrarDialogo: Boolean) => {
-                                          if (cerrarDialogo) {
-                                            this.productoSubject.next();
-                                            this.dialogo.close(true);
-                                          } else {
-                                            // Puedes agregar lógica adicional aquí si es necesario
-                                          }
-                                        });
-                                    } else {
-                                      this.toastr.error(
-                                        respuesta.message,
-                                        "Error",
-                                        {
-                                          positionClass: "toast-bottom-left",
-                                        }
-                                      );
-                                    }
-                                  },
-                                  error: (paramError) => {
-                                    this.toastr.error(
-                                      paramError.error.message,
-                                      "Error",
-                                      {
-                                        positionClass: "toast-bottom-left",
-                                      }
-                                    );
-                                  },
-                                });
-                            } else {
-                              const formMarca = {
-                                marcaP: this.form.value.marcaP,
-                                idGimnasio: 0,
-                                servicio: 0
-                              };
-                              this.categoriaService
-                                .agregarMarca2(formMarca)
-                                .subscribe((respuestaMarca) => {
-                                  const formularioP = {
-                                    idProducto:
-                                      subCategoriaExistente.producto.id_producto,
-                                    detalleUnidadMedida: "pza",
-                                    precioCompra: this.form.value.precioCompra,
-                                    detalleCompra: this.form.value.detalleCompra,
-                                    id_marcaV: respuestaMarca.data.id_marcas,
-                                    descripcion: this.form.value.descripcion,
-                                    codigoBarra: this.form.value.codigoBarra,
-                                    ItemNumber: this.form.value.ItemNumber,
-                                    activo: this.form.value.activo,
-                                    sat: this.form.value.sat,
-                                    ieps: this.form.value.ieps,
-                                    iva: this.form.value.iva,
-                                    factura: this.form.value.factura,
-                                    STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                    precioCaja: this.form.value.precioCaja,
-                                    cantidadMayoreo:
-                                      this.form.value.cantidadMayoreo,
-                                      //idUsuario: this.auth.idUser.getValue(),
-                                  };
+  //                             this.productoService
+  //                               .creaProductoMemb(formularioP)
+  //                               .subscribe({
+  //                                 next: (respuesta) => {
+  //                                   if (respuesta.success) {
+  //                                     this.spinner.hide();
+  //                                     this.dialog
+  //                                       .open(MensajeEmergentesComponent, {
+  //                                         data: `Producto agregado exitosamente`,
+  //                                       })
+  //                                       .afterClosed()
+  //                                       .subscribe((cerrarDialogo: Boolean) => {
+  //                                         if (cerrarDialogo) {
+  //                                           this.productoSubject.next();
+  //                                           this.dialogo.close(true);
+  //                                         } else {
+  //                                           // Puedes agregar lógica adicional aquí si es necesario
+  //                                         }
+  //                                       });
+  //                                   } else {
+  //                                     this.toastr.error(
+  //                                       respuesta.message,
+  //                                       "Error",
+  //                                       {
+  //                                         positionClass: "toast-bottom-left",
+  //                                       }
+  //                                     );
+  //                                   }
+  //                                 },
+  //                                 error: (paramError) => {
+  //                                   this.toastr.error(
+  //                                     paramError.error.message,
+  //                                     "Error",
+  //                                     {
+  //                                       positionClass: "toast-bottom-left",
+  //                                     }
+  //                                   );
+  //                                 },
+  //                               });
+  //                           } else {
+  //                             const formMarca = {
+  //                               marcaP: this.form.value.marcaP,
+  //                               idGimnasio: 0,
+  //                               servicio: 0
+  //                             };
+  //                             this.categoriaService
+  //                               .agregarMarca2(formMarca)
+  //                               .subscribe((respuestaMarca) => {
+  //                                 const formularioP = {
+  //                                   idProducto:
+  //                                     subCategoriaExistente.producto.id_producto,
+  //                                   detalleUnidadMedida: "pza",
+  //                                   precioCompra: this.form.value.precioCompra,
+  //                                   detalleCompra: this.form.value.detalleCompra,
+  //                                   id_marcaV: respuestaMarca.data.id_marcas,
+  //                                   descripcion: this.form.value.descripcion,
+  //                                   codigoBarra: this.form.value.codigoBarra,
+  //                                   ItemNumber: this.form.value.ItemNumber,
+  //                                   activo: this.form.value.activo,
+  //                                   sat: this.form.value.sat,
+  //                                   ieps: this.form.value.ieps,
+  //                                   iva: this.form.value.iva,
+  //                                   factura: this.form.value.factura,
+  //                                   STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+  //                                   precioCaja: this.form.value.precioCaja,
+  //                                   cantidadMayoreo:
+  //                                     this.form.value.cantidadMayoreo,
+  //                                     //idUsuario: this.auth.idUser.getValue(),
+  //                                 };
 
-                                  this.productoService
-                                    .creaProductoMemb(formularioP)
-                                    .subscribe({
-                                      next: (respuesta) => {
-                                        if (respuesta.success) {
-                                          this.spinner.hide();
-                                          this.dialog
-                                            .open(MensajeEmergentesComponent, {
-                                              data: `Producto agregado exitosamente`,
-                                            })
-                                            .afterClosed()
-                                            .subscribe(
-                                              (cerrarDialogo: Boolean) => {
-                                                if (cerrarDialogo) {
-                                                  this.productoSubject.next();
-                                                  this.dialogo.close(true);
-                                                } else {
-                                                }
-                                              }
-                                            );
-                                        } else {
-                                          this.toastr.error(
-                                            respuesta.message,
-                                            "Error",
-                                            {
-                                              positionClass: "toast-bottom-left",
-                                            }
-                                          );
-                                        }
-                                      },
-                                      error: (paramError) => {
-                                        this.toastr.error(
-                                          paramError.error.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      },
-                                    });
-                                  this.spinner.hide();
-                                });
-                            }
-                          });
-                      } else {
-                        // Si la subcategoría no existe, agregarla
-                        const formSub = {
-                          idcatte: respuesta.id_categoria,
-                          nomsubcate: this.form.value.nomsubcate,
-                        };
+  //                                 this.productoService
+  //                                   .creaProductoMemb(formularioP)
+  //                                   .subscribe({
+  //                                     next: (respuesta) => {
+  //                                       if (respuesta.success) {
+  //                                         this.spinner.hide();
+  //                                         this.dialog
+  //                                           .open(MensajeEmergentesComponent, {
+  //                                             data: `Producto agregado exitosamente`,
+  //                                           })
+  //                                           .afterClosed()
+  //                                           .subscribe(
+  //                                             (cerrarDialogo: Boolean) => {
+  //                                               if (cerrarDialogo) {
+  //                                                 this.productoSubject.next();
+  //                                                 this.dialogo.close(true);
+  //                                               } else {
+  //                                               }
+  //                                             }
+  //                                           );
+  //                                       } else {
+  //                                         this.toastr.error(
+  //                                           respuesta.message,
+  //                                           "Error",
+  //                                           {
+  //                                             positionClass: "toast-bottom-left",
+  //                                           }
+  //                                         );
+  //                                       }
+  //                                     },
+  //                                     error: (paramError) => {
+  //                                       this.toastr.error(
+  //                                         paramError.error.message,
+  //                                         "Error",
+  //                                         {
+  //                                           positionClass: "toast-bottom-left",
+  //                                         }
+  //                                       );
+  //                                     },
+  //                                   });
+  //                                 this.spinner.hide();
+  //                               });
+  //                           }
+  //                         });
+  //                     } else {
+  //                       // Si la subcategoría no existe, agregarla
+  //                       const formSub = {
+  //                         idcatte: respuesta.id_categoria,
+  //                         nomsubcate: this.form.value.nomsubcate,
+  //                       };
 
-                        this.categoriaService
-                          .agregarSubCategoria2(formSub)
-                          .subscribe((respuestaSub) => {
-                            ///********** Verifica si la marca ya existe */
-                            this.categoriaService
-                              .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
-                              .subscribe((marcaExistente) => {
-                                if (marcaExistente.success == 1) {
-                                  const formularioP = {
-                                    idProducto: respuestaSub.id_producto,
-                                    detalleUnidadMedida: "pza",
-                                    precioCompra: this.form.value.precioCompra,
-                                    detalleCompra: this.form.value.detalleCompra,
-                                    id_marcaV:
-                                      marcaExistente.marca.id_marcas,
-                                    descripcion: this.form.value.descripcion,
-                                    codigoBarra: this.form.value.codigoBarra,
-                                    ItemNumber: this.form.value.ItemNumber,
-                                    activo: this.form.value.activo,
-                                    sat: this.form.value.sat,
-                                    ieps: this.form.value.ieps,
-                                    iva: this.form.value.iva,
-                                    factura: this.form.value.factura,
-                                    STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
-                                    precioCaja: this.form.value.precioCaja,
-                                    cantidadMayoreo:
-                                      this.form.value.cantidadMayoreo,
-                                      //idUsuario: this.auth.idUser.getValue(),
-                                  };
-                                  this.productoService
-                                    .creaProductoMemb(formularioP)
-                                    .subscribe({
-                                      next: (respuesta) => {
-                                        if (respuesta.success) {
-                                          this.spinner.hide();
-                                          this.dialog
-                                            .open(MensajeEmergentesComponent, {
-                                              data: `Producto agregado exitosamente`,
-                                            })
-                                            .afterClosed()
-                                            .subscribe(
-                                              (cerrarDialogo: Boolean) => {
-                                                if (cerrarDialogo) {
-                                                  this.productoSubject.next();
-                                                  this.dialogo.close(true);
-                                                } else {
-                                                }
-                                              }
-                                            );
-                                        } else {
-                                          this.toastr.error(
-                                            respuesta.message,
-                                            "Error",
-                                            {
-                                              positionClass: "toast-bottom-left",
-                                            }
-                                          );
-                                        }
-                                      },
-                                      error: (paramError) => {
-                                        this.toastr.error(
-                                          paramError.error.message,
-                                          "Error",
-                                          {
-                                            positionClass: "toast-bottom-left",
-                                          }
-                                        );
-                                      },
-                                    });
-                                } else {
-                                  const formMarca = {
-                                    marcaP: this.form.value.marcaP,
-                                    idGimnasio: 0,
-                                    servicio: 0
-                                  };
-                                  this.categoriaService
-                                    .agregarMarca2(formMarca)
-                                    .subscribe((respuestaMarca) => {
-                                      const formularioP = {
-                                        idProducto: respuestaSub.id_producto,
-                                        detalleUnidadMedida: "pza",
-                                        precioCompra:
-                                          this.form.value.precioCompra,
-                                        detalleCompra:
-                                          this.form.value.detalleCompra,
-                                        id_marcaV: respuestaMarca.data.id_marcas,
-                                        descripcion: this.form.value.descripcion,
-                                        codigoBarra: this.form.value.codigoBarra,
-                                        ItemNumber: this.form.value.ItemNumber,
-                                        activo: this.form.value.activo,
-                                        sat: this.form.value.sat,
-                                        ieps: this.form.value.ieps,
-                                        iva: this.form.value.iva,
-                                        factura: this.form.value.factura,
-                                        STYLE_ITEM_ID:
-                                          this.form.value.STYLE_ITEM_ID,
-                                        precioCaja: this.form.value.precioCaja,
-                                        cantidadMayoreo:
-                                          this.form.value.cantidadMayoreo,
-                                          //idUsuario: this.auth.idUser.getValue(),
-                                      };
+  //                       this.categoriaService
+  //                         .agregarSubCategoria2(formSub)
+  //                         .subscribe((respuestaSub) => {
+  //                           ///********** Verifica si la marca ya existe */
+  //                           this.categoriaService
+  //                             .obtenerMarcaPorNombre2(this.form.value.marcaP, this.idGym)
+  //                             .subscribe((marcaExistente) => {
+  //                               if (marcaExistente.success == 1) {
+  //                                 const formularioP = {
+  //                                   idProducto: respuestaSub.id_producto,
+  //                                   detalleUnidadMedida: "pza",
+  //                                   precioCompra: this.form.value.precioCompra,
+  //                                   detalleCompra: this.form.value.detalleCompra,
+  //                                   id_marcaV:
+  //                                     marcaExistente.marca.id_marcas,
+  //                                   descripcion: this.form.value.descripcion,
+  //                                   codigoBarra: this.form.value.codigoBarra,
+  //                                   ItemNumber: this.form.value.ItemNumber,
+  //                                   activo: this.form.value.activo,
+  //                                   sat: this.form.value.sat,
+  //                                   ieps: this.form.value.ieps,
+  //                                   iva: this.form.value.iva,
+  //                                   factura: this.form.value.factura,
+  //                                   STYLE_ITEM_ID: this.form.value.STYLE_ITEM_ID,
+  //                                   precioCaja: this.form.value.precioCaja,
+  //                                   cantidadMayoreo:
+  //                                     this.form.value.cantidadMayoreo,
+  //                                     //idUsuario: this.auth.idUser.getValue(),
+  //                                 };
+  //                                 this.productoService
+  //                                   .creaProductoMemb(formularioP)
+  //                                   .subscribe({
+  //                                     next: (respuesta) => {
+  //                                       if (respuesta.success) {
+  //                                         this.spinner.hide();
+  //                                         this.dialog
+  //                                           .open(MensajeEmergentesComponent, {
+  //                                             data: `Producto agregado exitosamente`,
+  //                                           })
+  //                                           .afterClosed()
+  //                                           .subscribe(
+  //                                             (cerrarDialogo: Boolean) => {
+  //                                               if (cerrarDialogo) {
+  //                                                 this.productoSubject.next();
+  //                                                 this.dialogo.close(true);
+  //                                               } else {
+  //                                               }
+  //                                             }
+  //                                           );
+  //                                       } else {
+  //                                         this.toastr.error(
+  //                                           respuesta.message,
+  //                                           "Error",
+  //                                           {
+  //                                             positionClass: "toast-bottom-left",
+  //                                           }
+  //                                         );
+  //                                       }
+  //                                     },
+  //                                     error: (paramError) => {
+  //                                       this.toastr.error(
+  //                                         paramError.error.message,
+  //                                         "Error",
+  //                                         {
+  //                                           positionClass: "toast-bottom-left",
+  //                                         }
+  //                                       );
+  //                                     },
+  //                                   });
+  //                               } else {
+  //                                 const formMarca = {
+  //                                   marcaP: this.form.value.marcaP,
+  //                                   idGimnasio: 0,
+  //                                   servicio: 0
+  //                                 };
+  //                                 this.categoriaService
+  //                                   .agregarMarca2(formMarca)
+  //                                   .subscribe((respuestaMarca) => {
+  //                                     const formularioP = {
+  //                                       idProducto: respuestaSub.id_producto,
+  //                                       detalleUnidadMedida: "pza",
+  //                                       precioCompra:
+  //                                         this.form.value.precioCompra,
+  //                                       detalleCompra:
+  //                                         this.form.value.detalleCompra,
+  //                                       id_marcaV: respuestaMarca.data.id_marcas,
+  //                                       descripcion: this.form.value.descripcion,
+  //                                       codigoBarra: this.form.value.codigoBarra,
+  //                                       ItemNumber: this.form.value.ItemNumber,
+  //                                       activo: this.form.value.activo,
+  //                                       sat: this.form.value.sat,
+  //                                       ieps: this.form.value.ieps,
+  //                                       iva: this.form.value.iva,
+  //                                       factura: this.form.value.factura,
+  //                                       STYLE_ITEM_ID:
+  //                                         this.form.value.STYLE_ITEM_ID,
+  //                                       precioCaja: this.form.value.precioCaja,
+  //                                       cantidadMayoreo:
+  //                                         this.form.value.cantidadMayoreo,
+  //                                         //idUsuario: this.auth.idUser.getValue(),
+  //                                     };
 
-                                      this.productoService
-                                        .creaProductoMemb(formularioP)
-                                        .subscribe({
-                                          next: (respuesta) => {
-                                            if (respuesta.success) {
-                                              this.spinner.hide();
-                                              this.dialog
-                                                .open(
-                                                  MensajeEmergentesComponent,
-                                                  {
-                                                    data: `Producto agregado exitosamente`,
-                                                  }
-                                                )
-                                                .afterClosed()
-                                                .subscribe(
-                                                  (cerrarDialogo: Boolean) => {
-                                                    if (cerrarDialogo) {
-                                                      this.productoSubject.next();
-                                                      this.dialogo.close(true);
-                                                    } else {
-                                                    }
-                                                  }
-                                                );
-                                            } else {
-                                              this.toastr.error(
-                                                respuesta.message,
-                                                "Error",
-                                                {
-                                                  positionClass:
-                                                    "toast-bottom-left",
-                                                }
-                                              );
-                                            }
-                                          },
-                                          error: (paramError) => {
-                                            this.toastr.error(
-                                              paramError.error.message,
-                                              "Error",
-                                              {
-                                                positionClass:
-                                                  "toast-bottom-left",
-                                              }
-                                            );
-                                          },
-                                        });
-                                      this.spinner.hide();
-                                    });
-                                }
-                              });
-                          });
-                      }
-                    });
-                  } else {
-                    console.log('Error al agregar la categoría:', respuesta.message);
-                  }
-                });
-            }
-          });
-      }else{
-        this.toastr.error('El codigo de barras ya existe.', 'Error', {
-          positionClass: 'toast-bottom-left',
-        });
-        this.spinner.hide();
-      }
-      });
+  //                                     this.productoService
+  //                                       .creaProductoMemb(formularioP)
+  //                                       .subscribe({
+  //                                         next: (respuesta) => {
+  //                                           if (respuesta.success) {
+  //                                             this.spinner.hide();
+  //                                             this.dialog
+  //                                               .open(
+  //                                                 MensajeEmergentesComponent,
+  //                                                 {
+  //                                                   data: `Producto agregado exitosamente`,
+  //                                                 }
+  //                                               )
+  //                                               .afterClosed()
+  //                                               .subscribe(
+  //                                                 (cerrarDialogo: Boolean) => {
+  //                                                   if (cerrarDialogo) {
+  //                                                     this.productoSubject.next();
+  //                                                     this.dialogo.close(true);
+  //                                                   } else {
+  //                                                   }
+  //                                                 }
+  //                                               );
+  //                                           } else {
+  //                                             this.toastr.error(
+  //                                               respuesta.message,
+  //                                               "Error",
+  //                                               {
+  //                                                 positionClass:
+  //                                                   "toast-bottom-left",
+  //                                               }
+  //                                             );
+  //                                           }
+  //                                         },
+  //                                         error: (paramError) => {
+  //                                           this.toastr.error(
+  //                                             paramError.error.message,
+  //                                             "Error",
+  //                                             {
+  //                                               positionClass:
+  //                                                 "toast-bottom-left",
+  //                                             }
+  //                                           );
+  //                                         },
+  //                                       });
+  //                                     this.spinner.hide();
+  //                                   });
+  //                               }
+  //                             });
+  //                         });
+  //                     }
+  //                   });
+  //                 } else {
+  //                   console.log('Error al agregar la categoría:', respuesta.message);
+  //                 }
+  //               });
+  //           }
+  //         });
+  //     }else{
+  //       this.toastr.error('El codigo de barras ya existe.', 'Error', {
+  //         positionClass: 'toast-bottom-left',
+  //       });
+  //       this.spinner.hide();
+  //     }
+  //     });
 
-    } else {
-      this.message = "Por favor, complete todos los campos requeridos.";
-      this.marcarCamposInvalidos(this.form);
-    }
-  }
+  //   } else {
+  //     this.message = "Por favor, complete todos los campos requeridos.";
+  //     this.marcarCamposInvalidos(this.form);
+  //   }
+  // }
 }

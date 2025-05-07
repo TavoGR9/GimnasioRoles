@@ -105,6 +105,7 @@ export class VentasComponent implements OnInit {
       producto: [""],
     });
 
+    //PARA ALMACENAR LOS PRODUCTOS SELECCIONADOS
     this.formularioDetalleVenta = this.formulario.group({
       productos: this.formulario.array([]),
     });
@@ -121,6 +122,7 @@ export class VentasComponent implements OnInit {
     // this.DetalleVenta.comprobar();
     // this.InventarioService.comprobar();
     // this.ventasService.comprobar();
+    //OBTENEMOS NOMBRE E ID DE GYMNASIO Y ID DE USUARIO
     this.ubicacion = this.auth.nombreGym.getValue();
     this.idGym = this.auth.idGym.getValue();
     this.idUsuarioo = this.auth.idUser.getValue();
@@ -137,10 +139,10 @@ export class VentasComponent implements OnInit {
     //   },
     // });
 
-    //Obtener productos de la bodega
+    //OBTENER PRODUCTOS DE LA BODEGA
     this.productoService.obternerProductosV2(this.auth.idGym.getValue()).subscribe((respuesta) => {
       this.productData = respuesta;
-      console.log('ProductosV: ', this.productData);
+      // console.log('ProductosV: ', this.productData);
 
       this.dataSource = new MatTableDataSource(this.productData);
       this.dataSource.paginator = this.paginator;
@@ -161,14 +163,14 @@ export class VentasComponent implements OnInit {
   }*/
 
 
-
+  //VALIDAMOS Y AGREGAMOS LOS PRODUCTOS SELECCIONADOS A LA LISTA DE LA VENTA (SE VALIDA SI EXISTE Y SI HAY EXISTENCIA, Y SE REALIZA EL TOTAL)
   validarYAgregarProducto(producto: any) {
     this.InventarioService.obtenerProductoPorIdYIdBodega(producto.idProbob, this.auth.idGym.getValue()).subscribe(
       (data) => {
         const productoObtenido = data[0];
-        console.log('PRODUCTO OBTENIDO: ', productoObtenido);
-        console.log("IDBODPRO: ", productoObtenido.idBodPro);
-        console.log("IDPRObob: ", productoObtenido.idProbob);
+        // console.log('PRODUCTO OBTENIDO: ', productoObtenido);
+        // console.log("IDBODPRO: ", productoObtenido.idBodPro);
+        // console.log("IDPRObob: ", productoObtenido.idProbob);
 
         if (!productoObtenido) {
           this.toastr.error("Producto no encontrado");
@@ -194,12 +196,14 @@ export class VentasComponent implements OnInit {
     );
   }
 
+  //RESETA LOS VALORES DE LA VENTA
   resetearValores() {
     this.selectedProducts = [];
     this.totalAPagar = 0;
     this.dineroRecibido = 0;
   }
 
+  //CONVIERTE NUMEROS A PALABRAS, PARA MOSTRAR EL TOTAL EN PALABRAS EN EL COMPROBANTE
   convertirNumeroAPalabrasPesos(numero: number): string {
     const unidades = [
       "CERO",
@@ -296,11 +300,12 @@ export class VentasComponent implements OnInit {
     return palabras;
   }
 
-
+  //CIERRA EL COMPONENTE
   cerrarDialogo(): void {
     this.dialogo.close(true);
   }
 
+  //ELIMINA UN PRODUCTO DE LA LISTA DE LA VENTA, RESTANDO EL TOTAL
   quitarArchivo(index: number): void {
     this.selectedProducts.splice(index, 1);
     this.totalAPagar = this.selectedProducts.reduce(
@@ -309,6 +314,7 @@ export class VentasComponent implements OnInit {
     );
   }
 
+  //FILTRO DE BUSQUEDA POR NOMBRE,CODIGO DE BARRAS, Y SE AGREGA A LA LISTA DE PRODUCTOS SELECCIONADOS
   async applyFilter(event: Event | null) {
     const filterValue = this.form.get("producto")?.value;
 
@@ -345,11 +351,12 @@ export class VentasComponent implements OnInit {
     }
   }
 
+  //BUSQUEDA DE PRODUCTOS EN INVENTARIO
   buscarPorPro(){
     const productoIngresado = this.form.get("producto")?.value;
       this.InventarioService.buscarProductoPorNombreYIdBodega(this.auth.idGym.getValue()).subscribe({
         next: (respuesta) => {
-          console.log('PRODUCTOS POR NOMBRE: ', respuesta);
+          // console.log('PRODUCTOS POR NOMBRE: ', respuesta);
 
            // Filtrar las subcategorías excluyendo aquellas donde
         const productosFiltrados = respuesta.nombreproducto.filter(
@@ -374,12 +381,13 @@ export class VentasComponent implements OnInit {
       });
     }
 
+    //SE SELECCIONA UN PRODUCTO, SE APLICA EL FILTRO Y SE AGREGA A LA LISTA DE LA VENTA
     seleccionar(marca: string): void {
       this.form.get('producto')?.setValue(marca);
       this.applyFilter(null); // Aplicar filtro al seleccionar una opción del autocompletado
     }
 
-    //PEDIDOS
+    //SE VALIDAN LOS PRODUCTOS (EXISTENCIAS), SE HACE LA RESTA DE LAS EXISTENCIAS, SE AGREGAN A TABLAS PEDIDO Y DETALLEPEDIDO Y SE IMPRIME EL PDF
     imprimirResumenPedido() {
       this.dialog.open(MensajeEliminarComponent, {
         data: `¿Está seguro/a de que desea completar esta venta?`,
@@ -402,7 +410,7 @@ export class VentasComponent implements OnInit {
             if (this.totalAPagar <= this.dineroRecibido) {
 
               const totalAPagar = this.selectedProducts.reduce((total, producto) => total + producto.precioSucursal * producto.cantidad, 0);
-              console.log("totalAPagar: ", totalAPagar);
+              // console.log("totalAPagar: ", totalAPagar);
 
               const datosVentas = {
                 correoCliente: "correo@cliente.com",
@@ -430,13 +438,13 @@ export class VentasComponent implements OnInit {
                   return;
                 }
 
-                console.log("DATOS ENVIADOS A PEDIDO: ", datosVentas);
+                // console.log("DATOS ENVIADOS A PEDIDO: ", datosVentas);
 
                 this.ventasService.agregarVentaPedido(datosVentas).subscribe((response) => {
                   const lastInsertId = response.id_pedido;
-                  console.log("RESPONSE PEDIDO: ", response);
-                  console.log('idlast: ', lastInsertId);
-                  console.log('Producto seleccionado: ', this.selectedProducts);
+                  // console.log("RESPONSE PEDIDO: ", response);
+                  // console.log('idlast: ', lastInsertId);
+                  // console.log('Producto seleccionado: ', this.selectedProducts);
 
                   const detallesVentas = this.selectedProducts.map((producto) => {
                     return {
@@ -448,11 +456,11 @@ export class VentasComponent implements OnInit {
                       idPromocion: ''
                     };
                   });
-                  console.log("DATOS ENVIADOS A DETALLEPEDIDO: ", detallesVentas);
+                  // console.log("DATOS ENVIADOS A DETALLEPEDIDO: ", detallesVentas);
 
                   this.DetalleVenta.agregarDetallePedido(detallesVentas).subscribe({
                     next: (response) => {
-                      console.log('Detalle Pedido insertado correctamente:', response);
+                      // console.log('Detalle Pedido insertado correctamente:', response);
                       if (response.success === 1) {
                         this.spinner.hide();
                         this.dialog.open(MensajeEmergentesComponent, {

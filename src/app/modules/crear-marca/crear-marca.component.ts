@@ -15,9 +15,9 @@ import { ToastrService } from 'ngx-toastr';
 export class CrearMarcaComponent implements OnInit {
   serviceForm!: FormGroup;
   idGym: number = 0;
-  idService: number = 0;
-  marcasDisponibles: any;
-  seleccionado: number = 0;
+  // idService: number = 0;
+  // marcasDisponibles: any;
+  // seleccionado: number = 0;
   message: string = "";
 
   constructor(
@@ -29,6 +29,7 @@ export class CrearMarcaComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private toastr: ToastrService
   ) {
+    //SE CONSTRUYE EL FORMULARIO
     this.serviceForm = this.fb.group({
       id_marcas: [0],
       marcaP: ["",[Validators.required,Validators.pattern(/^[^\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]+$/u),],],
@@ -47,12 +48,14 @@ export class CrearMarcaComponent implements OnInit {
     // });
   }
 
+  //OBTIENE EL idGym
   getIdGym() {
     this.auth.idGym.subscribe((respuesta) => {
       this.idGym = respuesta;
     });
   }
 
+  //SE VALIDA Y SE CREA LA NUEVA MARCA
   validaFormService() {
     if (this.serviceForm.invalid) {
       this.message = "Por favor, complete todos los campos requeridos.";
@@ -89,6 +92,7 @@ export class CrearMarcaComponent implements OnInit {
     }
   }
 
+  //MUESTRA ERROR EN CAMPOS
   marcarCamposInvalidos(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach((campo) => {
       const control = formGroup.get(campo);

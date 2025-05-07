@@ -76,11 +76,14 @@ export class VerCorteComponent implements OnInit  {
         }
       }
     });
+
+    //OBTIENE EL USUARIO ACTUAL
     this.currentUser = this.auth.getCurrentUser();
     if (this.currentUser) {
       this.getSSdata(JSON.stringify(this.currentUser));
     }
 
+    //OBTENEMOS EL idGym Y idUser
     combineLatest([this.auth.idGym, this.auth.idUser]).subscribe(([idGym, idUser]) => {
       if (idGym && idUser) {
         this.idGym = idGym;
@@ -90,7 +93,7 @@ export class VerCorteComponent implements OnInit  {
       }
     });
 
-    // Obtener la fecha actual en formato local
+    //OBTENER LA FECHA ACTUAL EN FORMATO LOCAL
     const fechaActual = this.obtenerFechaActual();
     const year = fechaActual.getFullYear();
     const month = fechaActual.getMonth(); // Nota: getMonth() es 0-indexado
@@ -106,7 +109,7 @@ export class VerCorteComponent implements OnInit  {
     this.opcionSeleccionada = 'rango'; // Configuración por defecto
   }
 
-
+  //SE LE ASOCIA EL PAGINADOR A LA TABLA
   loadData() {
     setTimeout(() => {
       this.isLoading = false;
@@ -114,6 +117,7 @@ export class VerCorteComponent implements OnInit  {
     }, 1000);
   }
 
+  //CONSULTA LOS DATOS DEL USUARIO LOGUEADO
   getSSdata(data: any){
     this.auth.dataUser(data).subscribe({
       next: (resultData) => {
@@ -129,12 +133,13 @@ export class VerCorteComponent implements OnInit  {
     });
   }
 
+  //OBTENEMOS LOS DETALLES DE LAS VENTAS DEL GIMNASIO, CON EL FILTRO DE FECHAS
   listaTablas(){
     // console.log('idGym en la lista: ', this.idGym);
     this.joinDetalleVentaService.consultarProductosVentasBodega(this.idGym).subscribe(
       (data) => {
         this.detallesCaja = data;
-        console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
+        // console.log('Detalle Pedidos vendidos: ', this.detallesCaja);
         this.dataSource = new MatTableDataSource(this.detallesCaja);
         this.loadData();
         this.dataSource.data = this.detallesCaja;
@@ -144,7 +149,7 @@ export class VerCorteComponent implements OnInit  {
         const fechaActual = this.obtenerFechaActual();
         const fechaLocal = fechaActual.toLocaleDateString('sv-SE'); // 'sv-SE' da formato yyyy-mm-dd
         this.fechaFiltro = fechaLocal;
-        console.log("FECHA ACTUAL DENTRO DE LA TABLA: ", this.fechaFiltro);
+        // console.log("FECHA ACTUAL DENTRO DE LA TABLA: ", this.fechaFiltro);
 
         this.aplicarFiltro();
       },
@@ -154,14 +159,16 @@ export class VerCorteComponent implements OnInit  {
     );
   }
 
+  //OBTIENE LA FECHA ACTUAL
   private obtenerFechaActual(): Date {
     const fechaActual = new Date();
     // fechaActual.setHours(fechaActual.getHours() - 0); // Agregar 6 horas
-    console.log("FECHA ACTUAL: ",fechaActual);
+    // console.log("FECHA ACTUAL: ",fechaActual);
 
     return fechaActual;
   }
 
+  //FILTRO A LA TABLA EN BASE A LA FECHA ACTUAL. REGISTROS QUE NO COINCIDAN CON LA FECHA SE OMITEN.
   aplicarFiltro() {
     this.dataSource.filter = this.fechaFiltro; // Aplica el filtro con la fecha actual
     this.dataSource.filterPredicate = (data: any, filter: string) => {
@@ -170,29 +177,30 @@ export class VerCorteComponent implements OnInit  {
     this.actualizarTotalVentas();
   }
 
-  aplicarFiltross() {
-    const fechaInicioFiltrar = new Date(this.fechaInicio);
-    fechaInicioFiltrar.setHours(23, 59, 59, 999);  // Ajusta la hora a las 00:00:00
-    const fechaFinFiltrar = new Date(this.fechaFin);
-    fechaFinFiltrar.setHours(23, 59, 59, 999);
+  // aplicarFiltross() {
+  //   const fechaInicioFiltrar = new Date(this.fechaInicio);
+  //   fechaInicioFiltrar.setHours(23, 59, 59, 999);  // Ajusta la hora a las 00:00:00
+  //   const fechaFinFiltrar = new Date(this.fechaFin);
+  //   fechaFinFiltrar.setHours(23, 59, 59, 999);
 
-     // Convertir la fecha a formato ISO sin horas
-    const fechaInicioIso = fechaInicioFiltrar.toISOString().slice(0, 10);
-    const fechaFinIso = fechaFinFiltrar.toISOString().slice(0, 10);
+  //    // Convertir la fecha a formato ISO sin horas
+  //   const fechaInicioIso = fechaInicioFiltrar.toISOString().slice(0, 10);
+  //   const fechaFinIso = fechaFinFiltrar.toISOString().slice(0, 10);
 
-    this.dataSource.filterPredicate = (data: any, filter: string) => {
-      const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' a tu propiedad de fecha
-      fechaItem.setHours(0, 0, 0, 0);
-      const fechaItemIso = fechaItem.toISOString().slice(0, 10);
+  //   this.dataSource.filterPredicate = (data: any, filter: string) => {
+  //     const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' a tu propiedad de fecha
+  //     fechaItem.setHours(0, 0, 0, 0);
+  //     const fechaItemIso = fechaItem.toISOString().slice(0, 10);
 
-      return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
-    };
-    // Concatenar las fechas con un carácter que no se espera en las fechas
-    this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;;
-    this.actualizarTotalVentas();
-  }
+  //     return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
+  //   };
+  //   // Concatenar las fechas con un carácter que no se espera en las fechas
+  //   this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;;
+  //   this.actualizarTotalVentas();
+  // }
 
 
+  //VERIFICA QUE LAS FECHAS DE INICIO Y FIN DEL FILTRO HAYAN SIDO SELECCIONADAS, SE APLICA A LA TABLA
   verificarCambios() {
     if (!this.fechaInicio || !this.fechaFin) {
       console.warn("Fechas no seleccionadas, no se aplicará el filtro.");
@@ -221,14 +229,14 @@ export class VerCorteComponent implements OnInit  {
     this.dataSource.filterPredicate = (data: any) => {
       const fechaItem = new Date(data.fecha_hora_pedido); // Ajusta 'fecha_hora_pedido' según tu estructura
       fechaItem.setHours(0, 0, 0, 0);
-      console.log('d=',fechaItem);
+      // console.log('d=',fechaItem);
 
 
       // Convertir a formato YYYY-MM-DD sin UTC
       const fechaItemIso = fechaItem.getFullYear() + '-' +
                            ('0' + (fechaItem.getMonth() + 1)).slice(-2) + '-' +
                            ('0' + fechaItem.getDate()).slice(-2);
-                           console.log('itemiso=',fechaItemIso);
+                          //  console.log('itemiso=',fechaItemIso);
       return fechaItemIso >= fechaInicioIso && fechaItemIso <= fechaFinIso;
 
     };
@@ -237,7 +245,7 @@ export class VerCorteComponent implements OnInit  {
 
     // Aplicar filtro a la tabla
     this.dataSource.filter = `${fechaInicioIso}_${fechaFinIso}`;
-    console.log('s=',this.dataSource.filter);
+    // console.log('s=',this.dataSource.filter);
 
 
 
@@ -250,20 +258,22 @@ export class VerCorteComponent implements OnInit  {
 
 
 
-
+  //FILTRO DE BUSQUEDA
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  //LLAMA A calcularTotalVentas
   actualizarTotalVentas(): void {
     this.totalVentas = this.calcularTotalVentas();
   }
 
+  //ACTUALIZA EL TOTAL DE LAS VENTAS POR FILTRO, MULTIPLICANDO CANTIDAD POR PRECIO Y SUMANDO
   calcularTotalVentas(): number {
     // Obtén los datos visibles después de aplicar filtros
     const datosVisibles = this.dataSource.filteredData || this.dataSource.data;
-    console.log("DATOS VIVIBLES: ",datosVisibles);
+    // console.log("DATOS VIVIBLES: ",datosVisibles);
 
     // Realiza el cálculo del total
     return datosVisibles.reduce((total, detalle) => {
@@ -277,6 +287,7 @@ export class VerCorteComponent implements OnInit  {
     }, 0);
   }
 
+  //DESCARGA EL PDF
   descargarPDF2(): void {
     // Verifica si hay datos para exportar
     if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
@@ -336,6 +347,7 @@ export class VerCorteComponent implements OnInit  {
     pdf.save('CorteDeCaja.pdf');
   }
 
+  //DESCARGA EL EXCEL
   descargarExcel2(): void {
     // Verificar si hay datos para exportar
     if (!this.dataSource || !this.dataSource.filteredData || this.dataSource.filteredData.length === 0) {
@@ -403,6 +415,7 @@ export class VerCorteComponent implements OnInit  {
     this.toastr.success('Archivo Excel generado correctamente.', '¡Éxito!');
   }
 
+
   cargarArchivo(event: any): void {
     const file = event.target.files[0];
     const reader: FileReader = new FileReader();
@@ -419,6 +432,7 @@ export class VerCorteComponent implements OnInit  {
     reader.readAsArrayBuffer(file);
   }
 
+  //ABRE DIALOG DE VENTAS
   ventas(): void {
     this.dialogRef = this.dialog.open(VentasComponent, {
       width: '70%',
