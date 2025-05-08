@@ -19,7 +19,7 @@ export class PostalCodeService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   //API: string = 'http://localhost/serviciosGimnasio/';
-  API: string = 'https://olympus.arvispace.com/ServiciosGym/';
+  API: string = 'http://localhost/serviciosGym/';
 
 
   constructor(

@@ -4,6 +4,7 @@ import { Observable,forkJoin, throwError } from 'rxjs';
 import { detalleVenta } from '../models/detalleVenta';
 import { ConnectivityService } from './connectivity.service';
 import { catchError } from 'rxjs/operators';
+import { ApiUrlService } from './api-url.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class DetalleVentaService {
   // API: string = 'http://localhost/serviciosGimnasio/';
 
   //API: string = 'http://localhost/gimnasioServicios/';
-  API: string = 'https://olympus.arvispace.com/ServiciosGym/';
+  API: string = 'http://localhost/serviciosGym/';
 
 
   constructor(private clienteHttp:HttpClient, private connectivityService: ConnectivityService,private apiUrlService: ApiUrlService) {

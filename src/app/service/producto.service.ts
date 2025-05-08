@@ -25,7 +25,7 @@ export class ProductoService {
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
 
   //API: string = 'http://localhost/gimnasioServicios/';
-  API: string = 'https://olympus.arvispace.com/ServiciosGym/';
+  API: string = 'http://localhost/serviciosGym/';
 
     constructor(private clienteHttp:HttpClient, 
       private connectivityService: ConnectivityService,

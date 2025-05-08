@@ -30,7 +30,7 @@ export class ColaboradorService {
     //API: string = 'http://localhost/serviciosGimnasio/'
 
     // API: string = 'http://localhost/gimnasioServicios/';
-    API: string = 'https://olympus.arvispace.com/ServiciosGym/';
+    API: string = 'http://localhost/serviciosGym/';
 
 
     constructor(private clienteHttp:HttpClient,

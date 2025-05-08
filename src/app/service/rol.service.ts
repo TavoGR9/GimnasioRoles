@@ -9,7 +9,7 @@ import { ApiUrlService } from './api-url.service';
 export class RolService {
 
   // private apiUrl = 'http://localhost/gimnasioServicios/';
-  private apiUrl = 'https://olympus.arvispace.com/ServiciosGym/';
+  private apiUrl = 'http://localhost/serviciosGym/';
   constructor(private http: HttpClient,
               private apiUrlService: ApiUrlService) {
     this.apiUrl = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService

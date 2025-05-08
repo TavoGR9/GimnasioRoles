@@ -81,7 +81,7 @@ export class VerConfiguracionComponent implements OnInit{
         this.auth.loggedIn.next(true);
           this.auth.role.next(resultData.rolUser);
           this.auth.idUser.next(resultData.id);
-          this.auth.idGym.next(resultData.idGym);
+          //this.auth.idGym.next(resultData.idGym);
           this.auth.nombreGym.next(resultData.direccion);
           this.auth.email.next(resultData.email);
           this.auth.encryptedMail.next(resultData.encryptedMail);

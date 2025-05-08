@@ -60,11 +60,16 @@ export class LoginComponent implements OnInit {
             this.auth.email.next(resultData.email);
             this.auth.encryptedMail.next(resultData.encryptedMail);
             this.auth.setCurrentUser({ olympus: resultData.encryptedMail });
+            
             if(resultData.rol == 'SuperAdmin'){
 
               this.router.navigate(['/listaSucursales'],{ replaceUrl: true });
             }else if (resultData.rol == 'Administrador'){
               this.router.navigate(['/home'],{ replaceUrl: true });
+              console.log(resultData);
+              console.log(this.auth.idGym.getValue());
+              
+              
             } else if (resultData.rol == 'Recepcionista'){
               this.router.navigate(['/home'],{ replaceUrl: true });
             } else {

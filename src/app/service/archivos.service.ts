@@ -11,10 +11,10 @@ import { ApiUrlService } from './api-url.service';
 export class ArchivoService {
 
 //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
-//API: string = 'http://localhost/serviciosGimnasio/'
+API: string = 'http://localhost/serviciosGym/'
 
 // API: string = 'http://localhost/gimnasioServicios/';
-API: string = 'https://olympus.arvispace.com/ServiciosGym/';
+//API: string = 'https://gimnasios.arvispace.com/ServiciosGym/';
 
 
 constructor(private clienteHttp: HttpClient

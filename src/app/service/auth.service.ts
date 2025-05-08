@@ -35,7 +35,7 @@ export class AuthService {
 
   //API: string = 'https://olympus.arvispace.com/olimpusGym/conf/';
   // API: string = 'http://localhost/gimnasioServicios/';
-  API: string = 'https://olympus.arvispace.com/ServiciosGym/';
+  API: string = 'http://localhost/serviciosGym/';
 
 
   httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -46,8 +46,9 @@ export class AuthService {
     private indexedDBService:IndexedDBService, 
     public dialog: MatDialog,
     private apiUrlService: ApiUrlService) {
-    
-    this.API = this.apiUrlService.getBaseUrl(); // Obtiene la URL de la API desde el servicio ApiUrlService
+    this.API = this.apiUrlService.getBaseUrl(); 
+    // Obtiene la URL de la API desde el servicio ApiUrlService
+
     const encryptedMail = sessionStorage.getItem(this.USER_KEY);
     if (encryptedMail) {
       this.encryptedMail.next(encryptedMail);
@@ -129,12 +130,6 @@ export class AuthService {
     return this.role.getValue();
   }
 
-  //Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas *** Graficas ***
-  //Traer lista de sucursales
-  list_sucursales():Observable<any> {
-    return this.clienteHttp.get<listaSucursal>(this.API + 'sucursales.php');
-  }
-
   //Consultar informacion de sucursales
   chart_sucursales(data: any):Observable<any> {
     return this.clienteHttp.post<dataChart>(this.API + 'chart_sucursales.php', data, { headers: this.httpHeaders }).pipe(
@@ -211,11 +206,6 @@ export class AuthService {
   clearCurrentUser(): void {
     sessionStorage.removeItem(this.USER_KEY);
   }
-
-  // Traer datos de usuario logeaddo
-  // dataUser(data: any): Observable<any> {
-  //   return this.clienteHttp.post<dataLogin>(this.API + 'datosSSTorage.php?datos', data, { headers: this.httpHeaders});
-  // }
 
   getUsuario(correo: string): Observable<any> {
     const params = { correo };
